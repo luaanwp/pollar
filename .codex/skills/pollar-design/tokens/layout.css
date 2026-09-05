@@ -1,0 +1,18 @@
+:root{
+  --bp-compact-max:599px; /* @kind other */
+  --bp-medium-min:600px; /* @kind other */
+  --bp-expanded-min:1024px; /* @kind other */
+  --bp-wide-min:1440px; /* @kind other */
+  --size-button-compact:32px;
+  --size-button-standard:40px;
+  --size-button-prominent:48px;
+  --size-touch-min:44px;
+  --size-sidebar-expanded:256px;
+  --size-sidebar-collapsed:72px;
+  --size-context-panel:360px;
+  --size-content-max:1600px;
+  --size-dashboard-max:1280px;
+  --icon-sm:16px;
+  --icon-md:20px;
+  --icon-lg:24px;
+}

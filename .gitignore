@@ -1,0 +1,13 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Source material kept locally, not in the repo (the Inter font is already
+# extracted and versioned under apps/pollar_app/assets/fonts/inter/).
+assets-fonte/
+
+# Local tool caches
+*.log

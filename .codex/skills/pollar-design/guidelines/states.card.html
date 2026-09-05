@@ -1,0 +1,20 @@
+<!-- @dsCard group="Brand" viewport="700x180" name="Interaction states" subtitle="Hover darkens/tints, press nudges 0.5px, focus is a 2px info ring at 2px offset" -->
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>body{background:var(--surface-canvas);padding:20px;display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.k{font:600 10px/1.2 var(--font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);width:70px;flex:none}
+.btn{height:40px;padding:0 14px;display:inline-flex;align-items:center;border-radius:var(--radius-md);font:600 14px/1 var(--font-sans);border:1px solid var(--primary);background:var(--primary);color:#fff}
+.btn.h{background:var(--primary-hover);border-color:var(--primary-hover)}
+.btn.p{background:var(--primary-hover);border-color:var(--primary-hover);transform:translateY(.5px)}
+.btn.f{outline:2px solid var(--focus-ring);outline-offset:2px}
+.btn.d{opacity:.5}
+.sec{background:var(--surface-canvas);color:var(--text-primary);border-color:var(--border-strong)}
+.sec.h{background:var(--surface-alt)}
+.n{font:500 10px/1.2 var(--font-mono);color:var(--text-muted)}</style>
+</head><body>
+<div class="row"><span class="k">Primary</span>
+<span class="btn">rest</span><span class="btn h">hover</span><span class="btn p">press</span><span class="btn f">focus</span><span class="btn d">disabled</span></div>
+<div class="row"><span class="k">Secondary</span>
+<span class="btn sec">rest</span><span class="btn sec h">hover</span><span class="btn sec f">focus</span><span class="btn sec d">disabled</span></div>
+<div class="row"><span class="k"></span><span class="n">hover = primary-700 / surface-alt · press = same fill + 0.5px nudge · focus = 2px info ring, 2px offset · disabled = 50% opacity</span></div>
+</body></html>

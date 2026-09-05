@@ -1,0 +1,20 @@
+<!-- @dsCard group="Brand" viewport="700x180" name="Motion" subtitle="100/180/240ms with emphasized decelerate on entry — hover the bars" -->
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>body{background:var(--surface-canvas);padding:20px;display:flex;flex-direction:column;gap:12px}
+.r{display:flex;align-items:center;gap:14px}
+.n{font:500 11px/1.2 var(--font-mono);color:var(--text-muted);width:210px;flex:none}
+.track{flex:1;height:22px;background:var(--surface-alt);border-radius:var(--radius-sm);overflow:hidden}
+.fill{height:100%;width:24%;background:var(--primary)}
+body:hover .f1{width:96%;transition:width var(--duration-fast) var(--ease-standard)}
+body:hover .f2{width:96%;transition:width var(--duration-standard) var(--ease-decelerate)}
+body:hover .f3{width:96%;transition:width var(--duration-panel) var(--ease-decelerate)}
+@keyframes fin-spin{to{transform:rotate(360deg)}}
+@keyframes fin-toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fin-dialog-in{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes fin-sheet-in{from{transform:translateY(12px)}to{transform:none}}</style>
+</head><body>
+<div class="r"><span class="n">fast 100ms · ease-standard</span><div class="track"><div class="fill f1"></div></div></div>
+<div class="r"><span class="n">standard 180ms · decelerate</span><div class="track"><div class="fill f2"></div></div></div>
+<div class="r"><span class="n">panel 240ms · decelerate</span><div class="track"><div class="fill f3"></div></div></div>
+<div style="font:400 12px/1.5 var(--font-sans);color:var(--text-muted)">Entrada usa emphasized decelerate, saída accelerate, mudanças de estado ease padrão. Nunca animar valores financeiros de forma que atrase a compreensão. <code style="font-family:var(--font-mono);font-size:11px">prefers-reduced-motion</code> zera todas as durações.</div>
+</body></html>

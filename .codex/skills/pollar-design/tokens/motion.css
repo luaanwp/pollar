@@ -1,0 +1,11 @@
+:root{
+  --duration-fast:100ms; /* @kind other */
+  --duration-standard:180ms; /* @kind other */
+  --duration-panel:240ms; /* @kind other */ /* @kind other */
+  --ease-decelerate:cubic-bezier(.05,.7,.1,1); /* @kind other */
+  --ease-accelerate:cubic-bezier(.3,0,.8,.15); /* @kind other */
+  --ease-standard:cubic-bezier(.2,0,0,1); /* @kind other */
+}
+@media (prefers-reduced-motion:reduce){
+  :root{--duration-fast:0ms; /* @kind other */--duration-standard:0ms; /* @kind other */--duration-panel:0ms}
+}

@@ -1,0 +1,79 @@
+:root{
+  /* base palette — light */
+  --color-primary-50:#EAF8F4;
+  --color-primary-600:#087F6B;
+  --color-primary-700:#066858;
+  --color-neutral-0:#FFFFFF;
+  --color-neutral-25:#F7F9F8;
+  --color-neutral-50:#F1F4F3;
+  --color-neutral-200:#D8DEDC;
+  --color-neutral-300:#B9C3C0;
+  --color-neutral-500:#74827E;
+  --color-neutral-650:#52615D;
+  --color-neutral-950:#13201D;
+  --color-success-600:#16834F;
+  --color-danger-600:#C53B3B;
+  --color-warning-600:#A86508;
+  --color-info-600:#2667C9;
+
+  /* semantic aliases — light theme is the default */
+  --primary:var(--color-primary-600);
+  --primary-hover:var(--color-primary-700);
+  --primary-soft:var(--color-primary-50);
+  --on-primary:#FFFFFF;
+  --surface-canvas:var(--color-neutral-0);
+  --surface-background:var(--color-neutral-25);
+  --surface-alt:var(--color-neutral-50);
+  --border:var(--color-neutral-200);
+  --border-strong:var(--color-neutral-300);
+  --text-primary:var(--color-neutral-950);
+  --text-secondary:var(--color-neutral-650);
+  --text-muted:var(--color-neutral-500);
+  --positive:var(--color-success-600);
+  --negative:var(--color-danger-600);
+  --warning:var(--color-warning-600);
+  --info:var(--color-info-600);
+
+  /* soft semantic fills for badges/banners (derived, light theme) */
+  --positive-soft:#E8F5EE;
+  --negative-soft:#FBECEC;
+  --warning-soft:#FBF1E3;
+  --info-soft:#EAF0FB;
+  --neutral-soft:var(--color-neutral-50);
+
+  /* categorical chart palette */
+  --chart-1:#087F6B;
+  --chart-2:#2667C9;
+  --chart-3:#A86508;
+  --chart-4:#7C55C7;
+  --chart-5:#C44E82;
+  --chart-6:#438A9E;
+  --chart-7:#7A7950;
+  --chart-8:#C53B3B;
+
+  --focus-ring:var(--color-info-600);
+}
+[data-theme="dark"]{
+  --primary:#5ED3B8;
+  --primary-hover:#80DEC9;
+  --primary-soft:#153B34;
+  --on-primary:#08211C;
+  --surface-canvas:#121A18;
+  --surface-background:#0C1211;
+  --surface-alt:#1A2522;
+  --border:#2D3B37;
+  --border-strong:#40514C;
+  --text-primary:#EEF4F2;
+  --text-secondary:#B5C3BF;
+  --text-muted:#8B9B96;
+  --positive:#55CF91;
+  --negative:#FF8585;
+  --warning:#F3B85D;
+  --info:#80AEFF;
+  --positive-soft:#12301F;
+  --negative-soft:#3A1E1E;
+  --warning-soft:#38290F;
+  --info-soft:#16233A;
+  --neutral-soft:#1A2522;
+  --focus-ring:#80AEFF;
+}

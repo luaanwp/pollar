@@ -1,0 +1,6 @@
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface-background);color:var(--text-primary);font-family:var(--font-sans);font-size:var(--text-body);line-height:var(--lh-body);-webkit-font-smoothing:antialiased}
+a{color:var(--info);text-decoration:none}
+a:hover{color:var(--info);text-decoration:underline}
+:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
+.fin-tnum{font-variant-numeric:tabular-nums;font-feature-settings:var(--font-feature-tabular)}

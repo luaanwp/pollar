@@ -1,0 +1,21 @@
+:root{
+  /* desktop scale */
+  --text-display:32px;      --lh-display:1.20; /* @kind other */  --fw-display:700; /* @kind other */
+  --text-h1:26px;           --lh-h1:1.25; /* @kind other */       --fw-h1:700; /* @kind other */
+  --text-h2:22px;           --lh-h2:1.30; /* @kind other */       --fw-h2:650; /* @kind other */
+  --text-h3:18px;           --lh-h3:1.35; /* @kind other */       --fw-h3:600; /* @kind other */
+  --text-body-lg:16px;      --lh-body-lg:1.50; /* @kind other */  --fw-body-lg:400; /* @kind other */
+  --text-body:14px;         --lh-body:1.50; /* @kind other */     --fw-body:400; /* @kind other */
+  --text-label:13px;        --lh-label:1.35; /* @kind other */    --fw-label:600; /* @kind other */
+  --text-caption:12px;      --lh-caption:1.40; /* @kind other */  --fw-caption:500; /* @kind other */
+  --text-amount-hero:34px;  --lh-amount-hero:1.15; /* @kind other */ --fw-amount-hero:650; /* @kind other */
+  --text-amount:16px;       --lh-amount:1.30; /* @kind other */   --fw-amount:600; /* @kind other */
+}
+@media (max-width:599px){
+  :root{
+    --text-display:28px;
+    --text-h1:24px;
+    --text-h2:20px;
+    --text-amount-hero:30px;
+  }
+}

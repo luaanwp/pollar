@@ -1,0 +1,86 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "meta": {
+    "name": "Pollar Design Tokens",
+    "version": "1.0.0",
+    "baseUnit": 4,
+    "defaultLocale": "pt-BR"
+  },
+  "color": {
+    "light": {
+      "primary": { "value": "#087F6B" },
+      "primaryHover": { "value": "#066858" },
+      "primarySoft": { "value": "#EAF8F4" },
+      "canvas": { "value": "#FFFFFF" },
+      "background": { "value": "#F7F9F8" },
+      "surfaceAlt": { "value": "#F1F4F3" },
+      "border": { "value": "#D8DEDC" },
+      "borderStrong": { "value": "#B9C3C0" },
+      "textPrimary": { "value": "#13201D" },
+      "textSecondary": { "value": "#52615D" },
+      "textMuted": { "value": "#74827E" },
+      "success": { "value": "#16834F" },
+      "danger": { "value": "#C53B3B" },
+      "warning": { "value": "#A86508" },
+      "info": { "value": "#2667C9" }
+    },
+    "dark": {
+      "primary": { "value": "#5ED3B8" },
+      "primaryHover": { "value": "#80DEC9" },
+      "primarySoft": { "value": "#153B34" },
+      "canvas": { "value": "#121A18" },
+      "background": { "value": "#0C1211" },
+      "surfaceAlt": { "value": "#1A2522" },
+      "border": { "value": "#2D3B37" },
+      "borderStrong": { "value": "#40514C" },
+      "textPrimary": { "value": "#EEF4F2" },
+      "textSecondary": { "value": "#B5C3BF" },
+      "textMuted": { "value": "#8B9B96" },
+      "success": { "value": "#55CF91" },
+      "danger": { "value": "#FF8585" },
+      "warning": { "value": "#F3B85D" },
+      "info": { "value": "#80AEFF" }
+    },
+    "chart": {
+      "categorical": ["#087F6B", "#2667C9", "#A86508", "#7C55C7", "#C44E82", "#438A9E", "#7A7950", "#C53B3B"]
+    }
+  },
+  "spacing": {
+    "0": { "value": 0 }, "1": { "value": 4 }, "2": { "value": 8 },
+    "3": { "value": 12 }, "4": { "value": 16 }, "5": { "value": 20 },
+    "6": { "value": 24 }, "8": { "value": 32 }, "10": { "value": 40 },
+    "12": { "value": 48 }, "16": { "value": 64 }, "20": { "value": 80 }
+  },
+  "radius": {
+    "small": { "value": 6 }, "medium": { "value": 10 },
+    "large": { "value": 14 }, "pill": { "value": 999 }
+  },
+  "breakpoint": {
+    "compactMax": { "value": 599 }, "mediumMin": { "value": 600 },
+    "expandedMin": { "value": 1024 }, "wideMin": { "value": 1440 }
+  },
+  "size": {
+    "buttonCompact": { "value": 32 }, "buttonStandard": { "value": 40 },
+    "buttonProminent": { "value": 48 }, "touchTargetMin": { "value": 44 },
+    "sidebarExpanded": { "value": 256 }, "sidebarCollapsed": { "value": 72 },
+    "contextPanel": { "value": 360 }, "contentMax": { "value": 1600 },
+    "dashboardMax": { "value": 1280 }
+  },
+  "duration": {
+    "fast": { "value": 100 }, "standard": { "value": 180 }, "panel": { "value": 240 }
+  },
+  "typography": {
+    "fontFamily": { "value": "Inter" },
+    "fallbacks": { "value": ["SF Pro Text", "Segoe UI", "Roboto", "sans-serif"] },
+    "display": { "desktop": 32, "mobile": 28, "weight": 700, "lineHeight": 1.2 },
+    "h1": { "desktop": 26, "mobile": 24, "weight": 700, "lineHeight": 1.25 },
+    "h2": { "desktop": 22, "mobile": 20, "weight": 650, "lineHeight": 1.3 },
+    "h3": { "desktop": 18, "mobile": 18, "weight": 600, "lineHeight": 1.35 },
+    "bodyLarge": { "desktop": 16, "mobile": 16, "weight": 400, "lineHeight": 1.5 },
+    "body": { "desktop": 14, "mobile": 14, "weight": 400, "lineHeight": 1.5 },
+    "label": { "desktop": 13, "mobile": 13, "weight": 600, "lineHeight": 1.35 },
+    "caption": { "desktop": 12, "mobile": 12, "weight": 500, "lineHeight": 1.4 },
+    "amountHero": { "desktop": 34, "mobile": 30, "weight": 650, "lineHeight": 1.15 },
+    "amountStandard": { "desktop": 16, "mobile": 16, "weight": 600, "lineHeight": 1.3 }
+  }
+}

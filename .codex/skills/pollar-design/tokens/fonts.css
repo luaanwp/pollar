@@ -1,0 +1,9 @@
+/* Pollar type: Inter (primary). No binaries were supplied with the source spec,
+   so Inter is loaded from Google Fonts. Replace with self-hosted @font-face + woff2
+   in assets/fonts/ when licensed files are available. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@400;500;600&display=swap");
+:root{
+  --font-sans:"Inter","SF Pro Text","Segoe UI","Roboto",sans-serif;
+  --font-mono:"JetBrains Mono","SF Mono",ui-monospace,monospace;
+  --font-feature-tabular:"tnum" 1,"cv01" 1; /* @kind other */
+}

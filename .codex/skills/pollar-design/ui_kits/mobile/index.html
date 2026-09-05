@@ -1,0 +1,79 @@
+<!-- @dsCard group="Pollar Mobile" viewport="430x900" name="Mobile app — Início" subtitle="Compact shell: app bar + scrollable content + bottom nav + quick add" -->
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Pollar — Mobile</title>
+<link rel="stylesheet" href="../../styles.css">
+<style>html,body{height:100%}body{overflow:hidden;background:var(--surface-background)}
+#root{height:100vh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;background:var(--surface-background);border-left:1px solid var(--border);border-right:1px solid var(--border)}
+@keyframes fin-spin{to{transform:rotate(360deg)}}
+@keyframes fin-toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fin-dialog-in{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes fin-sheet-in{from{transform:translateY(16px)}to{transform:none}}</style>
+</head><body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="../desktop/data.js"></script>
+<script type="text/babel" src="./MobileScreens.jsx"></script>
+<script type="text/babel">
+const { BottomNav, IconButton, Button, BottomSheet, Toast, Input, Select, CurrencyInput } = window.PollarDesignSystem_efbbc4;
+
+function App(){
+  const [tab,setTab]=React.useState('home');
+  const [detail,setDetail]=React.useState(null);
+  const [priv,setPriv]=React.useState(false);
+  const [theme,setTheme]=React.useState('light');
+  const [offline,setOffline]=React.useState(false);
+  const [sheet,setSheet]=React.useState(false);
+  const [pay,setPay]=React.useState(false);
+  const [toast,setToast]=React.useState(null);
+  const [amount,setAmount]=React.useState(0);
+  React.useEffect(()=>{document.documentElement.setAttribute('data-theme',theme);document.body.setAttribute('data-theme',theme);},[theme]);
+  function fire(m){setToast(m);setTimeout(()=>setToast(null),4000);}
+
+  const titles={home:['Início','Setembro de 2026'],tx:['Transações','Setembro de 2026'],cards:['Cartão Ouro','Visa · •••• 4417'],budgets:['Orçamentos','Setembro de 2026'],more:['Mais',null]};
+  const head = detail ? [detail.title, detail.date] : titles[tab];
+
+  return <>
+    <FinAppBar title={head[0]} subtitle={head[1]}
+      left={detail ? <IconButton icon="arrow-left" label="Voltar" onClick={()=>setDetail(null)}/> : null}
+      actions={<div style={{display:'flex',gap:2}}>
+        <IconButton icon={priv?'eye-off':'eye'} label="Modo privacidade" selected={priv} onClick={()=>setPriv(p=>!p)}/>
+        <IconButton icon={offline?'wifi-off':'refresh-cw'} label={offline?'Offline':'Sincronizar'} onClick={()=>{setOffline(o=>!o);fire(offline?'Sincronização concluída.':'Modo offline simulado.')}}/>
+        <IconButton icon="search" label="Buscar"/>
+      </div>}/>
+    <main style={{flex:1,overflowY:'auto'}}>
+      {detail && <MobileDetail tx={detail} priv={priv}/>}
+      {!detail && tab==='home' && <MobileHome priv={priv} offline={offline} onOpen={setTab}/>}
+      {!detail && tab==='tx' && <MobileTransactions priv={priv} onSelect={setDetail}/>}
+      {!detail && tab==='cards' && <MobileStatement priv={priv} onPay={()=>setPay(true)}/>}
+      {!detail && tab==='budgets' && <MobileBudgets priv={priv}/>}
+      {!detail && tab==='more' && <MobileMore priv={priv} setPriv={setPriv} theme={theme} setTheme={setTheme}/>}
+    </main>
+    <BottomNav activeId={tab} onSelect={t=>{setDetail(null);setTab(t);}} quickAdd="Nova transação" onQuickAdd={()=>setSheet(true)}
+      items={[{id:'home',label:'Início',icon:'house'},{id:'tx',label:'Transações',icon:'list'},{id:'cards',label:'Cartões',icon:'credit-card'},{id:'budgets',label:'Orçamentos',icon:'target'},{id:'more',label:'Mais',icon:'ellipsis'}]}/>
+
+    {sheet && <BottomSheet open title="Nova transação" onClose={()=>setSheet(false)}
+      actions={<><Button size="prominent" fullWidth onClick={()=>{setSheet(false);fire('Transação salva.')}}>Salvar</Button>
+      <Button size="prominent" fullWidth variant="ghost" onClick={()=>setSheet(false)}>Cancelar</Button></>}>
+      <div style={{display:'flex',flexDirection:'column',gap:14,padding:'16px 0'}}>
+        <Input label="Descrição" placeholder="Ex. Farmácia" size="prominent"/>
+        <CurrencyInput label="Valor" valueMinor={amount} onChangeMinor={setAmount} size="prominent" installments={amount>0?3:undefined}/>
+        <Select label="Categoria" options={['Alimentação','Moradia','Transporte','Lazer','Saúde']} size="prominent"/>
+        <Select label="Conta" options={['Cartão Ouro','Conta corrente','Poupança']} size="prominent"/>
+      </div>
+    </BottomSheet>}
+
+    {pay && <BottomSheet open title="Pagar a fatura?" onClose={()=>setPay(false)}
+      actions={<><Button size="prominent" fullWidth onClick={()=>{setPay(false);fire('Pagamento registrado.')}}>Confirmar pagamento</Button>
+      <Button size="prominent" fullWidth variant="ghost" onClick={()=>setPay(false)}>Cancelar</Button></>}>
+      <p style={{fontSize:14,lineHeight:1.5,color:'var(--text-secondary)',padding:'14px 0 0'}}>
+        O pagamento de <strong className="fin-tnum" style={{color:'var(--text-primary)'}}>R$ 2.623,90</strong> será registrado como movimentação da conta corrente, não como uma nova despesa — as compras já constam no histórico.</p>
+    </BottomSheet>}
+
+    {toast && <div style={{position:'fixed',bottom:88,left:'50%',transform:'translateX(-50%)',zIndex:80,width:'calc(100% - 32px)',maxWidth:398,display:'flex',justifyContent:'center'}}>
+      <Toast message={toast} actionLabel="Desfazer" onAction={()=>setToast(null)} onDismiss={()=>setToast(null)}/></div>}
+  </>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script></body></html>

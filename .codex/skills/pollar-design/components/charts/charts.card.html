@@ -1,0 +1,26 @@
+<!-- @dsCard group="Components" viewport="700x340" name="Charts — TrendChart, ComparisonBars, CategoryDonut, ProgressMeter" subtitle="Zero baselines, legends and text alternatives on every chart" -->
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<style>body{background:var(--surface-canvas);padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}</style>
+</head><body>
+<div id="root" style="display:contents"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+const { TrendChart, ComparisonBars, CategoryDonut, ProgressMeter } = window.PollarDesignSystem_efbbc4;
+ReactDOM.createRoot(document.getElementById('root')).render(<>
+  <div style={{display:'flex',flexDirection:'column',gap:20}}>
+    <TrendChart height={110} data={[{label:'abr',value:1420000},{label:'mai',value:1512000},{label:'jun',value:1487000},{label:'jul',value:1610000},{label:'ago',value:1748000},{label:'set',value:1873455}]}/>
+    <ProgressMeter label="Limite utilizado — Cartão Ouro" value={52} valueLabel="52%"/>
+    <ProgressMeter label="Orçamento Transporte" value={106} valueLabel="106%" tone="danger"/>
+  </div>
+  <div style={{display:'flex',flexDirection:'column',gap:20}}>
+    <ComparisonBars height={110}
+      series={[{label:'Entradas',color:'var(--chart-1)'},{label:'Saídas',color:'var(--chart-3)'}]}
+      groups={[{label:'jun',values:[980000,742000]},{label:'jul',values:[1010000,861000]},{label:'ago',values:[1035000,904000]},{label:'set',values:[1052000,861000]}]}/>
+    <CategoryDonut size={110} thickness={14} centerLabel="Saídas" centerValue="R$ 8.610,00"
+      slices={[{label:'Moradia',value:-320000},{label:'Alimentação',value:-138050},{label:'Transporte',value:-42300},{label:'Lazer',value:-24990}]}/>
+  </div>
+</>);
+</script></body></html>

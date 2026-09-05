@@ -1,0 +1,23 @@
+<!-- @dsCard group="Brand" viewport="700x180" name="Iconography — Lucide" subtitle="Single rounded-outline family at 16/20/24; emoji never used as product icons" -->
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>body{background:var(--surface-canvas);padding:20px;display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.i{width:24px;height:24px;background:var(--text-secondary);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center}
+.k{font:600 10px/1.2 var(--font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);width:70px;flex:none}
+.n{font:400 12px/1.5 var(--font-sans);color:var(--text-muted)}</style>
+</head><body>
+<div class="row"><span class="k">Nav</span><div id="a" class="row"></div></div>
+<div class="row"><span class="k">Status</span><div id="b" class="row"></div></div>
+<div class="row"><span class="k">Sizes</span>
+  <span class="i" id="s16" style="width:16px;height:16px"></span>
+  <span class="i" id="s20" style="width:20px;height:20px"></span>
+  <span class="i" id="s24" style="width:24px;height:24px"></span>
+  <span class="n">16 denso · 20 desktop · 24 mobile</span></div>
+<script>
+const CDN='https://unpkg.com/lucide-static@0.462.0/icons/';
+const nav=['layout-dashboard','arrow-left-right','credit-card','target','chart-pie','settings','wallet','house','list','ellipsis'];
+const st=['check','clock','circle-alert','triangle-alert','refresh-cw','wifi-off','link','eye-off','plus','trash-2'];
+function paint(id,names,color){const el=document.getElementById(id);names.forEach(n=>{const s=document.createElement('span');s.className='i';s.style.background=color;const u='url("'+CDN+n+'.svg")';s.style.webkitMaskImage=u;s.style.maskImage=u;s.title=n;el.appendChild(s);});}
+paint('a',nav,'var(--text-secondary)');paint('b',st,'var(--primary)');
+['s16','s20','s24'].forEach(id=>{const u='url("'+CDN+'wallet.svg")';const e=document.getElementById(id);e.style.webkitMaskImage=u;e.style.maskImage=u;});
+</script></body></html>

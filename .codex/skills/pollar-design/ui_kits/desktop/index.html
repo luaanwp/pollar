@@ -1,0 +1,96 @@
+<!-- @dsCard group="Pollar Desktop" viewport="1440x900" name="Desktop app — Visão geral" subtitle="Sidebar + utility bar + dashboard workspace, click-through across 5 screens" -->
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Pollar — Desktop</title>
+<link rel="stylesheet" href="../../styles.css">
+<style>html,body{height:100%}body{overflow:hidden}
+#root{height:100vh;display:flex}
+@keyframes fin-spin{to{transform:rotate(360deg)}}
+@keyframes fin-toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fin-dialog-in{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes fin-sheet-in{from{transform:translateY(12px)}to{transform:none}}</style>
+</head><body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="./data.js"></script>
+<script type="text/babel" src="./DesktopScreens.jsx"></script>
+<script type="text/babel">
+const { Sidebar, TopBar, Button, IconButton, Dialog, Toast, CurrencyInput, Input, Select } = window.PollarDesignSystem_efbbc4;
+const D = window.PollarDesktopData;
+
+function App(){
+  const [view,setView]=React.useState('dash');
+  const [priv,setPriv]=React.useState(false);
+  const [collapsed,setCollapsed]=React.useState(false);
+  const [theme,setTheme]=React.useState('light');
+  const [offline,setOffline]=React.useState(true);
+  const [newTx,setNewTx]=React.useState(false);
+  const [payOpen,setPayOpen]=React.useState(false);
+  const [toast,setToast]=React.useState(null);
+  const [amount,setAmount]=React.useState(23480);
+
+  React.useEffect(()=>{document.documentElement.setAttribute('data-theme',theme);document.body.setAttribute('data-theme',theme);},[theme]);
+  React.useEffect(()=>{
+    const h=e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='p'){e.preventDefault();setPriv(p=>!p);}
+      if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='j'){e.preventDefault();setNewTx(true);}};
+    window.addEventListener('keydown',h);return()=>window.removeEventListener('keydown',h);
+  },[]);
+  function fire(msg){setToast(msg);setTimeout(()=>setToast(null),4000);}
+
+  const head={dash:['Visão geral',null],tx:['Transações','Dinheiro'],cards:['Cartão Ouro','Cartões'],budgets:['Orçamentos','Planejamento'],reports:['Relatórios','Planejamento'],settings:['Preferências',null]}[view];
+
+  return <>
+    <Sidebar items={D.nav} activeId={view} onSelect={setView} collapsed={collapsed}
+      footer={<div style={{display:'flex',alignItems:'center',gap:10,justifyContent:collapsed?'center':'flex-start'}}>
+        <IconButton icon={collapsed?'panel-left-open':'panel-left-close'} label={collapsed?'Expandir menu':'Recolher menu'} size="compact" onClick={()=>setCollapsed(c=>!c)}/>
+        {!collapsed && <span style={{fontSize:12,color:'var(--text-muted)'}}>Sincronizado 14:02</span>}
+      </div>}/>
+    <div style={{flex:1,display:'flex',flexDirection:'column',minWidth:0,background:'var(--surface-background)'}}>
+      <TopBar breadcrumb={head[1]} title={head[0]}
+        actions={<div style={{display:'flex',gap:8,alignItems:'center'}}>
+          <IconButton icon={priv?'eye-off':'eye'} label="Modo privacidade (⌘P)" size="compact" selected={priv} onClick={()=>setPriv(p=>!p)}/>
+          <IconButton icon={offline?'wifi-off':'refresh-cw'} label={offline?'Offline':'Sincronizar'} size="compact" onClick={()=>{setOffline(o=>!o);fire(offline?'Sincronização concluída.':'Modo offline simulado.')}}/>
+          <IconButton icon="bell" label="Notificações" size="compact"/>
+          <Button size="compact" iconLeft="plus" onClick={()=>setNewTx(true)}>Nova transação</Button>
+          <span style={{width:32,height:32,borderRadius:999,background:'var(--primary-soft)',color:'var(--primary)',display:'inline-flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:600}}>MC</span>
+        </div>}/>
+      <main style={{flex:1,overflowY:'auto',padding:'24px var(--gutter-desktop) 48px'}}>
+        {view==='dash' && <DashboardScreen priv={priv} offline={offline} onOpenTx={()=>setView('tx')}/>}
+        {view==='tx' && <TransactionsScreen priv={priv}/>}
+        {view==='cards' && <StatementScreen priv={priv} onPay={()=>setPayOpen(true)}/>}
+        {view==='budgets' && <BudgetsScreen priv={priv}/>}
+        {view==='settings' && <SettingsScreen priv={priv} setPriv={setPriv} theme={theme} setTheme={setTheme}/>}
+        {view==='reports' && <div style={{maxWidth:640}}><FinPageHead title="Relatórios" subtitle="Esta tela não estava especificada na fonte do design system."/>
+          <div style={{padding:'32px 20px',border:'1px dashed var(--border-strong)',borderRadius:'var(--radius-lg)',color:'var(--text-muted)',fontSize:14,background:'var(--surface-canvas)'}}>
+            Deixado em branco de propósito: a especificação Pollar não define o layout de relatórios.</div></div>}
+      </main>
+    </div>
+
+    {newTx && <Dialog open title="Nova transação" icon="plus" onClose={()=>setNewTx(false)} width={480}
+      actions={<><Button variant="secondary" onClick={()=>setNewTx(false)}>Cancelar</Button>
+        <Button onClick={()=>{setNewTx(false);fire('Transação salva.')}}>Salvar transação</Button></>}>
+      <div style={{display:'flex',flexDirection:'column',gap:14,paddingBottom:4}}>
+        <Input label="Descrição" placeholder="Ex. Mercado do bairro" defaultValue=""/>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
+          <CurrencyInput label="Valor" valueMinor={amount} onChangeMinor={setAmount} installments={12}/>
+          <Select label="Categoria" options={['Alimentação','Moradia','Transporte','Lazer','Saúde']}/>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
+          <Select label="Conta" options={['Cartão Ouro','Conta corrente','Poupança']}/>
+          <Input label="Data" iconLeft="calendar" defaultValue="1 set 2026"/>
+        </div>
+      </div>
+    </Dialog>}
+
+    {payOpen && <Dialog open title="Pagar a fatura do Cartão Ouro?" icon="credit-card" onClose={()=>setPayOpen(false)} width={460}
+      description="O pagamento de R$ 2.623,90 será registrado como movimentação da conta corrente, não como uma nova despesa — as compras já constam no histórico."
+      actions={<><Button variant="secondary" onClick={()=>setPayOpen(false)}>Cancelar</Button>
+        <Button onClick={()=>{setPayOpen(false);fire('Pagamento da fatura registrado.')}}>Confirmar pagamento</Button></>}/>}
+
+    {toast && <div style={{position:'fixed',bottom:24,left:'50%',transform:'translateX(-50%)',zIndex:80}}>
+      <Toast message={toast} actionLabel="Desfazer" onAction={()=>setToast(null)} onDismiss={()=>setToast(null)}/></div>}
+  </>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script></body></html>

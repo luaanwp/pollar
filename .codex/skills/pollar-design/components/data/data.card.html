@@ -1,0 +1,48 @@
+<!-- @dsCard group="Components" viewport="700x390" name="Data — Money, Privacy, StatusBadge, TransactionTile, DataTable" subtitle="Amount scale, privacy masking, status pills, transaction rows and the desktop table" -->
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<style>body{background:var(--surface-canvas);padding:20px;display:flex;flex-direction:column;gap:14px}.row{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap}.pills{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.list{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}</style>
+</head><body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+const { MoneyText, PrivacyAmount, StatusBadge, TransactionTile, DataTable } = window.PollarDesignSystem_efbbc4;
+const rows=[
+ {id:1,date:'1 set 2026',title:'Mercado do bairro',cat:'Alimentação',minor:-23480,st:['Compensado','success','check']},
+ {id:2,date:'2 set 2026',title:'Assinatura streaming',cat:'Lazer',minor:-4990,st:['Previsto','neutral','clock']},
+ {id:3,date:'3 set 2026',title:'Salário',cat:'Renda',minor:920000,st:['Conciliado','info','link']},
+];
+function Demo(){
+  const [sel,setSel]=React.useState([2]);
+  return <>
+    <div className="row">
+      <MoneyText minor={1234556} size="hero"/>
+      <MoneyText minor={-12345}/>
+      <MoneyText minor={45000} showSign tone="semantic"/>
+      <PrivacyAmount minor={1234556} hidden/>
+    </div>
+    <div className="pills">
+      <StatusBadge icon="circle">Aberta</StatusBadge>
+      <StatusBadge tone="info" icon="refresh-cw">Sincronizando</StatusBadge>
+      <StatusBadge tone="success" icon="check">Paga</StatusBadge>
+      <StatusBadge tone="warning" icon="clock">Parcialmente paga</StatusBadge>
+      <StatusBadge tone="danger" icon="circle-alert">Vencida</StatusBadge>
+      <StatusBadge tone="danger" icon="triangle-alert" size="compact">Conflito</StatusBadge>
+    </div>
+    <div className="list">
+      <TransactionTile title="Mercado do bairro" category="Alimentação" account="Cartão Ouro" date="1 set 2026" minor={-23480} installment="3/12" status="Previsto" statusIcon="clock" icon="shopping-basket" onClick={()=>{}}/>
+      <TransactionTile title="Salário" kind="income" category="Renda" account="Conta corrente" date="1 set 2026" minor={920000} status="Compensado" statusTone="success" statusIcon="check"/>
+    </div>
+    <DataTable selectable selectedIds={sel} onToggleRow={id=>setSel(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id])}
+      onToggleAll={()=>setSel(s=>s.length===rows.length?[]:rows.map(r=>r.id))}
+      sortKey="date" onSort={()=>{}} onRowClick={()=>{}}
+      columns={[{key:'date',label:'Data',width:'110px'},{key:'title',label:'Descrição'},{key:'cat',label:'Categoria',width:'130px'},
+        {key:'st',label:'Status',width:'150px',sortable:false,render:r=><StatusBadge tone={r.st[1]} icon={r.st[2]} size="compact">{r.st[0]}</StatusBadge>},
+        {key:'minor',label:'Valor',width:'130px',align:'right',render:r=><MoneyText minor={r.minor} size="compact"/>}]}
+      rows={rows}/>
+  </>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script></body></html>
