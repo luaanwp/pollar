@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -5,6 +6,7 @@ import '../../features/overview/presentation/overview_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/transactions/presentation/transactions_screen.dart';
 import 'app_shell.dart';
+import '../../features/design_system/presentation/forms_catalog_screen.dart';
 
 /// The app's [GoRouter]. A [StatefulShellRoute.indexedStack] keeps a separate
 /// navigator per top-level destination so each tab preserves its own state.
@@ -15,6 +17,11 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/overview',
     routes: [
+      if (kDebugMode)
+        GoRoute(
+          path: '/design-system/forms',
+          builder: (context, state) => const FormsCatalogScreen(),
+        ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             AppShell(navigationShell: navigationShell),

@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -22,6 +24,11 @@ class SettingsScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(PollarSpacing.x6),
           children: [
+            if (kDebugMode)
+              TextButton(
+                onPressed: () => context.push('/design-system/forms'),
+                child: const Text('Abrir catálogo de formulários'),
+              ),
             Text(
               'APARÊNCIA',
               style: PollarTypography.eyebrow.copyWith(color: pollar.textMuted),

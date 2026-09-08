@@ -67,6 +67,10 @@ abstract final class PollarTheme {
       dividerTheme: DividerThemeData(color: c.border, thickness: 1, space: 1),
       // Focus is a 2px info ring at 2px offset, always visible.
       inputDecorationTheme: InputDecorationTheme(
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        helperMaxLines: 3,
+        errorMaxLines: 3,
+        contentPadding: const EdgeInsets.all(PollarSpacing.x4),
         filled: true,
         fillColor: c.canvas,
         border: OutlineInputBorder(
@@ -80,6 +84,14 @@ abstract final class PollarTheme {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(PollarRadii.medium),
           borderSide: BorderSide(color: c.info, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(PollarRadii.medium),
+          borderSide: BorderSide(color: c.danger),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(PollarRadii.medium),
+          borderSide: BorderSide(color: c.danger, width: 2),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
