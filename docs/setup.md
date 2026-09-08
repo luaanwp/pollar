@@ -62,9 +62,15 @@ Copy `apps/pollar_app/.env.example` to `.env` and fill values. Never commit `.en
 
 ```
 apps/pollar_app/        Flutter application (Windows, Android, iOS)
+  lib/app/              Composition root, routing, theme, global UI state
   lib/core/money/       Money + Currency value objects (integer minor units)
   lib/core/ledger/      Centralized balance invariants (status/type rules)
+  lib/shared/           Reusable UI and cross-feature adapters
+  lib/features/         Independent product capabilities
 docs/                   Architecture, setup, domain, sync, security notes
 supabase/               SQL migrations, RLS policies, tests (added in sync slice)
 .codex/skills/pollar-design/   Design-system reference (visual/behavioral only)
 ```
+
+Dependency rules and the path for evolving features are documented in
+[`docs/architecture.md`](architecture.md) and enforced by architecture tests.
