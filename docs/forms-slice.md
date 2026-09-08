@@ -32,6 +32,6 @@ segundo as regras do produto antes de persistir um plano.
 ## Continuação
 
 O catálogo geral, os estados financeiros e os componentes de confirmação estão
-prontos. O domínio e os casos de uso de contas agora vivem na feature `accounts`;
-o próximo passo é conectar os formulários à apresentação da feature. Persistência
-Drift, autenticação e sincronização continuam pendentes.
+prontos. A feature `accounts` já usa esses controles em seu cadastro; o próximo
+formulário de produto será o de transações. Persistência Drift, autenticação e
+sincronização continuam pendentes.

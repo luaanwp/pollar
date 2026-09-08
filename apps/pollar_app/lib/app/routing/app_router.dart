@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/accounts/presentation/account_form_screen.dart';
+import '../../features/accounts/presentation/accounts_screen.dart';
 import '../../features/design_system/presentation/forms_catalog_screen.dart';
 import '../../features/overview/presentation/overview_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -44,6 +46,20 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/transactions',
                 builder: (context, state) => const TransactionsScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/accounts',
+                builder: (context, state) => const AccountsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'new',
+                    builder: (context, state) => const AccountFormScreen(),
+                  ),
+                ],
               ),
             ],
           ),

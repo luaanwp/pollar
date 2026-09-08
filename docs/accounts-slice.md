@@ -6,7 +6,7 @@ interface ou ao banco local. A feature está dividida em:
 - `domain`: `Account`, `CreditCardTerms` e o contrato `AccountRepository`;
 - `application`: casos de uso para criar, listar, renomear, arquivar e restaurar;
 - `data`: repositório em memória, substituível pelo adaptador Drift;
-- `presentation`: será adicionada quando os formulários consumirem os casos de uso.
+- `presentation`: controller Riverpod, lista responsiva e cadastro de contas/cartões.
 
 ## Decisões de domínio
 
@@ -22,8 +22,14 @@ interface ou ao banco local. A feature está dividida em:
 - Nomes são normalizados nas bordas, mas não precisam ser únicos. Instituições
   e usuários podem legitimamente manter contas com nomes iguais.
 
+## Integração de apresentação
+
+A rota `/accounts` separa contas, cartões e itens arquivados; valores respeitam
+o modo privacidade global. `/accounts/new` coleta os dados e chama somente o
+controller da feature. A raiz em `main.dart` injeta o repositório temporário,
+mantendo a escolha de armazenamento fora da interface.
+
 ## Próxima integração
 
-O próximo slice conecta esses casos de uso a uma tela de contas e aos
-formulários do design system. Persistência Drift implementará o mesmo contrato,
-sem alterar domínio, casos de uso ou widgets consumidores.
+Persistência Drift implementará o mesmo contrato e substituirá a fonte em
+memória na raiz de composição, sem alterar domínio, casos de uso ou widgets.

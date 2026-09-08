@@ -5,9 +5,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app/routing/app_router.dart';
 import 'app/theme/pollar_theme.dart';
 import 'app/theme/theme_mode_provider.dart';
+import 'features/accounts/data/seeded_account_repository.dart';
+import 'features/accounts/presentation/accounts_controller.dart';
 
 void main() {
-  runApp(const ProviderScope(child: PollarApp()));
+  runApp(
+    ProviderScope(
+      overrides: [
+        accountRepositoryProvider.overrideWithValue(
+          createSeededAccountRepository(),
+        ),
+      ],
+      child: const PollarApp(),
+    ),
+  );
 }
 
 class PollarApp extends ConsumerWidget {

@@ -22,8 +22,7 @@ class AppDestination {
   final String path;
 }
 
-/// The slice's destinations, in navigation order. Card, budgets and reports
-/// join later; a destination is only added once its route leads somewhere real.
+/// Destinations are added only when their route leads somewhere real.
 const List<AppDestination> appDestinations = [
   AppDestination(
     label: 'Visão geral',
@@ -34,6 +33,11 @@ const List<AppDestination> appDestinations = [
     label: 'Transações',
     icon: LucideIcons.arrowLeftRight,
     path: '/transactions',
+  ),
+  AppDestination(
+    label: 'Contas',
+    icon: LucideIcons.walletCards,
+    path: '/accounts',
   ),
   AppDestination(
     label: 'Preferências',

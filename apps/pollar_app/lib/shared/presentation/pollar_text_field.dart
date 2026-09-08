@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Text entry using the app theme and native Form validation/focus behavior.
 class PollarTextField extends StatelessWidget {
@@ -14,6 +15,7 @@ class PollarTextField extends StatelessWidget {
     this.leadingIcon,
     this.trailingIcon,
     this.keyboardType,
+    this.inputFormatters,
     this.textInputAction = TextInputAction.next,
     this.maxLines = 1,
   });
@@ -28,6 +30,7 @@ class PollarTextField extends StatelessWidget {
   final IconData? leadingIcon;
   final IconData? trailingIcon;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final TextInputAction textInputAction;
   final int maxLines;
 
@@ -39,6 +42,7 @@ class PollarTextField extends StatelessWidget {
     validator: validator,
     onChanged: onChanged,
     keyboardType: keyboardType,
+    inputFormatters: inputFormatters,
     textInputAction: textInputAction,
     maxLines: maxLines,
     autovalidateMode: AutovalidateMode.onUserInteraction,
