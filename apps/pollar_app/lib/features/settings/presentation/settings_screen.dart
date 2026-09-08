@@ -6,6 +6,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../app/theme/pollar_theme.dart';
 import '../../../app/theme/theme_mode_provider.dart';
+import '../../../shared/presentation/pollar_button.dart';
+import '../../../shared/presentation/pollar_card.dart';
 
 /// Preferences ("Preferências") — the settings surface. For now it exposes the
 /// theme choice; persisted preferences and account settings land later.
@@ -25,16 +27,22 @@ class SettingsScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(PollarSpacing.x6),
           children: [
             if (kDebugMode)
-              TextButton(
-                onPressed: () => context.push('/design-system/forms'),
-                child: const Text('Abrir catálogo de formulários'),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: PollarButton(
+                  label: 'Abrir catálogo de componentes',
+                  variant: PollarButtonVariant.ghost,
+                  leadingIcon: LucideIcons.blocks,
+                  onPressed: () => context.push('/design-system'),
+                ),
               ),
             Text(
               'APARÊNCIA',
               style: PollarTypography.eyebrow.copyWith(color: pollar.textMuted),
             ),
             const SizedBox(height: PollarSpacing.x3),
-            Card(
+            PollarCard(
+              padding: PollarCardPadding.none,
               child: Column(
                 children: [
                   _ThemeOption(

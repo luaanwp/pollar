@@ -11,6 +11,11 @@ class PollarTextField extends StatelessWidget {
     this.onChanged,
     this.enabled = true,
     this.readOnly = false,
+    this.leadingIcon,
+    this.trailingIcon,
+    this.keyboardType,
+    this.textInputAction = TextInputAction.next,
+    this.maxLines = 1,
   });
 
   final String label;
@@ -20,6 +25,11 @@ class PollarTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final bool enabled;
   final bool readOnly;
+  final IconData? leadingIcon;
+  final IconData? trailingIcon;
+  final TextInputType? keyboardType;
+  final TextInputAction textInputAction;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) => TextFormField(
@@ -28,8 +38,15 @@ class PollarTextField extends StatelessWidget {
     readOnly: readOnly,
     validator: validator,
     onChanged: onChanged,
-    textInputAction: TextInputAction.next,
+    keyboardType: keyboardType,
+    textInputAction: textInputAction,
+    maxLines: maxLines,
     autovalidateMode: AutovalidateMode.onUserInteraction,
-    decoration: InputDecoration(labelText: label, hintText: hint),
+    decoration: InputDecoration(
+      labelText: label,
+      hintText: hint,
+      prefixIcon: leadingIcon == null ? null : Icon(leadingIcon, size: 20),
+      suffixIcon: trailingIcon == null ? null : Icon(trailingIcon, size: 20),
+    ),
   );
 }

@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../privacy/privacy_mode_provider.dart';
 import '../theme/pollar_theme.dart';
 import '../theme/theme_mode_provider.dart';
+import '../../shared/presentation/pollar_button.dart';
 
 /// A top-level navigation destination in the app shell.
 class AppDestination {
@@ -144,17 +145,14 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
       titleSpacing: PollarSpacing.x6,
       title: Text(title, style: Theme.of(context).textTheme.headlineMedium),
       actions: [
-        IconButton(
-          tooltip: privacyHidden ? 'Mostrar valores' : 'Ocultar valores',
-          icon: Icon(
-            privacyHidden ? LucideIcons.eyeOff : LucideIcons.eye,
-            size: 20,
-          ),
+        PollarIconButton(
+          label: privacyHidden ? 'Mostrar valores' : 'Ocultar valores',
+          icon: privacyHidden ? LucideIcons.eyeOff : LucideIcons.eye,
           onPressed: ref.read(privacyModeProvider.notifier).toggle,
         ),
-        IconButton(
-          tooltip: isDark ? 'Tema claro' : 'Tema escuro',
-          icon: Icon(isDark ? LucideIcons.sun : LucideIcons.moon, size: 20),
+        PollarIconButton(
+          label: isDark ? 'Tema claro' : 'Tema escuro',
+          icon: isDark ? LucideIcons.sun : LucideIcons.moon,
           onPressed: () =>
               ref.read(themeModeProvider.notifier).toggle(isDark: isDark),
         ),

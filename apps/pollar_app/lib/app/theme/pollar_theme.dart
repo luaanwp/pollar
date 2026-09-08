@@ -65,6 +65,50 @@ abstract final class PollarTheme {
         ),
       ),
       dividerTheme: DividerThemeData(color: c.border, thickness: 1, space: 1),
+      dialogTheme: DialogThemeData(
+        backgroundColor: c.canvas,
+        surfaceTintColor: Colors.transparent,
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(PollarRadii.large),
+          side: BorderSide(color: c.border),
+        ),
+        titleTextStyle: textTheme.headlineSmall,
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: c.textSecondary,
+        ),
+        actionsPadding: const EdgeInsets.all(PollarSpacing.x5),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: c.canvas,
+        contentTextStyle: textTheme.bodyMedium,
+        actionTextColor: c.primary,
+        closeIconColor: c.textMuted,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(PollarRadii.medium),
+          side: BorderSide(color: c.border),
+        ),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(PollarRadii.small),
+        ),
+        side: BorderSide(color: c.borderStrong),
+        fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? c.primary : null,
+        ),
+        checkColor: WidgetStatePropertyAll(onPrimary),
+      ),
+      switchTheme: SwitchThemeData(
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? c.primary
+              : c.borderStrong,
+        ),
+        thumbColor: const WidgetStatePropertyAll(Color(0xFFFFFFFF)),
+      ),
       // Focus is a 2px info ring at 2px offset, always visible.
       inputDecorationTheme: InputDecorationTheme(
         floatingLabelBehavior: FloatingLabelBehavior.always,

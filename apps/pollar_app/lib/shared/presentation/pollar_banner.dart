@@ -3,6 +3,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/theme/pollar_theme.dart';
 import 'status_badge.dart';
+import 'pollar_button.dart';
 
 /// Persistent inline feedback for offline, sync, conflict, and informational
 /// states. Critical recovery actions belong here rather than in a toast.
@@ -84,10 +85,10 @@ class PollarBanner extends StatelessWidget {
               ),
             ),
             if (onDismiss case final onDismiss?)
-              IconButton(
-                tooltip: alert ? 'Fechar alerta' : 'Fechar aviso',
-                visualDensity: VisualDensity.compact,
-                icon: const Icon(LucideIcons.x, size: 16),
+              PollarIconButton(
+                label: alert ? 'Fechar alerta' : 'Fechar aviso',
+                icon: LucideIcons.x,
+                size: PollarControlSize.compact,
                 onPressed: onDismiss,
               ),
           ],

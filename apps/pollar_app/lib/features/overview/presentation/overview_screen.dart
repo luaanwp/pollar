@@ -7,6 +7,7 @@ import '../../../app/theme/pollar_theme.dart';
 import '../../../core/money/currency.dart';
 import '../../../core/money/money.dart';
 import '../../../shared/presentation/pollar_banner.dart';
+import '../../../shared/presentation/pollar_card.dart';
 import '../../../shared/presentation/privacy_amount.dart';
 import '../../../shared/presentation/status_badge.dart';
 import '../../../shared/presentation/transaction_tile.dart';
@@ -114,30 +115,27 @@ class _BalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pollar = context.pollar;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(PollarSpacing.x5),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'SALDO TOTAL',
-              style: PollarTypography.eyebrow.copyWith(color: pollar.textMuted),
-            ),
-            const SizedBox(height: PollarSpacing.x3),
-            PrivacyAmount(
-              total,
-              hidden: privacyHidden,
-              style: PollarTypography.amountHero,
-            ),
-            const SizedBox(height: PollarSpacing.x2),
-            Text(
-              'Saldo confirmado · atualizado agora',
-              style: Theme.of(context).textTheme.bodySmall
-                  ?.copyWith(color: pollar.textSecondary),
-            ),
-          ],
-        ),
+    return PollarCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'SALDO TOTAL',
+            style: PollarTypography.eyebrow.copyWith(color: pollar.textMuted),
+          ),
+          const SizedBox(height: PollarSpacing.x3),
+          PrivacyAmount(
+            total,
+            hidden: privacyHidden,
+            style: PollarTypography.amountHero,
+          ),
+          const SizedBox(height: PollarSpacing.x2),
+          Text(
+            'Saldo confirmado · atualizado agora',
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: pollar.textSecondary),
+          ),
+        ],
       ),
     );
   }
@@ -155,7 +153,8 @@ class _TransactionsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pollar = context.pollar;
-    return Card(
+    return PollarCard(
+      padding: PollarCardPadding.none,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: PollarSpacing.x2),
         child: Column(
