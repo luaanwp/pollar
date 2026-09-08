@@ -33,6 +33,22 @@ void main() {
     expect(context.pollar.primary, PollarColors.dark.primary);
   });
 
+  testWidgets('privacy toggle masks every overview amount', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: PollarApp()));
+    await tester.pumpAndSettle();
+
+    expect(find.text('R\$ 8.595,95'), findsOneWidget);
+    expect(find.text('R\$ ••••••'), findsNothing);
+
+    await tester.tap(find.byTooltip('Ocultar valores'));
+    await tester.pump();
+
+    expect(find.text('R\$ 8.595,95'), findsNothing);
+    expect(find.text('R\$ ••••••'), findsOneWidget);
+    expect(find.text('R\$ •••••'), findsNWidgets(4));
+    expect(find.byTooltip('Mostrar valores'), findsOneWidget);
+  });
+
   testWidgets('navigating to Transações shows its empty state', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: PollarApp()));
     await tester.pumpAndSettle();

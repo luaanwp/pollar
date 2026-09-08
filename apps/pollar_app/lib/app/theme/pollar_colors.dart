@@ -21,9 +21,13 @@ class PollarColors extends ThemeExtension<PollarColors> {
     required this.textSecondary,
     required this.textMuted,
     required this.success,
+    required this.successSoft,
     required this.danger,
+    required this.dangerSoft,
     required this.warning,
+    required this.warningSoft,
     required this.info,
+    required this.infoSoft,
   });
 
   /// One brand hue: deep desaturated teal (light) / lighter teal (dark).
@@ -54,9 +58,13 @@ class PollarColors extends ThemeExtension<PollarColors> {
 
   /// Four semantic colors only — icon+text pair them, never color alone.
   final Color success;
+  final Color successSoft;
   final Color danger;
+  final Color dangerSoft;
   final Color warning;
+  final Color warningSoft;
   final Color info;
+  final Color infoSoft;
 
   static const PollarColors light = PollarColors(
     primary: Color(0xFF087F6B),
@@ -71,9 +79,13 @@ class PollarColors extends ThemeExtension<PollarColors> {
     textSecondary: Color(0xFF52615D),
     textMuted: Color(0xFF74827E),
     success: Color(0xFF16834F),
+    successSoft: Color(0xFFE8F5EE),
     danger: Color(0xFFC53B3B),
+    dangerSoft: Color(0xFFFBECEC),
     warning: Color(0xFFA86508),
+    warningSoft: Color(0xFFFBF1E3),
     info: Color(0xFF2667C9),
+    infoSoft: Color(0xFFEAF0FB),
   );
 
   static const PollarColors dark = PollarColors(
@@ -89,9 +101,13 @@ class PollarColors extends ThemeExtension<PollarColors> {
     textSecondary: Color(0xFFB5C3BF),
     textMuted: Color(0xFF8B9B96),
     success: Color(0xFF55CF91),
+    successSoft: Color(0xFF12301F),
     danger: Color(0xFFFF8585),
+    dangerSoft: Color(0xFF3A1E1E),
     warning: Color(0xFFF3B85D),
+    warningSoft: Color(0xFF38290F),
     info: Color(0xFF80AEFF),
+    infoSoft: Color(0xFF16233A),
   );
 
   @override
@@ -108,9 +124,13 @@ class PollarColors extends ThemeExtension<PollarColors> {
     Color? textSecondary,
     Color? textMuted,
     Color? success,
+    Color? successSoft,
     Color? danger,
+    Color? dangerSoft,
     Color? warning,
+    Color? warningSoft,
     Color? info,
+    Color? infoSoft,
   }) {
     return PollarColors(
       primary: primary ?? this.primary,
@@ -125,9 +145,13 @@ class PollarColors extends ThemeExtension<PollarColors> {
       textSecondary: textSecondary ?? this.textSecondary,
       textMuted: textMuted ?? this.textMuted,
       success: success ?? this.success,
+      successSoft: successSoft ?? this.successSoft,
       danger: danger ?? this.danger,
+      dangerSoft: dangerSoft ?? this.dangerSoft,
       warning: warning ?? this.warning,
+      warningSoft: warningSoft ?? this.warningSoft,
       info: info ?? this.info,
+      infoSoft: infoSoft ?? this.infoSoft,
     );
   }
 
@@ -147,9 +171,13 @@ class PollarColors extends ThemeExtension<PollarColors> {
       textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,
       textMuted: Color.lerp(textMuted, other.textMuted, t)!,
       success: Color.lerp(success, other.success, t)!,
+      successSoft: Color.lerp(successSoft, other.successSoft, t)!,
       danger: Color.lerp(danger, other.danger, t)!,
+      dangerSoft: Color.lerp(dangerSoft, other.dangerSoft, t)!,
       warning: Color.lerp(warning, other.warning, t)!,
+      warningSoft: Color.lerp(warningSoft, other.warningSoft, t)!,
       info: Color.lerp(info, other.info, t)!,
+      infoSoft: Color.lerp(infoSoft, other.infoSoft, t)!,
     );
   }
 }

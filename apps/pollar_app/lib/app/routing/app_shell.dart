@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../privacy/privacy_mode_provider.dart';
 import '../theme/pollar_theme.dart';
 import '../theme/theme_mode_provider.dart';
 
@@ -61,32 +63,61 @@ class AppShell extends ConsumerWidget {
     final index = navigationShell.currentIndex;
 
     final appBar = _ShellAppBar(title: appDestinations[index].label);
+    final togglePrivacy = ref.read(privacyModeProvider.notifier).toggle;
 
     if (isCompact) {
-      return Scaffold(
-        appBar: appBar,
-        body: navigationShell,
-        bottomNavigationBar: _BottomNav(
-          selectedIndex: index,
-          onSelected: _goBranch,
+      return _PrivacyShortcuts(
+        onToggle: togglePrivacy,
+        child: Scaffold(
+          appBar: appBar,
+          body: navigationShell,
+          bottomNavigationBar: _BottomNav(
+            selectedIndex: index,
+            onSelected: _goBranch,
+          ),
         ),
       );
     }
 
     final extended = width >= PollarBreakpoints.expandedMin;
-    return Scaffold(
-      appBar: appBar,
-      body: Row(
-        children: [
-          _Rail(
-            selectedIndex: index,
-            onSelected: _goBranch,
-            extended: extended,
-          ),
-          VerticalDivider(width: 1, thickness: 1, color: context.pollar.border),
-          Expanded(child: navigationShell),
-        ],
+    return _PrivacyShortcuts(
+      onToggle: togglePrivacy,
+      child: Scaffold(
+        appBar: appBar,
+        body: Row(
+          children: [
+            _Rail(
+              selectedIndex: index,
+              onSelected: _goBranch,
+              extended: extended,
+            ),
+            VerticalDivider(
+              width: 1,
+              thickness: 1,
+              color: context.pollar.border,
+            ),
+            Expanded(child: navigationShell),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _PrivacyShortcuts extends StatelessWidget {
+  const _PrivacyShortcuts({required this.onToggle, required this.child});
+
+  final VoidCallback onToggle;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.keyP, control: true): onToggle,
+        const SingleActivator(LogicalKeyboardKey.keyP, meta: true): onToggle,
+      },
+      child: Focus(autofocus: true, child: child),
     );
   }
 }
@@ -103,6 +134,7 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pollar = context.pollar;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final privacyHidden = ref.watch(privacyModeProvider);
 
     return AppBar(
       backgroundColor: pollar.canvas,
@@ -112,6 +144,14 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
       titleSpacing: PollarSpacing.x6,
       title: Text(title, style: Theme.of(context).textTheme.headlineMedium),
       actions: [
+        IconButton(
+          tooltip: privacyHidden ? 'Mostrar valores' : 'Ocultar valores',
+          icon: Icon(
+            privacyHidden ? LucideIcons.eyeOff : LucideIcons.eye,
+            size: 20,
+          ),
+          onPressed: ref.read(privacyModeProvider.notifier).toggle,
+        ),
         IconButton(
           tooltip: isDark ? 'Tema claro' : 'Tema escuro',
           icon: Icon(isDark ? LucideIcons.sun : LucideIcons.moon, size: 20),
