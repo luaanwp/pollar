@@ -71,3 +71,6 @@ simples e deixa substituições futuras explícitas.
 - O catálogo de design é uma feature de desenvolvimento e não persiste dados.
 - Preferências em memória são provisórias; a persistência futura será acessada
   por uma interface da feature de configurações.
+- Contas e cartões vivem na feature `accounts`; o domínio define o contrato de
+  repositório e a implementação em memória pode ser trocada por Drift na raiz
+  de composição, sem alterar casos de uso ou apresentação.

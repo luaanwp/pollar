@@ -49,6 +49,58 @@ void main() {
     expect(violations, isEmpty);
   });
 
+  test('feature domain stays independent from framework and outer layers', () {
+    final violations = <String>[];
+    final forbiddenPackages = RegExp(
+      r"package:(flutter|flutter_riverpod|go_router|drift|sqlite|path_provider)",
+    );
+    for (final file in dartFiles.where(
+      (file) => _isFeatureLayer(file, 'domain'),
+    )) {
+      for (final import in _imports(file)) {
+        final target = _resolvedPath(file, import);
+        if (forbiddenPackages.hasMatch(import) ||
+            _resolvesInside(file, import, const ['lib/app', 'lib/shared']) ||
+            _isFeatureLayerPath(target, const [
+              'application',
+              'data',
+              'presentation',
+            ])) {
+          violations.add('${file.path} imports $import');
+        }
+      }
+    }
+    expect(
+      violations,
+      isEmpty,
+      reason: 'Feature domain may depend on core, not delivery or storage.',
+    );
+  });
+
+  test('feature application stays independent from delivery and storage', () {
+    final violations = <String>[];
+    final forbiddenPackages = RegExp(
+      r"package:(flutter|flutter_riverpod|go_router|drift|sqlite|path_provider)",
+    );
+    for (final file in dartFiles.where(
+      (file) => _isFeatureLayer(file, 'application'),
+    )) {
+      for (final import in _imports(file)) {
+        final target = _resolvedPath(file, import);
+        if (forbiddenPackages.hasMatch(import) ||
+            _resolvesInside(file, import, const ['lib/app', 'lib/shared']) ||
+            _isFeatureLayerPath(target, const ['data', 'presentation'])) {
+          violations.add('${file.path} imports $import');
+        }
+      }
+    }
+    expect(
+      violations,
+      isEmpty,
+      reason: 'Use cases may depend on domain/core, not adapters or Flutter.',
+    );
+  });
+
   test('features do not import one another directly', () {
     final violations = <String>[];
     for (final file in dartFiles.where(_isInside('lib/features'))) {
@@ -71,6 +123,15 @@ void main() {
           'Coordinate features through app composition or shared contracts.',
     );
   });
+}
+
+bool _isFeatureLayer(File file, String layer) =>
+    _isFeatureLayerPath(_normalized(file.absolute.path), [layer]);
+
+bool _isFeatureLayerPath(String? path, List<String> layers) {
+  if (path == null) return false;
+  final choices = layers.map(RegExp.escape).join('|');
+  return RegExp(r'/lib/features/[^/]+/(' + choices + r')/').hasMatch(path);
 }
 
 bool Function(File) _isInside(String directory) {

@@ -1,7 +1,8 @@
 # Formulários e entrada monetária
 
-Em builds de desenvolvimento, abra **Preferências → Abrir catálogo de formulários**
-ou a rota `/design-system/forms`. O catálogo é um ambiente de demonstração; validar
+Em builds de desenvolvimento, abra **Preferências → Abrir catálogo de componentes**
+ou a rota `/design-system`. A rota antiga `/design-system/forms` redireciona para
+o catálogo unificado. Esse ambiente é apenas de demonstração; validar
 não grava transações. A rota e o acesso não são registrados em release/profile.
 
 ## Contrato de entrada
@@ -30,6 +31,7 @@ segundo as regras do produto antes de persistir um plano.
 
 ## Continuação
 
-Completar o catálogo geral, estados financeiros e componentes de confirmação;
-depois conectar formulários aos casos de uso de contas e transações. Persistência,
-autenticação e sincronização continuam pendentes.
+O catálogo geral, os estados financeiros e os componentes de confirmação estão
+prontos. O domínio e os casos de uso de contas agora vivem na feature `accounts`;
+o próximo passo é conectar os formulários à apresentação da feature. Persistência
+Drift, autenticação e sincronização continuam pendentes.
