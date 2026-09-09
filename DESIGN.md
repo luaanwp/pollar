@@ -12,12 +12,12 @@ colors:
   border-strong: "#B9C3C0"
   text-primary: "#13201D"
   text-secondary: "#52615D"
-  text-muted: "#74827E"
-  success: "#16834F"
+  text-muted: "#66736F"
+  success: "#0F7444"
   success-soft: "#E8F5EE"
   danger: "#C53B3B"
   danger-soft: "#FBECEC"
-  warning: "#A86508"
+  warning: "#8B5707"
   warning-soft: "#FBF1E3"
   info: "#2667C9"
   info-soft: "#EAF0FB"
@@ -221,9 +221,15 @@ Na listagem de contas, o primeiro viewport apresenta título, explicação, aç�
 
 Em transações, busca e filtros precedem sempre o histórico. Abaixo de 600px, os lançamentos são agrupados por dia em uma única coluna e os detalhes abrem em modal raiz, preservando o contexto escurecido da lista. Entre 600px e 1023px, o ledger permanece em uma coluna e também delega os detalhes ao modal. A partir de 1024px, a seleção mantém o ledger visível e abre ao lado um painel contextual fixo de 360px; o painel nunca comprime a coluna a ponto de ocultar valor ou estado.
 
+Na visão geral, a ordem operacional é invariável: cabeçalho com contexto e ação, par de saldos confirmado/projetado, resultado projetado do mês, posições por conta e transações recentes. Com 880px ou mais disponíveis, posições e transações dividem a linha em proporção 4:6; abaixo disso, empilham nessa mesma ordem. O resumo usa composição assimétrica 7:3 a partir de 760px, mantendo os saldos como leitura dominante; em espaço menor, seus cartões empilham. O cabeçalho também empilha no compacto, com seletor de moeda e ação ocupando a largura disponível.
+
+Texto ampliado provoca reflow por conteúdo, não redução tipográfica nem recorte. Acima de 1,3×, o resumo deixa de usar colunas, os pares de rótulo e valor podem virar blocos verticais, os valores ficam alinhados ao fim em uma linha própria e os cabeçalhos de seção colocam a ação abaixo do título. A ordem de leitura, a unidade monetária, os sinais e os estados permanecem íntegros.
+
 **The Same Ledger Rule.** A mudança de largura reorganiza o lançamento, mas preserva descrição, conta ou categoria, data, valor exato e estado na mesma ordem de leitura.
 
 **The Natural Collapse Rule.** A adaptação preserva ordem e hierarquia: colunas viram pilhas, botões ocupam a largura disponível e nenhum dado essencial desaparece.
+
+**The Overview Evidence Rule.** A visão geral sempre progride de posição agregada para explicação por conta e, por fim, para os lançamentos recentes que sustentam os números.
 
 ## Elevation & Depth
 
@@ -290,6 +296,23 @@ A navegação acompanha a largura sem mudar o mapa mental.
 - **Expanded:** rail de 256px com rótulos.
 - **Selected:** indicador menta e conteúdo teal; a barra superior é canvas com borda inferior e sem elevação.
 
+### Overview Dashboard
+
+A visão geral funciona como fechamento de caixa imediato: distingue dinheiro disponível, compromissos futuros e resultado do período antes de apresentar sua composição.
+
+- **Summary pair:** saldo confirmado e saldo projetado formam um par explícito; confirmado lidera visualmente e projetado declara que inclui lançamentos previstos e pendentes.
+- **Monthly result:** resultado projetado é receitas menos despesas do mês e expõe entradas e saídas como componentes verificáveis, nunca como métrica isolada ou gamificada.
+- **Financial semantics:** contas ativas compõem os saldos de caixa; cartões são passivos e sua dívida projetada aparece separadamente. Contas arquivadas não entram nas posições ativas, e transações canceladas podem permanecer no histórico recente sem afetar os totais.
+- **Multiple currencies:** totais de moedas diferentes nunca são somados. Quando houver mais de uma moeda, um seletor explícito filtra resumo, posições e transações como uma unidade; o código da moeda permanece visível no contexto do saldo.
+- **Privacy:** o controle global oculta todos os valores da superfície de uma vez. A máscara mantém símbolo monetário, pegada visual, alinhamento e hierarquia; nomes, explicações, quantidade de posições, moeda e estados continuam legíveis.
+- **Responsive behavior:** o resumo assimétrico e as duas colunas inferiores existem apenas quando largura e escala tipográfica permitem; o reflow vertical preserva a sequência operacional e mantém valores alinhados ao fim.
+- **States:** carregamento informa que a posição está sendo calculada; erro recuperável afirma que os dados permanecem salvos e oferece recalcular; ausência de contas apresenta uma única chamada para cadastrar a primeira conta; ausência apenas de transações preserva o resumo e explica que o saldo inicial já compõe a posição.
+- **No synthetic history:** não introduza gráficos, tendências, comparações históricas, orçamentos ou troca de período sem dados reais e sem a fatia de produto correspondente.
+
+**The Currency Isolation Rule.** Cada moeda constitui uma visão financeira completa e independente; nenhum total, posição ou lançamento de outra moeda atravessa a seleção ativa.
+
+**The Liability Separation Rule.** Dívida de cartão explica a posição, mas nunca é incorporada silenciosamente ao saldo de caixa.
+
 ### Transaction Ledger
 
 O ledger privilegia comparação vertical rápida: identidade à esquerda, consequência financeira e estado à direita.
@@ -351,6 +374,10 @@ O cadastro é uma tarefa dedicada, não uma extensão do cartão de listagem.
 - **Do** manter valor e estado escaneáveis no ledger, inclusive com texto ampliado, seleção ativa e modo privacidade.
 - **Do** agrupar transações por dia no mobile e manter o ledger visível ao abrir o painel contextual no desktop expandido.
 - **Do** explicar separadamente o impacto de cancelar uma transação persistida e de descartar um rascunho não salvo, oferecendo uma ação segura inequívoca em ambos os casos.
+- **Do** manter, na visão geral, o par confirmado/projetado antes do resultado mensal e das listas que explicam esses totais.
+- **Do** separar totais por moeda, filtrar toda a superfície pela moeda ativa e mostrar dívidas de cartão fora do saldo de caixa.
+- **Do** fazer reflow da visão geral quando o texto ultrapassar 1,3×, preservando conteúdo, sinais, moeda, estados e alinhamento dos valores.
+- **Do** oferecer estados de carregamento, erro recuperável, primeira conta e ausência de transações com próximo passo específico e sem sugerir perda de dados.
 
 ### Don't:
 
@@ -363,3 +390,7 @@ O cadastro é uma tarefa dedicada, não uma extensão do cartão de listagem.
 - **Don't** substituir rótulos de estado, sinais monetários ou ícones de natureza por cor isolada.
 - **Don't** abrir detalhes em um cartão aninhado no mobile nem trocar o painel contextual de 360px por navegação que remova o ledger no desktop expandido.
 - **Don't** tratar cancelamento como exclusão: o lançamento continua no histórico e seu efeito sobre os saldos deve ser declarado antes da confirmação.
+- **Don't** somar moedas, incorporar dívida de cartão ao caixa ou confundir saldo confirmado com valores previstos e pendentes.
+- **Don't** ocultar rótulos, moeda, estado ou estrutura no modo privacidade; somente os valores monetários recebem máscara estável.
+- **Don't** comprimir a visão geral com texto ampliado, truncar valores ou reduzir a fonte para conservar colunas.
+- **Don't** inventar gráficos históricos, tendências, metas ou comparações de período para preencher a visão geral.

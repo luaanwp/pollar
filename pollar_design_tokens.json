@@ -18,10 +18,10 @@
       "borderStrong": { "value": "#B9C3C0" },
       "textPrimary": { "value": "#13201D" },
       "textSecondary": { "value": "#52615D" },
-      "textMuted": { "value": "#74827E" },
-      "success": { "value": "#16834F" },
+      "textMuted": { "value": "#66736F" },
+      "success": { "value": "#0F7444" },
       "danger": { "value": "#C53B3B" },
-      "warning": { "value": "#A86508" },
+      "warning": { "value": "#8B5707" },
       "info": { "value": "#2667C9" }
     },
     "dark": {
@@ -42,7 +42,7 @@
       "info": { "value": "#80AEFF" }
     },
     "chart": {
-      "categorical": ["#087F6B", "#2667C9", "#A86508", "#7C55C7", "#C44E82", "#438A9E", "#7A7950", "#C53B3B"]
+      "categorical": ["#087F6B", "#2667C9", "#8B5707", "#7C55C7", "#C44E82", "#438A9E", "#7A7950", "#C53B3B"]
     }
   },
   "spacing": {

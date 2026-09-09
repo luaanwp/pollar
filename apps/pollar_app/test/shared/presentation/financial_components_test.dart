@@ -5,6 +5,7 @@ import 'package:pollar_app/app/theme/pollar_theme.dart';
 import 'package:pollar_app/core/money/currency.dart';
 import 'package:pollar_app/core/money/money.dart';
 import 'package:pollar_app/shared/presentation/pollar_banner.dart';
+import 'package:pollar_app/shared/presentation/money_text.dart';
 import 'package:pollar_app/shared/presentation/privacy_amount.dart';
 import 'package:pollar_app/shared/presentation/status_badge.dart';
 import 'package:pollar_app/shared/presentation/transaction_tile.dart';
@@ -30,6 +31,36 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining('1.234,56'), findsNothing);
+    handle.dispose();
+  });
+
+  testWidgets('money semantics describe totals by financial context', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    const positive = Money(minorUnits: 12345, currency: Currency.brl);
+
+    await tester.pumpWidget(
+      app(
+        const Column(
+          children: [
+            PrivacyAmount(
+              positive,
+              hidden: false,
+              semantic: MoneySemantic.balance,
+            ),
+            PrivacyAmount(
+              positive,
+              hidden: false,
+              semantic: MoneySemantic.expense,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.bySemanticsLabel('saldo, BRL R\$ 123,45'), findsOneWidget);
+    expect(find.bySemanticsLabel('saída, BRL R\$ 123,45'), findsOneWidget);
     handle.dispose();
   });
 

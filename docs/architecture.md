@@ -80,3 +80,9 @@ simples e deixa substituições futuras explícitas.
   direta entre features e deixando a integração substituível na V2.
 - Uma conexão Drift compartilhada em `shared/data` hospeda tabelas relacionadas;
   os mapeamentos e repositórios permanecem dentro de cada feature.
+- A visão geral consome um snapshot por contrato próprio. O adaptador em
+  `app/data` reúne contas e transações, enquanto o serviço da feature deriva
+  saldos e resultado mensal sem conhecer os módulos de origem.
+- Mutações financeiras incrementam apenas um sinal de revisão compartilhado;
+  ele não contém dados e serve para invalidar modelos derivados, mantendo os
+  repositórios como fonte de verdade.

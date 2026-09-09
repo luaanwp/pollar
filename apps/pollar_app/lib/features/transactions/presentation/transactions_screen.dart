@@ -84,6 +84,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
     TransactionsState data,
     bool privacyHidden,
   ) {
+    final today = DateUtils.dateOnly(ref.watch(transactionClockProvider)());
     final query = _query.trim().toLowerCase();
     final filtered = data.items
         .where(_filter.accepts)
@@ -140,6 +141,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                   items: filtered,
                   accounts: data.accounts,
                   privacyHidden: privacyHidden,
+                  today: today,
                   onSelected: (item) => _openCompactDetail(context, data, item),
                 ),
               const SizedBox(height: PollarSpacing.x8),
@@ -452,12 +454,14 @@ class _CompactLedger extends StatelessWidget {
     required this.accounts,
     required this.privacyHidden,
     required this.onSelected,
+    required this.today,
   });
 
   final List<FinancialTransaction> items;
   final List<TransactionAccountReference> accounts;
   final bool privacyHidden;
   final ValueChanged<FinancialTransaction> onSelected;
+  final DateTime today;
 
   @override
   Widget build(BuildContext context) {
@@ -477,7 +481,7 @@ class _CompactLedger extends StatelessWidget {
               bottom: PollarSpacing.x2,
             ),
             child: Text(
-              _dayLabel(entry.key),
+              _dayLabel(entry.key, today),
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
@@ -775,8 +779,7 @@ String _accountName(List<TransactionAccountReference> accounts, String id) {
   return 'Conta não disponível';
 }
 
-String _dayLabel(DateTime date) {
-  final today = DateUtils.dateOnly(DateTime.now());
+String _dayLabel(DateTime date, DateTime today) {
   if (date == today) return 'Hoje';
   if (date == today.subtract(const Duration(days: 1))) return 'Ontem';
   return DateFormat.yMMMMd('pt_BR').format(date);

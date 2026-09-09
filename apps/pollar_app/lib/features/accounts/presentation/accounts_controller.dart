@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../shared/application/financial_data_revision.dart';
 import '../application/account_service.dart';
 import '../domain/account.dart';
 import '../domain/account_repository.dart';
@@ -27,15 +28,18 @@ class AccountsController extends AsyncNotifier<List<Account>> {
   Future<void> create(Account account) async {
     await _service.create(account);
     state = AsyncData(await _service.list(includeArchived: true));
+    ref.read(financialDataRevisionProvider.notifier).bump();
   }
 
   Future<void> archive(String id) async {
     await _service.archive(id);
     state = AsyncData(await _service.list(includeArchived: true));
+    ref.read(financialDataRevisionProvider.notifier).bump();
   }
 
   Future<void> restore(String id) async {
     await _service.restore(id);
     state = AsyncData(await _service.list(includeArchived: true));
+    ref.read(financialDataRevisionProvider.notifier).bump();
   }
 }

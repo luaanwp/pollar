@@ -245,9 +245,13 @@ class _RailHeader extends StatelessWidget {
               children: [
                 mark,
                 const SizedBox(width: PollarSpacing.x3),
-                Text(
-                  'Pollar',
-                  style: Theme.of(context).textTheme.headlineSmall,
+                Expanded(
+                  child: Text(
+                    'Pollar',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
                 ),
               ],
             )

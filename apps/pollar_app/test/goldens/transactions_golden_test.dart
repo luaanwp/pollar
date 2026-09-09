@@ -36,7 +36,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    final today = DateUtils.dateOnly(DateTime.now());
+    final today = DateTime(2026, 9, 8);
     final repository = InMemoryTransactionRepository(
       seed: [
         FinancialTransaction(
@@ -78,6 +78,7 @@ void main() {
           transactionAccountCatalogProvider.overrideWithValue(
             const _GoldenAccountCatalog(),
           ),
+          transactionClockProvider.overrideWithValue(() => today),
         ],
         child: const PollarApp(),
       ),

@@ -46,7 +46,7 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
   final _noteController = TextEditingController();
   var _kind = _EntryKind.expense;
   var _status = TransactionStatus.compensado;
-  var _date = DateUtils.dateOnly(DateTime.now());
+  late DateTime _date;
   String? _accountId;
   String? _counterAccountId;
   Money? _amount;
@@ -57,6 +57,7 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
   @override
   void initState() {
     super.initState();
+    _date = DateUtils.dateOnly(ref.read(transactionClockProvider)());
     _descriptionController.addListener(_markDirty);
     _categoryController.addListener(_markDirty);
     _noteController.addListener(_markDirty);
@@ -337,7 +338,9 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
       context: context,
       initialDate: _date,
       firstDate: DateTime(2000),
-      lastDate: DateTime.now().add(const Duration(days: 3650)),
+      lastDate: ref
+          .read(transactionClockProvider)()
+          .add(const Duration(days: 3650)),
       helpText: 'Escolher data da transação',
       cancelText: 'Cancelar',
       confirmText: 'Escolher data',

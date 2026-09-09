@@ -41,8 +41,8 @@ O formulário registra descrição, valor, conta, categoria, data, estado e nota
 Ao escolher um cartão para uma despesa, o domínio recebe `cardPurchase`, sem
 expor essa distinção contábil como complexidade extra para a pessoa usuária.
 
-## Próxima integração
+## Integração concluída
 
-O próximo slice conecta os lançamentos ao saldo derivado de contas e à visão
-geral, substituindo os dados demonstrativos do dashboard por cálculos reais de
-saldo confirmado e projetado.
+O slice de visão geral agora consome contas e lançamentos por um contrato de
+leitura próprio e calcula saldos confirmado e projetado com as regras canônicas
+de `core/ledger`. Os detalhes estão em `docs/overview-balances-slice.md`.

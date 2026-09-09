@@ -15,6 +15,7 @@ class PrivacyAmount extends StatelessWidget {
     this.style,
     this.showSign = false,
     this.colorBySign = false,
+    this.semantic = MoneySemantic.automatic,
     this.maskDigits = 6,
     this.formatter = const MoneyFormatter.ptBr(),
   }) : assert(maskDigits > 0);
@@ -24,6 +25,7 @@ class PrivacyAmount extends StatelessWidget {
   final TextStyle? style;
   final bool showSign;
   final bool colorBySign;
+  final MoneySemantic semantic;
   final int maskDigits;
   final MoneyFormatter formatter;
 
@@ -35,6 +37,7 @@ class PrivacyAmount extends StatelessWidget {
         style: style,
         showSign: showSign,
         colorBySign: colorBySign,
+        semantic: semantic,
         formatter: formatter,
       );
     }

@@ -4,6 +4,8 @@ import '../../app/theme/pollar_theme.dart';
 import '../../core/money/money.dart';
 import '../../core/money/money_formatter.dart';
 
+enum MoneySemantic { automatic, balance, debt, income, expense, neutral }
+
 /// Renders a [Money] value per the design system's financial display rules:
 /// tabular figures, true minus for negatives, and — when [colorBySign] — the
 /// positive/negative semantic colors. Screen readers hear polarity + currency
@@ -15,6 +17,7 @@ class MoneyText extends StatelessWidget {
     this.style,
     this.showSign = false,
     this.colorBySign = false,
+    this.semantic = MoneySemantic.automatic,
     this.formatter = const MoneyFormatter.ptBr(),
   });
 
@@ -26,6 +29,10 @@ class MoneyText extends StatelessWidget {
 
   /// Tint the text success/danger by the value's sign. Zero stays neutral.
   final bool colorBySign;
+
+  /// Meaning announced by assistive technology. [automatic] is appropriate
+  /// for signed ledger movements; totals must provide their actual context.
+  final MoneySemantic semantic;
 
   final MoneyFormatter formatter;
 
@@ -43,19 +50,29 @@ class MoneyText extends StatelessWidget {
 
     final text = formatter.format(money, showSign: showSign);
 
-    final polarity = money.isNegative
-        ? 'saída'
-        : money.isZero
-        ? ''
-        : 'entrada';
-    final semanticsLabel = polarity.isEmpty
+    final meaning = switch (semantic) {
+      MoneySemantic.balance => 'saldo',
+      MoneySemantic.debt => 'dívida',
+      MoneySemantic.income => 'entrada',
+      MoneySemantic.expense => 'saída',
+      MoneySemantic.neutral => '',
+      MoneySemantic.automatic =>
+        money.isNegative
+            ? 'saída'
+            : money.isZero
+            ? ''
+            : 'entrada',
+    };
+    final semanticsLabel = meaning.isEmpty
         ? '${money.currency.code} $text'
-        : '$polarity, ${money.currency.code} $text';
+        : '$meaning, ${money.currency.code} $text';
 
     return Text(
       text,
       style: PollarTypography.tabular(base).copyWith(color: color),
       semanticsLabel: semanticsLabel,
+      maxLines: 1,
+      softWrap: false,
     );
   }
 }

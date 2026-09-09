@@ -33,10 +33,10 @@ Product name: **Pollar**. Use an abstract ledger/flow mark rather than currency 
 | Border strong | `color.neutral.300` | `#B9C3C0` | Active or emphasized boundaries |
 | Text primary | `color.neutral.950` | `#13201D` | Main text and amounts |
 | Text secondary | `color.neutral.650` | `#52615D` | Supporting text |
-| Text muted | `color.neutral.500` | `#74827E` | Metadata and placeholders |
-| Positive | `color.success.600` | `#16834F` | Income, success, positive movement |
+| Text muted | `color.neutral.500` | `#66736F` | Metadata and placeholders |
+| Positive | `color.success.600` | `#0F7444` | Income, success, positive movement |
 | Negative | `color.danger.600` | `#C53B3B` | Expenses, destructive actions, overdue |
-| Warning | `color.warning.600` | `#A86508` | Attention and nearing limits |
+| Warning | `color.warning.600` | `#8B5707` | Attention and nearing limits |
 | Information | `color.info.600` | `#2667C9` | Informational status and links |
 
 ### Dark theme
@@ -279,4 +279,3 @@ Work incrementally. Before editing, report the files and architecture you found 
 - Golden and semantics tests cover critical components.
 - Amounts remain exact and correctly localized.
 - No duplicate accounting semantics are introduced through visual presentation.
-

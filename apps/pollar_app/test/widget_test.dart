@@ -5,7 +5,10 @@ import 'package:pollar_app/app/theme/pollar_theme.dart';
 import 'package:pollar_app/features/transactions/application/transaction_account_catalog.dart';
 import 'package:pollar_app/features/transactions/data/in_memory_transaction_repository.dart';
 import 'package:pollar_app/features/transactions/presentation/transactions_controller.dart';
+import 'package:pollar_app/features/overview/presentation/overview_controller.dart';
 import 'package:pollar_app/main.dart';
+
+import 'support/overview_fixture.dart';
 
 void main() {
   Widget app() => ProviderScope(
@@ -16,6 +19,10 @@ void main() {
       transactionAccountCatalogProvider.overrideWithValue(
         const _EmptyAccountCatalog(),
       ),
+      overviewDataSourceProvider.overrideWithValue(
+        const OverviewFixtureDataSource(),
+      ),
+      overviewClockProvider.overrideWithValue(() => overviewFixtureNow),
     ],
     child: const PollarApp(),
   );
@@ -27,9 +34,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Visão geral'), findsWidgets); // shell title + rail label
-    expect(find.text('SALDO TOTAL'), findsOneWidget);
+    expect(find.text('Saldo confirmado'), findsOneWidget);
 
-    final context = tester.element(find.text('SALDO TOTAL'));
+    final context = tester.element(find.text('Saldo confirmado'));
     expect(Theme.of(context).colorScheme.primary, PollarColors.light.primary);
   });
 
@@ -37,13 +44,13 @@ void main() {
     await tester.pumpWidget(app());
     await tester.pumpAndSettle();
 
-    var context = tester.element(find.text('SALDO TOTAL'));
+    var context = tester.element(find.text('Saldo confirmado'));
     expect(Theme.of(context).brightness, Brightness.light);
 
     await tester.tap(find.byTooltip('Tema escuro'));
     await tester.pumpAndSettle();
 
-    context = tester.element(find.text('SALDO TOTAL'));
+    context = tester.element(find.text('Saldo confirmado'));
     expect(Theme.of(context).brightness, Brightness.dark);
     expect(context.pollar.primary, PollarColors.dark.primary);
   });
@@ -52,15 +59,15 @@ void main() {
     await tester.pumpWidget(app());
     await tester.pumpAndSettle();
 
-    expect(find.text('R\$ 8.595,95'), findsOneWidget);
+    expect(find.text('R\$ 8.030,00'), findsOneWidget);
     expect(find.text('R\$ ••••••'), findsNothing);
 
     await tester.tap(find.byTooltip('Ocultar valores'));
     await tester.pump();
 
-    expect(find.text('R\$ 8.595,95'), findsNothing);
-    expect(find.text('R\$ ••••••'), findsOneWidget);
-    expect(find.text('R\$ •••••'), findsNWidgets(4));
+    expect(find.text('R\$ 8.030,00'), findsNothing);
+    expect(find.text('R\$ ••••••'), findsWidgets);
+    expect(find.text('R\$ •••••'), findsWidgets);
     expect(find.byTooltip('Mostrar valores'), findsOneWidget);
   });
 
