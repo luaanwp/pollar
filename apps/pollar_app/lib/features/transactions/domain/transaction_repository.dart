@@ -7,5 +7,7 @@ abstract interface class TransactionRepository {
 
   Future<void> add(FinancialTransaction transaction);
 
+  Future<void> addAll(List<FinancialTransaction> transactions);
+
   Future<void> replace(FinancialTransaction transaction);
 }

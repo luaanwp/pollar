@@ -61,6 +61,47 @@ void main() {
     expect(await service.list(), [canceled]);
   });
 
+  test(
+    'creates an exact monthly installment plan and clamps month ends',
+    () async {
+      final repository = InMemoryTransactionRepository();
+      final service = TransactionService(
+        repository,
+        const _Catalog([checking, savings, card]),
+      );
+      final purchase = FinancialTransaction(
+        id: 'draft',
+        description: 'Notebook',
+        type: TransactionType.cardPurchase,
+        status: TransactionStatus.compensado,
+        amount: const Money(minorUnits: 10001, currency: Currency.brl),
+        accountId: 'card',
+        occurredAt: DateTime(2026, 1, 31),
+      );
+
+      final result = await service.createInstallmentPlan(
+        purchase: purchase,
+        installmentCount: 3,
+        groupId: 'group',
+        idForInstallment: (number) => 'part-$number',
+      );
+
+      expect(result.map((item) => item.amount.minorUnits), [3334, 3334, 3333]);
+      expect(result.map((item) => item.occurredAt), [
+        DateTime(2026, 1, 31),
+        DateTime(2026, 2, 28),
+        DateTime(2026, 3, 31),
+      ]);
+      expect(result.map((item) => item.status), [
+        TransactionStatus.compensado,
+        TransactionStatus.previsto,
+        TransactionStatus.previsto,
+      ]);
+      expect(result.last.purchaseTotal, purchase.amount);
+      expect(result.last.installmentNumber, 3);
+    },
+  );
+
   test('validates transfer and credit-card account roles', () async {
     final service = TransactionService(
       InMemoryTransactionRepository(),

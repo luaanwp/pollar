@@ -1,4 +1,5 @@
 import '../../../core/ledger/balance_rules.dart';
+import '../../../core/money/installment_plan.dart';
 import '../domain/financial_transaction.dart';
 import '../domain/transaction_repository.dart';
 import 'transaction_account_catalog.dart';
@@ -41,6 +42,55 @@ class TransactionService {
     await _validateAccounts(transaction);
     await _repository.add(transaction);
     return transaction;
+  }
+
+  Future<List<FinancialTransaction>> createInstallmentPlan({
+    required FinancialTransaction purchase,
+    required int installmentCount,
+    required String groupId,
+    required String Function(int installmentNumber) idForInstallment,
+  }) async {
+    if (purchase.type != TransactionType.cardPurchase) {
+      throw ArgumentError('Only card purchases can be paid in installments');
+    }
+    if (installmentCount < 2 || installmentCount > 360) {
+      throw RangeError.range(installmentCount, 2, 360, 'installmentCount');
+    }
+    await _validateAccounts(purchase);
+    final amounts = InstallmentPlan.split(purchase.amount, installmentCount);
+    final transactions = [
+      for (var index = 0; index < installmentCount; index++)
+        FinancialTransaction(
+          id: idForInstallment(index + 1),
+          description: purchase.description,
+          type: TransactionType.cardPurchase,
+          status: index == 0 ? purchase.status : TransactionStatus.previsto,
+          amount: amounts[index],
+          accountId: purchase.accountId,
+          occurredAt: _addMonths(purchase.occurredAt, index),
+          category: purchase.category,
+          note: purchase.note,
+          installmentGroupId: groupId,
+          installmentNumber: index + 1,
+          installmentCount: installmentCount,
+          purchaseTotal: purchase.amount,
+        ),
+    ];
+    for (final transaction in transactions) {
+      if (await _repository.findById(transaction.id) != null) {
+        throw TransactionAlreadyExistsException(transaction.id);
+      }
+    }
+    await _repository.addAll(transactions);
+    return List.unmodifiable(transactions);
+  }
+
+  DateTime _addMonths(DateTime date, int months) {
+    final targetMonth = date.month - 1 + months;
+    final year = date.year + targetMonth ~/ 12;
+    final month = targetMonth % 12 + 1;
+    final lastDay = DateTime(year, month + 1, 0).day;
+    return DateTime(year, month, date.day.clamp(1, lastDay));
   }
 
   Future<FinancialTransaction> cancel(String id) async {

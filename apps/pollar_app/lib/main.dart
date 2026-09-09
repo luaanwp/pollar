@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app/routing/app_router.dart';
 import 'app/data/account_transaction_catalog.dart';
 import 'app/data/dashboard_overview_data_source.dart';
+import 'app/data/card_statement_data_source.dart';
 import 'app/data/local_database_provider.dart';
 import 'app/theme/pollar_theme.dart';
 import 'app/theme/theme_mode_provider.dart';
@@ -12,6 +13,7 @@ import 'features/accounts/data/default_accounts.dart';
 import 'features/accounts/data/drift_account_repository.dart';
 import 'features/accounts/presentation/accounts_controller.dart';
 import 'features/overview/presentation/overview_controller.dart';
+import 'features/statements/presentation/statement_controller.dart';
 import 'features/transactions/data/drift_transaction_repository.dart';
 import 'features/transactions/presentation/transactions_controller.dart';
 
@@ -34,6 +36,12 @@ void main() {
         ),
         overviewDataSourceProvider.overrideWith(
           (ref) => DashboardOverviewDataSource(
+            ref.watch(accountRepositoryProvider),
+            ref.watch(transactionRepositoryProvider),
+          ),
+        ),
+        statementDataSourceProvider.overrideWith(
+          (ref) => CardStatementDataSource(
             ref.watch(accountRepositoryProvider),
             ref.watch(transactionRepositoryProvider),
           ),

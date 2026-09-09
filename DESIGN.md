@@ -223,6 +223,8 @@ Em transações, busca e filtros precedem sempre o histórico. Abaixo de 600px, 
 
 Na visão geral, a ordem operacional é invariável: cabeçalho com contexto e ação, par de saldos confirmado/projetado, resultado projetado do mês, posições por conta e transações recentes. Com 880px ou mais disponíveis, posições e transações dividem a linha em proporção 4:6; abaixo disso, empilham nessa mesma ordem. O resumo usa composição assimétrica 7:3 a partir de 760px, mantendo os saldos como leitura dominante; em espaço menor, seus cartões empilham. O cabeçalho também empilha no compacto, com seletor de moeda e ação ocupando a largura disponível.
 
+Na fatura de cartão, o desktop apresenta resumo e parcelas futuras antes das compras: com pelo menos 820px disponíveis e escala tipográfica de até 1,3×, resumo e futuro dividem a primeira linha, seguidos pelo ledger de compras em largura total. No mobile, a ordem é resumo, compras e parcelas futuras. Acima de 1,3×, a composição paralela e os pares internos fazem reflow para blocos verticais, sem reduzir tipografia, truncar valores ou ocultar parcelas.
+
 Texto ampliado provoca reflow por conteúdo, não redução tipográfica nem recorte. Acima de 1,3×, o resumo deixa de usar colunas, os pares de rótulo e valor podem virar blocos verticais, os valores ficam alinhados ao fim em uma linha própria e os cabeçalhos de seção colocam a ação abaixo do título. A ordem de leitura, a unidade monetária, os sinais e os estados permanecem íntegros.
 
 **The Same Ledger Rule.** A mudança de largura reorganiza o lançamento, mas preserva descrição, conta ou categoria, data, valor exato e estado na mesma ordem de leitura.
@@ -312,6 +314,19 @@ A visão geral funciona como fechamento de caixa imediato: distingue dinheiro di
 **The Currency Isolation Rule.** Cada moeda constitui uma visão financeira completa e independente; nenhum total, posição ou lançamento de outra moeda atravessa a seleção ativa.
 
 **The Liability Separation Rule.** Dívida de cartão explica a posição, mas nunca é incorporada silenciosamente ao saldo de caixa.
+
+### Card Statement
+
+A fatura reconcilia o saldo em aberto com as compras que o formaram e com os compromissos que permanecem nos meses seguintes.
+
+- **Summary:** período e status antecedem o saldo em aberto; total, valor pago, vencimento, limite disponível e percentual utilizado permanecem explícitos e verificáveis. O saldo em aberto e a data de vencimento lideram a hierarquia.
+- **Payment:** pagamento integral ou parcial sai de uma conta ativa elegível na mesma moeda e é registrado como transferência para o passivo do cartão, nunca como nova despesa. A confirmação declara esse efeito, mantém conta e valor editáveis e exibe validação visível para valor ausente, não positivo ou superior ao saldo em aberto.
+- **Purchases:** compras são agrupadas por data, com subtotal diário, descrição, categoria, valor assinado e posição da parcela quando aplicável.
+- **Future installments:** toda parcela futura é apresentada com descrição, competência, posição completa e valor, seguida pelo total comprometido; listas não recebem limite arbitrário nem corte silencioso.
+- **Responsive behavior:** no desktop, resumo e parcelas futuras formam a abertura e as compras vêm depois; no mobile, a sequência é resumo, compras e parcelas futuras. Escala tipográfica acima de 1,3× força reflow vertical de colunas, métricas e pares de parcela/valor, preservando todo o conteúdo.
+- **Purchase entry:** “Adicionar compra” abre o formulário de transação com o cartão da fatura já pré-selecionado, mantendo o contexto sem impedir revisão.
+
+**The Statement Reconciliation Rule.** Toda fatura deve permitir percorrer saldo em aberto, compras datadas e parcelas futuras sem lacunas, duplicação contábil ou conteúdo omitido.
 
 ### Transaction Ledger
 

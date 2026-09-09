@@ -7,6 +7,7 @@ import '../../features/accounts/presentation/accounts_screen.dart';
 import '../../features/design_system/presentation/forms_catalog_screen.dart';
 import '../../features/overview/presentation/overview_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
+import '../../features/statements/presentation/card_statement_screen.dart';
 import '../../features/transactions/presentation/transactions_screen.dart';
 import '../../features/transactions/presentation/transaction_form_screen.dart';
 import 'app_shell.dart';
@@ -50,7 +51,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'new',
-                    builder: (context, state) => const TransactionFormScreen(),
+                    builder: (context, state) => TransactionFormScreen(
+                      initialAccountId: state.uri.queryParameters['cardId'],
+                    ),
                   ),
                 ],
               ),
@@ -65,6 +68,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'new',
                     builder: (context, state) => const AccountFormScreen(),
+                  ),
+                  GoRoute(
+                    path: ':cardId/statement',
+                    builder: (context, state) => CardStatementScreen(
+                      cardId: state.pathParameters['cardId']!,
+                    ),
                   ),
                 ],
               ),

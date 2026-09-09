@@ -32,7 +32,9 @@ extension on _EntryKind {
 }
 
 class TransactionFormScreen extends ConsumerStatefulWidget {
-  const TransactionFormScreen({super.key});
+  const TransactionFormScreen({super.key, this.initialAccountId});
+
+  final String? initialAccountId;
 
   @override
   ConsumerState<TransactionFormScreen> createState() =>
@@ -46,6 +48,7 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
   final _noteController = TextEditingController();
   var _kind = _EntryKind.expense;
   var _status = TransactionStatus.compensado;
+  var _installments = 1;
   late DateTime _date;
   String? _accountId;
   String? _counterAccountId;
@@ -57,6 +60,7 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
   @override
   void initState() {
     super.initState();
+    _accountId = widget.initialAccountId;
     _date = DateUtils.dateOnly(ref.read(transactionClockProvider)());
     _descriptionController.addListener(_markDirty);
     _categoryController.addListener(_markDirty);
@@ -193,6 +197,9 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
                         currency:
                             selectedAccount?.currency ??
                             accounts.first.currency,
+                        installments: selectedAccount?.isCreditCard == true
+                            ? _installments
+                            : 1,
                         onChanged: (value) {
                           _amount = value;
                           _markDirty();
@@ -240,6 +247,12 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
                                     )
                                     .currency;
                           if (previous != next) _amount = null;
+                          if (value == null ||
+                              !accounts
+                                  .firstWhere((account) => account.id == value)
+                                  .isCreditCard) {
+                            _installments = 1;
+                          }
                           if (_counterAccountId == value) {
                             _counterAccountId = null;
                           }
@@ -248,6 +261,39 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
                             ? 'Selecione a conta desta transação.'
                             : null,
                       ),
+                      if (_kind == _EntryKind.expense &&
+                          selectedAccount?.isCreditCard == true) ...[
+                        const SizedBox(height: PollarSpacing.x5),
+                        PollarSelect<int>(
+                          key: const Key('transaction-installments'),
+                          label: 'Parcelamento',
+                          initialValue: _installments,
+                          options: [
+                            for (final count in const [
+                              1,
+                              2,
+                              3,
+                              4,
+                              5,
+                              6,
+                              10,
+                              12,
+                              18,
+                              24,
+                            ])
+                              PollarSelectOption(
+                                value: count,
+                                label: count == 1
+                                    ? 'À vista'
+                                    : '$count parcelas',
+                              ),
+                          ],
+                          onChanged: (value) => setState(() {
+                            _dirty = true;
+                            _installments = value ?? 1;
+                          }),
+                        ),
+                      ],
                       if (_kind == _EntryKind.transfer) ...[
                         const SizedBox(height: PollarSpacing.x5),
                         PollarSelect<String>(
@@ -373,26 +419,35 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
       _error = null;
     });
     try {
-      await ref
-          .read(transactionsProvider.notifier)
-          .create(
-            FinancialTransaction(
-              id: const Uuid().v4(),
-              description: _descriptionController.text,
-              type: type,
-              status: _status,
-              amount: amount,
-              accountId: sourceId,
-              counterAccountId: _kind == _EntryKind.transfer
-                  ? _counterAccountId
-                  : null,
-              occurredAt: _date,
-              category: _kind == _EntryKind.transfer
-                  ? null
-                  : _categoryController.text,
-              note: _noteController.text,
-            ),
-          );
+      final transaction = FinancialTransaction(
+        id: const Uuid().v4(),
+        description: _descriptionController.text,
+        type: type,
+        status: _status,
+        amount: amount,
+        accountId: sourceId,
+        counterAccountId: _kind == _EntryKind.transfer
+            ? _counterAccountId
+            : null,
+        occurredAt: _date,
+        category: _kind == _EntryKind.transfer
+            ? null
+            : _categoryController.text,
+        note: _noteController.text,
+      );
+      if (type == TransactionType.cardPurchase && _installments > 1) {
+        final groupId = const Uuid().v4();
+        await ref
+            .read(transactionsProvider.notifier)
+            .createInstallmentPlan(
+              purchase: transaction,
+              installmentCount: _installments,
+              groupId: groupId,
+              idForInstallment: (_) => const Uuid().v4(),
+            );
+      } else {
+        await ref.read(transactionsProvider.notifier).create(transaction);
+      }
       if (mounted) {
         setState(() => _dirty = false);
         await Future<void>.delayed(Duration.zero);

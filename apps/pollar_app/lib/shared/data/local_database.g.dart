@@ -836,6 +836,60 @@ class $TransactionEntriesTable extends TransactionEntries
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _installmentGroupIdMeta =
+      const VerificationMeta('installmentGroupId');
+  @override
+  late final GeneratedColumn<String> installmentGroupId =
+      GeneratedColumn<String>(
+        'installment_group_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _installmentNumberMeta = const VerificationMeta(
+    'installmentNumber',
+  );
+  @override
+  late final GeneratedColumn<int> installmentNumber = GeneratedColumn<int>(
+    'installment_number',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _installmentCountMeta = const VerificationMeta(
+    'installmentCount',
+  );
+  @override
+  late final GeneratedColumn<int> installmentCount = GeneratedColumn<int>(
+    'installment_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _purchaseTotalMinorMeta =
+      const VerificationMeta('purchaseTotalMinor');
+  @override
+  late final GeneratedColumn<int> purchaseTotalMinor = GeneratedColumn<int>(
+    'purchase_total_minor',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statementIdMeta = const VerificationMeta(
+    'statementId',
+  );
+  @override
+  late final GeneratedColumn<String> statementId = GeneratedColumn<String>(
+    'statement_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -851,6 +905,11 @@ class $TransactionEntriesTable extends TransactionEntries
     occurredAtMicros,
     category,
     note,
+    installmentGroupId,
+    installmentNumber,
+    installmentCount,
+    purchaseTotalMinor,
+    statementId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -980,6 +1039,51 @@ class $TransactionEntriesTable extends TransactionEntries
         note.isAcceptableOrUnknown(data['note']!, _noteMeta),
       );
     }
+    if (data.containsKey('installment_group_id')) {
+      context.handle(
+        _installmentGroupIdMeta,
+        installmentGroupId.isAcceptableOrUnknown(
+          data['installment_group_id']!,
+          _installmentGroupIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('installment_number')) {
+      context.handle(
+        _installmentNumberMeta,
+        installmentNumber.isAcceptableOrUnknown(
+          data['installment_number']!,
+          _installmentNumberMeta,
+        ),
+      );
+    }
+    if (data.containsKey('installment_count')) {
+      context.handle(
+        _installmentCountMeta,
+        installmentCount.isAcceptableOrUnknown(
+          data['installment_count']!,
+          _installmentCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('purchase_total_minor')) {
+      context.handle(
+        _purchaseTotalMinorMeta,
+        purchaseTotalMinor.isAcceptableOrUnknown(
+          data['purchase_total_minor']!,
+          _purchaseTotalMinorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('statement_id')) {
+      context.handle(
+        _statementIdMeta,
+        statementId.isAcceptableOrUnknown(
+          data['statement_id']!,
+          _statementIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -1041,6 +1145,26 @@ class $TransactionEntriesTable extends TransactionEntries
         DriftSqlType.string,
         data['${effectivePrefix}note'],
       ),
+      installmentGroupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}installment_group_id'],
+      ),
+      installmentNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}installment_number'],
+      ),
+      installmentCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}installment_count'],
+      ),
+      purchaseTotalMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}purchase_total_minor'],
+      ),
+      statementId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}statement_id'],
+      ),
     );
   }
 
@@ -1065,6 +1189,11 @@ class StoredTransaction extends DataClass
   final int occurredAtMicros;
   final String? category;
   final String? note;
+  final String? installmentGroupId;
+  final int? installmentNumber;
+  final int? installmentCount;
+  final int? purchaseTotalMinor;
+  final String? statementId;
   const StoredTransaction({
     required this.id,
     required this.description,
@@ -1079,6 +1208,11 @@ class StoredTransaction extends DataClass
     required this.occurredAtMicros,
     this.category,
     this.note,
+    this.installmentGroupId,
+    this.installmentNumber,
+    this.installmentCount,
+    this.purchaseTotalMinor,
+    this.statementId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1102,6 +1236,21 @@ class StoredTransaction extends DataClass
     if (!nullToAbsent || note != null) {
       map['note'] = Variable<String>(note);
     }
+    if (!nullToAbsent || installmentGroupId != null) {
+      map['installment_group_id'] = Variable<String>(installmentGroupId);
+    }
+    if (!nullToAbsent || installmentNumber != null) {
+      map['installment_number'] = Variable<int>(installmentNumber);
+    }
+    if (!nullToAbsent || installmentCount != null) {
+      map['installment_count'] = Variable<int>(installmentCount);
+    }
+    if (!nullToAbsent || purchaseTotalMinor != null) {
+      map['purchase_total_minor'] = Variable<int>(purchaseTotalMinor);
+    }
+    if (!nullToAbsent || statementId != null) {
+      map['statement_id'] = Variable<String>(statementId);
+    }
     return map;
   }
 
@@ -1124,6 +1273,21 @@ class StoredTransaction extends DataClass
           ? const Value.absent()
           : Value(category),
       note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+      installmentGroupId: installmentGroupId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(installmentGroupId),
+      installmentNumber: installmentNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(installmentNumber),
+      installmentCount: installmentCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(installmentCount),
+      purchaseTotalMinor: purchaseTotalMinor == null && nullToAbsent
+          ? const Value.absent()
+          : Value(purchaseTotalMinor),
+      statementId: statementId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(statementId),
     );
   }
 
@@ -1148,6 +1312,13 @@ class StoredTransaction extends DataClass
       occurredAtMicros: serializer.fromJson<int>(json['occurredAtMicros']),
       category: serializer.fromJson<String?>(json['category']),
       note: serializer.fromJson<String?>(json['note']),
+      installmentGroupId: serializer.fromJson<String?>(
+        json['installmentGroupId'],
+      ),
+      installmentNumber: serializer.fromJson<int?>(json['installmentNumber']),
+      installmentCount: serializer.fromJson<int?>(json['installmentCount']),
+      purchaseTotalMinor: serializer.fromJson<int?>(json['purchaseTotalMinor']),
+      statementId: serializer.fromJson<String?>(json['statementId']),
     );
   }
   @override
@@ -1167,6 +1338,11 @@ class StoredTransaction extends DataClass
       'occurredAtMicros': serializer.toJson<int>(occurredAtMicros),
       'category': serializer.toJson<String?>(category),
       'note': serializer.toJson<String?>(note),
+      'installmentGroupId': serializer.toJson<String?>(installmentGroupId),
+      'installmentNumber': serializer.toJson<int?>(installmentNumber),
+      'installmentCount': serializer.toJson<int?>(installmentCount),
+      'purchaseTotalMinor': serializer.toJson<int?>(purchaseTotalMinor),
+      'statementId': serializer.toJson<String?>(statementId),
     };
   }
 
@@ -1184,6 +1360,11 @@ class StoredTransaction extends DataClass
     int? occurredAtMicros,
     Value<String?> category = const Value.absent(),
     Value<String?> note = const Value.absent(),
+    Value<String?> installmentGroupId = const Value.absent(),
+    Value<int?> installmentNumber = const Value.absent(),
+    Value<int?> installmentCount = const Value.absent(),
+    Value<int?> purchaseTotalMinor = const Value.absent(),
+    Value<String?> statementId = const Value.absent(),
   }) => StoredTransaction(
     id: id ?? this.id,
     description: description ?? this.description,
@@ -1200,6 +1381,19 @@ class StoredTransaction extends DataClass
     occurredAtMicros: occurredAtMicros ?? this.occurredAtMicros,
     category: category.present ? category.value : this.category,
     note: note.present ? note.value : this.note,
+    installmentGroupId: installmentGroupId.present
+        ? installmentGroupId.value
+        : this.installmentGroupId,
+    installmentNumber: installmentNumber.present
+        ? installmentNumber.value
+        : this.installmentNumber,
+    installmentCount: installmentCount.present
+        ? installmentCount.value
+        : this.installmentCount,
+    purchaseTotalMinor: purchaseTotalMinor.present
+        ? purchaseTotalMinor.value
+        : this.purchaseTotalMinor,
+    statementId: statementId.present ? statementId.value : this.statementId,
   );
   StoredTransaction copyWithCompanion(TransactionEntriesCompanion data) {
     return StoredTransaction(
@@ -1230,6 +1424,21 @@ class StoredTransaction extends DataClass
           : this.occurredAtMicros,
       category: data.category.present ? data.category.value : this.category,
       note: data.note.present ? data.note.value : this.note,
+      installmentGroupId: data.installmentGroupId.present
+          ? data.installmentGroupId.value
+          : this.installmentGroupId,
+      installmentNumber: data.installmentNumber.present
+          ? data.installmentNumber.value
+          : this.installmentNumber,
+      installmentCount: data.installmentCount.present
+          ? data.installmentCount.value
+          : this.installmentCount,
+      purchaseTotalMinor: data.purchaseTotalMinor.present
+          ? data.purchaseTotalMinor.value
+          : this.purchaseTotalMinor,
+      statementId: data.statementId.present
+          ? data.statementId.value
+          : this.statementId,
     );
   }
 
@@ -1248,7 +1457,12 @@ class StoredTransaction extends DataClass
           ..write('counterAccountId: $counterAccountId, ')
           ..write('occurredAtMicros: $occurredAtMicros, ')
           ..write('category: $category, ')
-          ..write('note: $note')
+          ..write('note: $note, ')
+          ..write('installmentGroupId: $installmentGroupId, ')
+          ..write('installmentNumber: $installmentNumber, ')
+          ..write('installmentCount: $installmentCount, ')
+          ..write('purchaseTotalMinor: $purchaseTotalMinor, ')
+          ..write('statementId: $statementId')
           ..write(')'))
         .toString();
   }
@@ -1268,6 +1482,11 @@ class StoredTransaction extends DataClass
     occurredAtMicros,
     category,
     note,
+    installmentGroupId,
+    installmentNumber,
+    installmentCount,
+    purchaseTotalMinor,
+    statementId,
   );
   @override
   bool operator ==(Object other) =>
@@ -1285,7 +1504,12 @@ class StoredTransaction extends DataClass
           other.counterAccountId == this.counterAccountId &&
           other.occurredAtMicros == this.occurredAtMicros &&
           other.category == this.category &&
-          other.note == this.note);
+          other.note == this.note &&
+          other.installmentGroupId == this.installmentGroupId &&
+          other.installmentNumber == this.installmentNumber &&
+          other.installmentCount == this.installmentCount &&
+          other.purchaseTotalMinor == this.purchaseTotalMinor &&
+          other.statementId == this.statementId);
 }
 
 class TransactionEntriesCompanion extends UpdateCompanion<StoredTransaction> {
@@ -1302,6 +1526,11 @@ class TransactionEntriesCompanion extends UpdateCompanion<StoredTransaction> {
   final Value<int> occurredAtMicros;
   final Value<String?> category;
   final Value<String?> note;
+  final Value<String?> installmentGroupId;
+  final Value<int?> installmentNumber;
+  final Value<int?> installmentCount;
+  final Value<int?> purchaseTotalMinor;
+  final Value<String?> statementId;
   final Value<int> rowid;
   const TransactionEntriesCompanion({
     this.id = const Value.absent(),
@@ -1317,6 +1546,11 @@ class TransactionEntriesCompanion extends UpdateCompanion<StoredTransaction> {
     this.occurredAtMicros = const Value.absent(),
     this.category = const Value.absent(),
     this.note = const Value.absent(),
+    this.installmentGroupId = const Value.absent(),
+    this.installmentNumber = const Value.absent(),
+    this.installmentCount = const Value.absent(),
+    this.purchaseTotalMinor = const Value.absent(),
+    this.statementId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TransactionEntriesCompanion.insert({
@@ -1333,6 +1567,11 @@ class TransactionEntriesCompanion extends UpdateCompanion<StoredTransaction> {
     required int occurredAtMicros,
     this.category = const Value.absent(),
     this.note = const Value.absent(),
+    this.installmentGroupId = const Value.absent(),
+    this.installmentNumber = const Value.absent(),
+    this.installmentCount = const Value.absent(),
+    this.purchaseTotalMinor = const Value.absent(),
+    this.statementId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        description = Value(description),
@@ -1358,6 +1597,11 @@ class TransactionEntriesCompanion extends UpdateCompanion<StoredTransaction> {
     Expression<int>? occurredAtMicros,
     Expression<String>? category,
     Expression<String>? note,
+    Expression<String>? installmentGroupId,
+    Expression<int>? installmentNumber,
+    Expression<int>? installmentCount,
+    Expression<int>? purchaseTotalMinor,
+    Expression<String>? statementId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1375,6 +1619,13 @@ class TransactionEntriesCompanion extends UpdateCompanion<StoredTransaction> {
       if (occurredAtMicros != null) 'occurred_at_micros': occurredAtMicros,
       if (category != null) 'category': category,
       if (note != null) 'note': note,
+      if (installmentGroupId != null)
+        'installment_group_id': installmentGroupId,
+      if (installmentNumber != null) 'installment_number': installmentNumber,
+      if (installmentCount != null) 'installment_count': installmentCount,
+      if (purchaseTotalMinor != null)
+        'purchase_total_minor': purchaseTotalMinor,
+      if (statementId != null) 'statement_id': statementId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1393,6 +1644,11 @@ class TransactionEntriesCompanion extends UpdateCompanion<StoredTransaction> {
     Value<int>? occurredAtMicros,
     Value<String?>? category,
     Value<String?>? note,
+    Value<String?>? installmentGroupId,
+    Value<int?>? installmentNumber,
+    Value<int?>? installmentCount,
+    Value<int?>? purchaseTotalMinor,
+    Value<String?>? statementId,
     Value<int>? rowid,
   }) {
     return TransactionEntriesCompanion(
@@ -1410,6 +1666,11 @@ class TransactionEntriesCompanion extends UpdateCompanion<StoredTransaction> {
       occurredAtMicros: occurredAtMicros ?? this.occurredAtMicros,
       category: category ?? this.category,
       note: note ?? this.note,
+      installmentGroupId: installmentGroupId ?? this.installmentGroupId,
+      installmentNumber: installmentNumber ?? this.installmentNumber,
+      installmentCount: installmentCount ?? this.installmentCount,
+      purchaseTotalMinor: purchaseTotalMinor ?? this.purchaseTotalMinor,
+      statementId: statementId ?? this.statementId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1458,6 +1719,21 @@ class TransactionEntriesCompanion extends UpdateCompanion<StoredTransaction> {
     if (note.present) {
       map['note'] = Variable<String>(note.value);
     }
+    if (installmentGroupId.present) {
+      map['installment_group_id'] = Variable<String>(installmentGroupId.value);
+    }
+    if (installmentNumber.present) {
+      map['installment_number'] = Variable<int>(installmentNumber.value);
+    }
+    if (installmentCount.present) {
+      map['installment_count'] = Variable<int>(installmentCount.value);
+    }
+    if (purchaseTotalMinor.present) {
+      map['purchase_total_minor'] = Variable<int>(purchaseTotalMinor.value);
+    }
+    if (statementId.present) {
+      map['statement_id'] = Variable<String>(statementId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1480,6 +1756,11 @@ class TransactionEntriesCompanion extends UpdateCompanion<StoredTransaction> {
           ..write('occurredAtMicros: $occurredAtMicros, ')
           ..write('category: $category, ')
           ..write('note: $note, ')
+          ..write('installmentGroupId: $installmentGroupId, ')
+          ..write('installmentNumber: $installmentNumber, ')
+          ..write('installmentCount: $installmentCount, ')
+          ..write('purchaseTotalMinor: $purchaseTotalMinor, ')
+          ..write('statementId: $statementId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2061,6 +2342,11 @@ typedef $$TransactionEntriesTableCreateCompanionBuilder =
       required int occurredAtMicros,
       Value<String?> category,
       Value<String?> note,
+      Value<String?> installmentGroupId,
+      Value<int?> installmentNumber,
+      Value<int?> installmentCount,
+      Value<int?> purchaseTotalMinor,
+      Value<String?> statementId,
       Value<int> rowid,
     });
 typedef $$TransactionEntriesTableUpdateCompanionBuilder =
@@ -2078,6 +2364,11 @@ typedef $$TransactionEntriesTableUpdateCompanionBuilder =
       Value<int> occurredAtMicros,
       Value<String?> category,
       Value<String?> note,
+      Value<String?> installmentGroupId,
+      Value<int?> installmentNumber,
+      Value<int?> installmentCount,
+      Value<int?> purchaseTotalMinor,
+      Value<String?> statementId,
       Value<int> rowid,
     });
 
@@ -2196,6 +2487,31 @@ class $$TransactionEntriesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get installmentGroupId => $composableBuilder(
+    column: $table.installmentGroupId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get installmentNumber => $composableBuilder(
+    column: $table.installmentNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get installmentCount => $composableBuilder(
+    column: $table.installmentCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get purchaseTotalMinor => $composableBuilder(
+    column: $table.purchaseTotalMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get statementId => $composableBuilder(
+    column: $table.statementId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$AccountEntriesTableFilterComposer get accountId {
     final $$AccountEntriesTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -2307,6 +2623,31 @@ class $$TransactionEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get installmentGroupId => $composableBuilder(
+    column: $table.installmentGroupId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get installmentNumber => $composableBuilder(
+    column: $table.installmentNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get installmentCount => $composableBuilder(
+    column: $table.installmentCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get purchaseTotalMinor => $composableBuilder(
+    column: $table.purchaseTotalMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get statementId => $composableBuilder(
+    column: $table.statementId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$AccountEntriesTableOrderingComposer get accountId {
     final $$AccountEntriesTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -2408,6 +2749,31 @@ class $$TransactionEntriesTableAnnotationComposer
   GeneratedColumn<String> get note =>
       $composableBuilder(column: $table.note, builder: (column) => column);
 
+  GeneratedColumn<String> get installmentGroupId => $composableBuilder(
+    column: $table.installmentGroupId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get installmentNumber => $composableBuilder(
+    column: $table.installmentNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get installmentCount => $composableBuilder(
+    column: $table.installmentCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get purchaseTotalMinor => $composableBuilder(
+    column: $table.purchaseTotalMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get statementId => $composableBuilder(
+    column: $table.statementId,
+    builder: (column) => column,
+  );
+
   $$AccountEntriesTableAnnotationComposer get accountId {
     final $$AccountEntriesTableAnnotationComposer composer = $composerBuilder(
       composer: this,
@@ -2501,6 +2867,11 @@ class $$TransactionEntriesTableTableManager
                 Value<int> occurredAtMicros = const Value.absent(),
                 Value<String?> category = const Value.absent(),
                 Value<String?> note = const Value.absent(),
+                Value<String?> installmentGroupId = const Value.absent(),
+                Value<int?> installmentNumber = const Value.absent(),
+                Value<int?> installmentCount = const Value.absent(),
+                Value<int?> purchaseTotalMinor = const Value.absent(),
+                Value<String?> statementId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TransactionEntriesCompanion(
                 id: id,
@@ -2516,6 +2887,11 @@ class $$TransactionEntriesTableTableManager
                 occurredAtMicros: occurredAtMicros,
                 category: category,
                 note: note,
+                installmentGroupId: installmentGroupId,
+                installmentNumber: installmentNumber,
+                installmentCount: installmentCount,
+                purchaseTotalMinor: purchaseTotalMinor,
+                statementId: statementId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2533,6 +2909,11 @@ class $$TransactionEntriesTableTableManager
                 required int occurredAtMicros,
                 Value<String?> category = const Value.absent(),
                 Value<String?> note = const Value.absent(),
+                Value<String?> installmentGroupId = const Value.absent(),
+                Value<int?> installmentNumber = const Value.absent(),
+                Value<int?> installmentCount = const Value.absent(),
+                Value<int?> purchaseTotalMinor = const Value.absent(),
+                Value<String?> statementId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TransactionEntriesCompanion.insert(
                 id: id,
@@ -2548,6 +2929,11 @@ class $$TransactionEntriesTableTableManager
                 occurredAtMicros: occurredAtMicros,
                 category: category,
                 note: note,
+                installmentGroupId: installmentGroupId,
+                installmentNumber: installmentNumber,
+                installmentCount: installmentCount,
+                purchaseTotalMinor: purchaseTotalMinor,
+                statementId: statementId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

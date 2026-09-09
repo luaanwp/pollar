@@ -41,6 +41,17 @@ class DriftTransactionRepository implements TransactionRepository {
   }
 
   @override
+  Future<void> addAll(List<FinancialTransaction> transactions) async {
+    await _database.transaction(() async {
+      for (final transaction in transactions) {
+        await _database
+            .into(_database.transactionEntries)
+            .insert(_toCompanion(transaction), mode: InsertMode.insert);
+      }
+    });
+  }
+
+  @override
   Future<void> replace(FinancialTransaction transaction) async {
     final updated =
         await (_database.update(_database.transactionEntries)
@@ -68,6 +79,13 @@ class DriftTransactionRepository implements TransactionRepository {
       occurredAt: DateTime.fromMicrosecondsSinceEpoch(stored.occurredAtMicros),
       category: stored.category,
       note: stored.note,
+      installmentGroupId: stored.installmentGroupId,
+      installmentNumber: stored.installmentNumber,
+      installmentCount: stored.installmentCount,
+      purchaseTotal: stored.purchaseTotalMinor == null
+          ? null
+          : Money(minorUnits: stored.purchaseTotalMinor!, currency: currency),
+      statementId: stored.statementId,
     );
   }
 
@@ -86,5 +104,10 @@ class DriftTransactionRepository implements TransactionRepository {
         occurredAtMicros: transaction.occurredAt.microsecondsSinceEpoch,
         category: Value(transaction.category),
         note: Value(transaction.note),
+        installmentGroupId: Value(transaction.installmentGroupId),
+        installmentNumber: Value(transaction.installmentNumber),
+        installmentCount: Value(transaction.installmentCount),
+        purchaseTotalMinor: Value(transaction.purchaseTotal?.minorUnits),
+        statementId: Value(transaction.statementId),
       );
 }

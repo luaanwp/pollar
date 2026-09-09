@@ -28,6 +28,18 @@ class InMemoryTransactionRepository implements TransactionRepository {
   }
 
   @override
+  Future<void> addAll(List<FinancialTransaction> transactions) async {
+    final ids = transactions.map((item) => item.id).toSet();
+    if (ids.length != transactions.length ||
+        ids.any(_transactions.containsKey)) {
+      throw StateError('Installment transaction already exists');
+    }
+    for (final transaction in transactions) {
+      _transactions[transaction.id] = transaction;
+    }
+  }
+
+  @override
   Future<List<FinancialTransaction>> findAll() async {
     final values = _transactions.values.toList()
       ..sort((a, b) => b.occurredAt.compareTo(a.occurredAt));

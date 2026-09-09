@@ -17,6 +17,11 @@ class FinancialTransaction {
     String? counterAccountId,
     String? category,
     String? note,
+    String? installmentGroupId,
+    int? installmentNumber,
+    int? installmentCount,
+    Money? purchaseTotal,
+    String? statementId,
   }) {
     final normalizedId = id.trim();
     final normalizedDescription = description.trim();
@@ -47,6 +52,40 @@ class FinancialTransaction {
       accountId: normalizedAccountId,
       counterAccountId: normalizedCounter,
     );
+    final normalizedInstallmentGroup = _optional(installmentGroupId);
+    final hasInstallmentMetadata =
+        normalizedInstallmentGroup != null ||
+        installmentNumber != null ||
+        installmentCount != null ||
+        purchaseTotal != null;
+    if (hasInstallmentMetadata) {
+      if (type != TransactionType.cardPurchase ||
+          normalizedInstallmentGroup == null ||
+          installmentNumber == null ||
+          installmentCount == null ||
+          purchaseTotal == null) {
+        throw ArgumentError(
+          'Installment metadata is complete and exclusive to card purchases',
+        );
+      }
+      if (installmentCount < 2 ||
+          installmentCount > 360 ||
+          installmentNumber < 1 ||
+          installmentNumber > installmentCount) {
+        throw RangeError('Invalid installment position');
+      }
+      if (!purchaseTotal.isPositive ||
+          purchaseTotal.currency != amount.currency) {
+        throw ArgumentError(
+          'Purchase total must be positive and use the purchase currency',
+        );
+      }
+    }
+    final normalizedStatementId = _optional(statementId);
+    if (normalizedStatementId != null &&
+        type != TransactionType.cardStatementPayment) {
+      throw ArgumentError('Only statement payments may reference a statement');
+    }
 
     return FinancialTransaction._(
       id: normalizedId,
@@ -59,6 +98,11 @@ class FinancialTransaction {
       occurredAt: occurredAt,
       category: _optional(category),
       note: _optional(note),
+      installmentGroupId: normalizedInstallmentGroup,
+      installmentNumber: installmentNumber,
+      installmentCount: installmentCount,
+      purchaseTotal: purchaseTotal,
+      statementId: normalizedStatementId,
     );
   }
 
@@ -73,6 +117,11 @@ class FinancialTransaction {
     this.counterAccountId,
     this.category,
     this.note,
+    this.installmentGroupId,
+    this.installmentNumber,
+    this.installmentCount,
+    this.purchaseTotal,
+    this.statementId,
   });
 
   final String id;
@@ -85,6 +134,13 @@ class FinancialTransaction {
   final DateTime occurredAt;
   final String? category;
   final String? note;
+  final String? installmentGroupId;
+  final int? installmentNumber;
+  final int? installmentCount;
+  final Money? purchaseTotal;
+  final String? statementId;
+
+  bool get isInstallment => installmentGroupId != null;
 
   List<Posting> get postings => postingsFor(
     type: type,
@@ -110,6 +166,11 @@ class FinancialTransaction {
         occurredAt: occurredAt,
         category: category,
         note: note,
+        installmentGroupId: installmentGroupId,
+        installmentNumber: installmentNumber,
+        installmentCount: installmentCount,
+        purchaseTotal: purchaseTotal,
+        statementId: statementId,
       );
 
   static String? _optional(String? value) {
@@ -129,7 +190,12 @@ class FinancialTransaction {
       other.counterAccountId == counterAccountId &&
       other.occurredAt == occurredAt &&
       other.category == category &&
-      other.note == note;
+      other.note == note &&
+      other.installmentGroupId == installmentGroupId &&
+      other.installmentNumber == installmentNumber &&
+      other.installmentCount == installmentCount &&
+      other.purchaseTotal == purchaseTotal &&
+      other.statementId == statementId;
 
   @override
   int get hashCode => Object.hash(
@@ -143,5 +209,10 @@ class FinancialTransaction {
     occurredAt,
     category,
     note,
+    installmentGroupId,
+    installmentNumber,
+    installmentCount,
+    purchaseTotal,
+    statementId,
   );
 }

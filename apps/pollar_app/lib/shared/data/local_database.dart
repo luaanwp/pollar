@@ -39,6 +39,11 @@ class TransactionEntries extends Table {
   IntColumn get occurredAtMicros => integer()();
   TextColumn get category => text().nullable()();
   TextColumn get note => text().nullable()();
+  TextColumn get installmentGroupId => text().nullable()();
+  IntColumn get installmentNumber => integer().nullable()();
+  IntColumn get installmentCount => integer().nullable()();
+  IntColumn get purchaseTotalMinor => integer().nullable()();
+  TextColumn get statementId => text().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -49,7 +54,7 @@ class LocalDatabase extends _$LocalDatabase {
   LocalDatabase(super.executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -57,6 +62,28 @@ class LocalDatabase extends _$LocalDatabase {
     onUpgrade: (migrator, from, to) async {
       if (from < 2) {
         await migrator.createTable(transactionEntries);
+      }
+      if (from >= 2 && from < 3) {
+        await migrator.addColumn(
+          transactionEntries,
+          transactionEntries.installmentGroupId,
+        );
+        await migrator.addColumn(
+          transactionEntries,
+          transactionEntries.installmentNumber,
+        );
+        await migrator.addColumn(
+          transactionEntries,
+          transactionEntries.installmentCount,
+        );
+        await migrator.addColumn(
+          transactionEntries,
+          transactionEntries.purchaseTotalMinor,
+        );
+        await migrator.addColumn(
+          transactionEntries,
+          transactionEntries.statementId,
+        );
       }
     },
     beforeOpen: (_) => customStatement('PRAGMA foreign_keys = ON'),

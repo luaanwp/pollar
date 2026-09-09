@@ -43,5 +43,5 @@ ausência de contas, ausência de transações e texto ampliado a 200% são cobe
 
 ## Próxima integração
 
-O próximo slice recomendado é cartões de crédito e faturas: ciclo mensal,
-compras da fatura, fechamento, vencimento e pagamento sem duplicar despesas.
+O slice seguinte de cartões, faturas e parcelamentos foi concluído. A evolução
+está documentada em `docs/cards-statements-installments-slice.md`.

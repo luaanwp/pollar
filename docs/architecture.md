@@ -86,3 +86,9 @@ simples e deixa substituições futuras explícitas.
 - Mutações financeiras incrementam apenas um sinal de revisão compartilhado;
   ele não contém dados e serve para invalidar modelos derivados, mantendo os
   repositórios como fonte de verdade.
+- A feature `statements` deriva faturas por um contrato neutro de leitura e
+  pagamento. O adaptador em `app/data` conecta contas e transações; a feature
+  não importa nenhum desses módulos e não persiste totais calculados.
+- Parcelamentos pertencem ao fato transacional e carregam grupo, posição e
+  total original. Ciclo, estado, saldo e limite disponível permanecem projeções
+  reconstruíveis, permitindo trocar persistência ou interface na V2.

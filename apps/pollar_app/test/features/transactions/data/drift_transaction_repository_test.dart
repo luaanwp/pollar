@@ -27,6 +27,20 @@ void main() {
         ),
       );
     }
+    await accounts.add(
+      Account(
+        id: 'card',
+        name: 'Cartão',
+        type: AccountType.creditCard,
+        currency: Currency.brl,
+        openingBalance: const Money.zero(Currency.brl),
+        creditCardTerms: CreditCardTerms(
+          creditLimit: const Money(minorUnits: 100000, currency: Currency.brl),
+          closingDay: 20,
+          dueDay: 28,
+        ),
+      ),
+    );
     repository = DriftTransactionRepository(database);
   });
 
@@ -77,6 +91,36 @@ void main() {
       repository.replace(transaction('missing', TransactionType.income)),
       throwsStateError,
     );
+  });
+
+  test('round-trips installment and statement linkage metadata', () async {
+    final installment = FinancialTransaction(
+      id: 'part-2',
+      description: 'Notebook',
+      type: TransactionType.cardPurchase,
+      status: TransactionStatus.previsto,
+      amount: const Money(minorUnits: 3333, currency: Currency.brl),
+      accountId: 'card',
+      occurredAt: DateTime(2026, 10, 8),
+      installmentGroupId: 'purchase',
+      installmentNumber: 2,
+      installmentCount: 3,
+      purchaseTotal: const Money(minorUnits: 10000, currency: Currency.brl),
+    );
+    final payment = FinancialTransaction(
+      id: 'payment',
+      description: 'Pagamento de fatura',
+      type: TransactionType.cardStatementPayment,
+      status: TransactionStatus.compensado,
+      amount: const Money(minorUnits: 5000, currency: Currency.brl),
+      accountId: 'source',
+      counterAccountId: 'card',
+      occurredAt: DateTime(2026, 9, 20),
+      statementId: 'card:2026-09-20',
+    );
+    await repository.addAll([installment, payment]);
+    expect(await repository.findById(installment.id), installment);
+    expect(await repository.findById(payment.id), payment);
   });
 
   test('foreign keys reject transactions for unknown accounts', () async {

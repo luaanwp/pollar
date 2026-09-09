@@ -49,6 +49,22 @@ class TransactionsController extends AsyncNotifier<TransactionsState> {
     ref.read(financialDataRevisionProvider.notifier).bump();
   }
 
+  Future<void> createInstallmentPlan({
+    required FinancialTransaction purchase,
+    required int installmentCount,
+    required String groupId,
+    required String Function(int installmentNumber) idForInstallment,
+  }) async {
+    await _service.createInstallmentPlan(
+      purchase: purchase,
+      installmentCount: installmentCount,
+      groupId: groupId,
+      idForInstallment: idForInstallment,
+    );
+    state = AsyncData(await _load());
+    ref.read(financialDataRevisionProvider.notifier).bump();
+  }
+
   Future<void> cancel(String id) async {
     await _service.cancel(id);
     state = AsyncData(await _load());

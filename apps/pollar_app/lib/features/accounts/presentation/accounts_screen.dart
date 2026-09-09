@@ -81,6 +81,8 @@ class _AccountsContent extends ConsumerWidget {
                 cards: cards,
                 privacyHidden: privacyHidden,
                 onArchive: (account) => _archive(context, ref, account),
+                onOpenCard: (account) =>
+                    context.push('/accounts/${account.id}/statement'),
               ),
             if (archived.isNotEmpty) ...[
               const SizedBox(height: PollarSpacing.x8),
@@ -239,12 +241,14 @@ class _ActiveAccountSections extends StatelessWidget {
     required this.cards,
     required this.privacyHidden,
     required this.onArchive,
+    required this.onOpenCard,
   });
 
   final List<Account> regular;
   final List<Account> cards;
   final bool privacyHidden;
   final ValueChanged<Account> onArchive;
+  final ValueChanged<Account> onOpenCard;
 
   @override
   Widget build(BuildContext context) {
@@ -259,6 +263,7 @@ class _ActiveAccountSections extends StatelessWidget {
       accounts: cards,
       privacyHidden: privacyHidden,
       onAction: onArchive,
+      onOpen: onOpenCard,
     );
     final sideBySide =
         MediaQuery.sizeOf(context).width >= 1040 &&
@@ -295,6 +300,7 @@ class _AccountSection extends StatelessWidget {
     required this.onAction,
     this.description,
     this.archived = false,
+    this.onOpen,
   });
 
   final String title;
@@ -303,6 +309,7 @@ class _AccountSection extends StatelessWidget {
   final bool privacyHidden;
   final ValueChanged<Account> onAction;
   final bool archived;
+  final ValueChanged<Account>? onOpen;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -336,6 +343,7 @@ class _AccountSection extends StatelessWidget {
                     privacyHidden: privacyHidden,
                     archived: archived,
                     onAction: () => onAction(account),
+                    onOpen: onOpen == null ? null : () => onOpen!(account),
                   ),
                 ),
             ],
@@ -352,12 +360,14 @@ class _AccountCard extends StatelessWidget {
     required this.privacyHidden,
     required this.archived,
     required this.onAction,
+    this.onOpen,
   });
 
   final Account account;
   final bool privacyHidden;
   final bool archived;
   final VoidCallback onAction;
+  final VoidCallback? onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -456,6 +466,19 @@ class _AccountCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (onOpen != null) ...[
+              const SizedBox(height: PollarSpacing.x4),
+              Align(
+                alignment: Alignment.centerRight,
+                child: PollarButton(
+                  label: 'Ver fatura',
+                  trailingIcon: LucideIcons.arrowRight,
+                  variant: PollarButtonVariant.ghost,
+                  size: PollarControlSize.compact,
+                  onPressed: onOpen,
+                ),
+              ),
+            ],
           ],
         ],
       ),
