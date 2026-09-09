@@ -2,9 +2,9 @@ import 'package:drift/drift.dart';
 
 import '../../../core/money/currency.dart';
 import '../../../core/money/money.dart';
+import '../../../shared/data/local_database.dart';
 import '../domain/account.dart';
 import '../domain/account_repository.dart';
-import 'account_database.dart';
 
 /// SQLite-backed account adapter. Domain and application layers remain storage
 /// agnostic and depend only on [AccountRepository].
@@ -14,7 +14,7 @@ class DriftAccountRepository implements AccountRepository {
     Iterable<Account> initialAccounts = const [],
   }) : _initialAccounts = List.unmodifiable(initialAccounts);
 
-  final AccountDatabase _database;
+  final LocalDatabase _database;
   final List<Account> _initialAccounts;
   Future<void>? _initialization;
 

@@ -44,6 +44,6 @@ e reabertura real do arquivo SQLite.
 
 ## Próxima integração
 
-O próximo slice é `transactions`: modelo e contrato próprios, casos de uso de
-receita/despesa/transferência, persistência Drift e substituição dos dados de
-demonstração da tela, reutilizando as regras já centralizadas em `core/ledger`.
+O slice `transactions` agora consome contas por um catálogo de leitura estreito,
+implementado na raiz de composição. A feature de contas continua independente;
+detalhes da integração estão em `docs/transactions-slice.md`.

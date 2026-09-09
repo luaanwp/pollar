@@ -8,6 +8,7 @@ import '../../features/design_system/presentation/forms_catalog_screen.dart';
 import '../../features/overview/presentation/overview_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/transactions/presentation/transactions_screen.dart';
+import '../../features/transactions/presentation/transaction_form_screen.dart';
 import 'app_shell.dart';
 
 /// The app's [GoRouter]. A [StatefulShellRoute.indexedStack] keeps a separate
@@ -46,6 +47,12 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/transactions',
                 builder: (context, state) => const TransactionsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'new',
+                    builder: (context, state) => const TransactionFormScreen(),
+                  ),
+                ],
               ),
             ],
           ),

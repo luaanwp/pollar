@@ -188,6 +188,15 @@ class _Rail extends StatelessWidget {
         extended: extended,
         backgroundColor: pollar.canvas,
         indicatorColor: pollar.primarySoft,
+        selectedIconTheme: IconThemeData(color: pollar.primary, size: 20),
+        unselectedIconTheme: IconThemeData(
+          color: pollar.textSecondary,
+          size: 20,
+        ),
+        selectedLabelTextStyle: Theme.of(context).textTheme.labelMedium
+            ?.copyWith(color: pollar.primary),
+        unselectedLabelTextStyle: Theme.of(context).textTheme.labelMedium
+            ?.copyWith(color: pollar.textSecondary),
         selectedIndex: selectedIndex,
         onDestinationSelected: onSelected,
         groupAlignment: -1,
@@ -263,11 +272,22 @@ class _BottomNav extends StatelessWidget {
       child: NavigationBar(
         backgroundColor: pollar.canvas,
         indicatorColor: pollar.primarySoft,
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: states.contains(WidgetState.selected)
+                ? pollar.primary
+                : pollar.textSecondary,
+          ),
+        ),
         selectedIndex: selectedIndex,
         onDestinationSelected: onSelected,
         destinations: [
           for (final d in appDestinations)
-            NavigationDestination(icon: Icon(d.icon, size: 24), label: d.label),
+            NavigationDestination(
+              icon: Icon(d.icon, size: 24, color: pollar.textSecondary),
+              selectedIcon: Icon(d.icon, size: 24, color: pollar.primary),
+              label: d.label,
+            ),
         ],
       ),
     );

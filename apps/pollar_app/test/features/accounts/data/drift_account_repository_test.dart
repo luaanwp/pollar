@@ -4,12 +4,12 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pollar_app/core/money/currency.dart';
 import 'package:pollar_app/core/money/money.dart';
-import 'package:pollar_app/features/accounts/data/account_database.dart';
 import 'package:pollar_app/features/accounts/data/drift_account_repository.dart';
 import 'package:pollar_app/features/accounts/domain/account.dart';
+import 'package:pollar_app/shared/data/local_database.dart';
 
 void main() {
-  late AccountDatabase database;
+  late LocalDatabase database;
 
   Account account(
     String id,
@@ -42,7 +42,7 @@ void main() {
   });
 
   test('round-trips every account type and optional card terms', () async {
-    database = AccountDatabase(NativeDatabase.memory());
+    database = LocalDatabase(NativeDatabase.memory());
     final expected = AccountType.values
         .map((type) => account(type.name, type))
         .toList(growable: false);
@@ -59,7 +59,7 @@ void main() {
   });
 
   test('replace persists status changes and rejects unknown ids', () async {
-    database = AccountDatabase(NativeDatabase.memory());
+    database = LocalDatabase(NativeDatabase.memory());
     final repository = DriftAccountRepository(database);
     final original = account('main', AccountType.checking);
     await repository.add(original);
@@ -76,7 +76,7 @@ void main() {
   });
 
   test('initial accounts are inserted only into an empty database', () async {
-    database = AccountDatabase(NativeDatabase.memory());
+    database = LocalDatabase(NativeDatabase.memory());
     final first = account('first', AccountType.cash);
     final second = account('second', AccountType.savings);
 
@@ -101,11 +101,11 @@ void main() {
       '${tempDirectory.path}${Platform.pathSeparator}accounts.sqlite',
     );
     final expected = account('persistent', AccountType.investment);
-    database = AccountDatabase(NativeDatabase(file));
+    database = LocalDatabase(NativeDatabase(file));
     await DriftAccountRepository(database).add(expected);
     await database.close();
 
-    database = AccountDatabase(NativeDatabase(file));
+    database = LocalDatabase(NativeDatabase(file));
     expect(
       await DriftAccountRepository(database).findById(expected.id),
       expected,
@@ -118,6 +118,6 @@ void main() {
       fail('Refusing to clean a directory outside the system temp folder');
     }
     await tempDirectory.delete(recursive: true);
-    database = AccountDatabase(NativeDatabase.memory());
+    database = LocalDatabase(NativeDatabase.memory());
   });
 }

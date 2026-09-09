@@ -2,13 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pollar_app/app/theme/pollar_theme.dart';
+import 'package:pollar_app/features/transactions/application/transaction_account_catalog.dart';
+import 'package:pollar_app/features/transactions/data/in_memory_transaction_repository.dart';
+import 'package:pollar_app/features/transactions/presentation/transactions_controller.dart';
 import 'package:pollar_app/main.dart';
 
 void main() {
+  Widget app() => ProviderScope(
+    overrides: [
+      transactionRepositoryProvider.overrideWithValue(
+        InMemoryTransactionRepository(),
+      ),
+      transactionAccountCatalogProvider.overrideWithValue(
+        const _EmptyAccountCatalog(),
+      ),
+    ],
+    child: const PollarApp(),
+  );
+
   testWidgets('Overview renders inside the shell with the Pollar theme', (
     tester,
   ) async {
-    await tester.pumpWidget(const ProviderScope(child: PollarApp()));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
 
     expect(find.text('Visão geral'), findsWidgets); // shell title + rail label
@@ -19,7 +34,7 @@ void main() {
   });
 
   testWidgets('theme toggle switches light↔dark', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: PollarApp()));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
 
     var context = tester.element(find.text('SALDO TOTAL'));
@@ -34,7 +49,7 @@ void main() {
   });
 
   testWidgets('privacy toggle masks every overview amount', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: PollarApp()));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
 
     expect(find.text('R\$ 8.595,95'), findsOneWidget);
@@ -50,7 +65,7 @@ void main() {
   });
 
   testWidgets('navigating to Transações shows its empty state', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: PollarApp()));
+    await tester.pumpWidget(app());
     await tester.pumpAndSettle();
 
     expect(find.text('Nenhuma transação ainda'), findsNothing);
@@ -60,4 +75,11 @@ void main() {
 
     expect(find.text('Nenhuma transação ainda'), findsOneWidget);
   });
+}
+
+class _EmptyAccountCatalog implements TransactionAccountCatalog {
+  const _EmptyAccountCatalog();
+
+  @override
+  Future<List<TransactionAccountReference>> findAll() async => const [];
 }

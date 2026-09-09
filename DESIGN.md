@@ -219,6 +219,10 @@ O shell é adaptativo. Abaixo de 600px, usa navegação inferior, gutter de 16px
 
 Na listagem de contas, o primeiro viewport apresenta título, explicação, ação de cadastro e as seções de contas/cartões. As seções ficam lado a lado somente com largura mínima observada de 1040px e quando ambas têm conteúdo; em larguras menores, empilham. Dentro de cada seção, cartões podem formar duas colunas a partir de 880px disponíveis. Campos de fechamento e vencimento também passam de coluna para linha em 600px.
 
+Em transações, busca e filtros precedem sempre o histórico. Abaixo de 600px, os lançamentos são agrupados por dia em uma única coluna e os detalhes abrem em modal raiz, preservando o contexto escurecido da lista. Entre 600px e 1023px, o ledger permanece em uma coluna e também delega os detalhes ao modal. A partir de 1024px, a seleção mantém o ledger visível e abre ao lado um painel contextual fixo de 360px; o painel nunca comprime a coluna a ponto de ocultar valor ou estado.
+
+**The Same Ledger Rule.** A mudança de largura reorganiza o lançamento, mas preserva descrição, conta ou categoria, data, valor exato e estado na mesma ordem de leitura.
+
 **The Natural Collapse Rule.** A adaptação preserva ordem e hierarquia: colunas viram pilhas, botões ocupam a largura disponível e nenhum dado essencial desaparece.
 
 ## Elevation & Depth
@@ -274,6 +278,7 @@ Badges são cápsulas compactas; banners, toasts e modais mantêm a mesma semân
 
 - **Badge:** altura de 20px ou 24px, padding horizontal de 8px ou 10px e raio circular exclusivo.
 - **Status:** texto de peso 600 e, quando aplicável, ícone de 12px ou 14px; estados semânticos usam cor forte sobre seu preenchimento suave.
+- **Transaction status:** Previsto usa tom neutro e relógio; Pendente usa atenção e relógio; Compensado usa sucesso e check; Conciliado usa informação e check; Cancelado usa risco e x. O rótulo textual permanece sempre visível.
 - **Feedback:** mensagens nomeiam o que ocorreu e a próxima ação. Modais de arquivamento explicam impacto e preservação do histórico antes da confirmação.
 
 ### Navigation
@@ -284,6 +289,36 @@ A navegação acompanha a largura sem mudar o mapa mental.
 - **Medium:** rail de 72px com ícones de 20px.
 - **Expanded:** rail de 256px com rótulos.
 - **Selected:** indicador menta e conteúdo teal; a barra superior é canvas com borda inferior e sem elevação.
+
+### Transaction Ledger
+
+O ledger privilegia comparação vertical rápida: identidade à esquerda, consequência financeira e estado à direita.
+
+- **Controls:** a busca consulta descrição ou categoria; filtros de Todas, Receitas, Despesas e Transferências usam chips contornados, com check, borda teal e fundo menta apenas no selecionado.
+- **Row anatomy:** ícone de natureza, descrição, categoria e conta formam o bloco de identidade; data, valor assinado e badge formam o bloco financeiro. Metadados podem truncar antes do valor ou do estado.
+- **Desktop:** uma única superfície plana e contornada recebe cabeçalho eyebrow, divisores de 1px e linhas densas; a linha selecionada usa fundo menta sem remover sua borda ou qualquer dado.
+- **Mobile:** cada dia recebe um título textual como Hoje, Ontem ou a data localizada e um único cartão sem padding externo entre linhas, separadas por divisores de 1px.
+- **Amounts:** receitas exibem sinal positivo e verde; saídas exibem sinal negativo. Transferências continuam identificadas por tipo, conta e ícone, sem serem apresentadas como receita ou despesa.
+- **Privacy:** ocultar valores conserva alinhamento, largura e sinais de estado; descrição, tipo, conta, data e badge permanecem legíveis.
+
+### Transaction Detail
+
+O detalhe confirma o significado do lançamento antes de oferecer uma ação de ciclo de vida.
+
+- **Desktop:** painel contextual de 360px, plano e contornado, alinhado à altura do ledger; título, fechar, descrição, badge e valor antecedem os campos rotulados.
+- **Mobile:** modal raiz em folha inferior com alça, ícone de natureza, título, tipo, fechar e valor antes dos campos; a ação segura de fechar permanece explícita e separada da ação destrutiva.
+- **Fields:** tipo, conta, data e categoria usam pares verticais de rótulo atenuado e valor primário; origem e destino substituem conta única quando a natureza exigir.
+- **Cancellation:** “Cancelar transação” altera o estado e mantém o lançamento no histórico. A confirmação explica que o item deixará de afetar os saldos confirmado e projetado; “Manter transação” é a saída segura.
+
+### Transaction Form
+
+O cadastro expõe regras financeiras progressivamente, sem transferir a estrutura contábil para a pessoa usuária.
+
+- **Structure:** cabeçalho com retorno, título e explicação antecede um único cartão; Movimento vem antes de Classificação, e transferências renomeiam o segundo grupo para Origem e destino.
+- **Fields:** tipo controla conta elegível, sugestões e campos seguintes; transferências exigem contas comuns distintas e da mesma moeda. Data e estado ficam lado a lado quando houver largura e empilham no compacto.
+- **Amount:** aceita magnitude positiva, mantém moeda explícita e orienta a entrada decimal localizada; o domínio determina o sinal e o tratamento de compra no cartão.
+- **Action:** salvar fica ao fim no desktop, ocupa a largura disponível no mobile e anuncia carregamento; erros preservam o preenchimento e explicam o que revisar.
+- **Unsaved exit:** só interrompe a saída quando houver mudanças. A confirmação distingue “Continuar preenchendo”, ação segura, de “Descartar transação”, ação destrutiva, e esclarece que os dados serão perdidos sem qualquer saldo ter sido alterado.
 
 ### Account Card
 
@@ -313,6 +348,9 @@ O cadastro é uma tarefa dedicada, não uma extensão do cartão de listagem.
 - **Do** usar verbos que nomeiam o objeto da ação, como cadastrar, salvar, arquivar e restaurar.
 - **Do** preservar valores exatos, formatação pt-BR, algarismos tabulares, modo privacidade e rótulos acessíveis.
 - **Do** empilhar seções e campos no mobile, mantendo alvos de toque de pelo menos 44px.
+- **Do** manter valor e estado escaneáveis no ledger, inclusive com texto ampliado, seleção ativa e modo privacidade.
+- **Do** agrupar transações por dia no mobile e manter o ledger visível ao abrir o painel contextual no desktop expandido.
+- **Do** explicar separadamente o impacto de cancelar uma transação persistida e de descartar um rascunho não salvo, oferecendo uma ação segura inequívoca em ambos os casos.
 
 ### Don't:
 
@@ -322,3 +360,6 @@ O cadastro é uma tarefa dedicada, não uma extensão do cartão de listagem.
 - **Don't** misturar famílias de ícones, usar emoji como ícone ou deixar um controle apenas com ícone sem tooltip e nome acessível.
 - **Don't** esconder conteúdo essencial no layout compacto nem misturar campos específicos de cartão em contas comuns.
 - **Don't** animar dígitos financeiros, arredondar totais ou abreviar valores de interface.
+- **Don't** substituir rótulos de estado, sinais monetários ou ícones de natureza por cor isolada.
+- **Don't** abrir detalhes em um cartão aninhado no mobile nem trocar o painel contextual de 360px por navegação que remova o ledger no desktop expandido.
+- **Don't** tratar cancelamento como exclusão: o lançamento continua no histórico e seu efeito sobre os saldos deve ser declarado antes da confirmação.

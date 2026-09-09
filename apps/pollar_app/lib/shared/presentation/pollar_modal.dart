@@ -23,6 +23,7 @@ Future<T?> showPollarAdaptiveModal<T>({
   if (compact) {
     return showModalBottomSheet<T>(
       context: context,
+      useRootNavigator: true,
       useSafeArea: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

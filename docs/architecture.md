@@ -75,3 +75,8 @@ simples e deixa substituições futuras explícitas.
   repositório e o adaptador Drift é injetado na raiz de composição, sem expor
   banco aos casos de uso ou à apresentação. O adaptador em memória permanece
   como ferramenta determinística de testes.
+- Transações consomem contas por um catálogo de leitura próprio. A implementação
+  que conecta as duas capacidades vive em `app/data`, evitando dependência
+  direta entre features e deixando a integração substituível na V2.
+- Uma conexão Drift compartilhada em `shared/data` hospeda tabelas relacionadas;
+  os mapeamentos e repositórios permanecem dentro de cada feature.
