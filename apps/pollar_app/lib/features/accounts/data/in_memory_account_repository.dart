@@ -1,7 +1,7 @@
 import '../domain/account.dart';
 import '../domain/account_repository.dart';
 
-/// Deterministic repository used until the local Drift adapter lands.
+/// Deterministic repository for unit, widget and golden tests.
 class InMemoryAccountRepository implements AccountRepository {
   InMemoryAccountRepository({Iterable<Account> seed = const []}) {
     for (final account in seed) {

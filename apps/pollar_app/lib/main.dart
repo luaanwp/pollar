@@ -5,16 +5,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app/routing/app_router.dart';
 import 'app/theme/pollar_theme.dart';
 import 'app/theme/theme_mode_provider.dart';
-import 'features/accounts/data/seeded_account_repository.dart';
+import 'features/accounts/data/account_database.dart';
+import 'features/accounts/data/account_database_connection.dart';
+import 'features/accounts/data/default_accounts.dart';
+import 'features/accounts/data/drift_account_repository.dart';
 import 'features/accounts/presentation/accounts_controller.dart';
 
 void main() {
   runApp(
     ProviderScope(
       overrides: [
-        accountRepositoryProvider.overrideWithValue(
-          createSeededAccountRepository(),
-        ),
+        accountRepositoryProvider.overrideWith((ref) {
+          final database = AccountDatabase(openAccountDatabaseConnection());
+          ref.onDispose(database.close);
+          return DriftAccountRepository(
+            database,
+            initialAccounts: createDefaultAccounts(),
+          );
+        }),
       ],
       child: const PollarApp(),
     ),

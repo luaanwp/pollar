@@ -5,7 +5,7 @@ interface ou ao banco local. A feature está dividida em:
 
 - `domain`: `Account`, `CreditCardTerms` e o contrato `AccountRepository`;
 - `application`: casos de uso para criar, listar, renomear, arquivar e restaurar;
-- `data`: repositório em memória, substituível pelo adaptador Drift;
+- `data`: adaptador Drift/SQLite e repositório em memória isolado para testes;
 - `presentation`: controller Riverpod, lista responsiva e cadastro de contas/cartões.
 
 ## Decisões de domínio
@@ -26,10 +26,24 @@ interface ou ao banco local. A feature está dividida em:
 
 A rota `/accounts` separa contas, cartões e itens arquivados; valores respeitam
 o modo privacidade global. `/accounts/new` coleta os dados e chama somente o
-controller da feature. A raiz em `main.dart` injeta o repositório temporário,
-mantendo a escolha de armazenamento fora da interface.
+controller da feature. A raiz em `main.dart` injeta o adaptador Drift e gerencia
+o ciclo de vida do banco, mantendo a escolha de armazenamento fora da interface.
+
+## Persistência local
+
+`DriftAccountRepository` implementa o mesmo `AccountRepository` usado pelos
+casos de uso. A tabela armazena valores monetários em unidades menores inteiras,
+incluindo moeda e configurações opcionais de cartão. O arquivo `pollar.sqlite`
+fica no diretório de suporte da aplicação e as contas demonstrativas entram
+somente quando o banco está vazio na primeira abertura. A versão do schema
+começa em 1 para que mudanças da V2 sejam feitas por migrações explícitas.
+
+Testes de apresentação continuam usando o adaptador em memória, enquanto os
+testes de dados exercitam round-trip de todos os tipos, atualização, seed único
+e reabertura real do arquivo SQLite.
 
 ## Próxima integração
 
-Persistência Drift implementará o mesmo contrato e substituirá a fonte em
-memória na raiz de composição, sem alterar domínio, casos de uso ou widgets.
+O próximo slice é `transactions`: modelo e contrato próprios, casos de uso de
+receita/despesa/transferência, persistência Drift e substituição dos dados de
+demonstração da tela, reutilizando as regras já centralizadas em `core/ledger`.

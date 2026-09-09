@@ -46,6 +46,10 @@ Code generation (Drift / Freezed / json_serializable), once generated files exis
 dart run build_runner build --delete-conflicting-outputs
 ```
 
+Accounts are persisted in `pollar.sqlite` under the platform application-support
+directory. Native persistence is currently composed for Windows, Android and
+iOS; browser storage remains outside the V1 target.
+
 ## Supabase (local only)
 
 A remote Supabase project must NOT be created or connected without explicit
