@@ -170,14 +170,17 @@ class _PlanningContent extends ConsumerWidget {
       initialDate: DateTime(
         state.snapshot.month.year,
         state.snapshot.month.month,
-        DateTime.now().day.clamp(
-          1,
-          DateTime(
-            state.snapshot.month.year,
-            state.snapshot.month.month + 1,
-            0,
-          ).day,
-        ),
+        ref
+            .read(planningClockProvider)()
+            .day
+            .clamp(
+              1,
+              DateTime(
+                state.snapshot.month.year,
+                state.snapshot.month.month + 1,
+                0,
+              ).day,
+            ),
       ),
       onSave: ref.read(planningProvider.notifier).createRecurringRule,
     );

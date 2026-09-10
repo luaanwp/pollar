@@ -98,3 +98,11 @@ simples e deixa substituições futuras explícitas.
 - O adaptador `app/data/planning_ledger_data_source.dart` traduz contas e
   transações para o vocabulário de planejamento. A feature não importa os
   módulos de origem e pode receber outro ledger ou agendador na V2.
+- A feature `wealth` persiste metas, ativos manuais e dívidas manuais. Seu
+  serviço deriva progresso e patrimônio líquido por moeda sem conhecer contas
+  ou transações.
+- O adaptador `app/data/wealth_ledger_data_source.dart` fornece somente posições
+  confirmadas por um contrato neutro. Avaliações e obrigações manuais continuam
+  explícitas e substituíveis por fontes remotas ou de mercado na V2.
+- O quinto destino da navegação é `Mais`, que agrupa capacidades secundárias e
+  preserva o limite de cinco destinos das barras nativas mobile.

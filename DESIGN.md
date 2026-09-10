@@ -209,13 +209,15 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 
 **The Exact Figure Rule.** Todo valor monetário, percentual, data tabular e contagem parcelada usa algarismos tabulares; valores não são abreviados nem têm os dígitos animados.
 
+**The Contextual Money Rule.** `MoneySemantic` é sempre declarado pelo significado no contexto: `balance` para saldos, patrimônio e ativos; `debt` para obrigações; `income` e `expense` para fluxos; `neutral` para alvo, reservado e restante. `automatic` só é aceitável quando o próprio sinal define integralmente a natureza. Com texto ampliado, ofereça quebra entre rótulo e valor ou entre ações, preservando o rótulo exato, visível e sem truncamento.
+
 **The Sentence Case Rule.** Use sentence case em títulos, rótulos, botões e badges; caixa alta pertence somente ao eyebrow.
 
 ## Layout
 
 O ritmo nasce de uma unidade de 4px e privilegia incrementos de 8px. O conteúdo geral limita-se a 1600px e colunas de leitura de dashboard a 1280px. Telas de formulário podem estreitar a coluna conforme a tarefa; o cadastro de conta/cartão usa uma coluna de até 760px.
 
-O shell é adaptativo. Abaixo de 600px, usa navegação inferior, gutter de 16px, alvos de toque com pelo menos 44px e ações principais de largura total quando necessário. A partir de 600px, usa rail lateral e gutter de 24px; a partir de 1024px, o rail mostra rótulos e seções relacionadas podem ocupar colunas paralelas.
+O shell é adaptativo. Abaixo de 600px, usa navegação inferior, gutter compacto de 16px e ações principais de largura total quando necessário. A partir de 600px, usa rail lateral e gutter amplo de 24px; a partir de 1024px, o rail mostra rótulos e seções relacionadas podem ocupar colunas paralelas. No Android, todo alvo interativo mede pelo menos 48dp em qualquer largura.
 
 Na listagem de contas, o primeiro viewport apresenta título, explicação, ação de cadastro e as seções de contas/cartões. As seções ficam lado a lado somente com largura mínima observada de 1040px e quando ambas têm conteúdo; em larguras menores, empilham. Dentro de cada seção, cartões podem formar duas colunas a partir de 880px disponíveis. Campos de fechamento e vencimento também passam de coluna para linha em 600px.
 
@@ -226,6 +228,8 @@ Na visão geral, a ordem operacional é invariável: cabeçalho com contexto e a
 Na fatura de cartão, o desktop apresenta resumo e parcelas futuras antes das compras: com pelo menos 820px disponíveis e escala tipográfica de até 1,3×, resumo e futuro dividem a primeira linha, seguidos pelo ledger de compras em largura total. No mobile, a ordem é resumo, compras e parcelas futuras. Acima de 1,3×, a composição paralela e os pares internos fazem reflow para blocos verticais, sem reduzir tipografia, truncar valores ou ocultar parcelas.
 
 No planejamento, o mês é lido como uma sequência estável de faixas: cabeçalho com navegação de período e moeda, posição planejada, orçamentos por categoria, agenda, assinaturas, lembretes locais e gerenciamento. Orçamentos e agenda dividem a linha somente com pelo menos 860px disponíveis e escala tipográfica de até 1,3×; abaixo disso, empilham nessa ordem, seguidos pelas demais faixas. Cabeçalhos, métricas, ocorrências, lembretes e controles de ciclo de vida também fazem reflow acima de 1,3×, sem esconder valores, estados ou ações.
+
+No patrimônio, o primeiro viewport é um dossiê: cabeçalho e ações antecedem balanço líquido e meta prioritária. Com pelo menos 860px disponíveis e escala tipográfica de até 1,3×, os dois dividem a linha; fora disso, empilham com o balanço antes da meta. A composição rastreável de ativos e dívidas vem em seguida, depois metas e gerenciamento manual, sem separar os totais das fontes que os explicam.
 
 Texto ampliado provoca reflow por conteúdo, não redução tipográfica nem recorte. Acima de 1,3×, o resumo deixa de usar colunas, os pares de rótulo e valor podem virar blocos verticais, os valores ficam alinhados ao fim em uma linha própria e os cabeçalhos de seção colocam a ação abaixo do título. A ordem de leitura, a unidade monetária, os sinais e os estados permanecem íntegros.
 
@@ -253,7 +257,7 @@ A geometria é suavemente arredondada e funcional: chips usam raio pequeno, camp
 
 Contidos e verbais, os botões priorizam a tarefa sobre a marca.
 
-- **Shape:** retângulo suavemente arredondado com alturas compacta, padrão e proeminente de 32px, 40px e 48px; no mobile, o mínimo é 44px.
+- **Shape:** retângulo suavemente arredondado com alturas compacta, padrão e proeminente de 32px, 40px e 48px; no Android, qualquer variante mantém alvo mínimo de 48dp em toda largura.
 - **Primary:** teal sólido, texto de alto contraste, ícone opcional de 16px ou 20px e padding horizontal associado ao tamanho.
 - **Secondary / Ghost:** canvas com borda forte ou fundo transparente; ambos recebem superfície alternativa no hover.
 - **Danger:** vermelho semântico, reservado a ações destrutivas.
@@ -316,6 +320,21 @@ A visão geral funciona como fechamento de caixa imediato: distingue dinheiro di
 **The Currency Isolation Rule.** Cada moeda constitui uma visão financeira completa e independente; nenhum total, posição ou lançamento de outra moeda atravessa a seleção ativa.
 
 **The Liability Separation Rule.** Dívida de cartão explica a posição, mas nunca é incorporada silenciosamente ao saldo de caixa.
+
+### Wealth Dossier
+
+Patrimônio é um dossiê verificável, não um número isolado: reúne balanço líquido, meta prioritária e registros manuais sem apresentar avaliações como fatos do livro-caixa.
+
+- **First viewport:** o balanço líquido e a meta prioritária permanecem juntos na abertura; no compacto ou com texto ampliado, o balanço vem primeiro e nenhum dado é removido.
+- **Traceable composition:** patrimônio líquido é a soma de saldos confirmados positivos e ativos manuais ativos, menos saldos confirmados negativos e dívidas manuais ativas. Totais de ativos e obrigações apontam para registros com nome, valor exato, origem ou tipo e data de avaliação ou atualização; moedas nunca se misturam.
+- **Priority goal:** existe no máximo uma meta prioritária por moeda. Alvo, reservado, restante e progresso são derivados e não movimentam contas.
+- **Manual records:** ativos declaram valor conhecido e data de avaliação; dívidas declaram valor original, saldo devedor, taxa anual, vencimento quando houver e data de atualização. Não se presume cotação, amortização ou atualização automática.
+- **Management:** metas, ativos e dívidas permanecem acessíveis em uma faixa manual com ações rotuladas de editar, pausar e retomar; metas podem ser concluídas e dívidas, liquidadas, sempre após confirmação explícita. Pausar remove o registro dos totais ou metas visíveis sem apagar sua configuração; concluir e liquidar preservam o registro no gerenciamento.
+- **Responsive semantics:** pares de rótulo e valor, identidade e valor, e grupos de ações oferecem pontos de quebra antes de competir por espaço. Texto ampliado preserva integralmente rótulos como “Ativos acompanhados”, “Obrigações acompanhadas”, “Falta reservar” e “Valor alvo”, além do valor exato e de seu `MoneySemantic` contextual.
+
+**The Traceable Net Worth Rule.** Todo patrimônio líquido deve ser reconciliável com os ativos e as dívidas que o compõem, na mesma moeda e sem avaliações automáticas implícitas.
+
+**The Manual Lifecycle Rule.** Editar preserva identidade; pausar é reversível; concluir uma meta e liquidar uma dívida são estados finais confirmados, não exclusões.
 
 ### Card Statement
 
@@ -402,7 +421,7 @@ O planejamento mensal reconcilia limites, gasto registrado e compromissos projet
 - **Do** separar configuração, ciclo de vida e cadastro de conta dos lançamentos financeiros.
 - **Do** usar verbos que nomeiam o objeto da ação, como cadastrar, salvar, arquivar e restaurar.
 - **Do** preservar valores exatos, formatação pt-BR, algarismos tabulares, modo privacidade e rótulos acessíveis.
-- **Do** empilhar seções e campos no mobile, mantendo alvos de toque de pelo menos 44px.
+- **Do** empilhar seções e campos no compacto, usar gutters de 16px no compacto e 24px no amplo e, no Android, manter alvos de toque de pelo menos 48dp em qualquer largura.
 - **Do** manter valor e estado escaneáveis no ledger, inclusive com texto ampliado, seleção ativa e modo privacidade.
 - **Do** agrupar transações por dia no mobile e manter o ledger visível ao abrir o painel contextual no desktop expandido.
 - **Do** explicar separadamente o impacto de cancelar uma transação persistida e de descartar um rascunho não salvo, oferecendo uma ação segura inequívoca em ambos os casos.
@@ -413,6 +432,8 @@ O planejamento mensal reconcilia limites, gasto registrado e compromissos projet
 - **Do** preservar a ordem mensal posição, orçamentos, agenda, assinaturas, lembretes e gerenciamento quando faixas paralelas virarem uma pilha.
 - **Do** reconciliar cada orçamento com gasto, limite, percentual e estado explícito, mantendo os valores ocultáveis sem remover sua relação.
 - **Do** manter formulários de planejamento abertos durante a persistência e, em falha, conservar os campos preenchidos para nova tentativa.
+- **Do** manter balanço e meta prioritária no primeiro viewport do patrimônio e tornar seus totais reconciliáveis com ativos, dívidas e datas de referência.
+- **Do** declarar `MoneySemantic` pelo contexto e criar pontos de quebra que preservem rótulo, valor exato e ação sob texto ampliado.
 
 ### Don't:
 
@@ -432,3 +453,4 @@ O planejamento mensal reconcilia limites, gasto registrado e compromissos projet
 - **Don't** apresentar recorrências, assinaturas ou lembretes locais como transações confirmadas ou como notificações entregues pelo sistema operacional.
 - **Don't** apagar a configuração ao pausar um orçamento ou compromisso, nem ocultar itens pausados da área em que podem ser retomados.
 - **Don't** permitir descarte ou envios duplicados enquanto um formulário de planejamento estiver salvando.
+- **Don't** apresentar patrimônio líquido sem composição rastreável, tratar registros manuais como cotações automáticas ou remover itens pausados, concluídos e liquidados do gerenciamento.

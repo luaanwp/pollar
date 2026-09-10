@@ -8,9 +8,11 @@ import '../../features/design_system/presentation/forms_catalog_screen.dart';
 import '../../features/overview/presentation/overview_screen.dart';
 import '../../features/planning/presentation/planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
+import '../../features/settings/presentation/more_screen.dart';
 import '../../features/statements/presentation/card_statement_screen.dart';
 import '../../features/transactions/presentation/transactions_screen.dart';
 import '../../features/transactions/presentation/transaction_form_screen.dart';
+import '../../features/wealth/presentation/wealth_screen.dart';
 import 'app_shell.dart';
 
 /// The app's [GoRouter]. A [StatefulShellRoute.indexedStack] keeps a separate
@@ -91,12 +93,26 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/settings',
-                builder: (context, state) => const SettingsScreen(),
+                path: '/more',
+                builder: (context, state) => const MoreScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'wealth',
+                    builder: (context, state) => const WealthScreen(),
+                  ),
+                  GoRoute(
+                    path: 'settings',
+                    builder: (context, state) => const SettingsScreen(),
+                  ),
+                ],
               ),
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: '/settings',
+        redirect: (context, state) => '/more/settings',
       ),
     ],
   );

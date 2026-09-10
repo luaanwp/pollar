@@ -50,7 +50,10 @@ class MoneyText extends StatelessWidget {
       color = money.isNegative ? pollar.danger : pollar.success;
     }
 
-    final text = formatter.format(money, showSign: showSign);
+    final exactText = formatter.format(money, showSign: showSign);
+    final text = allowWrap
+        ? exactText.replaceAll(' ', ' \u200B').replaceAll('.', '.\u200B')
+        : exactText;
 
     final meaning = switch (semantic) {
       MoneySemantic.balance => 'saldo',
@@ -66,8 +69,8 @@ class MoneyText extends StatelessWidget {
             : 'entrada',
     };
     final semanticsLabel = meaning.isEmpty
-        ? '${money.currency.code} $text'
-        : '$meaning, ${money.currency.code} $text';
+        ? '${money.currency.code} $exactText'
+        : '$meaning, ${money.currency.code} $exactText';
 
     return Text(
       text,

@@ -59,6 +59,29 @@ void main() {
     }
   });
 
+  testWidgets('wide Android actions also keep a 48 dp target', (tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    tester.view.physicalSize = const Size(1200, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    try {
+      await tester.pumpWidget(
+        app(
+          PollarButton(
+            label: 'Atualizar',
+            size: PollarControlSize.compact,
+            onPressed: () {},
+          ),
+        ),
+      );
+
+      expect(tester.getSize(find.byType(PollarButton)).height, 48);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
+
   testWidgets('form controls forward explicit values', (tester) async {
     int? selected;
     bool? checked = false;

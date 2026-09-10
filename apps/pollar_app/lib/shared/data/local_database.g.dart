@@ -3149,6 +3149,2052 @@ class RecurringRuleEntriesCompanion
   }
 }
 
+class $WealthGoalEntriesTable extends WealthGoalEntries
+    with TableInfo<$WealthGoalEntriesTable, StoredWealthGoal> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WealthGoalEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetMinorMeta = const VerificationMeta(
+    'targetMinor',
+  );
+  @override
+  late final GeneratedColumn<int> targetMinor = GeneratedColumn<int>(
+    'target_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _savedMinorMeta = const VerificationMeta(
+    'savedMinor',
+  );
+  @override
+  late final GeneratedColumn<int> savedMinor = GeneratedColumn<int>(
+    'saved_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyCodeMeta = const VerificationMeta(
+    'currencyCode',
+  );
+  @override
+  late final GeneratedColumn<String> currencyCode = GeneratedColumn<String>(
+    'currency_code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyDecimalDigitsMeta =
+      const VerificationMeta('currencyDecimalDigits');
+  @override
+  late final GeneratedColumn<int> currencyDecimalDigits = GeneratedColumn<int>(
+    'currency_decimal_digits',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencySymbolMeta = const VerificationMeta(
+    'currencySymbol',
+  );
+  @override
+  late final GeneratedColumn<String> currencySymbol = GeneratedColumn<String>(
+    'currency_symbol',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMicrosMeta = const VerificationMeta(
+    'createdAtMicros',
+  );
+  @override
+  late final GeneratedColumn<int> createdAtMicros = GeneratedColumn<int>(
+    'created_at_micros',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deadlineMicrosMeta = const VerificationMeta(
+    'deadlineMicros',
+  );
+  @override
+  late final GeneratedColumn<int> deadlineMicros = GeneratedColumn<int>(
+    'deadline_micros',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<bool> priority = GeneratedColumn<bool>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("priority" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _activeMeta = const VerificationMeta('active');
+  @override
+  late final GeneratedColumn<bool> active = GeneratedColumn<bool>(
+    'active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    targetMinor,
+    savedMinor,
+    currencyCode,
+    currencyDecimalDigits,
+    currencySymbol,
+    createdAtMicros,
+    deadlineMicros,
+    priority,
+    active,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'wealth_goal_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoredWealthGoal> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('target_minor')) {
+      context.handle(
+        _targetMinorMeta,
+        targetMinor.isAcceptableOrUnknown(
+          data['target_minor']!,
+          _targetMinorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_targetMinorMeta);
+    }
+    if (data.containsKey('saved_minor')) {
+      context.handle(
+        _savedMinorMeta,
+        savedMinor.isAcceptableOrUnknown(data['saved_minor']!, _savedMinorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_savedMinorMeta);
+    }
+    if (data.containsKey('currency_code')) {
+      context.handle(
+        _currencyCodeMeta,
+        currencyCode.isAcceptableOrUnknown(
+          data['currency_code']!,
+          _currencyCodeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyCodeMeta);
+    }
+    if (data.containsKey('currency_decimal_digits')) {
+      context.handle(
+        _currencyDecimalDigitsMeta,
+        currencyDecimalDigits.isAcceptableOrUnknown(
+          data['currency_decimal_digits']!,
+          _currencyDecimalDigitsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyDecimalDigitsMeta);
+    }
+    if (data.containsKey('currency_symbol')) {
+      context.handle(
+        _currencySymbolMeta,
+        currencySymbol.isAcceptableOrUnknown(
+          data['currency_symbol']!,
+          _currencySymbolMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencySymbolMeta);
+    }
+    if (data.containsKey('created_at_micros')) {
+      context.handle(
+        _createdAtMicrosMeta,
+        createdAtMicros.isAcceptableOrUnknown(
+          data['created_at_micros']!,
+          _createdAtMicrosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMicrosMeta);
+    }
+    if (data.containsKey('deadline_micros')) {
+      context.handle(
+        _deadlineMicrosMeta,
+        deadlineMicros.isAcceptableOrUnknown(
+          data['deadline_micros']!,
+          _deadlineMicrosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
+    if (data.containsKey('active')) {
+      context.handle(
+        _activeMeta,
+        active.isAcceptableOrUnknown(data['active']!, _activeMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoredWealthGoal map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoredWealthGoal(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      targetMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}target_minor'],
+      )!,
+      savedMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}saved_minor'],
+      )!,
+      currencyCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency_code'],
+      )!,
+      currencyDecimalDigits: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}currency_decimal_digits'],
+      )!,
+      currencySymbol: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency_symbol'],
+      )!,
+      createdAtMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at_micros'],
+      )!,
+      deadlineMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}deadline_micros'],
+      ),
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}priority'],
+      )!,
+      active: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}active'],
+      )!,
+    );
+  }
+
+  @override
+  $WealthGoalEntriesTable createAlias(String alias) {
+    return $WealthGoalEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class StoredWealthGoal extends DataClass
+    implements Insertable<StoredWealthGoal> {
+  final String id;
+  final String name;
+  final int targetMinor;
+  final int savedMinor;
+  final String currencyCode;
+  final int currencyDecimalDigits;
+  final String currencySymbol;
+  final int createdAtMicros;
+  final int? deadlineMicros;
+  final bool priority;
+  final bool active;
+  const StoredWealthGoal({
+    required this.id,
+    required this.name,
+    required this.targetMinor,
+    required this.savedMinor,
+    required this.currencyCode,
+    required this.currencyDecimalDigits,
+    required this.currencySymbol,
+    required this.createdAtMicros,
+    this.deadlineMicros,
+    required this.priority,
+    required this.active,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['target_minor'] = Variable<int>(targetMinor);
+    map['saved_minor'] = Variable<int>(savedMinor);
+    map['currency_code'] = Variable<String>(currencyCode);
+    map['currency_decimal_digits'] = Variable<int>(currencyDecimalDigits);
+    map['currency_symbol'] = Variable<String>(currencySymbol);
+    map['created_at_micros'] = Variable<int>(createdAtMicros);
+    if (!nullToAbsent || deadlineMicros != null) {
+      map['deadline_micros'] = Variable<int>(deadlineMicros);
+    }
+    map['priority'] = Variable<bool>(priority);
+    map['active'] = Variable<bool>(active);
+    return map;
+  }
+
+  WealthGoalEntriesCompanion toCompanion(bool nullToAbsent) {
+    return WealthGoalEntriesCompanion(
+      id: Value(id),
+      name: Value(name),
+      targetMinor: Value(targetMinor),
+      savedMinor: Value(savedMinor),
+      currencyCode: Value(currencyCode),
+      currencyDecimalDigits: Value(currencyDecimalDigits),
+      currencySymbol: Value(currencySymbol),
+      createdAtMicros: Value(createdAtMicros),
+      deadlineMicros: deadlineMicros == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deadlineMicros),
+      priority: Value(priority),
+      active: Value(active),
+    );
+  }
+
+  factory StoredWealthGoal.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoredWealthGoal(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      targetMinor: serializer.fromJson<int>(json['targetMinor']),
+      savedMinor: serializer.fromJson<int>(json['savedMinor']),
+      currencyCode: serializer.fromJson<String>(json['currencyCode']),
+      currencyDecimalDigits: serializer.fromJson<int>(
+        json['currencyDecimalDigits'],
+      ),
+      currencySymbol: serializer.fromJson<String>(json['currencySymbol']),
+      createdAtMicros: serializer.fromJson<int>(json['createdAtMicros']),
+      deadlineMicros: serializer.fromJson<int?>(json['deadlineMicros']),
+      priority: serializer.fromJson<bool>(json['priority']),
+      active: serializer.fromJson<bool>(json['active']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'targetMinor': serializer.toJson<int>(targetMinor),
+      'savedMinor': serializer.toJson<int>(savedMinor),
+      'currencyCode': serializer.toJson<String>(currencyCode),
+      'currencyDecimalDigits': serializer.toJson<int>(currencyDecimalDigits),
+      'currencySymbol': serializer.toJson<String>(currencySymbol),
+      'createdAtMicros': serializer.toJson<int>(createdAtMicros),
+      'deadlineMicros': serializer.toJson<int?>(deadlineMicros),
+      'priority': serializer.toJson<bool>(priority),
+      'active': serializer.toJson<bool>(active),
+    };
+  }
+
+  StoredWealthGoal copyWith({
+    String? id,
+    String? name,
+    int? targetMinor,
+    int? savedMinor,
+    String? currencyCode,
+    int? currencyDecimalDigits,
+    String? currencySymbol,
+    int? createdAtMicros,
+    Value<int?> deadlineMicros = const Value.absent(),
+    bool? priority,
+    bool? active,
+  }) => StoredWealthGoal(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    targetMinor: targetMinor ?? this.targetMinor,
+    savedMinor: savedMinor ?? this.savedMinor,
+    currencyCode: currencyCode ?? this.currencyCode,
+    currencyDecimalDigits: currencyDecimalDigits ?? this.currencyDecimalDigits,
+    currencySymbol: currencySymbol ?? this.currencySymbol,
+    createdAtMicros: createdAtMicros ?? this.createdAtMicros,
+    deadlineMicros: deadlineMicros.present
+        ? deadlineMicros.value
+        : this.deadlineMicros,
+    priority: priority ?? this.priority,
+    active: active ?? this.active,
+  );
+  StoredWealthGoal copyWithCompanion(WealthGoalEntriesCompanion data) {
+    return StoredWealthGoal(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      targetMinor: data.targetMinor.present
+          ? data.targetMinor.value
+          : this.targetMinor,
+      savedMinor: data.savedMinor.present
+          ? data.savedMinor.value
+          : this.savedMinor,
+      currencyCode: data.currencyCode.present
+          ? data.currencyCode.value
+          : this.currencyCode,
+      currencyDecimalDigits: data.currencyDecimalDigits.present
+          ? data.currencyDecimalDigits.value
+          : this.currencyDecimalDigits,
+      currencySymbol: data.currencySymbol.present
+          ? data.currencySymbol.value
+          : this.currencySymbol,
+      createdAtMicros: data.createdAtMicros.present
+          ? data.createdAtMicros.value
+          : this.createdAtMicros,
+      deadlineMicros: data.deadlineMicros.present
+          ? data.deadlineMicros.value
+          : this.deadlineMicros,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      active: data.active.present ? data.active.value : this.active,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoredWealthGoal(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('targetMinor: $targetMinor, ')
+          ..write('savedMinor: $savedMinor, ')
+          ..write('currencyCode: $currencyCode, ')
+          ..write('currencyDecimalDigits: $currencyDecimalDigits, ')
+          ..write('currencySymbol: $currencySymbol, ')
+          ..write('createdAtMicros: $createdAtMicros, ')
+          ..write('deadlineMicros: $deadlineMicros, ')
+          ..write('priority: $priority, ')
+          ..write('active: $active')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    targetMinor,
+    savedMinor,
+    currencyCode,
+    currencyDecimalDigits,
+    currencySymbol,
+    createdAtMicros,
+    deadlineMicros,
+    priority,
+    active,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoredWealthGoal &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.targetMinor == this.targetMinor &&
+          other.savedMinor == this.savedMinor &&
+          other.currencyCode == this.currencyCode &&
+          other.currencyDecimalDigits == this.currencyDecimalDigits &&
+          other.currencySymbol == this.currencySymbol &&
+          other.createdAtMicros == this.createdAtMicros &&
+          other.deadlineMicros == this.deadlineMicros &&
+          other.priority == this.priority &&
+          other.active == this.active);
+}
+
+class WealthGoalEntriesCompanion extends UpdateCompanion<StoredWealthGoal> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<int> targetMinor;
+  final Value<int> savedMinor;
+  final Value<String> currencyCode;
+  final Value<int> currencyDecimalDigits;
+  final Value<String> currencySymbol;
+  final Value<int> createdAtMicros;
+  final Value<int?> deadlineMicros;
+  final Value<bool> priority;
+  final Value<bool> active;
+  final Value<int> rowid;
+  const WealthGoalEntriesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.targetMinor = const Value.absent(),
+    this.savedMinor = const Value.absent(),
+    this.currencyCode = const Value.absent(),
+    this.currencyDecimalDigits = const Value.absent(),
+    this.currencySymbol = const Value.absent(),
+    this.createdAtMicros = const Value.absent(),
+    this.deadlineMicros = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.active = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WealthGoalEntriesCompanion.insert({
+    required String id,
+    required String name,
+    required int targetMinor,
+    required int savedMinor,
+    required String currencyCode,
+    required int currencyDecimalDigits,
+    required String currencySymbol,
+    required int createdAtMicros,
+    this.deadlineMicros = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.active = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       targetMinor = Value(targetMinor),
+       savedMinor = Value(savedMinor),
+       currencyCode = Value(currencyCode),
+       currencyDecimalDigits = Value(currencyDecimalDigits),
+       currencySymbol = Value(currencySymbol),
+       createdAtMicros = Value(createdAtMicros);
+  static Insertable<StoredWealthGoal> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<int>? targetMinor,
+    Expression<int>? savedMinor,
+    Expression<String>? currencyCode,
+    Expression<int>? currencyDecimalDigits,
+    Expression<String>? currencySymbol,
+    Expression<int>? createdAtMicros,
+    Expression<int>? deadlineMicros,
+    Expression<bool>? priority,
+    Expression<bool>? active,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (targetMinor != null) 'target_minor': targetMinor,
+      if (savedMinor != null) 'saved_minor': savedMinor,
+      if (currencyCode != null) 'currency_code': currencyCode,
+      if (currencyDecimalDigits != null)
+        'currency_decimal_digits': currencyDecimalDigits,
+      if (currencySymbol != null) 'currency_symbol': currencySymbol,
+      if (createdAtMicros != null) 'created_at_micros': createdAtMicros,
+      if (deadlineMicros != null) 'deadline_micros': deadlineMicros,
+      if (priority != null) 'priority': priority,
+      if (active != null) 'active': active,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WealthGoalEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<int>? targetMinor,
+    Value<int>? savedMinor,
+    Value<String>? currencyCode,
+    Value<int>? currencyDecimalDigits,
+    Value<String>? currencySymbol,
+    Value<int>? createdAtMicros,
+    Value<int?>? deadlineMicros,
+    Value<bool>? priority,
+    Value<bool>? active,
+    Value<int>? rowid,
+  }) {
+    return WealthGoalEntriesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      targetMinor: targetMinor ?? this.targetMinor,
+      savedMinor: savedMinor ?? this.savedMinor,
+      currencyCode: currencyCode ?? this.currencyCode,
+      currencyDecimalDigits:
+          currencyDecimalDigits ?? this.currencyDecimalDigits,
+      currencySymbol: currencySymbol ?? this.currencySymbol,
+      createdAtMicros: createdAtMicros ?? this.createdAtMicros,
+      deadlineMicros: deadlineMicros ?? this.deadlineMicros,
+      priority: priority ?? this.priority,
+      active: active ?? this.active,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (targetMinor.present) {
+      map['target_minor'] = Variable<int>(targetMinor.value);
+    }
+    if (savedMinor.present) {
+      map['saved_minor'] = Variable<int>(savedMinor.value);
+    }
+    if (currencyCode.present) {
+      map['currency_code'] = Variable<String>(currencyCode.value);
+    }
+    if (currencyDecimalDigits.present) {
+      map['currency_decimal_digits'] = Variable<int>(
+        currencyDecimalDigits.value,
+      );
+    }
+    if (currencySymbol.present) {
+      map['currency_symbol'] = Variable<String>(currencySymbol.value);
+    }
+    if (createdAtMicros.present) {
+      map['created_at_micros'] = Variable<int>(createdAtMicros.value);
+    }
+    if (deadlineMicros.present) {
+      map['deadline_micros'] = Variable<int>(deadlineMicros.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<bool>(priority.value);
+    }
+    if (active.present) {
+      map['active'] = Variable<bool>(active.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WealthGoalEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('targetMinor: $targetMinor, ')
+          ..write('savedMinor: $savedMinor, ')
+          ..write('currencyCode: $currencyCode, ')
+          ..write('currencyDecimalDigits: $currencyDecimalDigits, ')
+          ..write('currencySymbol: $currencySymbol, ')
+          ..write('createdAtMicros: $createdAtMicros, ')
+          ..write('deadlineMicros: $deadlineMicros, ')
+          ..write('priority: $priority, ')
+          ..write('active: $active, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WealthAssetEntriesTable extends WealthAssetEntries
+    with TableInfo<$WealthAssetEntriesTable, StoredWealthAsset> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WealthAssetEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currentValueMinorMeta = const VerificationMeta(
+    'currentValueMinor',
+  );
+  @override
+  late final GeneratedColumn<int> currentValueMinor = GeneratedColumn<int>(
+    'current_value_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyCodeMeta = const VerificationMeta(
+    'currencyCode',
+  );
+  @override
+  late final GeneratedColumn<String> currencyCode = GeneratedColumn<String>(
+    'currency_code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyDecimalDigitsMeta =
+      const VerificationMeta('currencyDecimalDigits');
+  @override
+  late final GeneratedColumn<int> currencyDecimalDigits = GeneratedColumn<int>(
+    'currency_decimal_digits',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencySymbolMeta = const VerificationMeta(
+    'currencySymbol',
+  );
+  @override
+  late final GeneratedColumn<String> currencySymbol = GeneratedColumn<String>(
+    'currency_symbol',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valuedAtMicrosMeta = const VerificationMeta(
+    'valuedAtMicros',
+  );
+  @override
+  late final GeneratedColumn<int> valuedAtMicros = GeneratedColumn<int>(
+    'valued_at_micros',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _activeMeta = const VerificationMeta('active');
+  @override
+  late final GeneratedColumn<bool> active = GeneratedColumn<bool>(
+    'active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    kind,
+    currentValueMinor,
+    currencyCode,
+    currencyDecimalDigits,
+    currencySymbol,
+    valuedAtMicros,
+    active,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'wealth_asset_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoredWealthAsset> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('current_value_minor')) {
+      context.handle(
+        _currentValueMinorMeta,
+        currentValueMinor.isAcceptableOrUnknown(
+          data['current_value_minor']!,
+          _currentValueMinorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currentValueMinorMeta);
+    }
+    if (data.containsKey('currency_code')) {
+      context.handle(
+        _currencyCodeMeta,
+        currencyCode.isAcceptableOrUnknown(
+          data['currency_code']!,
+          _currencyCodeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyCodeMeta);
+    }
+    if (data.containsKey('currency_decimal_digits')) {
+      context.handle(
+        _currencyDecimalDigitsMeta,
+        currencyDecimalDigits.isAcceptableOrUnknown(
+          data['currency_decimal_digits']!,
+          _currencyDecimalDigitsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyDecimalDigitsMeta);
+    }
+    if (data.containsKey('currency_symbol')) {
+      context.handle(
+        _currencySymbolMeta,
+        currencySymbol.isAcceptableOrUnknown(
+          data['currency_symbol']!,
+          _currencySymbolMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencySymbolMeta);
+    }
+    if (data.containsKey('valued_at_micros')) {
+      context.handle(
+        _valuedAtMicrosMeta,
+        valuedAtMicros.isAcceptableOrUnknown(
+          data['valued_at_micros']!,
+          _valuedAtMicrosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_valuedAtMicrosMeta);
+    }
+    if (data.containsKey('active')) {
+      context.handle(
+        _activeMeta,
+        active.isAcceptableOrUnknown(data['active']!, _activeMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoredWealthAsset map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoredWealthAsset(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      currentValueMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}current_value_minor'],
+      )!,
+      currencyCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency_code'],
+      )!,
+      currencyDecimalDigits: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}currency_decimal_digits'],
+      )!,
+      currencySymbol: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency_symbol'],
+      )!,
+      valuedAtMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}valued_at_micros'],
+      )!,
+      active: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}active'],
+      )!,
+    );
+  }
+
+  @override
+  $WealthAssetEntriesTable createAlias(String alias) {
+    return $WealthAssetEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class StoredWealthAsset extends DataClass
+    implements Insertable<StoredWealthAsset> {
+  final String id;
+  final String name;
+  final String kind;
+  final int currentValueMinor;
+  final String currencyCode;
+  final int currencyDecimalDigits;
+  final String currencySymbol;
+  final int valuedAtMicros;
+  final bool active;
+  const StoredWealthAsset({
+    required this.id,
+    required this.name,
+    required this.kind,
+    required this.currentValueMinor,
+    required this.currencyCode,
+    required this.currencyDecimalDigits,
+    required this.currencySymbol,
+    required this.valuedAtMicros,
+    required this.active,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['kind'] = Variable<String>(kind);
+    map['current_value_minor'] = Variable<int>(currentValueMinor);
+    map['currency_code'] = Variable<String>(currencyCode);
+    map['currency_decimal_digits'] = Variable<int>(currencyDecimalDigits);
+    map['currency_symbol'] = Variable<String>(currencySymbol);
+    map['valued_at_micros'] = Variable<int>(valuedAtMicros);
+    map['active'] = Variable<bool>(active);
+    return map;
+  }
+
+  WealthAssetEntriesCompanion toCompanion(bool nullToAbsent) {
+    return WealthAssetEntriesCompanion(
+      id: Value(id),
+      name: Value(name),
+      kind: Value(kind),
+      currentValueMinor: Value(currentValueMinor),
+      currencyCode: Value(currencyCode),
+      currencyDecimalDigits: Value(currencyDecimalDigits),
+      currencySymbol: Value(currencySymbol),
+      valuedAtMicros: Value(valuedAtMicros),
+      active: Value(active),
+    );
+  }
+
+  factory StoredWealthAsset.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoredWealthAsset(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      kind: serializer.fromJson<String>(json['kind']),
+      currentValueMinor: serializer.fromJson<int>(json['currentValueMinor']),
+      currencyCode: serializer.fromJson<String>(json['currencyCode']),
+      currencyDecimalDigits: serializer.fromJson<int>(
+        json['currencyDecimalDigits'],
+      ),
+      currencySymbol: serializer.fromJson<String>(json['currencySymbol']),
+      valuedAtMicros: serializer.fromJson<int>(json['valuedAtMicros']),
+      active: serializer.fromJson<bool>(json['active']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'kind': serializer.toJson<String>(kind),
+      'currentValueMinor': serializer.toJson<int>(currentValueMinor),
+      'currencyCode': serializer.toJson<String>(currencyCode),
+      'currencyDecimalDigits': serializer.toJson<int>(currencyDecimalDigits),
+      'currencySymbol': serializer.toJson<String>(currencySymbol),
+      'valuedAtMicros': serializer.toJson<int>(valuedAtMicros),
+      'active': serializer.toJson<bool>(active),
+    };
+  }
+
+  StoredWealthAsset copyWith({
+    String? id,
+    String? name,
+    String? kind,
+    int? currentValueMinor,
+    String? currencyCode,
+    int? currencyDecimalDigits,
+    String? currencySymbol,
+    int? valuedAtMicros,
+    bool? active,
+  }) => StoredWealthAsset(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    kind: kind ?? this.kind,
+    currentValueMinor: currentValueMinor ?? this.currentValueMinor,
+    currencyCode: currencyCode ?? this.currencyCode,
+    currencyDecimalDigits: currencyDecimalDigits ?? this.currencyDecimalDigits,
+    currencySymbol: currencySymbol ?? this.currencySymbol,
+    valuedAtMicros: valuedAtMicros ?? this.valuedAtMicros,
+    active: active ?? this.active,
+  );
+  StoredWealthAsset copyWithCompanion(WealthAssetEntriesCompanion data) {
+    return StoredWealthAsset(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      currentValueMinor: data.currentValueMinor.present
+          ? data.currentValueMinor.value
+          : this.currentValueMinor,
+      currencyCode: data.currencyCode.present
+          ? data.currencyCode.value
+          : this.currencyCode,
+      currencyDecimalDigits: data.currencyDecimalDigits.present
+          ? data.currencyDecimalDigits.value
+          : this.currencyDecimalDigits,
+      currencySymbol: data.currencySymbol.present
+          ? data.currencySymbol.value
+          : this.currencySymbol,
+      valuedAtMicros: data.valuedAtMicros.present
+          ? data.valuedAtMicros.value
+          : this.valuedAtMicros,
+      active: data.active.present ? data.active.value : this.active,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoredWealthAsset(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('currentValueMinor: $currentValueMinor, ')
+          ..write('currencyCode: $currencyCode, ')
+          ..write('currencyDecimalDigits: $currencyDecimalDigits, ')
+          ..write('currencySymbol: $currencySymbol, ')
+          ..write('valuedAtMicros: $valuedAtMicros, ')
+          ..write('active: $active')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    kind,
+    currentValueMinor,
+    currencyCode,
+    currencyDecimalDigits,
+    currencySymbol,
+    valuedAtMicros,
+    active,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoredWealthAsset &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.kind == this.kind &&
+          other.currentValueMinor == this.currentValueMinor &&
+          other.currencyCode == this.currencyCode &&
+          other.currencyDecimalDigits == this.currencyDecimalDigits &&
+          other.currencySymbol == this.currencySymbol &&
+          other.valuedAtMicros == this.valuedAtMicros &&
+          other.active == this.active);
+}
+
+class WealthAssetEntriesCompanion extends UpdateCompanion<StoredWealthAsset> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> kind;
+  final Value<int> currentValueMinor;
+  final Value<String> currencyCode;
+  final Value<int> currencyDecimalDigits;
+  final Value<String> currencySymbol;
+  final Value<int> valuedAtMicros;
+  final Value<bool> active;
+  final Value<int> rowid;
+  const WealthAssetEntriesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.currentValueMinor = const Value.absent(),
+    this.currencyCode = const Value.absent(),
+    this.currencyDecimalDigits = const Value.absent(),
+    this.currencySymbol = const Value.absent(),
+    this.valuedAtMicros = const Value.absent(),
+    this.active = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WealthAssetEntriesCompanion.insert({
+    required String id,
+    required String name,
+    required String kind,
+    required int currentValueMinor,
+    required String currencyCode,
+    required int currencyDecimalDigits,
+    required String currencySymbol,
+    required int valuedAtMicros,
+    this.active = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       kind = Value(kind),
+       currentValueMinor = Value(currentValueMinor),
+       currencyCode = Value(currencyCode),
+       currencyDecimalDigits = Value(currencyDecimalDigits),
+       currencySymbol = Value(currencySymbol),
+       valuedAtMicros = Value(valuedAtMicros);
+  static Insertable<StoredWealthAsset> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? kind,
+    Expression<int>? currentValueMinor,
+    Expression<String>? currencyCode,
+    Expression<int>? currencyDecimalDigits,
+    Expression<String>? currencySymbol,
+    Expression<int>? valuedAtMicros,
+    Expression<bool>? active,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (kind != null) 'kind': kind,
+      if (currentValueMinor != null) 'current_value_minor': currentValueMinor,
+      if (currencyCode != null) 'currency_code': currencyCode,
+      if (currencyDecimalDigits != null)
+        'currency_decimal_digits': currencyDecimalDigits,
+      if (currencySymbol != null) 'currency_symbol': currencySymbol,
+      if (valuedAtMicros != null) 'valued_at_micros': valuedAtMicros,
+      if (active != null) 'active': active,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WealthAssetEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? kind,
+    Value<int>? currentValueMinor,
+    Value<String>? currencyCode,
+    Value<int>? currencyDecimalDigits,
+    Value<String>? currencySymbol,
+    Value<int>? valuedAtMicros,
+    Value<bool>? active,
+    Value<int>? rowid,
+  }) {
+    return WealthAssetEntriesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      kind: kind ?? this.kind,
+      currentValueMinor: currentValueMinor ?? this.currentValueMinor,
+      currencyCode: currencyCode ?? this.currencyCode,
+      currencyDecimalDigits:
+          currencyDecimalDigits ?? this.currencyDecimalDigits,
+      currencySymbol: currencySymbol ?? this.currencySymbol,
+      valuedAtMicros: valuedAtMicros ?? this.valuedAtMicros,
+      active: active ?? this.active,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (currentValueMinor.present) {
+      map['current_value_minor'] = Variable<int>(currentValueMinor.value);
+    }
+    if (currencyCode.present) {
+      map['currency_code'] = Variable<String>(currencyCode.value);
+    }
+    if (currencyDecimalDigits.present) {
+      map['currency_decimal_digits'] = Variable<int>(
+        currencyDecimalDigits.value,
+      );
+    }
+    if (currencySymbol.present) {
+      map['currency_symbol'] = Variable<String>(currencySymbol.value);
+    }
+    if (valuedAtMicros.present) {
+      map['valued_at_micros'] = Variable<int>(valuedAtMicros.value);
+    }
+    if (active.present) {
+      map['active'] = Variable<bool>(active.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WealthAssetEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('currentValueMinor: $currentValueMinor, ')
+          ..write('currencyCode: $currencyCode, ')
+          ..write('currencyDecimalDigits: $currencyDecimalDigits, ')
+          ..write('currencySymbol: $currencySymbol, ')
+          ..write('valuedAtMicros: $valuedAtMicros, ')
+          ..write('active: $active, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WealthDebtEntriesTable extends WealthDebtEntries
+    with TableInfo<$WealthDebtEntriesTable, StoredWealthDebt> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WealthDebtEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _originalAmountMinorMeta =
+      const VerificationMeta('originalAmountMinor');
+  @override
+  late final GeneratedColumn<int> originalAmountMinor = GeneratedColumn<int>(
+    'original_amount_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _outstandingAmountMinorMeta =
+      const VerificationMeta('outstandingAmountMinor');
+  @override
+  late final GeneratedColumn<int> outstandingAmountMinor = GeneratedColumn<int>(
+    'outstanding_amount_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyCodeMeta = const VerificationMeta(
+    'currencyCode',
+  );
+  @override
+  late final GeneratedColumn<String> currencyCode = GeneratedColumn<String>(
+    'currency_code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyDecimalDigitsMeta =
+      const VerificationMeta('currencyDecimalDigits');
+  @override
+  late final GeneratedColumn<int> currencyDecimalDigits = GeneratedColumn<int>(
+    'currency_decimal_digits',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencySymbolMeta = const VerificationMeta(
+    'currencySymbol',
+  );
+  @override
+  late final GeneratedColumn<String> currencySymbol = GeneratedColumn<String>(
+    'currency_symbol',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _annualInterestBasisPointsMeta =
+      const VerificationMeta('annualInterestBasisPoints');
+  @override
+  late final GeneratedColumn<int> annualInterestBasisPoints =
+      GeneratedColumn<int>(
+        'annual_interest_basis_points',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0),
+      );
+  static const VerificationMeta _dueDateMicrosMeta = const VerificationMeta(
+    'dueDateMicros',
+  );
+  @override
+  late final GeneratedColumn<int> dueDateMicros = GeneratedColumn<int>(
+    'due_date_micros',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMicrosMeta = const VerificationMeta(
+    'updatedAtMicros',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAtMicros = GeneratedColumn<int>(
+    'updated_at_micros',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _activeMeta = const VerificationMeta('active');
+  @override
+  late final GeneratedColumn<bool> active = GeneratedColumn<bool>(
+    'active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    kind,
+    originalAmountMinor,
+    outstandingAmountMinor,
+    currencyCode,
+    currencyDecimalDigits,
+    currencySymbol,
+    annualInterestBasisPoints,
+    dueDateMicros,
+    updatedAtMicros,
+    active,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'wealth_debt_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoredWealthDebt> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('original_amount_minor')) {
+      context.handle(
+        _originalAmountMinorMeta,
+        originalAmountMinor.isAcceptableOrUnknown(
+          data['original_amount_minor']!,
+          _originalAmountMinorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_originalAmountMinorMeta);
+    }
+    if (data.containsKey('outstanding_amount_minor')) {
+      context.handle(
+        _outstandingAmountMinorMeta,
+        outstandingAmountMinor.isAcceptableOrUnknown(
+          data['outstanding_amount_minor']!,
+          _outstandingAmountMinorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_outstandingAmountMinorMeta);
+    }
+    if (data.containsKey('currency_code')) {
+      context.handle(
+        _currencyCodeMeta,
+        currencyCode.isAcceptableOrUnknown(
+          data['currency_code']!,
+          _currencyCodeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyCodeMeta);
+    }
+    if (data.containsKey('currency_decimal_digits')) {
+      context.handle(
+        _currencyDecimalDigitsMeta,
+        currencyDecimalDigits.isAcceptableOrUnknown(
+          data['currency_decimal_digits']!,
+          _currencyDecimalDigitsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyDecimalDigitsMeta);
+    }
+    if (data.containsKey('currency_symbol')) {
+      context.handle(
+        _currencySymbolMeta,
+        currencySymbol.isAcceptableOrUnknown(
+          data['currency_symbol']!,
+          _currencySymbolMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencySymbolMeta);
+    }
+    if (data.containsKey('annual_interest_basis_points')) {
+      context.handle(
+        _annualInterestBasisPointsMeta,
+        annualInterestBasisPoints.isAcceptableOrUnknown(
+          data['annual_interest_basis_points']!,
+          _annualInterestBasisPointsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('due_date_micros')) {
+      context.handle(
+        _dueDateMicrosMeta,
+        dueDateMicros.isAcceptableOrUnknown(
+          data['due_date_micros']!,
+          _dueDateMicrosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at_micros')) {
+      context.handle(
+        _updatedAtMicrosMeta,
+        updatedAtMicros.isAcceptableOrUnknown(
+          data['updated_at_micros']!,
+          _updatedAtMicrosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMicrosMeta);
+    }
+    if (data.containsKey('active')) {
+      context.handle(
+        _activeMeta,
+        active.isAcceptableOrUnknown(data['active']!, _activeMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoredWealthDebt map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoredWealthDebt(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      originalAmountMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}original_amount_minor'],
+      )!,
+      outstandingAmountMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}outstanding_amount_minor'],
+      )!,
+      currencyCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency_code'],
+      )!,
+      currencyDecimalDigits: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}currency_decimal_digits'],
+      )!,
+      currencySymbol: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency_symbol'],
+      )!,
+      annualInterestBasisPoints: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}annual_interest_basis_points'],
+      )!,
+      dueDateMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}due_date_micros'],
+      ),
+      updatedAtMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at_micros'],
+      )!,
+      active: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}active'],
+      )!,
+    );
+  }
+
+  @override
+  $WealthDebtEntriesTable createAlias(String alias) {
+    return $WealthDebtEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class StoredWealthDebt extends DataClass
+    implements Insertable<StoredWealthDebt> {
+  final String id;
+  final String name;
+  final String kind;
+  final int originalAmountMinor;
+  final int outstandingAmountMinor;
+  final String currencyCode;
+  final int currencyDecimalDigits;
+  final String currencySymbol;
+  final int annualInterestBasisPoints;
+  final int? dueDateMicros;
+  final int updatedAtMicros;
+  final bool active;
+  const StoredWealthDebt({
+    required this.id,
+    required this.name,
+    required this.kind,
+    required this.originalAmountMinor,
+    required this.outstandingAmountMinor,
+    required this.currencyCode,
+    required this.currencyDecimalDigits,
+    required this.currencySymbol,
+    required this.annualInterestBasisPoints,
+    this.dueDateMicros,
+    required this.updatedAtMicros,
+    required this.active,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['kind'] = Variable<String>(kind);
+    map['original_amount_minor'] = Variable<int>(originalAmountMinor);
+    map['outstanding_amount_minor'] = Variable<int>(outstandingAmountMinor);
+    map['currency_code'] = Variable<String>(currencyCode);
+    map['currency_decimal_digits'] = Variable<int>(currencyDecimalDigits);
+    map['currency_symbol'] = Variable<String>(currencySymbol);
+    map['annual_interest_basis_points'] = Variable<int>(
+      annualInterestBasisPoints,
+    );
+    if (!nullToAbsent || dueDateMicros != null) {
+      map['due_date_micros'] = Variable<int>(dueDateMicros);
+    }
+    map['updated_at_micros'] = Variable<int>(updatedAtMicros);
+    map['active'] = Variable<bool>(active);
+    return map;
+  }
+
+  WealthDebtEntriesCompanion toCompanion(bool nullToAbsent) {
+    return WealthDebtEntriesCompanion(
+      id: Value(id),
+      name: Value(name),
+      kind: Value(kind),
+      originalAmountMinor: Value(originalAmountMinor),
+      outstandingAmountMinor: Value(outstandingAmountMinor),
+      currencyCode: Value(currencyCode),
+      currencyDecimalDigits: Value(currencyDecimalDigits),
+      currencySymbol: Value(currencySymbol),
+      annualInterestBasisPoints: Value(annualInterestBasisPoints),
+      dueDateMicros: dueDateMicros == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dueDateMicros),
+      updatedAtMicros: Value(updatedAtMicros),
+      active: Value(active),
+    );
+  }
+
+  factory StoredWealthDebt.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoredWealthDebt(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      kind: serializer.fromJson<String>(json['kind']),
+      originalAmountMinor: serializer.fromJson<int>(
+        json['originalAmountMinor'],
+      ),
+      outstandingAmountMinor: serializer.fromJson<int>(
+        json['outstandingAmountMinor'],
+      ),
+      currencyCode: serializer.fromJson<String>(json['currencyCode']),
+      currencyDecimalDigits: serializer.fromJson<int>(
+        json['currencyDecimalDigits'],
+      ),
+      currencySymbol: serializer.fromJson<String>(json['currencySymbol']),
+      annualInterestBasisPoints: serializer.fromJson<int>(
+        json['annualInterestBasisPoints'],
+      ),
+      dueDateMicros: serializer.fromJson<int?>(json['dueDateMicros']),
+      updatedAtMicros: serializer.fromJson<int>(json['updatedAtMicros']),
+      active: serializer.fromJson<bool>(json['active']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'kind': serializer.toJson<String>(kind),
+      'originalAmountMinor': serializer.toJson<int>(originalAmountMinor),
+      'outstandingAmountMinor': serializer.toJson<int>(outstandingAmountMinor),
+      'currencyCode': serializer.toJson<String>(currencyCode),
+      'currencyDecimalDigits': serializer.toJson<int>(currencyDecimalDigits),
+      'currencySymbol': serializer.toJson<String>(currencySymbol),
+      'annualInterestBasisPoints': serializer.toJson<int>(
+        annualInterestBasisPoints,
+      ),
+      'dueDateMicros': serializer.toJson<int?>(dueDateMicros),
+      'updatedAtMicros': serializer.toJson<int>(updatedAtMicros),
+      'active': serializer.toJson<bool>(active),
+    };
+  }
+
+  StoredWealthDebt copyWith({
+    String? id,
+    String? name,
+    String? kind,
+    int? originalAmountMinor,
+    int? outstandingAmountMinor,
+    String? currencyCode,
+    int? currencyDecimalDigits,
+    String? currencySymbol,
+    int? annualInterestBasisPoints,
+    Value<int?> dueDateMicros = const Value.absent(),
+    int? updatedAtMicros,
+    bool? active,
+  }) => StoredWealthDebt(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    kind: kind ?? this.kind,
+    originalAmountMinor: originalAmountMinor ?? this.originalAmountMinor,
+    outstandingAmountMinor:
+        outstandingAmountMinor ?? this.outstandingAmountMinor,
+    currencyCode: currencyCode ?? this.currencyCode,
+    currencyDecimalDigits: currencyDecimalDigits ?? this.currencyDecimalDigits,
+    currencySymbol: currencySymbol ?? this.currencySymbol,
+    annualInterestBasisPoints:
+        annualInterestBasisPoints ?? this.annualInterestBasisPoints,
+    dueDateMicros: dueDateMicros.present
+        ? dueDateMicros.value
+        : this.dueDateMicros,
+    updatedAtMicros: updatedAtMicros ?? this.updatedAtMicros,
+    active: active ?? this.active,
+  );
+  StoredWealthDebt copyWithCompanion(WealthDebtEntriesCompanion data) {
+    return StoredWealthDebt(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      originalAmountMinor: data.originalAmountMinor.present
+          ? data.originalAmountMinor.value
+          : this.originalAmountMinor,
+      outstandingAmountMinor: data.outstandingAmountMinor.present
+          ? data.outstandingAmountMinor.value
+          : this.outstandingAmountMinor,
+      currencyCode: data.currencyCode.present
+          ? data.currencyCode.value
+          : this.currencyCode,
+      currencyDecimalDigits: data.currencyDecimalDigits.present
+          ? data.currencyDecimalDigits.value
+          : this.currencyDecimalDigits,
+      currencySymbol: data.currencySymbol.present
+          ? data.currencySymbol.value
+          : this.currencySymbol,
+      annualInterestBasisPoints: data.annualInterestBasisPoints.present
+          ? data.annualInterestBasisPoints.value
+          : this.annualInterestBasisPoints,
+      dueDateMicros: data.dueDateMicros.present
+          ? data.dueDateMicros.value
+          : this.dueDateMicros,
+      updatedAtMicros: data.updatedAtMicros.present
+          ? data.updatedAtMicros.value
+          : this.updatedAtMicros,
+      active: data.active.present ? data.active.value : this.active,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoredWealthDebt(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('originalAmountMinor: $originalAmountMinor, ')
+          ..write('outstandingAmountMinor: $outstandingAmountMinor, ')
+          ..write('currencyCode: $currencyCode, ')
+          ..write('currencyDecimalDigits: $currencyDecimalDigits, ')
+          ..write('currencySymbol: $currencySymbol, ')
+          ..write('annualInterestBasisPoints: $annualInterestBasisPoints, ')
+          ..write('dueDateMicros: $dueDateMicros, ')
+          ..write('updatedAtMicros: $updatedAtMicros, ')
+          ..write('active: $active')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    kind,
+    originalAmountMinor,
+    outstandingAmountMinor,
+    currencyCode,
+    currencyDecimalDigits,
+    currencySymbol,
+    annualInterestBasisPoints,
+    dueDateMicros,
+    updatedAtMicros,
+    active,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoredWealthDebt &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.kind == this.kind &&
+          other.originalAmountMinor == this.originalAmountMinor &&
+          other.outstandingAmountMinor == this.outstandingAmountMinor &&
+          other.currencyCode == this.currencyCode &&
+          other.currencyDecimalDigits == this.currencyDecimalDigits &&
+          other.currencySymbol == this.currencySymbol &&
+          other.annualInterestBasisPoints == this.annualInterestBasisPoints &&
+          other.dueDateMicros == this.dueDateMicros &&
+          other.updatedAtMicros == this.updatedAtMicros &&
+          other.active == this.active);
+}
+
+class WealthDebtEntriesCompanion extends UpdateCompanion<StoredWealthDebt> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> kind;
+  final Value<int> originalAmountMinor;
+  final Value<int> outstandingAmountMinor;
+  final Value<String> currencyCode;
+  final Value<int> currencyDecimalDigits;
+  final Value<String> currencySymbol;
+  final Value<int> annualInterestBasisPoints;
+  final Value<int?> dueDateMicros;
+  final Value<int> updatedAtMicros;
+  final Value<bool> active;
+  final Value<int> rowid;
+  const WealthDebtEntriesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.originalAmountMinor = const Value.absent(),
+    this.outstandingAmountMinor = const Value.absent(),
+    this.currencyCode = const Value.absent(),
+    this.currencyDecimalDigits = const Value.absent(),
+    this.currencySymbol = const Value.absent(),
+    this.annualInterestBasisPoints = const Value.absent(),
+    this.dueDateMicros = const Value.absent(),
+    this.updatedAtMicros = const Value.absent(),
+    this.active = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WealthDebtEntriesCompanion.insert({
+    required String id,
+    required String name,
+    required String kind,
+    required int originalAmountMinor,
+    required int outstandingAmountMinor,
+    required String currencyCode,
+    required int currencyDecimalDigits,
+    required String currencySymbol,
+    this.annualInterestBasisPoints = const Value.absent(),
+    this.dueDateMicros = const Value.absent(),
+    required int updatedAtMicros,
+    this.active = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       kind = Value(kind),
+       originalAmountMinor = Value(originalAmountMinor),
+       outstandingAmountMinor = Value(outstandingAmountMinor),
+       currencyCode = Value(currencyCode),
+       currencyDecimalDigits = Value(currencyDecimalDigits),
+       currencySymbol = Value(currencySymbol),
+       updatedAtMicros = Value(updatedAtMicros);
+  static Insertable<StoredWealthDebt> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? kind,
+    Expression<int>? originalAmountMinor,
+    Expression<int>? outstandingAmountMinor,
+    Expression<String>? currencyCode,
+    Expression<int>? currencyDecimalDigits,
+    Expression<String>? currencySymbol,
+    Expression<int>? annualInterestBasisPoints,
+    Expression<int>? dueDateMicros,
+    Expression<int>? updatedAtMicros,
+    Expression<bool>? active,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (kind != null) 'kind': kind,
+      if (originalAmountMinor != null)
+        'original_amount_minor': originalAmountMinor,
+      if (outstandingAmountMinor != null)
+        'outstanding_amount_minor': outstandingAmountMinor,
+      if (currencyCode != null) 'currency_code': currencyCode,
+      if (currencyDecimalDigits != null)
+        'currency_decimal_digits': currencyDecimalDigits,
+      if (currencySymbol != null) 'currency_symbol': currencySymbol,
+      if (annualInterestBasisPoints != null)
+        'annual_interest_basis_points': annualInterestBasisPoints,
+      if (dueDateMicros != null) 'due_date_micros': dueDateMicros,
+      if (updatedAtMicros != null) 'updated_at_micros': updatedAtMicros,
+      if (active != null) 'active': active,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WealthDebtEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? kind,
+    Value<int>? originalAmountMinor,
+    Value<int>? outstandingAmountMinor,
+    Value<String>? currencyCode,
+    Value<int>? currencyDecimalDigits,
+    Value<String>? currencySymbol,
+    Value<int>? annualInterestBasisPoints,
+    Value<int?>? dueDateMicros,
+    Value<int>? updatedAtMicros,
+    Value<bool>? active,
+    Value<int>? rowid,
+  }) {
+    return WealthDebtEntriesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      kind: kind ?? this.kind,
+      originalAmountMinor: originalAmountMinor ?? this.originalAmountMinor,
+      outstandingAmountMinor:
+          outstandingAmountMinor ?? this.outstandingAmountMinor,
+      currencyCode: currencyCode ?? this.currencyCode,
+      currencyDecimalDigits:
+          currencyDecimalDigits ?? this.currencyDecimalDigits,
+      currencySymbol: currencySymbol ?? this.currencySymbol,
+      annualInterestBasisPoints:
+          annualInterestBasisPoints ?? this.annualInterestBasisPoints,
+      dueDateMicros: dueDateMicros ?? this.dueDateMicros,
+      updatedAtMicros: updatedAtMicros ?? this.updatedAtMicros,
+      active: active ?? this.active,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (originalAmountMinor.present) {
+      map['original_amount_minor'] = Variable<int>(originalAmountMinor.value);
+    }
+    if (outstandingAmountMinor.present) {
+      map['outstanding_amount_minor'] = Variable<int>(
+        outstandingAmountMinor.value,
+      );
+    }
+    if (currencyCode.present) {
+      map['currency_code'] = Variable<String>(currencyCode.value);
+    }
+    if (currencyDecimalDigits.present) {
+      map['currency_decimal_digits'] = Variable<int>(
+        currencyDecimalDigits.value,
+      );
+    }
+    if (currencySymbol.present) {
+      map['currency_symbol'] = Variable<String>(currencySymbol.value);
+    }
+    if (annualInterestBasisPoints.present) {
+      map['annual_interest_basis_points'] = Variable<int>(
+        annualInterestBasisPoints.value,
+      );
+    }
+    if (dueDateMicros.present) {
+      map['due_date_micros'] = Variable<int>(dueDateMicros.value);
+    }
+    if (updatedAtMicros.present) {
+      map['updated_at_micros'] = Variable<int>(updatedAtMicros.value);
+    }
+    if (active.present) {
+      map['active'] = Variable<bool>(active.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WealthDebtEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('originalAmountMinor: $originalAmountMinor, ')
+          ..write('outstandingAmountMinor: $outstandingAmountMinor, ')
+          ..write('currencyCode: $currencyCode, ')
+          ..write('currencyDecimalDigits: $currencyDecimalDigits, ')
+          ..write('currencySymbol: $currencySymbol, ')
+          ..write('annualInterestBasisPoints: $annualInterestBasisPoints, ')
+          ..write('dueDateMicros: $dueDateMicros, ')
+          ..write('updatedAtMicros: $updatedAtMicros, ')
+          ..write('active: $active, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
   $LocalDatabaseManager get managers => $LocalDatabaseManager(this);
@@ -3158,6 +5204,12 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   late final $BudgetEntriesTable budgetEntries = $BudgetEntriesTable(this);
   late final $RecurringRuleEntriesTable recurringRuleEntries =
       $RecurringRuleEntriesTable(this);
+  late final $WealthGoalEntriesTable wealthGoalEntries =
+      $WealthGoalEntriesTable(this);
+  late final $WealthAssetEntriesTable wealthAssetEntries =
+      $WealthAssetEntriesTable(this);
+  late final $WealthDebtEntriesTable wealthDebtEntries =
+      $WealthDebtEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3167,6 +5219,9 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
     transactionEntries,
     budgetEntries,
     recurringRuleEntries,
+    wealthGoalEntries,
+    wealthAssetEntries,
+    wealthDebtEntries,
   ];
 }
 
@@ -5308,6 +7363,1037 @@ typedef $$RecurringRuleEntriesTableProcessedTableManager =
       StoredRecurringRule,
       PrefetchHooks Function({bool accountId})
     >;
+typedef $$WealthGoalEntriesTableCreateCompanionBuilder =
+    WealthGoalEntriesCompanion Function({
+      required String id,
+      required String name,
+      required int targetMinor,
+      required int savedMinor,
+      required String currencyCode,
+      required int currencyDecimalDigits,
+      required String currencySymbol,
+      required int createdAtMicros,
+      Value<int?> deadlineMicros,
+      Value<bool> priority,
+      Value<bool> active,
+      Value<int> rowid,
+    });
+typedef $$WealthGoalEntriesTableUpdateCompanionBuilder =
+    WealthGoalEntriesCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<int> targetMinor,
+      Value<int> savedMinor,
+      Value<String> currencyCode,
+      Value<int> currencyDecimalDigits,
+      Value<String> currencySymbol,
+      Value<int> createdAtMicros,
+      Value<int?> deadlineMicros,
+      Value<bool> priority,
+      Value<bool> active,
+      Value<int> rowid,
+    });
+
+class $$WealthGoalEntriesTableFilterComposer
+    extends Composer<_$LocalDatabase, $WealthGoalEntriesTable> {
+  $$WealthGoalEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get targetMinor => $composableBuilder(
+    column: $table.targetMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get savedMinor => $composableBuilder(
+    column: $table.savedMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAtMicros => $composableBuilder(
+    column: $table.createdAtMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get deadlineMicros => $composableBuilder(
+    column: $table.deadlineMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WealthGoalEntriesTableOrderingComposer
+    extends Composer<_$LocalDatabase, $WealthGoalEntriesTable> {
+  $$WealthGoalEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get targetMinor => $composableBuilder(
+    column: $table.targetMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get savedMinor => $composableBuilder(
+    column: $table.savedMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAtMicros => $composableBuilder(
+    column: $table.createdAtMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get deadlineMicros => $composableBuilder(
+    column: $table.deadlineMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WealthGoalEntriesTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $WealthGoalEntriesTable> {
+  $$WealthGoalEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get targetMinor => $composableBuilder(
+    column: $table.targetMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get savedMinor => $composableBuilder(
+    column: $table.savedMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get createdAtMicros => $composableBuilder(
+    column: $table.createdAtMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get deadlineMicros => $composableBuilder(
+    column: $table.deadlineMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<bool> get active =>
+      $composableBuilder(column: $table.active, builder: (column) => column);
+}
+
+class $$WealthGoalEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$LocalDatabase,
+          $WealthGoalEntriesTable,
+          StoredWealthGoal,
+          $$WealthGoalEntriesTableFilterComposer,
+          $$WealthGoalEntriesTableOrderingComposer,
+          $$WealthGoalEntriesTableAnnotationComposer,
+          $$WealthGoalEntriesTableCreateCompanionBuilder,
+          $$WealthGoalEntriesTableUpdateCompanionBuilder,
+          (
+            StoredWealthGoal,
+            BaseReferences<
+              _$LocalDatabase,
+              $WealthGoalEntriesTable,
+              StoredWealthGoal
+            >,
+          ),
+          StoredWealthGoal,
+          PrefetchHooks Function()
+        > {
+  $$WealthGoalEntriesTableTableManager(
+    _$LocalDatabase db,
+    $WealthGoalEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WealthGoalEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WealthGoalEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WealthGoalEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> targetMinor = const Value.absent(),
+                Value<int> savedMinor = const Value.absent(),
+                Value<String> currencyCode = const Value.absent(),
+                Value<int> currencyDecimalDigits = const Value.absent(),
+                Value<String> currencySymbol = const Value.absent(),
+                Value<int> createdAtMicros = const Value.absent(),
+                Value<int?> deadlineMicros = const Value.absent(),
+                Value<bool> priority = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WealthGoalEntriesCompanion(
+                id: id,
+                name: name,
+                targetMinor: targetMinor,
+                savedMinor: savedMinor,
+                currencyCode: currencyCode,
+                currencyDecimalDigits: currencyDecimalDigits,
+                currencySymbol: currencySymbol,
+                createdAtMicros: createdAtMicros,
+                deadlineMicros: deadlineMicros,
+                priority: priority,
+                active: active,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required int targetMinor,
+                required int savedMinor,
+                required String currencyCode,
+                required int currencyDecimalDigits,
+                required String currencySymbol,
+                required int createdAtMicros,
+                Value<int?> deadlineMicros = const Value.absent(),
+                Value<bool> priority = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WealthGoalEntriesCompanion.insert(
+                id: id,
+                name: name,
+                targetMinor: targetMinor,
+                savedMinor: savedMinor,
+                currencyCode: currencyCode,
+                currencyDecimalDigits: currencyDecimalDigits,
+                currencySymbol: currencySymbol,
+                createdAtMicros: createdAtMicros,
+                deadlineMicros: deadlineMicros,
+                priority: priority,
+                active: active,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$WealthGoalEntriesTable, StoredWealthGoal>(table),
+                  BaseReferences<
+                    _$LocalDatabase,
+                    $WealthGoalEntriesTable,
+                    StoredWealthGoal
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WealthGoalEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LocalDatabase,
+      $WealthGoalEntriesTable,
+      StoredWealthGoal,
+      $$WealthGoalEntriesTableFilterComposer,
+      $$WealthGoalEntriesTableOrderingComposer,
+      $$WealthGoalEntriesTableAnnotationComposer,
+      $$WealthGoalEntriesTableCreateCompanionBuilder,
+      $$WealthGoalEntriesTableUpdateCompanionBuilder,
+      (
+        StoredWealthGoal,
+        BaseReferences<
+          _$LocalDatabase,
+          $WealthGoalEntriesTable,
+          StoredWealthGoal
+        >,
+      ),
+      StoredWealthGoal,
+      PrefetchHooks Function()
+    >;
+typedef $$WealthAssetEntriesTableCreateCompanionBuilder =
+    WealthAssetEntriesCompanion Function({
+      required String id,
+      required String name,
+      required String kind,
+      required int currentValueMinor,
+      required String currencyCode,
+      required int currencyDecimalDigits,
+      required String currencySymbol,
+      required int valuedAtMicros,
+      Value<bool> active,
+      Value<int> rowid,
+    });
+typedef $$WealthAssetEntriesTableUpdateCompanionBuilder =
+    WealthAssetEntriesCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String> kind,
+      Value<int> currentValueMinor,
+      Value<String> currencyCode,
+      Value<int> currencyDecimalDigits,
+      Value<String> currencySymbol,
+      Value<int> valuedAtMicros,
+      Value<bool> active,
+      Value<int> rowid,
+    });
+
+class $$WealthAssetEntriesTableFilterComposer
+    extends Composer<_$LocalDatabase, $WealthAssetEntriesTable> {
+  $$WealthAssetEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get currentValueMinor => $composableBuilder(
+    column: $table.currentValueMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get valuedAtMicros => $composableBuilder(
+    column: $table.valuedAtMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WealthAssetEntriesTableOrderingComposer
+    extends Composer<_$LocalDatabase, $WealthAssetEntriesTable> {
+  $$WealthAssetEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get currentValueMinor => $composableBuilder(
+    column: $table.currentValueMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get valuedAtMicros => $composableBuilder(
+    column: $table.valuedAtMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WealthAssetEntriesTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $WealthAssetEntriesTable> {
+  $$WealthAssetEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<int> get currentValueMinor => $composableBuilder(
+    column: $table.currentValueMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get valuedAtMicros => $composableBuilder(
+    column: $table.valuedAtMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get active =>
+      $composableBuilder(column: $table.active, builder: (column) => column);
+}
+
+class $$WealthAssetEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$LocalDatabase,
+          $WealthAssetEntriesTable,
+          StoredWealthAsset,
+          $$WealthAssetEntriesTableFilterComposer,
+          $$WealthAssetEntriesTableOrderingComposer,
+          $$WealthAssetEntriesTableAnnotationComposer,
+          $$WealthAssetEntriesTableCreateCompanionBuilder,
+          $$WealthAssetEntriesTableUpdateCompanionBuilder,
+          (
+            StoredWealthAsset,
+            BaseReferences<
+              _$LocalDatabase,
+              $WealthAssetEntriesTable,
+              StoredWealthAsset
+            >,
+          ),
+          StoredWealthAsset,
+          PrefetchHooks Function()
+        > {
+  $$WealthAssetEntriesTableTableManager(
+    _$LocalDatabase db,
+    $WealthAssetEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WealthAssetEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WealthAssetEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WealthAssetEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<int> currentValueMinor = const Value.absent(),
+                Value<String> currencyCode = const Value.absent(),
+                Value<int> currencyDecimalDigits = const Value.absent(),
+                Value<String> currencySymbol = const Value.absent(),
+                Value<int> valuedAtMicros = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WealthAssetEntriesCompanion(
+                id: id,
+                name: name,
+                kind: kind,
+                currentValueMinor: currentValueMinor,
+                currencyCode: currencyCode,
+                currencyDecimalDigits: currencyDecimalDigits,
+                currencySymbol: currencySymbol,
+                valuedAtMicros: valuedAtMicros,
+                active: active,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String kind,
+                required int currentValueMinor,
+                required String currencyCode,
+                required int currencyDecimalDigits,
+                required String currencySymbol,
+                required int valuedAtMicros,
+                Value<bool> active = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WealthAssetEntriesCompanion.insert(
+                id: id,
+                name: name,
+                kind: kind,
+                currentValueMinor: currentValueMinor,
+                currencyCode: currencyCode,
+                currencyDecimalDigits: currencyDecimalDigits,
+                currencySymbol: currencySymbol,
+                valuedAtMicros: valuedAtMicros,
+                active: active,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$WealthAssetEntriesTable, StoredWealthAsset>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$LocalDatabase,
+                    $WealthAssetEntriesTable,
+                    StoredWealthAsset
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WealthAssetEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LocalDatabase,
+      $WealthAssetEntriesTable,
+      StoredWealthAsset,
+      $$WealthAssetEntriesTableFilterComposer,
+      $$WealthAssetEntriesTableOrderingComposer,
+      $$WealthAssetEntriesTableAnnotationComposer,
+      $$WealthAssetEntriesTableCreateCompanionBuilder,
+      $$WealthAssetEntriesTableUpdateCompanionBuilder,
+      (
+        StoredWealthAsset,
+        BaseReferences<
+          _$LocalDatabase,
+          $WealthAssetEntriesTable,
+          StoredWealthAsset
+        >,
+      ),
+      StoredWealthAsset,
+      PrefetchHooks Function()
+    >;
+typedef $$WealthDebtEntriesTableCreateCompanionBuilder =
+    WealthDebtEntriesCompanion Function({
+      required String id,
+      required String name,
+      required String kind,
+      required int originalAmountMinor,
+      required int outstandingAmountMinor,
+      required String currencyCode,
+      required int currencyDecimalDigits,
+      required String currencySymbol,
+      Value<int> annualInterestBasisPoints,
+      Value<int?> dueDateMicros,
+      required int updatedAtMicros,
+      Value<bool> active,
+      Value<int> rowid,
+    });
+typedef $$WealthDebtEntriesTableUpdateCompanionBuilder =
+    WealthDebtEntriesCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String> kind,
+      Value<int> originalAmountMinor,
+      Value<int> outstandingAmountMinor,
+      Value<String> currencyCode,
+      Value<int> currencyDecimalDigits,
+      Value<String> currencySymbol,
+      Value<int> annualInterestBasisPoints,
+      Value<int?> dueDateMicros,
+      Value<int> updatedAtMicros,
+      Value<bool> active,
+      Value<int> rowid,
+    });
+
+class $$WealthDebtEntriesTableFilterComposer
+    extends Composer<_$LocalDatabase, $WealthDebtEntriesTable> {
+  $$WealthDebtEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get originalAmountMinor => $composableBuilder(
+    column: $table.originalAmountMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get outstandingAmountMinor => $composableBuilder(
+    column: $table.outstandingAmountMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get annualInterestBasisPoints => $composableBuilder(
+    column: $table.annualInterestBasisPoints,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dueDateMicros => $composableBuilder(
+    column: $table.dueDateMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAtMicros => $composableBuilder(
+    column: $table.updatedAtMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WealthDebtEntriesTableOrderingComposer
+    extends Composer<_$LocalDatabase, $WealthDebtEntriesTable> {
+  $$WealthDebtEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get originalAmountMinor => $composableBuilder(
+    column: $table.originalAmountMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get outstandingAmountMinor => $composableBuilder(
+    column: $table.outstandingAmountMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get annualInterestBasisPoints => $composableBuilder(
+    column: $table.annualInterestBasisPoints,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dueDateMicros => $composableBuilder(
+    column: $table.dueDateMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAtMicros => $composableBuilder(
+    column: $table.updatedAtMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WealthDebtEntriesTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $WealthDebtEntriesTable> {
+  $$WealthDebtEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<int> get originalAmountMinor => $composableBuilder(
+    column: $table.originalAmountMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get outstandingAmountMinor => $composableBuilder(
+    column: $table.outstandingAmountMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get annualInterestBasisPoints => $composableBuilder(
+    column: $table.annualInterestBasisPoints,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get dueDateMicros => $composableBuilder(
+    column: $table.dueDateMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get updatedAtMicros => $composableBuilder(
+    column: $table.updatedAtMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get active =>
+      $composableBuilder(column: $table.active, builder: (column) => column);
+}
+
+class $$WealthDebtEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$LocalDatabase,
+          $WealthDebtEntriesTable,
+          StoredWealthDebt,
+          $$WealthDebtEntriesTableFilterComposer,
+          $$WealthDebtEntriesTableOrderingComposer,
+          $$WealthDebtEntriesTableAnnotationComposer,
+          $$WealthDebtEntriesTableCreateCompanionBuilder,
+          $$WealthDebtEntriesTableUpdateCompanionBuilder,
+          (
+            StoredWealthDebt,
+            BaseReferences<
+              _$LocalDatabase,
+              $WealthDebtEntriesTable,
+              StoredWealthDebt
+            >,
+          ),
+          StoredWealthDebt,
+          PrefetchHooks Function()
+        > {
+  $$WealthDebtEntriesTableTableManager(
+    _$LocalDatabase db,
+    $WealthDebtEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WealthDebtEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WealthDebtEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WealthDebtEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<int> originalAmountMinor = const Value.absent(),
+                Value<int> outstandingAmountMinor = const Value.absent(),
+                Value<String> currencyCode = const Value.absent(),
+                Value<int> currencyDecimalDigits = const Value.absent(),
+                Value<String> currencySymbol = const Value.absent(),
+                Value<int> annualInterestBasisPoints = const Value.absent(),
+                Value<int?> dueDateMicros = const Value.absent(),
+                Value<int> updatedAtMicros = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WealthDebtEntriesCompanion(
+                id: id,
+                name: name,
+                kind: kind,
+                originalAmountMinor: originalAmountMinor,
+                outstandingAmountMinor: outstandingAmountMinor,
+                currencyCode: currencyCode,
+                currencyDecimalDigits: currencyDecimalDigits,
+                currencySymbol: currencySymbol,
+                annualInterestBasisPoints: annualInterestBasisPoints,
+                dueDateMicros: dueDateMicros,
+                updatedAtMicros: updatedAtMicros,
+                active: active,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String kind,
+                required int originalAmountMinor,
+                required int outstandingAmountMinor,
+                required String currencyCode,
+                required int currencyDecimalDigits,
+                required String currencySymbol,
+                Value<int> annualInterestBasisPoints = const Value.absent(),
+                Value<int?> dueDateMicros = const Value.absent(),
+                required int updatedAtMicros,
+                Value<bool> active = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WealthDebtEntriesCompanion.insert(
+                id: id,
+                name: name,
+                kind: kind,
+                originalAmountMinor: originalAmountMinor,
+                outstandingAmountMinor: outstandingAmountMinor,
+                currencyCode: currencyCode,
+                currencyDecimalDigits: currencyDecimalDigits,
+                currencySymbol: currencySymbol,
+                annualInterestBasisPoints: annualInterestBasisPoints,
+                dueDateMicros: dueDateMicros,
+                updatedAtMicros: updatedAtMicros,
+                active: active,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$WealthDebtEntriesTable, StoredWealthDebt>(table),
+                  BaseReferences<
+                    _$LocalDatabase,
+                    $WealthDebtEntriesTable,
+                    StoredWealthDebt
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WealthDebtEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LocalDatabase,
+      $WealthDebtEntriesTable,
+      StoredWealthDebt,
+      $$WealthDebtEntriesTableFilterComposer,
+      $$WealthDebtEntriesTableOrderingComposer,
+      $$WealthDebtEntriesTableAnnotationComposer,
+      $$WealthDebtEntriesTableCreateCompanionBuilder,
+      $$WealthDebtEntriesTableUpdateCompanionBuilder,
+      (
+        StoredWealthDebt,
+        BaseReferences<
+          _$LocalDatabase,
+          $WealthDebtEntriesTable,
+          StoredWealthDebt
+        >,
+      ),
+      StoredWealthDebt,
+      PrefetchHooks Function()
+    >;
 
 class $LocalDatabaseManager {
   final _$LocalDatabase _db;
@@ -5320,4 +8406,10 @@ class $LocalDatabaseManager {
       $$BudgetEntriesTableTableManager(_db, _db.budgetEntries);
   $$RecurringRuleEntriesTableTableManager get recurringRuleEntries =>
       $$RecurringRuleEntriesTableTableManager(_db, _db.recurringRuleEntries);
+  $$WealthGoalEntriesTableTableManager get wealthGoalEntries =>
+      $$WealthGoalEntriesTableTableManager(_db, _db.wealthGoalEntries);
+  $$WealthAssetEntriesTableTableManager get wealthAssetEntries =>
+      $$WealthAssetEntriesTableTableManager(_db, _db.wealthAssetEntries);
+  $$WealthDebtEntriesTableTableManager get wealthDebtEntries =>
+      $$WealthDebtEntriesTableTableManager(_db, _db.wealthDebtEntries);
 }

@@ -47,7 +47,9 @@ class PollarButton extends StatelessWidget {
     final compactMinimum = defaultTargetPlatform == TargetPlatform.android
         ? PollarSizes.androidTouchTargetMin
         : PollarSizes.touchTargetMin;
-    final height = compactLayout
+    final height = defaultTargetPlatform == TargetPlatform.android
+        ? math.max(requestedHeight, PollarSizes.androidTouchTargetMin)
+        : compactLayout
         ? math.max(requestedHeight, compactMinimum)
         : requestedHeight;
     final horizontalPadding = switch (size) {
@@ -204,7 +206,11 @@ class PollarIconButton extends StatelessWidget {
     final compactMinimum = defaultTargetPlatform == TargetPlatform.android
         ? PollarSizes.androidTouchTargetMin
         : PollarSizes.touchTargetMin;
-    final box = compactLayout ? math.max(requested, compactMinimum) : requested;
+    final box = defaultTargetPlatform == TargetPlatform.android
+        ? math.max(requested, PollarSizes.androidTouchTargetMin)
+        : compactLayout
+        ? math.max(requested, compactMinimum)
+        : requested;
 
     return IconButton(
       tooltip: label,

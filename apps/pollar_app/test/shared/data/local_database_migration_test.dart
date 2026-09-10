@@ -6,7 +6,7 @@ import 'package:pollar_app/shared/data/local_database.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 void main() {
-  test('schema 1 accounts migrate to schema 4 without data loss', () async {
+  test('schema 1 accounts migrate to schema 5 without data loss', () async {
     final tempDirectory = await Directory.systemTemp.createTemp(
       'pollar-local-database-migration-',
     );
@@ -50,7 +50,10 @@ void main() {
     expect(transactions, isEmpty);
     expect(await database.select(database.budgetEntries).get(), isEmpty);
     expect(await database.select(database.recurringRuleEntries).get(), isEmpty);
-    expect(database.schemaVersion, 4);
+    expect(await database.select(database.wealthGoalEntries).get(), isEmpty);
+    expect(await database.select(database.wealthAssetEntries).get(), isEmpty);
+    expect(await database.select(database.wealthDebtEntries).get(), isEmpty);
+    expect(database.schemaVersion, 5);
 
     await database.close();
     final resolvedTemp = tempDirectory.absolute.path;
@@ -62,7 +65,7 @@ void main() {
   });
 
   test(
-    'schema 2 transactions migrate to schema 4 with metadata empty',
+    'schema 2 transactions migrate to schema 5 with metadata empty',
     () async {
       final tempDirectory = await Directory.systemTemp.createTemp(
         'pollar-local-database-migration-v2-',
@@ -110,7 +113,10 @@ void main() {
         await database.select(database.recurringRuleEntries).get(),
         isEmpty,
       );
-      expect(database.schemaVersion, 4);
+      expect(await database.select(database.wealthGoalEntries).get(), isEmpty);
+      expect(await database.select(database.wealthAssetEntries).get(), isEmpty);
+      expect(await database.select(database.wealthDebtEntries).get(), isEmpty);
+      expect(database.schemaVersion, 5);
       await database.close();
 
       final resolvedTemp = tempDirectory.absolute.path;
@@ -171,7 +177,10 @@ void main() {
         await database.select(database.recurringRuleEntries).get(),
         isEmpty,
       );
-      expect(database.schemaVersion, 4);
+      expect(await database.select(database.wealthGoalEntries).get(), isEmpty);
+      expect(await database.select(database.wealthAssetEntries).get(), isEmpty);
+      expect(await database.select(database.wealthDebtEntries).get(), isEmpty);
+      expect(database.schemaVersion, 5);
       await database.close();
 
       final resolvedTemp = tempDirectory.absolute.path;
@@ -181,4 +190,76 @@ void main() {
       await tempDirectory.delete(recursive: true);
     },
   );
+
+  test('schema 4 gains wealth tables without changing planning data', () async {
+    final tempDirectory = await Directory.systemTemp.createTemp(
+      'pollar-local-database-migration-v4-',
+    );
+    final file = File(
+      '${tempDirectory.path}${Platform.pathSeparator}pollar.sqlite',
+    );
+    final legacy = sqlite.sqlite3.open(file.path);
+    legacy.execute('''
+      CREATE TABLE account_entries (
+        id TEXT NOT NULL PRIMARY KEY, name TEXT NOT NULL, type TEXT NOT NULL,
+        currency_code TEXT NOT NULL, currency_decimal_digits INTEGER NOT NULL,
+        currency_symbol TEXT NOT NULL, opening_balance_minor INTEGER NOT NULL,
+        status TEXT NOT NULL, credit_limit_minor INTEGER NULL,
+        closing_day INTEGER NULL, due_day INTEGER NULL
+      );
+      CREATE TABLE transaction_entries (
+        id TEXT NOT NULL PRIMARY KEY, description TEXT NOT NULL, type TEXT NOT NULL,
+        status TEXT NOT NULL, amount_minor INTEGER NOT NULL, currency_code TEXT NOT NULL,
+        currency_decimal_digits INTEGER NOT NULL, currency_symbol TEXT NOT NULL,
+        account_id TEXT NOT NULL REFERENCES account_entries(id),
+        counter_account_id TEXT NULL REFERENCES account_entries(id),
+        occurred_at_micros INTEGER NOT NULL, category TEXT NULL, note TEXT NULL,
+        installment_group_id TEXT NULL, installment_number INTEGER NULL,
+        installment_count INTEGER NULL, purchase_total_minor INTEGER NULL,
+        statement_id TEXT NULL
+      );
+      CREATE TABLE budget_entries (
+        id TEXT NOT NULL PRIMARY KEY, category TEXT NOT NULL,
+        month_micros INTEGER NOT NULL, limit_minor INTEGER NOT NULL,
+        currency_code TEXT NOT NULL, currency_decimal_digits INTEGER NOT NULL,
+        currency_symbol TEXT NOT NULL, alert_threshold INTEGER NOT NULL DEFAULT 85,
+        active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1))
+      );
+      CREATE TABLE recurring_rule_entries (
+        id TEXT NOT NULL PRIMARY KEY, description TEXT NOT NULL, kind TEXT NOT NULL,
+        frequency TEXT NOT NULL, amount_minor INTEGER NOT NULL,
+        currency_code TEXT NOT NULL, currency_decimal_digits INTEGER NOT NULL,
+        currency_symbol TEXT NOT NULL, account_id TEXT NOT NULL REFERENCES account_entries(id),
+        category TEXT NULL, first_due_at_micros INTEGER NOT NULL,
+        remind_days_before INTEGER NOT NULL DEFAULT 3,
+        active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1))
+      );
+      INSERT INTO account_entries VALUES (
+        'account', 'Conta', 'checking', 'BRL', 2, 'R\$', 0,
+        'active', NULL, NULL, NULL
+      );
+      INSERT INTO budget_entries VALUES (
+        'budget', 'Moradia', 0, 150000, 'BRL', 2, 'R\$', 85, 1
+      );
+      PRAGMA user_version = 4;
+    ''');
+    legacy.close();
+
+    final database = LocalDatabase(NativeDatabase(file));
+    expect(
+      (await database.select(database.budgetEntries).get()).single.id,
+      'budget',
+    );
+    expect(await database.select(database.wealthGoalEntries).get(), isEmpty);
+    expect(await database.select(database.wealthAssetEntries).get(), isEmpty);
+    expect(await database.select(database.wealthDebtEntries).get(), isEmpty);
+    expect(database.schemaVersion, 5);
+    await database.close();
+
+    final resolvedTemp = tempDirectory.absolute.path;
+    if (!resolvedTemp.startsWith(Directory.systemTemp.absolute.path)) {
+      fail('Refusing to clean a directory outside the system temp folder');
+    }
+    await tempDirectory.delete(recursive: true);
+  });
 }

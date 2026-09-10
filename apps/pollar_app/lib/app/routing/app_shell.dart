@@ -44,11 +44,7 @@ const List<AppDestination> appDestinations = [
     icon: LucideIcons.calendarRange,
     path: '/planning',
   ),
-  AppDestination(
-    label: 'Preferências',
-    icon: LucideIcons.settings,
-    path: '/settings',
-  ),
+  AppDestination(label: 'Mais', icon: LucideIcons.ellipsis, path: '/more'),
 ];
 
 /// Adaptive shell wrapping the [StatefulNavigationShell]: a bottom navigation

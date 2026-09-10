@@ -50,5 +50,5 @@ ocorrência, exceções por competência, término de recorrência, reajustes,
 rateio de orçamento, metas compartilhadas e automações ficam atrás dos
 contratos atuais para evolução posterior.
 
-O próximo slice recomendado é patrimônio e análise: metas, dívidas, ativos,
-relatórios avançados, importação, exportação e backups.
+O slice seguinte, patrimônio, foi concluído em `docs/wealth-slice.md`. Relatórios
+avançados, importação, exportação e backups permanecem para os próximos slices.
