@@ -19,6 +19,7 @@ class MoneyText extends StatelessWidget {
     this.colorBySign = false,
     this.semantic = MoneySemantic.automatic,
     this.formatter = const MoneyFormatter.ptBr(),
+    this.allowWrap = false,
   });
 
   final Money money;
@@ -35,6 +36,7 @@ class MoneyText extends StatelessWidget {
   final MoneySemantic semantic;
 
   final MoneyFormatter formatter;
+  final bool allowWrap;
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +73,8 @@ class MoneyText extends StatelessWidget {
       text,
       style: PollarTypography.tabular(base).copyWith(color: color),
       semanticsLabel: semanticsLabel,
-      maxLines: 1,
-      softWrap: false,
+      maxLines: allowWrap ? null : 1,
+      softWrap: allowWrap,
     );
   }
 }

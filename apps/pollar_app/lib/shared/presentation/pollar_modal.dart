@@ -17,6 +17,7 @@ Future<T?> showPollarAdaptiveModal<T>({
   WidgetBuilder? content,
   PollarModalTone tone = PollarModalTone.standard,
   IconData? icon,
+  bool dismissible = true,
 }) {
   final compact =
       MediaQuery.sizeOf(context).width < PollarBreakpoints.mediumMin;
@@ -26,6 +27,8 @@ Future<T?> showPollarAdaptiveModal<T>({
       useRootNavigator: true,
       useSafeArea: true,
       isScrollControlled: true,
+      isDismissible: dismissible,
+      enableDrag: dismissible,
       backgroundColor: Colors.transparent,
       builder: (modalContext) => _PollarBottomSheet(
         title: title,
@@ -34,12 +37,14 @@ Future<T?> showPollarAdaptiveModal<T>({
         icon: icon,
         content: content?.call(modalContext),
         actions: actions(modalContext),
+        showClose: dismissible,
       ),
     );
   }
 
   return showDialog<T>(
     context: context,
+    barrierDismissible: dismissible,
     barrierColor: context.pollar.textPrimary.withValues(alpha: 0.36),
     builder: (dialogContext) => PollarDecisionDialog(
       title: title,
@@ -78,6 +83,7 @@ class PollarDecisionDialog extends StatelessWidget {
     final accent = danger ? colors.danger : colors.primary;
 
     return AlertDialog(
+      scrollable: true,
       semanticLabel: title,
       iconPadding: const EdgeInsets.fromLTRB(
         PollarSpacing.x5,
@@ -133,6 +139,7 @@ class _PollarBottomSheet extends StatelessWidget {
     required this.tone,
     this.icon,
     this.content,
+    required this.showClose,
   });
 
   final String title;
@@ -141,6 +148,7 @@ class _PollarBottomSheet extends StatelessWidget {
   final PollarModalTone tone;
   final IconData? icon;
   final Widget? content;
+  final bool showClose;
 
   @override
   Widget build(BuildContext context) {
@@ -205,11 +213,12 @@ class _PollarBottomSheet extends StatelessWidget {
                     ],
                   ),
                 ),
-                PollarIconButton(
-                  label: 'Fechar',
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: LucideIcons.x,
-                ),
+                if (showClose)
+                  PollarIconButton(
+                    label: 'Fechar',
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: LucideIcons.x,
+                  ),
               ],
             ),
             if (content case final content?) ...[

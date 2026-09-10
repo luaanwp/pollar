@@ -225,6 +225,8 @@ Na visão geral, a ordem operacional é invariável: cabeçalho com contexto e a
 
 Na fatura de cartão, o desktop apresenta resumo e parcelas futuras antes das compras: com pelo menos 820px disponíveis e escala tipográfica de até 1,3×, resumo e futuro dividem a primeira linha, seguidos pelo ledger de compras em largura total. No mobile, a ordem é resumo, compras e parcelas futuras. Acima de 1,3×, a composição paralela e os pares internos fazem reflow para blocos verticais, sem reduzir tipografia, truncar valores ou ocultar parcelas.
 
+No planejamento, o mês é lido como uma sequência estável de faixas: cabeçalho com navegação de período e moeda, posição planejada, orçamentos por categoria, agenda, assinaturas, lembretes locais e gerenciamento. Orçamentos e agenda dividem a linha somente com pelo menos 860px disponíveis e escala tipográfica de até 1,3×; abaixo disso, empilham nessa ordem, seguidos pelas demais faixas. Cabeçalhos, métricas, ocorrências, lembretes e controles de ciclo de vida também fazem reflow acima de 1,3×, sem esconder valores, estados ou ações.
+
 Texto ampliado provoca reflow por conteúdo, não redução tipográfica nem recorte. Acima de 1,3×, o resumo deixa de usar colunas, os pares de rótulo e valor podem virar blocos verticais, os valores ficam alinhados ao fim em uma linha própria e os cabeçalhos de seção colocam a ação abaixo do título. A ordem de leitura, a unidade monetária, os sinais e os estados permanecem íntegros.
 
 **The Same Ledger Rule.** A mudança de largura reorganiza o lançamento, mas preserva descrição, conta ou categoria, data, valor exato e estado na mesma ordem de leitura.
@@ -376,6 +378,21 @@ O cadastro é uma tarefa dedicada, não uma extensão do cartão de listagem.
 - **Grouping:** seções de identificação e posição financeira usam subtítulos e espaçamento, sem cartões internos.
 - **Action:** salvar fica alinhado ao fim no desktop e ocupa a largura completa no mobile; durante o salvamento, a ação é desabilitada e anuncia carregamento.
 
+### Recurring Planning
+
+O planejamento mensal reconcilia limites, gasto registrado e compromissos projetados sem apresentar previsões como fatos do livro-caixa.
+
+- **Monthly position:** total orçado, gasto registrado, disponível no orçamento e compromissos de saída abrem a leitura do mês; o período e a moeda selecionados governam toda a superfície.
+- **Category budgets:** cada categoria mostra gasto e limite exatos, barra de progresso, percentual e estado textual com ícone — Dentro do limite, Próximo do limite ou Limite excedido. O progresso é evidência de reconciliação, não pontuação ou meta gamificada.
+- **Recurring agenda:** entradas, pagamentos e assinaturas ativos aparecem em ordem de vencimento com data, natureza e valor assinado. Criar uma recorrência apenas projeta ocorrências; nenhuma transação é lançada automaticamente.
+- **Subscriptions and reminders:** assinaturas recebem faixa própria e total verificável. Lembretes declaram que vivem neste dispositivo, surgem dentro da antecedência configurada e distinguem hoje, prazo futuro e data passada por texto e ícone; não prometem notificação do sistema operacional.
+- **Lifecycle:** a faixa de gerenciamento conserva itens ativos e pausados. Pausar remove o item dos totais, agenda ou lembretes aplicáveis sem apagar a configuração; retomar o reintegra. Badge, verbo de ação, confirmação de impacto e feedback de sucesso ou falha tornam a recuperação explícita.
+- **Async forms:** modais de criação não são descartáveis durante a tarefa. Enquanto a persistência está pendente, cancelar e salvar ficam indisponíveis e a ação primária anuncia carregamento; o modal fecha somente após sucesso. Em falha, permanece aberto, preserva os campos e apresenta uma mensagem corrigível para nova tentativa.
+
+**The Plan Is Not the Ledger Rule.** Orçamentos, ocorrências e lembretes explicam o mês futuro, mas nunca simulam uma transação já registrada.
+
+**The Recoverable Pause Rule.** Pausar é reversível e preserva a configuração; estado e consequência devem ser declarados antes da mudança.
+
 ## Do's and Don'ts
 
 ### Do:
@@ -393,6 +410,9 @@ O cadastro é uma tarefa dedicada, não uma extensão do cartão de listagem.
 - **Do** separar totais por moeda, filtrar toda a superfície pela moeda ativa e mostrar dívidas de cartão fora do saldo de caixa.
 - **Do** fazer reflow da visão geral quando o texto ultrapassar 1,3×, preservando conteúdo, sinais, moeda, estados e alinhamento dos valores.
 - **Do** oferecer estados de carregamento, erro recuperável, primeira conta e ausência de transações com próximo passo específico e sem sugerir perda de dados.
+- **Do** preservar a ordem mensal posição, orçamentos, agenda, assinaturas, lembretes e gerenciamento quando faixas paralelas virarem uma pilha.
+- **Do** reconciliar cada orçamento com gasto, limite, percentual e estado explícito, mantendo os valores ocultáveis sem remover sua relação.
+- **Do** manter formulários de planejamento abertos durante a persistência e, em falha, conservar os campos preenchidos para nova tentativa.
 
 ### Don't:
 
@@ -409,3 +429,6 @@ O cadastro é uma tarefa dedicada, não uma extensão do cartão de listagem.
 - **Don't** ocultar rótulos, moeda, estado ou estrutura no modo privacidade; somente os valores monetários recebem máscara estável.
 - **Don't** comprimir a visão geral com texto ampliado, truncar valores ou reduzir a fonte para conservar colunas.
 - **Don't** inventar gráficos históricos, tendências, metas ou comparações de período para preencher a visão geral.
+- **Don't** apresentar recorrências, assinaturas ou lembretes locais como transações confirmadas ou como notificações entregues pelo sistema operacional.
+- **Don't** apagar a configuração ao pausar um orçamento ou compromisso, nem ocultar itens pausados da área em que podem ser retomados.
+- **Don't** permitir descarte ou envios duplicados enquanto um formulário de planejamento estiver salvando.

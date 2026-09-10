@@ -40,6 +40,11 @@ const List<AppDestination> appDestinations = [
     path: '/accounts',
   ),
   AppDestination(
+    label: 'Planejamento',
+    icon: LucideIcons.calendarRange,
+    path: '/planning',
+  ),
+  AppDestination(
     label: 'Preferências',
     icon: LucideIcons.settings,
     path: '/settings',
@@ -184,42 +189,128 @@ class _Rail extends StatelessWidget {
       width: extended
           ? PollarSizes.sidebarExpanded
           : PollarSizes.sidebarCollapsed,
-      child: NavigationRail(
-        extended: extended,
-        backgroundColor: pollar.canvas,
-        indicatorColor: pollar.primarySoft,
-        selectedIconTheme: IconThemeData(color: pollar.primary, size: 20),
-        unselectedIconTheme: IconThemeData(
-          color: pollar.textSecondary,
-          size: 20,
-        ),
-        selectedLabelTextStyle: Theme.of(context).textTheme.labelMedium
-            ?.copyWith(color: pollar.primary),
-        unselectedLabelTextStyle: Theme.of(context).textTheme.labelMedium
-            ?.copyWith(color: pollar.textSecondary),
-        selectedIndex: selectedIndex,
-        onDestinationSelected: onSelected,
-        groupAlignment: -1,
-        labelType: extended
-            ? NavigationRailLabelType.none
-            : NavigationRailLabelType.all,
-        leading: _RailHeader(extended: extended),
-        destinations: [
-          for (final d in appDestinations)
-            NavigationRailDestination(
-              icon: Icon(d.icon, size: 20),
-              label: Text(d.label),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final shortRail = !extended && constraints.maxHeight < 650;
+          if (shortRail) {
+            return ColoredBox(
+              color: pollar.canvas,
+              child: Column(
+                children: [
+                  const _RailHeader(extended: false, compact: true),
+                  for (var index = 0; index < appDestinations.length; index++)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: PollarSpacing.x1),
+                      child: _ShortRailDestination(
+                        destination: appDestinations[index],
+                        selected: selectedIndex == index,
+                        onPressed: () => onSelected(index),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          }
+          return NavigationRail(
+            extended: extended,
+            backgroundColor: pollar.canvas,
+            indicatorColor: pollar.primarySoft,
+            selectedIconTheme: IconThemeData(color: pollar.primary, size: 20),
+            unselectedIconTheme: IconThemeData(
+              color: pollar.textSecondary,
+              size: 20,
             ),
-        ],
+            selectedLabelTextStyle: Theme.of(context).textTheme.labelMedium
+                ?.copyWith(color: pollar.primary),
+            unselectedLabelTextStyle: Theme.of(context).textTheme.labelMedium
+                ?.copyWith(color: pollar.textSecondary),
+            selectedIndex: selectedIndex,
+            onDestinationSelected: onSelected,
+            groupAlignment: -1,
+            labelType: extended
+                ? NavigationRailLabelType.none
+                : NavigationRailLabelType.all,
+            leading: _RailHeader(extended: extended, compact: false),
+            destinations: [
+              for (final d in appDestinations)
+                NavigationRailDestination(
+                  icon: Tooltip(
+                    message: d.label,
+                    child: Icon(d.icon, size: 20),
+                  ),
+                  label: Text(d.label),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ShortRailDestination extends StatelessWidget {
+  const _ShortRailDestination({
+    required this.destination,
+    required this.selected,
+    required this.onPressed,
+  });
+
+  final AppDestination destination;
+  final bool selected;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.pollar;
+    return Tooltip(
+      message: destination.label,
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: destination.label,
+        excludeSemantics: true,
+        child: Material(
+          color: selected ? colors.primarySoft : Colors.transparent,
+          borderRadius: BorderRadius.circular(PollarRadii.medium),
+          child: InkWell(
+            onTap: onPressed,
+            borderRadius: BorderRadius.circular(PollarRadii.medium),
+            child: SizedBox(
+              width: 64,
+              height: 52,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    destination.icon,
+                    size: 20,
+                    color: selected ? colors.primary : colors.textSecondary,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    destination.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      fontSize: 9,
+                      color: selected ? colors.primary : colors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
 class _RailHeader extends StatelessWidget {
-  const _RailHeader({required this.extended});
+  const _RailHeader({required this.extended, required this.compact});
 
   final bool extended;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -236,9 +327,9 @@ class _RailHeader extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
+      padding: EdgeInsets.symmetric(
         horizontal: PollarSpacing.x5,
-        vertical: PollarSpacing.x5,
+        vertical: compact ? PollarSpacing.x2 : PollarSpacing.x5,
       ),
       child: extended
           ? Row(

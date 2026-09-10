@@ -92,3 +92,9 @@ simples e deixa substituições futuras explícitas.
 - Parcelamentos pertencem ao fato transacional e carregam grupo, posição e
   total original. Ciclo, estado, saldo e limite disponível permanecem projeções
   reconstruíveis, permitindo trocar persistência ou interface na V2.
+- A feature `planning` persiste somente configurações de orçamento e regras de
+  recorrência. Gastos, ocorrências de calendário, totais e lembretes são
+  projeções reconstruíveis, calculadas por contratos neutros.
+- O adaptador `app/data/planning_ledger_data_source.dart` traduz contas e
+  transações para o vocabulário de planejamento. A feature não importa os
+  módulos de origem e pode receber outro ledger ou agendador na V2.

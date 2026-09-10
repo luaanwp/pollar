@@ -43,6 +43,7 @@ abstract final class PollarSizes {
   static const double buttonStandard = 40;
   static const double buttonProminent = 48;
   static const double touchTargetMin = 44;
+  static const double androidTouchTargetMin = 48;
   static const double sidebarExpanded = 256;
   static const double sidebarCollapsed = 72;
   static const double contextPanel = 360;

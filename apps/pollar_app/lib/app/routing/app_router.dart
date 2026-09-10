@@ -6,6 +6,7 @@ import '../../features/accounts/presentation/account_form_screen.dart';
 import '../../features/accounts/presentation/accounts_screen.dart';
 import '../../features/design_system/presentation/forms_catalog_screen.dart';
 import '../../features/overview/presentation/overview_screen.dart';
+import '../../features/planning/presentation/planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/statements/presentation/card_statement_screen.dart';
 import '../../features/transactions/presentation/transactions_screen.dart';
@@ -76,6 +77,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                     ),
                   ),
                 ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/planning',
+                builder: (context, state) => const PlanningScreen(),
               ),
             ],
           ),

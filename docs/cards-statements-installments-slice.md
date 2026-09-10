@@ -28,4 +28,5 @@ O schema local passa para a versão 3, adicionando metadados opcionais de parcel
 
 Estornos, chargebacks, juros, tarifas, saque, antecipação, pagamento mínimo configurável, histórico/troca manual de ciclos e exportação permanecem extensões futuras dos contratos atuais.
 
-O próximo slice recomendado é planejamento recorrente: orçamentos, pagamentos recorrentes, assinaturas, calendário e notificações locais.
+O slice seguinte, planejamento recorrente, foi concluído em
+`docs/planning-recurring-slice.md`.

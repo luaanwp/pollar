@@ -49,12 +49,55 @@ class TransactionEntries extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [AccountEntries, TransactionEntries])
+@DataClassName('StoredBudget')
+class BudgetEntries extends Table {
+  TextColumn get id => text()();
+  TextColumn get category => text()();
+  IntColumn get monthMicros => integer()();
+  IntColumn get limitMinor => integer()();
+  TextColumn get currencyCode => text()();
+  IntColumn get currencyDecimalDigits => integer()();
+  TextColumn get currencySymbol => text()();
+  IntColumn get alertThreshold => integer().withDefault(const Constant(85))();
+  BoolColumn get active => boolean().withDefault(const Constant(true))();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+@DataClassName('StoredRecurringRule')
+class RecurringRuleEntries extends Table {
+  TextColumn get id => text()();
+  TextColumn get description => text()();
+  TextColumn get kind => text()();
+  TextColumn get frequency => text()();
+  IntColumn get amountMinor => integer()();
+  TextColumn get currencyCode => text()();
+  IntColumn get currencyDecimalDigits => integer()();
+  TextColumn get currencySymbol => text()();
+  TextColumn get accountId => text().references(AccountEntries, #id)();
+  TextColumn get category => text().nullable()();
+  IntColumn get firstDueAtMicros => integer()();
+  IntColumn get remindDaysBefore => integer().withDefault(const Constant(3))();
+  BoolColumn get active => boolean().withDefault(const Constant(true))();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+@DriftDatabase(
+  tables: [
+    AccountEntries,
+    TransactionEntries,
+    BudgetEntries,
+    RecurringRuleEntries,
+  ],
+)
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase(super.executor);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -84,6 +127,10 @@ class LocalDatabase extends _$LocalDatabase {
           transactionEntries,
           transactionEntries.statementId,
         );
+      }
+      if (from < 4) {
+        await migrator.createTable(budgetEntries);
+        await migrator.createTable(recurringRuleEntries);
       }
     },
     beforeOpen: (_) => customStatement('PRAGMA foreign_keys = ON'),

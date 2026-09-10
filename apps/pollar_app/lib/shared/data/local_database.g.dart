@@ -1767,12 +1767,1397 @@ class TransactionEntriesCompanion extends UpdateCompanion<StoredTransaction> {
   }
 }
 
+class $BudgetEntriesTable extends BudgetEntries
+    with TableInfo<$BudgetEntriesTable, StoredBudget> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BudgetEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _monthMicrosMeta = const VerificationMeta(
+    'monthMicros',
+  );
+  @override
+  late final GeneratedColumn<int> monthMicros = GeneratedColumn<int>(
+    'month_micros',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _limitMinorMeta = const VerificationMeta(
+    'limitMinor',
+  );
+  @override
+  late final GeneratedColumn<int> limitMinor = GeneratedColumn<int>(
+    'limit_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyCodeMeta = const VerificationMeta(
+    'currencyCode',
+  );
+  @override
+  late final GeneratedColumn<String> currencyCode = GeneratedColumn<String>(
+    'currency_code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyDecimalDigitsMeta =
+      const VerificationMeta('currencyDecimalDigits');
+  @override
+  late final GeneratedColumn<int> currencyDecimalDigits = GeneratedColumn<int>(
+    'currency_decimal_digits',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencySymbolMeta = const VerificationMeta(
+    'currencySymbol',
+  );
+  @override
+  late final GeneratedColumn<String> currencySymbol = GeneratedColumn<String>(
+    'currency_symbol',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _alertThresholdMeta = const VerificationMeta(
+    'alertThreshold',
+  );
+  @override
+  late final GeneratedColumn<int> alertThreshold = GeneratedColumn<int>(
+    'alert_threshold',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(85),
+  );
+  static const VerificationMeta _activeMeta = const VerificationMeta('active');
+  @override
+  late final GeneratedColumn<bool> active = GeneratedColumn<bool>(
+    'active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    category,
+    monthMicros,
+    limitMinor,
+    currencyCode,
+    currencyDecimalDigits,
+    currencySymbol,
+    alertThreshold,
+    active,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'budget_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoredBudget> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('month_micros')) {
+      context.handle(
+        _monthMicrosMeta,
+        monthMicros.isAcceptableOrUnknown(
+          data['month_micros']!,
+          _monthMicrosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_monthMicrosMeta);
+    }
+    if (data.containsKey('limit_minor')) {
+      context.handle(
+        _limitMinorMeta,
+        limitMinor.isAcceptableOrUnknown(data['limit_minor']!, _limitMinorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_limitMinorMeta);
+    }
+    if (data.containsKey('currency_code')) {
+      context.handle(
+        _currencyCodeMeta,
+        currencyCode.isAcceptableOrUnknown(
+          data['currency_code']!,
+          _currencyCodeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyCodeMeta);
+    }
+    if (data.containsKey('currency_decimal_digits')) {
+      context.handle(
+        _currencyDecimalDigitsMeta,
+        currencyDecimalDigits.isAcceptableOrUnknown(
+          data['currency_decimal_digits']!,
+          _currencyDecimalDigitsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyDecimalDigitsMeta);
+    }
+    if (data.containsKey('currency_symbol')) {
+      context.handle(
+        _currencySymbolMeta,
+        currencySymbol.isAcceptableOrUnknown(
+          data['currency_symbol']!,
+          _currencySymbolMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencySymbolMeta);
+    }
+    if (data.containsKey('alert_threshold')) {
+      context.handle(
+        _alertThresholdMeta,
+        alertThreshold.isAcceptableOrUnknown(
+          data['alert_threshold']!,
+          _alertThresholdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('active')) {
+      context.handle(
+        _activeMeta,
+        active.isAcceptableOrUnknown(data['active']!, _activeMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoredBudget map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoredBudget(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      monthMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}month_micros'],
+      )!,
+      limitMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}limit_minor'],
+      )!,
+      currencyCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency_code'],
+      )!,
+      currencyDecimalDigits: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}currency_decimal_digits'],
+      )!,
+      currencySymbol: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency_symbol'],
+      )!,
+      alertThreshold: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}alert_threshold'],
+      )!,
+      active: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}active'],
+      )!,
+    );
+  }
+
+  @override
+  $BudgetEntriesTable createAlias(String alias) {
+    return $BudgetEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class StoredBudget extends DataClass implements Insertable<StoredBudget> {
+  final String id;
+  final String category;
+  final int monthMicros;
+  final int limitMinor;
+  final String currencyCode;
+  final int currencyDecimalDigits;
+  final String currencySymbol;
+  final int alertThreshold;
+  final bool active;
+  const StoredBudget({
+    required this.id,
+    required this.category,
+    required this.monthMicros,
+    required this.limitMinor,
+    required this.currencyCode,
+    required this.currencyDecimalDigits,
+    required this.currencySymbol,
+    required this.alertThreshold,
+    required this.active,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['category'] = Variable<String>(category);
+    map['month_micros'] = Variable<int>(monthMicros);
+    map['limit_minor'] = Variable<int>(limitMinor);
+    map['currency_code'] = Variable<String>(currencyCode);
+    map['currency_decimal_digits'] = Variable<int>(currencyDecimalDigits);
+    map['currency_symbol'] = Variable<String>(currencySymbol);
+    map['alert_threshold'] = Variable<int>(alertThreshold);
+    map['active'] = Variable<bool>(active);
+    return map;
+  }
+
+  BudgetEntriesCompanion toCompanion(bool nullToAbsent) {
+    return BudgetEntriesCompanion(
+      id: Value(id),
+      category: Value(category),
+      monthMicros: Value(monthMicros),
+      limitMinor: Value(limitMinor),
+      currencyCode: Value(currencyCode),
+      currencyDecimalDigits: Value(currencyDecimalDigits),
+      currencySymbol: Value(currencySymbol),
+      alertThreshold: Value(alertThreshold),
+      active: Value(active),
+    );
+  }
+
+  factory StoredBudget.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoredBudget(
+      id: serializer.fromJson<String>(json['id']),
+      category: serializer.fromJson<String>(json['category']),
+      monthMicros: serializer.fromJson<int>(json['monthMicros']),
+      limitMinor: serializer.fromJson<int>(json['limitMinor']),
+      currencyCode: serializer.fromJson<String>(json['currencyCode']),
+      currencyDecimalDigits: serializer.fromJson<int>(
+        json['currencyDecimalDigits'],
+      ),
+      currencySymbol: serializer.fromJson<String>(json['currencySymbol']),
+      alertThreshold: serializer.fromJson<int>(json['alertThreshold']),
+      active: serializer.fromJson<bool>(json['active']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'category': serializer.toJson<String>(category),
+      'monthMicros': serializer.toJson<int>(monthMicros),
+      'limitMinor': serializer.toJson<int>(limitMinor),
+      'currencyCode': serializer.toJson<String>(currencyCode),
+      'currencyDecimalDigits': serializer.toJson<int>(currencyDecimalDigits),
+      'currencySymbol': serializer.toJson<String>(currencySymbol),
+      'alertThreshold': serializer.toJson<int>(alertThreshold),
+      'active': serializer.toJson<bool>(active),
+    };
+  }
+
+  StoredBudget copyWith({
+    String? id,
+    String? category,
+    int? monthMicros,
+    int? limitMinor,
+    String? currencyCode,
+    int? currencyDecimalDigits,
+    String? currencySymbol,
+    int? alertThreshold,
+    bool? active,
+  }) => StoredBudget(
+    id: id ?? this.id,
+    category: category ?? this.category,
+    monthMicros: monthMicros ?? this.monthMicros,
+    limitMinor: limitMinor ?? this.limitMinor,
+    currencyCode: currencyCode ?? this.currencyCode,
+    currencyDecimalDigits: currencyDecimalDigits ?? this.currencyDecimalDigits,
+    currencySymbol: currencySymbol ?? this.currencySymbol,
+    alertThreshold: alertThreshold ?? this.alertThreshold,
+    active: active ?? this.active,
+  );
+  StoredBudget copyWithCompanion(BudgetEntriesCompanion data) {
+    return StoredBudget(
+      id: data.id.present ? data.id.value : this.id,
+      category: data.category.present ? data.category.value : this.category,
+      monthMicros: data.monthMicros.present
+          ? data.monthMicros.value
+          : this.monthMicros,
+      limitMinor: data.limitMinor.present
+          ? data.limitMinor.value
+          : this.limitMinor,
+      currencyCode: data.currencyCode.present
+          ? data.currencyCode.value
+          : this.currencyCode,
+      currencyDecimalDigits: data.currencyDecimalDigits.present
+          ? data.currencyDecimalDigits.value
+          : this.currencyDecimalDigits,
+      currencySymbol: data.currencySymbol.present
+          ? data.currencySymbol.value
+          : this.currencySymbol,
+      alertThreshold: data.alertThreshold.present
+          ? data.alertThreshold.value
+          : this.alertThreshold,
+      active: data.active.present ? data.active.value : this.active,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoredBudget(')
+          ..write('id: $id, ')
+          ..write('category: $category, ')
+          ..write('monthMicros: $monthMicros, ')
+          ..write('limitMinor: $limitMinor, ')
+          ..write('currencyCode: $currencyCode, ')
+          ..write('currencyDecimalDigits: $currencyDecimalDigits, ')
+          ..write('currencySymbol: $currencySymbol, ')
+          ..write('alertThreshold: $alertThreshold, ')
+          ..write('active: $active')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    category,
+    monthMicros,
+    limitMinor,
+    currencyCode,
+    currencyDecimalDigits,
+    currencySymbol,
+    alertThreshold,
+    active,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoredBudget &&
+          other.id == this.id &&
+          other.category == this.category &&
+          other.monthMicros == this.monthMicros &&
+          other.limitMinor == this.limitMinor &&
+          other.currencyCode == this.currencyCode &&
+          other.currencyDecimalDigits == this.currencyDecimalDigits &&
+          other.currencySymbol == this.currencySymbol &&
+          other.alertThreshold == this.alertThreshold &&
+          other.active == this.active);
+}
+
+class BudgetEntriesCompanion extends UpdateCompanion<StoredBudget> {
+  final Value<String> id;
+  final Value<String> category;
+  final Value<int> monthMicros;
+  final Value<int> limitMinor;
+  final Value<String> currencyCode;
+  final Value<int> currencyDecimalDigits;
+  final Value<String> currencySymbol;
+  final Value<int> alertThreshold;
+  final Value<bool> active;
+  final Value<int> rowid;
+  const BudgetEntriesCompanion({
+    this.id = const Value.absent(),
+    this.category = const Value.absent(),
+    this.monthMicros = const Value.absent(),
+    this.limitMinor = const Value.absent(),
+    this.currencyCode = const Value.absent(),
+    this.currencyDecimalDigits = const Value.absent(),
+    this.currencySymbol = const Value.absent(),
+    this.alertThreshold = const Value.absent(),
+    this.active = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BudgetEntriesCompanion.insert({
+    required String id,
+    required String category,
+    required int monthMicros,
+    required int limitMinor,
+    required String currencyCode,
+    required int currencyDecimalDigits,
+    required String currencySymbol,
+    this.alertThreshold = const Value.absent(),
+    this.active = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       category = Value(category),
+       monthMicros = Value(monthMicros),
+       limitMinor = Value(limitMinor),
+       currencyCode = Value(currencyCode),
+       currencyDecimalDigits = Value(currencyDecimalDigits),
+       currencySymbol = Value(currencySymbol);
+  static Insertable<StoredBudget> custom({
+    Expression<String>? id,
+    Expression<String>? category,
+    Expression<int>? monthMicros,
+    Expression<int>? limitMinor,
+    Expression<String>? currencyCode,
+    Expression<int>? currencyDecimalDigits,
+    Expression<String>? currencySymbol,
+    Expression<int>? alertThreshold,
+    Expression<bool>? active,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (category != null) 'category': category,
+      if (monthMicros != null) 'month_micros': monthMicros,
+      if (limitMinor != null) 'limit_minor': limitMinor,
+      if (currencyCode != null) 'currency_code': currencyCode,
+      if (currencyDecimalDigits != null)
+        'currency_decimal_digits': currencyDecimalDigits,
+      if (currencySymbol != null) 'currency_symbol': currencySymbol,
+      if (alertThreshold != null) 'alert_threshold': alertThreshold,
+      if (active != null) 'active': active,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BudgetEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? category,
+    Value<int>? monthMicros,
+    Value<int>? limitMinor,
+    Value<String>? currencyCode,
+    Value<int>? currencyDecimalDigits,
+    Value<String>? currencySymbol,
+    Value<int>? alertThreshold,
+    Value<bool>? active,
+    Value<int>? rowid,
+  }) {
+    return BudgetEntriesCompanion(
+      id: id ?? this.id,
+      category: category ?? this.category,
+      monthMicros: monthMicros ?? this.monthMicros,
+      limitMinor: limitMinor ?? this.limitMinor,
+      currencyCode: currencyCode ?? this.currencyCode,
+      currencyDecimalDigits:
+          currencyDecimalDigits ?? this.currencyDecimalDigits,
+      currencySymbol: currencySymbol ?? this.currencySymbol,
+      alertThreshold: alertThreshold ?? this.alertThreshold,
+      active: active ?? this.active,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (monthMicros.present) {
+      map['month_micros'] = Variable<int>(monthMicros.value);
+    }
+    if (limitMinor.present) {
+      map['limit_minor'] = Variable<int>(limitMinor.value);
+    }
+    if (currencyCode.present) {
+      map['currency_code'] = Variable<String>(currencyCode.value);
+    }
+    if (currencyDecimalDigits.present) {
+      map['currency_decimal_digits'] = Variable<int>(
+        currencyDecimalDigits.value,
+      );
+    }
+    if (currencySymbol.present) {
+      map['currency_symbol'] = Variable<String>(currencySymbol.value);
+    }
+    if (alertThreshold.present) {
+      map['alert_threshold'] = Variable<int>(alertThreshold.value);
+    }
+    if (active.present) {
+      map['active'] = Variable<bool>(active.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BudgetEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('category: $category, ')
+          ..write('monthMicros: $monthMicros, ')
+          ..write('limitMinor: $limitMinor, ')
+          ..write('currencyCode: $currencyCode, ')
+          ..write('currencyDecimalDigits: $currencyDecimalDigits, ')
+          ..write('currencySymbol: $currencySymbol, ')
+          ..write('alertThreshold: $alertThreshold, ')
+          ..write('active: $active, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RecurringRuleEntriesTable extends RecurringRuleEntries
+    with TableInfo<$RecurringRuleEntriesTable, StoredRecurringRule> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RecurringRuleEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _frequencyMeta = const VerificationMeta(
+    'frequency',
+  );
+  @override
+  late final GeneratedColumn<String> frequency = GeneratedColumn<String>(
+    'frequency',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountMinorMeta = const VerificationMeta(
+    'amountMinor',
+  );
+  @override
+  late final GeneratedColumn<int> amountMinor = GeneratedColumn<int>(
+    'amount_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyCodeMeta = const VerificationMeta(
+    'currencyCode',
+  );
+  @override
+  late final GeneratedColumn<String> currencyCode = GeneratedColumn<String>(
+    'currency_code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyDecimalDigitsMeta =
+      const VerificationMeta('currencyDecimalDigits');
+  @override
+  late final GeneratedColumn<int> currencyDecimalDigits = GeneratedColumn<int>(
+    'currency_decimal_digits',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencySymbolMeta = const VerificationMeta(
+    'currencySymbol',
+  );
+  @override
+  late final GeneratedColumn<String> currencySymbol = GeneratedColumn<String>(
+    'currency_symbol',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _accountIdMeta = const VerificationMeta(
+    'accountId',
+  );
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+    'account_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES account_entries (id)',
+    ),
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _firstDueAtMicrosMeta = const VerificationMeta(
+    'firstDueAtMicros',
+  );
+  @override
+  late final GeneratedColumn<int> firstDueAtMicros = GeneratedColumn<int>(
+    'first_due_at_micros',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _remindDaysBeforeMeta = const VerificationMeta(
+    'remindDaysBefore',
+  );
+  @override
+  late final GeneratedColumn<int> remindDaysBefore = GeneratedColumn<int>(
+    'remind_days_before',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(3),
+  );
+  static const VerificationMeta _activeMeta = const VerificationMeta('active');
+  @override
+  late final GeneratedColumn<bool> active = GeneratedColumn<bool>(
+    'active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    description,
+    kind,
+    frequency,
+    amountMinor,
+    currencyCode,
+    currencyDecimalDigits,
+    currencySymbol,
+    accountId,
+    category,
+    firstDueAtMicros,
+    remindDaysBefore,
+    active,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'recurring_rule_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoredRecurringRule> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('frequency')) {
+      context.handle(
+        _frequencyMeta,
+        frequency.isAcceptableOrUnknown(data['frequency']!, _frequencyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_frequencyMeta);
+    }
+    if (data.containsKey('amount_minor')) {
+      context.handle(
+        _amountMinorMeta,
+        amountMinor.isAcceptableOrUnknown(
+          data['amount_minor']!,
+          _amountMinorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMinorMeta);
+    }
+    if (data.containsKey('currency_code')) {
+      context.handle(
+        _currencyCodeMeta,
+        currencyCode.isAcceptableOrUnknown(
+          data['currency_code']!,
+          _currencyCodeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyCodeMeta);
+    }
+    if (data.containsKey('currency_decimal_digits')) {
+      context.handle(
+        _currencyDecimalDigitsMeta,
+        currencyDecimalDigits.isAcceptableOrUnknown(
+          data['currency_decimal_digits']!,
+          _currencyDecimalDigitsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyDecimalDigitsMeta);
+    }
+    if (data.containsKey('currency_symbol')) {
+      context.handle(
+        _currencySymbolMeta,
+        currencySymbol.isAcceptableOrUnknown(
+          data['currency_symbol']!,
+          _currencySymbolMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currencySymbolMeta);
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(
+        _accountIdMeta,
+        accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    }
+    if (data.containsKey('first_due_at_micros')) {
+      context.handle(
+        _firstDueAtMicrosMeta,
+        firstDueAtMicros.isAcceptableOrUnknown(
+          data['first_due_at_micros']!,
+          _firstDueAtMicrosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_firstDueAtMicrosMeta);
+    }
+    if (data.containsKey('remind_days_before')) {
+      context.handle(
+        _remindDaysBeforeMeta,
+        remindDaysBefore.isAcceptableOrUnknown(
+          data['remind_days_before']!,
+          _remindDaysBeforeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('active')) {
+      context.handle(
+        _activeMeta,
+        active.isAcceptableOrUnknown(data['active']!, _activeMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoredRecurringRule map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoredRecurringRule(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      frequency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}frequency'],
+      )!,
+      amountMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount_minor'],
+      )!,
+      currencyCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency_code'],
+      )!,
+      currencyDecimalDigits: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}currency_decimal_digits'],
+      )!,
+      currencySymbol: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency_symbol'],
+      )!,
+      accountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}account_id'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      ),
+      firstDueAtMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}first_due_at_micros'],
+      )!,
+      remindDaysBefore: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}remind_days_before'],
+      )!,
+      active: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}active'],
+      )!,
+    );
+  }
+
+  @override
+  $RecurringRuleEntriesTable createAlias(String alias) {
+    return $RecurringRuleEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class StoredRecurringRule extends DataClass
+    implements Insertable<StoredRecurringRule> {
+  final String id;
+  final String description;
+  final String kind;
+  final String frequency;
+  final int amountMinor;
+  final String currencyCode;
+  final int currencyDecimalDigits;
+  final String currencySymbol;
+  final String accountId;
+  final String? category;
+  final int firstDueAtMicros;
+  final int remindDaysBefore;
+  final bool active;
+  const StoredRecurringRule({
+    required this.id,
+    required this.description,
+    required this.kind,
+    required this.frequency,
+    required this.amountMinor,
+    required this.currencyCode,
+    required this.currencyDecimalDigits,
+    required this.currencySymbol,
+    required this.accountId,
+    this.category,
+    required this.firstDueAtMicros,
+    required this.remindDaysBefore,
+    required this.active,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['description'] = Variable<String>(description);
+    map['kind'] = Variable<String>(kind);
+    map['frequency'] = Variable<String>(frequency);
+    map['amount_minor'] = Variable<int>(amountMinor);
+    map['currency_code'] = Variable<String>(currencyCode);
+    map['currency_decimal_digits'] = Variable<int>(currencyDecimalDigits);
+    map['currency_symbol'] = Variable<String>(currencySymbol);
+    map['account_id'] = Variable<String>(accountId);
+    if (!nullToAbsent || category != null) {
+      map['category'] = Variable<String>(category);
+    }
+    map['first_due_at_micros'] = Variable<int>(firstDueAtMicros);
+    map['remind_days_before'] = Variable<int>(remindDaysBefore);
+    map['active'] = Variable<bool>(active);
+    return map;
+  }
+
+  RecurringRuleEntriesCompanion toCompanion(bool nullToAbsent) {
+    return RecurringRuleEntriesCompanion(
+      id: Value(id),
+      description: Value(description),
+      kind: Value(kind),
+      frequency: Value(frequency),
+      amountMinor: Value(amountMinor),
+      currencyCode: Value(currencyCode),
+      currencyDecimalDigits: Value(currencyDecimalDigits),
+      currencySymbol: Value(currencySymbol),
+      accountId: Value(accountId),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
+      firstDueAtMicros: Value(firstDueAtMicros),
+      remindDaysBefore: Value(remindDaysBefore),
+      active: Value(active),
+    );
+  }
+
+  factory StoredRecurringRule.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoredRecurringRule(
+      id: serializer.fromJson<String>(json['id']),
+      description: serializer.fromJson<String>(json['description']),
+      kind: serializer.fromJson<String>(json['kind']),
+      frequency: serializer.fromJson<String>(json['frequency']),
+      amountMinor: serializer.fromJson<int>(json['amountMinor']),
+      currencyCode: serializer.fromJson<String>(json['currencyCode']),
+      currencyDecimalDigits: serializer.fromJson<int>(
+        json['currencyDecimalDigits'],
+      ),
+      currencySymbol: serializer.fromJson<String>(json['currencySymbol']),
+      accountId: serializer.fromJson<String>(json['accountId']),
+      category: serializer.fromJson<String?>(json['category']),
+      firstDueAtMicros: serializer.fromJson<int>(json['firstDueAtMicros']),
+      remindDaysBefore: serializer.fromJson<int>(json['remindDaysBefore']),
+      active: serializer.fromJson<bool>(json['active']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'description': serializer.toJson<String>(description),
+      'kind': serializer.toJson<String>(kind),
+      'frequency': serializer.toJson<String>(frequency),
+      'amountMinor': serializer.toJson<int>(amountMinor),
+      'currencyCode': serializer.toJson<String>(currencyCode),
+      'currencyDecimalDigits': serializer.toJson<int>(currencyDecimalDigits),
+      'currencySymbol': serializer.toJson<String>(currencySymbol),
+      'accountId': serializer.toJson<String>(accountId),
+      'category': serializer.toJson<String?>(category),
+      'firstDueAtMicros': serializer.toJson<int>(firstDueAtMicros),
+      'remindDaysBefore': serializer.toJson<int>(remindDaysBefore),
+      'active': serializer.toJson<bool>(active),
+    };
+  }
+
+  StoredRecurringRule copyWith({
+    String? id,
+    String? description,
+    String? kind,
+    String? frequency,
+    int? amountMinor,
+    String? currencyCode,
+    int? currencyDecimalDigits,
+    String? currencySymbol,
+    String? accountId,
+    Value<String?> category = const Value.absent(),
+    int? firstDueAtMicros,
+    int? remindDaysBefore,
+    bool? active,
+  }) => StoredRecurringRule(
+    id: id ?? this.id,
+    description: description ?? this.description,
+    kind: kind ?? this.kind,
+    frequency: frequency ?? this.frequency,
+    amountMinor: amountMinor ?? this.amountMinor,
+    currencyCode: currencyCode ?? this.currencyCode,
+    currencyDecimalDigits: currencyDecimalDigits ?? this.currencyDecimalDigits,
+    currencySymbol: currencySymbol ?? this.currencySymbol,
+    accountId: accountId ?? this.accountId,
+    category: category.present ? category.value : this.category,
+    firstDueAtMicros: firstDueAtMicros ?? this.firstDueAtMicros,
+    remindDaysBefore: remindDaysBefore ?? this.remindDaysBefore,
+    active: active ?? this.active,
+  );
+  StoredRecurringRule copyWithCompanion(RecurringRuleEntriesCompanion data) {
+    return StoredRecurringRule(
+      id: data.id.present ? data.id.value : this.id,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      frequency: data.frequency.present ? data.frequency.value : this.frequency,
+      amountMinor: data.amountMinor.present
+          ? data.amountMinor.value
+          : this.amountMinor,
+      currencyCode: data.currencyCode.present
+          ? data.currencyCode.value
+          : this.currencyCode,
+      currencyDecimalDigits: data.currencyDecimalDigits.present
+          ? data.currencyDecimalDigits.value
+          : this.currencyDecimalDigits,
+      currencySymbol: data.currencySymbol.present
+          ? data.currencySymbol.value
+          : this.currencySymbol,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      category: data.category.present ? data.category.value : this.category,
+      firstDueAtMicros: data.firstDueAtMicros.present
+          ? data.firstDueAtMicros.value
+          : this.firstDueAtMicros,
+      remindDaysBefore: data.remindDaysBefore.present
+          ? data.remindDaysBefore.value
+          : this.remindDaysBefore,
+      active: data.active.present ? data.active.value : this.active,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoredRecurringRule(')
+          ..write('id: $id, ')
+          ..write('description: $description, ')
+          ..write('kind: $kind, ')
+          ..write('frequency: $frequency, ')
+          ..write('amountMinor: $amountMinor, ')
+          ..write('currencyCode: $currencyCode, ')
+          ..write('currencyDecimalDigits: $currencyDecimalDigits, ')
+          ..write('currencySymbol: $currencySymbol, ')
+          ..write('accountId: $accountId, ')
+          ..write('category: $category, ')
+          ..write('firstDueAtMicros: $firstDueAtMicros, ')
+          ..write('remindDaysBefore: $remindDaysBefore, ')
+          ..write('active: $active')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    description,
+    kind,
+    frequency,
+    amountMinor,
+    currencyCode,
+    currencyDecimalDigits,
+    currencySymbol,
+    accountId,
+    category,
+    firstDueAtMicros,
+    remindDaysBefore,
+    active,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoredRecurringRule &&
+          other.id == this.id &&
+          other.description == this.description &&
+          other.kind == this.kind &&
+          other.frequency == this.frequency &&
+          other.amountMinor == this.amountMinor &&
+          other.currencyCode == this.currencyCode &&
+          other.currencyDecimalDigits == this.currencyDecimalDigits &&
+          other.currencySymbol == this.currencySymbol &&
+          other.accountId == this.accountId &&
+          other.category == this.category &&
+          other.firstDueAtMicros == this.firstDueAtMicros &&
+          other.remindDaysBefore == this.remindDaysBefore &&
+          other.active == this.active);
+}
+
+class RecurringRuleEntriesCompanion
+    extends UpdateCompanion<StoredRecurringRule> {
+  final Value<String> id;
+  final Value<String> description;
+  final Value<String> kind;
+  final Value<String> frequency;
+  final Value<int> amountMinor;
+  final Value<String> currencyCode;
+  final Value<int> currencyDecimalDigits;
+  final Value<String> currencySymbol;
+  final Value<String> accountId;
+  final Value<String?> category;
+  final Value<int> firstDueAtMicros;
+  final Value<int> remindDaysBefore;
+  final Value<bool> active;
+  final Value<int> rowid;
+  const RecurringRuleEntriesCompanion({
+    this.id = const Value.absent(),
+    this.description = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.frequency = const Value.absent(),
+    this.amountMinor = const Value.absent(),
+    this.currencyCode = const Value.absent(),
+    this.currencyDecimalDigits = const Value.absent(),
+    this.currencySymbol = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.category = const Value.absent(),
+    this.firstDueAtMicros = const Value.absent(),
+    this.remindDaysBefore = const Value.absent(),
+    this.active = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RecurringRuleEntriesCompanion.insert({
+    required String id,
+    required String description,
+    required String kind,
+    required String frequency,
+    required int amountMinor,
+    required String currencyCode,
+    required int currencyDecimalDigits,
+    required String currencySymbol,
+    required String accountId,
+    this.category = const Value.absent(),
+    required int firstDueAtMicros,
+    this.remindDaysBefore = const Value.absent(),
+    this.active = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       description = Value(description),
+       kind = Value(kind),
+       frequency = Value(frequency),
+       amountMinor = Value(amountMinor),
+       currencyCode = Value(currencyCode),
+       currencyDecimalDigits = Value(currencyDecimalDigits),
+       currencySymbol = Value(currencySymbol),
+       accountId = Value(accountId),
+       firstDueAtMicros = Value(firstDueAtMicros);
+  static Insertable<StoredRecurringRule> custom({
+    Expression<String>? id,
+    Expression<String>? description,
+    Expression<String>? kind,
+    Expression<String>? frequency,
+    Expression<int>? amountMinor,
+    Expression<String>? currencyCode,
+    Expression<int>? currencyDecimalDigits,
+    Expression<String>? currencySymbol,
+    Expression<String>? accountId,
+    Expression<String>? category,
+    Expression<int>? firstDueAtMicros,
+    Expression<int>? remindDaysBefore,
+    Expression<bool>? active,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (description != null) 'description': description,
+      if (kind != null) 'kind': kind,
+      if (frequency != null) 'frequency': frequency,
+      if (amountMinor != null) 'amount_minor': amountMinor,
+      if (currencyCode != null) 'currency_code': currencyCode,
+      if (currencyDecimalDigits != null)
+        'currency_decimal_digits': currencyDecimalDigits,
+      if (currencySymbol != null) 'currency_symbol': currencySymbol,
+      if (accountId != null) 'account_id': accountId,
+      if (category != null) 'category': category,
+      if (firstDueAtMicros != null) 'first_due_at_micros': firstDueAtMicros,
+      if (remindDaysBefore != null) 'remind_days_before': remindDaysBefore,
+      if (active != null) 'active': active,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RecurringRuleEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? description,
+    Value<String>? kind,
+    Value<String>? frequency,
+    Value<int>? amountMinor,
+    Value<String>? currencyCode,
+    Value<int>? currencyDecimalDigits,
+    Value<String>? currencySymbol,
+    Value<String>? accountId,
+    Value<String?>? category,
+    Value<int>? firstDueAtMicros,
+    Value<int>? remindDaysBefore,
+    Value<bool>? active,
+    Value<int>? rowid,
+  }) {
+    return RecurringRuleEntriesCompanion(
+      id: id ?? this.id,
+      description: description ?? this.description,
+      kind: kind ?? this.kind,
+      frequency: frequency ?? this.frequency,
+      amountMinor: amountMinor ?? this.amountMinor,
+      currencyCode: currencyCode ?? this.currencyCode,
+      currencyDecimalDigits:
+          currencyDecimalDigits ?? this.currencyDecimalDigits,
+      currencySymbol: currencySymbol ?? this.currencySymbol,
+      accountId: accountId ?? this.accountId,
+      category: category ?? this.category,
+      firstDueAtMicros: firstDueAtMicros ?? this.firstDueAtMicros,
+      remindDaysBefore: remindDaysBefore ?? this.remindDaysBefore,
+      active: active ?? this.active,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (frequency.present) {
+      map['frequency'] = Variable<String>(frequency.value);
+    }
+    if (amountMinor.present) {
+      map['amount_minor'] = Variable<int>(amountMinor.value);
+    }
+    if (currencyCode.present) {
+      map['currency_code'] = Variable<String>(currencyCode.value);
+    }
+    if (currencyDecimalDigits.present) {
+      map['currency_decimal_digits'] = Variable<int>(
+        currencyDecimalDigits.value,
+      );
+    }
+    if (currencySymbol.present) {
+      map['currency_symbol'] = Variable<String>(currencySymbol.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (firstDueAtMicros.present) {
+      map['first_due_at_micros'] = Variable<int>(firstDueAtMicros.value);
+    }
+    if (remindDaysBefore.present) {
+      map['remind_days_before'] = Variable<int>(remindDaysBefore.value);
+    }
+    if (active.present) {
+      map['active'] = Variable<bool>(active.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecurringRuleEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('description: $description, ')
+          ..write('kind: $kind, ')
+          ..write('frequency: $frequency, ')
+          ..write('amountMinor: $amountMinor, ')
+          ..write('currencyCode: $currencyCode, ')
+          ..write('currencyDecimalDigits: $currencyDecimalDigits, ')
+          ..write('currencySymbol: $currencySymbol, ')
+          ..write('accountId: $accountId, ')
+          ..write('category: $category, ')
+          ..write('firstDueAtMicros: $firstDueAtMicros, ')
+          ..write('remindDaysBefore: $remindDaysBefore, ')
+          ..write('active: $active, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
   $LocalDatabaseManager get managers => $LocalDatabaseManager(this);
   late final $AccountEntriesTable accountEntries = $AccountEntriesTable(this);
   late final $TransactionEntriesTable transactionEntries =
       $TransactionEntriesTable(this);
+  late final $BudgetEntriesTable budgetEntries = $BudgetEntriesTable(this);
+  late final $RecurringRuleEntriesTable recurringRuleEntries =
+      $RecurringRuleEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1780,6 +3165,8 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     accountEntries,
     transactionEntries,
+    budgetEntries,
+    recurringRuleEntries,
   ];
 }
 
@@ -1860,6 +3247,31 @@ final class $$AccountEntriesTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _counterTransactionsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $RecurringRuleEntriesTable,
+    List<StoredRecurringRule>
+  >
+  _recurringRuleEntriesRefsTable(_$LocalDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.recurringRuleEntries,
+        aliasName: 'account_entries__id__recurring_rule_entries__account_id',
+      );
+
+  $$RecurringRuleEntriesTableProcessedTableManager
+  get recurringRuleEntriesRefs {
+    final manager = $$RecurringRuleEntriesTableTableManager(
+      $_db,
+      $_db.recurringRuleEntries,
+    ).filter((f) => f.accountId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _recurringRuleEntriesRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -1972,6 +3384,31 @@ class $$AccountEntriesTableFilterComposer
           }) => $$TransactionEntriesTableFilterComposer(
             $db: $db,
             $table: $db.transactionEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> recurringRuleEntriesRefs(
+    Expression<bool> Function($$RecurringRuleEntriesTableFilterComposer f) f,
+  ) {
+    final $$RecurringRuleEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.recurringRuleEntries,
+      getReferencedColumn: (t) => t.accountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RecurringRuleEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.recurringRuleEntries,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2152,6 +3589,32 @@ class $$AccountEntriesTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> recurringRuleEntriesRefs<T extends Object>(
+    Expression<T> Function($$RecurringRuleEntriesTableAnnotationComposer a) f,
+  ) {
+    final $$RecurringRuleEntriesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.recurringRuleEntries,
+          getReferencedColumn: (t) => t.accountId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$RecurringRuleEntriesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.recurringRuleEntries,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$AccountEntriesTableTableManager
@@ -2170,6 +3633,7 @@ class $$AccountEntriesTableTableManager
           PrefetchHooks Function({
             bool sourceTransactions,
             bool counterTransactions,
+            bool recurringRuleEntriesRefs,
           })
         > {
   $$AccountEntriesTableTableManager(
@@ -2250,12 +3714,17 @@ class $$AccountEntriesTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({sourceTransactions = false, counterTransactions = false}) {
+              ({
+                sourceTransactions = false,
+                counterTransactions = false,
+                recurringRuleEntriesRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (sourceTransactions) db.transactionEntries,
                     if (counterTransactions) db.transactionEntries,
+                    if (recurringRuleEntriesRefs) db.recurringRuleEntries,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -2302,6 +3771,27 @@ class $$AccountEntriesTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (recurringRuleEntriesRefs)
+                        await $_getPrefetchedData<
+                          StoredAccount,
+                          $AccountEntriesTable,
+                          StoredRecurringRule
+                        >(
+                          currentTable: table,
+                          referencedTable: $$AccountEntriesTableReferences
+                              ._recurringRuleEntriesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$AccountEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).recurringRuleEntriesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.accountId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -2325,6 +3815,7 @@ typedef $$AccountEntriesTableProcessedTableManager =
       PrefetchHooks Function({
         bool sourceTransactions,
         bool counterTransactions,
+        bool recurringRuleEntriesRefs,
       })
     >;
 typedef $$TransactionEntriesTableCreateCompanionBuilder =
@@ -3017,6 +4508,806 @@ typedef $$TransactionEntriesTableProcessedTableManager =
       StoredTransaction,
       PrefetchHooks Function({bool accountId, bool counterAccountId})
     >;
+typedef $$BudgetEntriesTableCreateCompanionBuilder =
+    BudgetEntriesCompanion Function({
+      required String id,
+      required String category,
+      required int monthMicros,
+      required int limitMinor,
+      required String currencyCode,
+      required int currencyDecimalDigits,
+      required String currencySymbol,
+      Value<int> alertThreshold,
+      Value<bool> active,
+      Value<int> rowid,
+    });
+typedef $$BudgetEntriesTableUpdateCompanionBuilder =
+    BudgetEntriesCompanion Function({
+      Value<String> id,
+      Value<String> category,
+      Value<int> monthMicros,
+      Value<int> limitMinor,
+      Value<String> currencyCode,
+      Value<int> currencyDecimalDigits,
+      Value<String> currencySymbol,
+      Value<int> alertThreshold,
+      Value<bool> active,
+      Value<int> rowid,
+    });
+
+class $$BudgetEntriesTableFilterComposer
+    extends Composer<_$LocalDatabase, $BudgetEntriesTable> {
+  $$BudgetEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get monthMicros => $composableBuilder(
+    column: $table.monthMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get limitMinor => $composableBuilder(
+    column: $table.limitMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get alertThreshold => $composableBuilder(
+    column: $table.alertThreshold,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BudgetEntriesTableOrderingComposer
+    extends Composer<_$LocalDatabase, $BudgetEntriesTable> {
+  $$BudgetEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get monthMicros => $composableBuilder(
+    column: $table.monthMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get limitMinor => $composableBuilder(
+    column: $table.limitMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get alertThreshold => $composableBuilder(
+    column: $table.alertThreshold,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BudgetEntriesTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $BudgetEntriesTable> {
+  $$BudgetEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<int> get monthMicros => $composableBuilder(
+    column: $table.monthMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get limitMinor => $composableBuilder(
+    column: $table.limitMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get alertThreshold => $composableBuilder(
+    column: $table.alertThreshold,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get active =>
+      $composableBuilder(column: $table.active, builder: (column) => column);
+}
+
+class $$BudgetEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$LocalDatabase,
+          $BudgetEntriesTable,
+          StoredBudget,
+          $$BudgetEntriesTableFilterComposer,
+          $$BudgetEntriesTableOrderingComposer,
+          $$BudgetEntriesTableAnnotationComposer,
+          $$BudgetEntriesTableCreateCompanionBuilder,
+          $$BudgetEntriesTableUpdateCompanionBuilder,
+          (
+            StoredBudget,
+            BaseReferences<_$LocalDatabase, $BudgetEntriesTable, StoredBudget>,
+          ),
+          StoredBudget,
+          PrefetchHooks Function()
+        > {
+  $$BudgetEntriesTableTableManager(
+    _$LocalDatabase db,
+    $BudgetEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BudgetEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BudgetEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BudgetEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<int> monthMicros = const Value.absent(),
+                Value<int> limitMinor = const Value.absent(),
+                Value<String> currencyCode = const Value.absent(),
+                Value<int> currencyDecimalDigits = const Value.absent(),
+                Value<String> currencySymbol = const Value.absent(),
+                Value<int> alertThreshold = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BudgetEntriesCompanion(
+                id: id,
+                category: category,
+                monthMicros: monthMicros,
+                limitMinor: limitMinor,
+                currencyCode: currencyCode,
+                currencyDecimalDigits: currencyDecimalDigits,
+                currencySymbol: currencySymbol,
+                alertThreshold: alertThreshold,
+                active: active,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String category,
+                required int monthMicros,
+                required int limitMinor,
+                required String currencyCode,
+                required int currencyDecimalDigits,
+                required String currencySymbol,
+                Value<int> alertThreshold = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BudgetEntriesCompanion.insert(
+                id: id,
+                category: category,
+                monthMicros: monthMicros,
+                limitMinor: limitMinor,
+                currencyCode: currencyCode,
+                currencyDecimalDigits: currencyDecimalDigits,
+                currencySymbol: currencySymbol,
+                alertThreshold: alertThreshold,
+                active: active,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BudgetEntriesTable, StoredBudget>(table),
+                  BaseReferences<
+                    _$LocalDatabase,
+                    $BudgetEntriesTable,
+                    StoredBudget
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BudgetEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LocalDatabase,
+      $BudgetEntriesTable,
+      StoredBudget,
+      $$BudgetEntriesTableFilterComposer,
+      $$BudgetEntriesTableOrderingComposer,
+      $$BudgetEntriesTableAnnotationComposer,
+      $$BudgetEntriesTableCreateCompanionBuilder,
+      $$BudgetEntriesTableUpdateCompanionBuilder,
+      (
+        StoredBudget,
+        BaseReferences<_$LocalDatabase, $BudgetEntriesTable, StoredBudget>,
+      ),
+      StoredBudget,
+      PrefetchHooks Function()
+    >;
+typedef $$RecurringRuleEntriesTableCreateCompanionBuilder =
+    RecurringRuleEntriesCompanion Function({
+      required String id,
+      required String description,
+      required String kind,
+      required String frequency,
+      required int amountMinor,
+      required String currencyCode,
+      required int currencyDecimalDigits,
+      required String currencySymbol,
+      required String accountId,
+      Value<String?> category,
+      required int firstDueAtMicros,
+      Value<int> remindDaysBefore,
+      Value<bool> active,
+      Value<int> rowid,
+    });
+typedef $$RecurringRuleEntriesTableUpdateCompanionBuilder =
+    RecurringRuleEntriesCompanion Function({
+      Value<String> id,
+      Value<String> description,
+      Value<String> kind,
+      Value<String> frequency,
+      Value<int> amountMinor,
+      Value<String> currencyCode,
+      Value<int> currencyDecimalDigits,
+      Value<String> currencySymbol,
+      Value<String> accountId,
+      Value<String?> category,
+      Value<int> firstDueAtMicros,
+      Value<int> remindDaysBefore,
+      Value<bool> active,
+      Value<int> rowid,
+    });
+
+final class $$RecurringRuleEntriesTableReferences
+    extends
+        BaseReferences<
+          _$LocalDatabase,
+          $RecurringRuleEntriesTable,
+          StoredRecurringRule
+        > {
+  $$RecurringRuleEntriesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $AccountEntriesTable _accountIdTable(_$LocalDatabase db) => db
+      .accountEntries
+      .createAlias('recurring_rule_entries__account_id__account_entries__id');
+
+  $$AccountEntriesTableProcessedTableManager get accountId {
+    final $_column = $_itemColumn<String>('account_id')!;
+
+    final manager = $$AccountEntriesTableTableManager(
+      $_db,
+      $_db.accountEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$RecurringRuleEntriesTableFilterComposer
+    extends Composer<_$LocalDatabase, $RecurringRuleEntriesTable> {
+  $$RecurringRuleEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get frequency => $composableBuilder(
+    column: $table.frequency,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amountMinor => $composableBuilder(
+    column: $table.amountMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get firstDueAtMicros => $composableBuilder(
+    column: $table.firstDueAtMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get remindDaysBefore => $composableBuilder(
+    column: $table.remindDaysBefore,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$AccountEntriesTableFilterComposer get accountId {
+    final $$AccountEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accountEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AccountEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.accountEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RecurringRuleEntriesTableOrderingComposer
+    extends Composer<_$LocalDatabase, $RecurringRuleEntriesTable> {
+  $$RecurringRuleEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get frequency => $composableBuilder(
+    column: $table.frequency,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amountMinor => $composableBuilder(
+    column: $table.amountMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get firstDueAtMicros => $composableBuilder(
+    column: $table.firstDueAtMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get remindDaysBefore => $composableBuilder(
+    column: $table.remindDaysBefore,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$AccountEntriesTableOrderingComposer get accountId {
+    final $$AccountEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accountEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AccountEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.accountEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RecurringRuleEntriesTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $RecurringRuleEntriesTable> {
+  $$RecurringRuleEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get frequency =>
+      $composableBuilder(column: $table.frequency, builder: (column) => column);
+
+  GeneratedColumn<int> get amountMinor => $composableBuilder(
+    column: $table.amountMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currencyCode => $composableBuilder(
+    column: $table.currencyCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get currencyDecimalDigits => $composableBuilder(
+    column: $table.currencyDecimalDigits,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currencySymbol => $composableBuilder(
+    column: $table.currencySymbol,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<int> get firstDueAtMicros => $composableBuilder(
+    column: $table.firstDueAtMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get remindDaysBefore => $composableBuilder(
+    column: $table.remindDaysBefore,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get active =>
+      $composableBuilder(column: $table.active, builder: (column) => column);
+
+  $$AccountEntriesTableAnnotationComposer get accountId {
+    final $$AccountEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accountEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AccountEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.accountEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RecurringRuleEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$LocalDatabase,
+          $RecurringRuleEntriesTable,
+          StoredRecurringRule,
+          $$RecurringRuleEntriesTableFilterComposer,
+          $$RecurringRuleEntriesTableOrderingComposer,
+          $$RecurringRuleEntriesTableAnnotationComposer,
+          $$RecurringRuleEntriesTableCreateCompanionBuilder,
+          $$RecurringRuleEntriesTableUpdateCompanionBuilder,
+          (StoredRecurringRule, $$RecurringRuleEntriesTableReferences),
+          StoredRecurringRule,
+          PrefetchHooks Function({bool accountId})
+        > {
+  $$RecurringRuleEntriesTableTableManager(
+    _$LocalDatabase db,
+    $RecurringRuleEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RecurringRuleEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RecurringRuleEntriesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$RecurringRuleEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> frequency = const Value.absent(),
+                Value<int> amountMinor = const Value.absent(),
+                Value<String> currencyCode = const Value.absent(),
+                Value<int> currencyDecimalDigits = const Value.absent(),
+                Value<String> currencySymbol = const Value.absent(),
+                Value<String> accountId = const Value.absent(),
+                Value<String?> category = const Value.absent(),
+                Value<int> firstDueAtMicros = const Value.absent(),
+                Value<int> remindDaysBefore = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RecurringRuleEntriesCompanion(
+                id: id,
+                description: description,
+                kind: kind,
+                frequency: frequency,
+                amountMinor: amountMinor,
+                currencyCode: currencyCode,
+                currencyDecimalDigits: currencyDecimalDigits,
+                currencySymbol: currencySymbol,
+                accountId: accountId,
+                category: category,
+                firstDueAtMicros: firstDueAtMicros,
+                remindDaysBefore: remindDaysBefore,
+                active: active,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String description,
+                required String kind,
+                required String frequency,
+                required int amountMinor,
+                required String currencyCode,
+                required int currencyDecimalDigits,
+                required String currencySymbol,
+                required String accountId,
+                Value<String?> category = const Value.absent(),
+                required int firstDueAtMicros,
+                Value<int> remindDaysBefore = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RecurringRuleEntriesCompanion.insert(
+                id: id,
+                description: description,
+                kind: kind,
+                frequency: frequency,
+                amountMinor: amountMinor,
+                currencyCode: currencyCode,
+                currencyDecimalDigits: currencyDecimalDigits,
+                currencySymbol: currencySymbol,
+                accountId: accountId,
+                category: category,
+                firstDueAtMicros: firstDueAtMicros,
+                remindDaysBefore: remindDaysBefore,
+                active: active,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RecurringRuleEntriesTable, StoredRecurringRule>(
+                    table,
+                  ),
+                  $$RecurringRuleEntriesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({accountId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (accountId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.accountId,
+                        referencedTable: $$RecurringRuleEntriesTableReferences
+                            ._accountIdTable(db),
+                        referencedColumn: $$RecurringRuleEntriesTableReferences
+                            ._accountIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$RecurringRuleEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LocalDatabase,
+      $RecurringRuleEntriesTable,
+      StoredRecurringRule,
+      $$RecurringRuleEntriesTableFilterComposer,
+      $$RecurringRuleEntriesTableOrderingComposer,
+      $$RecurringRuleEntriesTableAnnotationComposer,
+      $$RecurringRuleEntriesTableCreateCompanionBuilder,
+      $$RecurringRuleEntriesTableUpdateCompanionBuilder,
+      (StoredRecurringRule, $$RecurringRuleEntriesTableReferences),
+      StoredRecurringRule,
+      PrefetchHooks Function({bool accountId})
+    >;
 
 class $LocalDatabaseManager {
   final _$LocalDatabase _db;
@@ -3025,4 +5316,8 @@ class $LocalDatabaseManager {
       $$AccountEntriesTableTableManager(_db, _db.accountEntries);
   $$TransactionEntriesTableTableManager get transactionEntries =>
       $$TransactionEntriesTableTableManager(_db, _db.transactionEntries);
+  $$BudgetEntriesTableTableManager get budgetEntries =>
+      $$BudgetEntriesTableTableManager(_db, _db.budgetEntries);
+  $$RecurringRuleEntriesTableTableManager get recurringRuleEntries =>
+      $$RecurringRuleEntriesTableTableManager(_db, _db.recurringRuleEntries);
 }

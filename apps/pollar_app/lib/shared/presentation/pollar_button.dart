@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -43,8 +44,11 @@ class PollarButton extends StatelessWidget {
       PollarControlSize.standard => PollarSizes.buttonStandard,
       PollarControlSize.prominent => PollarSizes.buttonProminent,
     };
+    final compactMinimum = defaultTargetPlatform == TargetPlatform.android
+        ? PollarSizes.androidTouchTargetMin
+        : PollarSizes.touchTargetMin;
     final height = compactLayout
-        ? math.max(requestedHeight, PollarSizes.touchTargetMin)
+        ? math.max(requestedHeight, compactMinimum)
         : requestedHeight;
     final horizontalPadding = switch (size) {
       PollarControlSize.compact => PollarSpacing.x3,
@@ -197,9 +201,10 @@ class PollarIconButton extends StatelessWidget {
       PollarControlSize.standard => PollarSizes.buttonStandard,
       PollarControlSize.prominent => PollarSizes.buttonProminent,
     };
-    final box = compactLayout
-        ? math.max(requested, PollarSizes.touchTargetMin)
-        : requested;
+    final compactMinimum = defaultTargetPlatform == TargetPlatform.android
+        ? PollarSizes.androidTouchTargetMin
+        : PollarSizes.touchTargetMin;
+    final box = compactLayout ? math.max(requested, compactMinimum) : requested;
 
     return IconButton(
       tooltip: label,

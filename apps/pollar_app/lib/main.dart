@@ -7,12 +7,15 @@ import 'app/data/account_transaction_catalog.dart';
 import 'app/data/dashboard_overview_data_source.dart';
 import 'app/data/card_statement_data_source.dart';
 import 'app/data/local_database_provider.dart';
+import 'app/data/planning_ledger_data_source.dart';
 import 'app/theme/pollar_theme.dart';
 import 'app/theme/theme_mode_provider.dart';
 import 'features/accounts/data/default_accounts.dart';
 import 'features/accounts/data/drift_account_repository.dart';
 import 'features/accounts/presentation/accounts_controller.dart';
 import 'features/overview/presentation/overview_controller.dart';
+import 'features/planning/data/drift_planning_repository.dart';
+import 'features/planning/presentation/planning_controller.dart';
 import 'features/statements/presentation/statement_controller.dart';
 import 'features/transactions/data/drift_transaction_repository.dart';
 import 'features/transactions/presentation/transactions_controller.dart';
@@ -42,6 +45,15 @@ void main() {
         ),
         statementDataSourceProvider.overrideWith(
           (ref) => CardStatementDataSource(
+            ref.watch(accountRepositoryProvider),
+            ref.watch(transactionRepositoryProvider),
+          ),
+        ),
+        planningRepositoryProvider.overrideWith(
+          (ref) => DriftPlanningRepository(ref.watch(localDatabaseProvider)),
+        ),
+        planningLedgerSourceProvider.overrideWith(
+          (ref) => AppPlanningLedgerSource(
             ref.watch(accountRepositoryProvider),
             ref.watch(transactionRepositoryProvider),
           ),

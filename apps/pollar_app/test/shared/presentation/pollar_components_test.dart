@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pollar_app/app/theme/pollar_theme.dart';
@@ -39,6 +40,23 @@ void main() {
     await tester.tap(find.byType(PollarButton));
     expect(activations, 1);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('compact Android actions keep a 48 dp target', (tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    try {
+      await tester.pumpWidget(
+        app(PollarButton(label: 'Salvar', onPressed: () {})),
+      );
+
+      expect(tester.getSize(find.byType(PollarButton)).height, 48);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
   });
 
   testWidgets('form controls forward explicit values', (tester) async {

@@ -18,6 +18,7 @@ class PrivacyAmount extends StatelessWidget {
     this.semantic = MoneySemantic.automatic,
     this.maskDigits = 6,
     this.formatter = const MoneyFormatter.ptBr(),
+    this.allowWrap = false,
   }) : assert(maskDigits > 0);
 
   final Money money;
@@ -28,6 +29,7 @@ class PrivacyAmount extends StatelessWidget {
   final MoneySemantic semantic;
   final int maskDigits;
   final MoneyFormatter formatter;
+  final bool allowWrap;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class PrivacyAmount extends StatelessWidget {
         colorBySign: colorBySign,
         semantic: semantic,
         formatter: formatter,
+        allowWrap: allowWrap,
       );
     }
 
@@ -51,7 +54,8 @@ class PrivacyAmount extends StatelessWidget {
       excludeSemantics: true,
       child: Text(
         text,
-        maxLines: 1,
+        maxLines: allowWrap ? null : 1,
+        softWrap: allowWrap,
         style:
             PollarTypography.tabular(style ?? PollarTypography.amountStandard)
                 .copyWith(
