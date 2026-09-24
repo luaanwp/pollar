@@ -63,6 +63,9 @@ class LocalOutboxMutationRecorder implements LocalMutationRecorder {
         _database.syncOutboxEntries,
       )..where((row) => row.id.equals(existing.id))).write(
         SyncOutboxEntriesCompanion(
+          // An in-flight snapshot must keep its operation ID for server
+          // idempotency; the newer local edit is a distinct operation.
+          id: Value(_uuid.v4()),
           operation: Value(operation),
           payloadJson: Value(jsonEncode(payload)),
           occurredAtMicros: Value(

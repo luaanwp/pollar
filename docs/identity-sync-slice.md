@@ -9,6 +9,10 @@ local e funcional.
 
 - Toda escrita local e sua entrada de outbox acontecem na mesma transação Drift.
 - Cada operação recebe um UUID estável; novas tentativas reapresentam esse UUID.
+- IDs de entidades permanecem texto no servidor para aceitar as contas locais
+  já existentes (como `checking-main`); UUID é exigido para operações e dispositivos.
+- Uma edição durante o envio ganha nova operação; a confirmação da versão
+  anterior mantém a edição na fila com a versão remota atualizada.
 - O servidor registra o resultado em `sync_mutations`, tornando a aplicação
   idempotente e impedindo lançamentos duplicados.
 - Cada entidade carrega uma versão remota. Uma base divergente produz conflito,

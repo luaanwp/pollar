@@ -81,6 +81,40 @@ void main() {
     expect(metadata.single.remoteVersion, 1);
   });
 
+  test(
+    'edit during push survives acknowledgement as a new operation',
+    () async {
+      final repository = DriftAccountRepository(
+        database,
+        mutationRecorder: LocalOutboxMutationRecorder(database),
+      );
+      final store = LocalSyncStore(database);
+      await repository.add(account());
+      final inFlight = await store.pending(now: DateTime.now());
+
+      await repository.replace(account(name: 'Editada durante o envio'));
+      final edited = await store.pending(now: DateTime.now());
+      expect(edited, hasLength(1));
+      expect(edited.single.operationId, isNot(inFlight.single.operationId));
+
+      await store.applyPushResults(inFlight, [
+        PushMutationResult(
+          operationId: inFlight.single.operationId,
+          entityType: 'account',
+          entityId: account().id,
+          applied: true,
+          remoteVersion: 1,
+        ),
+      ]);
+
+      final remaining = await store.pending(now: DateTime.now());
+      expect(remaining, hasLength(1));
+      expect(remaining.single.operationId, edited.single.operationId);
+      expect(remaining.single.payload['name'], 'Editada durante o envio');
+      expect(remaining.single.baseVersion, 1);
+    },
+  );
+
   test('local ledger binds once and rejects a different account', () async {
     final store = LocalSyncStore(database);
 

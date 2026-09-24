@@ -15,7 +15,7 @@ create table public.devices (
 );
 
 create table public.accounts (
-  id uuid primary key,
+  id text primary key,
   user_id uuid not null references auth.users(id) on delete cascade,
   payload jsonb not null,
   version bigint not null check (version > 0),
@@ -24,7 +24,7 @@ create table public.accounts (
 );
 
 create table public.transactions (
-  id uuid primary key,
+  id text primary key,
   user_id uuid not null references auth.users(id) on delete cascade,
   payload jsonb not null,
   version bigint not null check (version > 0),
@@ -37,7 +37,7 @@ create table public.sync_mutations (
   user_id uuid not null references auth.users(id) on delete cascade,
   device_id uuid not null,
   entity_type text not null check (entity_type in ('account', 'transaction')),
-  entity_id uuid not null,
+  entity_id text not null,
   applied boolean not null,
   remote_version bigint not null,
   remote_deleted boolean not null default false,
@@ -50,7 +50,7 @@ create table public.sync_changes (
   cursor bigint generated always as identity primary key,
   user_id uuid not null references auth.users(id) on delete cascade,
   entity_type text not null check (entity_type in ('account', 'transaction')),
-  entity_id uuid not null,
+  entity_id text not null,
   version bigint not null,
   deleted boolean not null,
   payload jsonb not null,
@@ -98,7 +98,7 @@ create or replace function public.apply_sync_mutations(
 returns table (
   operation_id uuid,
   entity_type text,
-  entity_id uuid,
+  entity_id text,
   applied boolean,
   remote_version bigint,
   remote_deleted boolean,
@@ -113,7 +113,7 @@ declare
   v_item jsonb;
   v_operation_id uuid;
   v_entity_type text;
-  v_entity_id uuid;
+  v_entity_id text;
   v_operation text;
   v_payload jsonb;
   v_base_version bigint;
@@ -135,7 +135,7 @@ begin
   loop
     v_operation_id := (v_item->>'operation_id')::uuid;
     v_entity_type := v_item->>'entity_type';
-    v_entity_id := (v_item->>'entity_id')::uuid;
+    v_entity_id := v_item->>'entity_id';
     v_operation := v_item->>'operation';
     v_payload := coalesce(v_item->'payload', '{}'::jsonb);
     v_base_version := coalesce((v_item->>'base_version')::bigint, 0);
@@ -159,7 +159,7 @@ begin
     if v_entity_type not in ('account', 'transaction') or v_operation not in ('upsert', 'delete') then
       raise exception 'unsupported mutation';
     end if;
-    if v_payload <> '{}'::jsonb and v_payload->>'id' is distinct from v_entity_id::text then
+    if v_payload <> '{}'::jsonb and v_payload->>'id' is distinct from v_entity_id then
       raise exception 'payload id does not match entity id';
     end if;
     if v_operation = 'upsert' and v_entity_type = 'account' and (
@@ -173,13 +173,13 @@ begin
         coalesce((v_payload->>'amount_minor')::bigint, 0) <= 0 or
         not exists (
           select 1 from public.accounts a
-          where a.id = (v_payload->>'account_id')::uuid
+          where a.id = v_payload->>'account_id'
             and a.user_id = v_user_id and a.deleted_at is null
         )
       then raise exception 'invalid transaction payload'; end if;
       if v_payload->>'counter_account_id' is not null and not exists (
         select 1 from public.accounts a
-        where a.id = (v_payload->>'counter_account_id')::uuid
+        where a.id = v_payload->>'counter_account_id'
           and a.user_id = v_user_id and a.deleted_at is null
       ) then raise exception 'invalid counter account'; end if;
     end if;

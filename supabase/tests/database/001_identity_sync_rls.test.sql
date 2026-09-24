@@ -1,7 +1,7 @@
 create extension if not exists pgtap with schema extensions;
 
 begin;
-select plan(11);
+select plan(12);
 
 select has_table('public', 'accounts', 'accounts table exists');
 select has_table('public', 'sync_mutations', 'idempotency ledger exists');
@@ -25,11 +25,11 @@ select is(
       jsonb_build_array(jsonb_build_object(
         'operation_id', '10000000-0000-0000-0000-000000000020',
         'entity_type', 'account',
-        'entity_id', '10000000-0000-0000-0000-000000000030',
+        'entity_id', 'checking-main',
         'operation', 'upsert',
         'base_version', 0,
         'payload', jsonb_build_object(
-          'id', '10000000-0000-0000-0000-000000000030',
+          'id', 'checking-main',
           'name', 'Conta teste', 'type', 'checking',
           'currency_code', 'BRL', 'currency_decimal_digits', 2,
           'currency_symbol', 'R$', 'opening_balance_minor', 0,
@@ -49,11 +49,11 @@ select is(
       jsonb_build_array(jsonb_build_object(
         'operation_id', '10000000-0000-0000-0000-000000000020',
         'entity_type', 'account',
-        'entity_id', '10000000-0000-0000-0000-000000000030',
+        'entity_id', 'checking-main',
         'operation', 'upsert',
         'base_version', 0,
         'payload', jsonb_build_object(
-          'id', '10000000-0000-0000-0000-000000000030',
+          'id', 'checking-main',
           'name', 'Conta teste', 'type', 'checking',
           'currency_code', 'BRL', 'currency_decimal_digits', 2,
           'currency_symbol', 'R$', 'opening_balance_minor', 0,
@@ -75,6 +75,27 @@ select is(
   (select count(*) from public.accounts),
   1::bigint,
   'the owner can read the synchronized account'
+);
+
+select is(
+  (
+    select remote_version from public.apply_sync_mutations(
+      '10000000-0000-0000-0000-000000000010',
+      jsonb_build_array(jsonb_build_object(
+        'operation_id', '10000000-0000-0000-0000-000000000021',
+        'entity_type', 'transaction',
+        'entity_id', 'tx-local-1',
+        'operation', 'upsert',
+        'base_version', 0,
+        'payload', jsonb_build_object(
+          'id', 'tx-local-1', 'account_id', 'checking-main',
+          'description', 'Despesa teste', 'amount_minor', 100
+        )
+      ))
+    )
+  ),
+  1::bigint,
+  'transaction can reference a seeded non-UUID account'
 );
 
 set local request.jwt.claim.sub = '20000000-0000-0000-0000-000000000002';

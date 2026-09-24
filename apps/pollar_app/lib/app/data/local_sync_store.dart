@@ -127,6 +127,20 @@ class LocalSyncStore implements SyncLocalStore {
             remoteVersion: result.remoteVersion,
             deleted: mutation.operation == 'delete',
           );
+          // A local edit may have replaced this operation while the request
+          // was in flight. Keep that edit and base it on the acknowledged
+          // server version so its next push does not conflict with itself.
+          await (_database.update(_database.syncOutboxEntries)..where(
+                (row) =>
+                    row.entityType.equals(mutation.entityType) &
+                    row.entityId.equals(mutation.entityId) &
+                    row.id.isNotIn([mutation.operationId]),
+              ))
+              .write(
+                SyncOutboxEntriesCompanion(
+                  baseVersion: Value(result.remoteVersion),
+                ),
+              );
         } else {
           conflicts++;
           await _storeConflict(
