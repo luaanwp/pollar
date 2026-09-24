@@ -104,5 +104,11 @@ simples e deixa substituições futuras explícitas.
 - O adaptador `app/data/wealth_ledger_data_source.dart` fornece somente posições
   confirmadas por um contrato neutro. Avaliações e obrigações manuais continuam
   explícitas e substituíveis por fontes remotas ou de mercado na V2.
+- A feature `reports` deriva comparações mensais, saldo líquido e categorias
+  por moeda a partir de um contrato próprio. O adaptador em `app/data` reúne o
+  ledger; nenhum total do relatório é persistido ou importado de outra feature.
+- Exportações são documentos determinísticos produzidos na camada de aplicação.
+  A implementação local grava o CSV e seu SHA-256, mantendo sistema de arquivos
+  e `path_provider` fora das regras financeiras.
 - O quinto destino da navegação é `Mais`, que agrupa capacidades secundárias e
   preserva o limite de cinco destinos das barras nativas mobile.

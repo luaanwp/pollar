@@ -7,6 +7,7 @@ import '../../features/accounts/presentation/accounts_screen.dart';
 import '../../features/design_system/presentation/forms_catalog_screen.dart';
 import '../../features/overview/presentation/overview_screen.dart';
 import '../../features/planning/presentation/planning_screen.dart';
+import '../../features/reports/presentation/reports_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/settings/presentation/more_screen.dart';
 import '../../features/statements/presentation/card_statement_screen.dart';
@@ -99,6 +100,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'wealth',
                     builder: (context, state) => const WealthScreen(),
+                  ),
+                  GoRoute(
+                    path: 'reports',
+                    builder: (context, state) => const ReportsScreen(),
                   ),
                   GoRoute(
                     path: 'settings',

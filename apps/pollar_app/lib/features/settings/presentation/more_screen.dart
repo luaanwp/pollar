@@ -35,6 +35,14 @@ class MoreScreen extends StatelessWidget {
           ),
           const SizedBox(height: PollarSpacing.x3),
           _MoreDestination(
+            icon: LucideIcons.chartNoAxesCombined,
+            title: 'Relatórios',
+            description:
+                'Comparações mensais, categorias e exportação verificável.',
+            onTap: () => context.push('/more/reports'),
+          ),
+          const SizedBox(height: PollarSpacing.x3),
+          _MoreDestination(
             icon: LucideIcons.settings,
             title: 'Preferências',
             description: 'Aparência e configurações do aplicativo.',

@@ -8,6 +8,7 @@ import 'app/data/dashboard_overview_data_source.dart';
 import 'app/data/card_statement_data_source.dart';
 import 'app/data/local_database_provider.dart';
 import 'app/data/planning_ledger_data_source.dart';
+import 'app/data/report_ledger_data_source.dart';
 import 'app/data/wealth_ledger_data_source.dart';
 import 'app/theme/pollar_theme.dart';
 import 'app/theme/theme_mode_provider.dart';
@@ -17,6 +18,8 @@ import 'features/accounts/presentation/accounts_controller.dart';
 import 'features/overview/presentation/overview_controller.dart';
 import 'features/planning/data/drift_planning_repository.dart';
 import 'features/planning/presentation/planning_controller.dart';
+import 'features/reports/data/local_report_exporter.dart';
+import 'features/reports/presentation/reports_controller.dart';
 import 'features/statements/presentation/statement_controller.dart';
 import 'features/transactions/data/drift_transaction_repository.dart';
 import 'features/transactions/presentation/transactions_controller.dart';
@@ -61,6 +64,13 @@ void main() {
             ref.watch(transactionRepositoryProvider),
           ),
         ),
+        reportDataSourceProvider.overrideWith(
+          (ref) => ReportLedgerDataSource(
+            ref.watch(accountRepositoryProvider),
+            ref.watch(transactionRepositoryProvider),
+          ),
+        ),
+        reportExporterProvider.overrideWithValue(const LocalReportExporter()),
         wealthRepositoryProvider.overrideWith(
           (ref) => DriftWealthRepository(ref.watch(localDatabaseProvider)),
         ),

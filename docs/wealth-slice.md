@@ -47,5 +47,5 @@ Cotações de mercado, histórico de avaliações, amortização, garantias, met
 compartilhadas e vínculo automático entre pagamentos e dívidas ficam atrás dos
 contratos atuais para uma evolução posterior.
 
-O próximo slice recomendado é análises e relatórios: comparações mensais,
-evolução patrimonial, categorias e exportação verificável.
+Análises e relatórios foram entregues no slice seguinte. Histórico de avaliações
+manuais permanece adiado até existir uma trilha temporal própria para patrimônio.

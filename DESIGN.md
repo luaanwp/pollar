@@ -321,6 +321,21 @@ A visão geral funciona como fechamento de caixa imediato: distingue dinheiro di
 
 **The Liability Separation Rule.** Dívida de cartão explica a posição, mas nunca é incorporada silenciosamente ao saldo de caixa.
 
+### Reports Ledger
+
+Relatórios formam uma trilha de evidências do livro-caixa, não uma coleção de métricas decorativas: período, critério contábil, comparações e exportação permanecem visíveis e reconciliáveis.
+
+- **Basis:** o período móvel de seis meses usa somente lançamentos compensados e conciliados. Compras de cartão contam como despesa; transferências e pagamentos de fatura ficam fora de receitas e despesas para impedir dupla contagem.
+- **First viewport:** contexto de período e moeda antecede exportação, critério contábil e resultado agregado. Entradas e saídas explicam o resultado antes dos gráficos.
+- **Monthly flow:** barras comparam entradas e saídas mês a mês sobre uma linha de base. Uma tabela textual com todos os valores exatos acompanha o gráfico e conserva a mesma ordem temporal.
+- **Account trend:** a série mostra o saldo líquido das contas ativas a cada fechamento mensal, derivado de saldos iniciais e lançamentos confirmados. Ela declara que avaliações manuais de ativos e dívidas não possuem histórico e não entram na série.
+- **Categories:** saídas são ordenadas por valor e apresentadas com nome, quantia exata, percentual e barra linear. Muitas categorias usam barras e lista, nunca um donut ilegível.
+- **Verifiable export:** o CSV mantém ordem determinística, moeda e valores assinados em unidades menores; um arquivo lateral SHA-256 permite verificar o conteúdo exportado.
+- **Responsive behavior:** com pelo menos 880px disponíveis e escala tipográfica de até 1,3×, fluxo e saldo dividem a linha em proporção 6:4. Fora disso, empilham nessa ordem. Pares de rótulo e valor também fazem reflow antes de competir por espaço.
+- **Privacy:** valores textuais, proporções, barras e séries são mascarados globalmente; período, moeda, categorias, critério e espaço estrutural dos gráficos permanecem identificáveis sem revelar magnitude relativa.
+
+**The Report Evidence Rule.** Toda visualização deve ter valores textuais exatos e declarar período, moeda e critério contábil; nenhum gráfico introduz dados sintéticos ou mistura fontes sem histórico compatível.
+
 ### Wealth Dossier
 
 Patrimônio é um dossiê verificável, não um número isolado: reúne balanço líquido, meta prioritária e registros manuais sem apresentar avaliações como fatos do livro-caixa.
