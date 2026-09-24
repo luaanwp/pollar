@@ -19,8 +19,11 @@ local e funcional.
   preserva as duas versões e exige decisão da pessoa.
 - Exclusões são tombstones versionados. O estado de exclusão também é preservado
   no conflito para impedir ressurreição acidental.
-- Pull usa cursor monotônico; a UI só lê o banco local e é invalidada depois da
-  aplicação atômica das mudanças remotas.
+- Pull percorre todas as páginas com cursor monotônico; cada página e seu
+  cursor são aplicados na mesma transação local para retomada segura. No
+  servidor, as escritas de uma pessoa são serializadas até o commit para que
+  um cursor posterior nunca ultrapasse uma mudança ainda não confirmada.
+  A UI só lê o banco local e é invalidada depois da sincronização.
 - Falhas mantêm a fila e aplicam backoff exponencial limitado a uma hora.
 
 ## Identidade e segurança

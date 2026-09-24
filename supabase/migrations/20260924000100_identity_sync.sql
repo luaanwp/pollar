@@ -125,6 +125,10 @@ begin
   if v_user_id is null then raise exception 'authentication required' using errcode = '28000'; end if;
   if jsonb_typeof(p_mutations) <> 'array' then raise exception 'p_mutations must be an array'; end if;
 
+  -- Serialize writes for one user until commit. Otherwise a later cursor can
+  -- commit first and make a pull permanently skip an earlier uncommitted row.
+  perform pg_advisory_xact_lock(hashtextextended(v_user_id::text, 0));
+
   insert into public.devices (id, user_id, last_seen_at)
   values (p_device_id, v_user_id, now())
   on conflict (id) do update set last_seen_at = now()

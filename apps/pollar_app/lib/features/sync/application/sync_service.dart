@@ -46,16 +46,24 @@ class SyncService {
         pushed = results.where((result) => result.applied).length;
         conflicts += await _local.applyPushResults(pending, results);
       }
-      final pulled = await _remote.pull(afterCursor: await _local.cursor());
-      conflicts += await _local.applyRemote(pulled);
+      const pageSize = 500;
+      var cursor = await _local.cursor();
+      var pulledCount = 0;
+      while (true) {
+        final page = await _remote.pull(afterCursor: cursor, limit: pageSize);
+        if (page.changes.isNotEmpty && page.cursor <= cursor) {
+          throw StateError('Sync pull did not advance the cursor.');
+        }
+        conflicts += await _local.applyRemote(page);
+        pulledCount += page.changes.length;
+        cursor = page.cursor;
+        if (page.changes.length < pageSize) break;
+      }
       final completedAt = now.toUtc();
-      await _local.markCompleted(
-        cursor: pulled.cursor,
-        completedAt: completedAt,
-      );
+      await _local.markCompleted(cursor: cursor, completedAt: completedAt);
       return SyncRunResult(
         pushed: pushed,
-        pulled: pulled.changes.length,
+        pulled: pulledCount,
         conflicts: conflicts,
         completedAt: completedAt,
       );

@@ -1,7 +1,7 @@
 create extension if not exists pgtap with schema extensions;
 
 begin;
-select plan(12);
+select plan(15);
 
 select has_table('public', 'accounts', 'accounts table exists');
 select has_table('public', 'sync_mutations', 'idempotency ledger exists');
@@ -98,11 +98,27 @@ select is(
   'transaction can reference a seeded non-UUID account'
 );
 
+select is(
+  (public.pull_sync_changes(0, 1)->>'cursor')::bigint,
+  1::bigint,
+  'first pull page stops at its last visible cursor'
+);
+select is(
+  (public.pull_sync_changes(1, 1)->>'cursor')::bigint,
+  2::bigint,
+  'next pull page resumes without skipping a change'
+);
+
 set local request.jwt.claim.sub = '20000000-0000-0000-0000-000000000002';
 select is(
   (select count(*) from public.accounts),
   0::bigint,
   'RLS hides another user account'
+);
+select is(
+  jsonb_array_length(public.pull_sync_changes(0, 500)->'changes'),
+  0,
+  'pull also hides another user changes'
 );
 
 select * from finish();

@@ -219,6 +219,14 @@ class LocalSyncStore implements SyncLocalStore {
           deleted: change.deleted,
         );
       }
+      final runtime = await _runtime();
+      await (_database.update(
+        _database.syncRuntimeEntries,
+      )..where((row) => row.id.equals(_runtimeId))).write(
+        SyncRuntimeEntriesCompanion(
+          remoteCursor: Value(math.max(runtime.remoteCursor, result.cursor)),
+        ),
+      );
     });
     return conflicts;
   }
