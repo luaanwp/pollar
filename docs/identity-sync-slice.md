@@ -17,6 +17,10 @@ local e funcional.
   idempotente e impedindo lançamentos duplicados.
 - Cada entidade carrega uma versão remota. Uma base divergente produz conflito,
   preserva as duas versões e exige decisão da pessoa.
+- Enquanto um conflito está aberto, o pull não sobrescreve a cópia local,
+  novas edições não são reenviadas automaticamente e mudanças remotas mais
+  recentes atualizam a versão exibida para a decisão. “Manter deste dispositivo”
+  usa a edição local mais recente.
 - Exclusões são tombstones versionados. O estado de exclusão também é preservado
   no conflito para impedir ressurreição acidental.
 - Pull percorre todas as páginas com cursor monotônico; cada página e seu
@@ -25,6 +29,7 @@ local e funcional.
   um cursor posterior nunca ultrapasse uma mudança ainda não confirmada.
   A UI só lê o banco local e é invalidada depois da sincronização.
 - Falhas mantêm a fila e aplicam backoff exponencial limitado a uma hora.
+- Chamadas simultâneas de sincronização compartilham uma única execução.
 
 ## Identidade e segurança
 

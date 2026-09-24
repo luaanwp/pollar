@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pollar_app/app/data/local_sync_store.dart';
@@ -49,6 +51,23 @@ void main() {
     expect(result.pulled, 1);
     expect(await store.cursor(), 501);
   });
+
+  test('concurrent requests share one synchronization run', () async {
+    final remote = _BlockingRemote();
+    final service = SyncService(const _Session(), store, remote);
+    final now = DateTime.utc(2026, 9, 24);
+
+    final first = service.synchronize(now: now);
+    await remote.started.future;
+    final second = service.synchronize(now: now);
+    expect(identical(first, second), isTrue);
+    remote.release.complete();
+    await Future.wait([first, second]);
+    expect(remote.pullCalls, 1);
+
+    await service.synchronize(now: now);
+    expect(remote.pullCalls, 2);
+  });
 }
 
 class _Session implements SyncSessionAccess {
@@ -94,6 +113,26 @@ class _PagedRemote implements SyncRemoteGateway {
           ),
       ],
     );
+  }
+
+  @override
+  Future<List<PushMutationResult>> push({
+    required String deviceId,
+    required List<SyncMutation> mutations,
+  }) async => const [];
+}
+
+class _BlockingRemote implements SyncRemoteGateway {
+  final started = Completer<void>();
+  final release = Completer<void>();
+  int pullCalls = 0;
+
+  @override
+  Future<PullResult> pull({required int afterCursor, int limit = 500}) async {
+    pullCalls++;
+    if (!started.isCompleted) started.complete();
+    await release.future;
+    return PullResult(cursor: afterCursor, changes: const []);
   }
 
   @override

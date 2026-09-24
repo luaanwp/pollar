@@ -167,6 +167,96 @@ void main() {
     );
     expect(await database.select(database.syncOutboxEntries).get(), isEmpty);
   });
+
+  test(
+    'rejected push preserves local edits until conflict resolution',
+    () async {
+      final repository = DriftAccountRepository(
+        database,
+        mutationRecorder: LocalOutboxMutationRecorder(database),
+      );
+      final store = LocalSyncStore(database);
+      await repository.add(account(name: 'Versão local'));
+      final sent = await store.pending(now: DateTime.now());
+      final remote2 = {...sent.single.payload, 'name': 'Versão remota 2'};
+
+      expect(
+        await store.applyPushResults(sent, [
+          PushMutationResult(
+            operationId: sent.single.operationId,
+            entityType: 'account',
+            entityId: account().id,
+            applied: false,
+            remoteVersion: 2,
+            remotePayload: remote2,
+          ),
+        ]),
+        1,
+      );
+      expect(
+        await store.applyRemote(
+          PullResult(
+            cursor: 4,
+            changes: [
+              RemoteChange(
+                cursor: 4,
+                entityType: 'account',
+                entityId: account().id,
+                version: 2,
+                deleted: false,
+                payload: remote2,
+              ),
+            ],
+          ),
+        ),
+        0,
+      );
+      expect((await repository.findById(account().id))?.name, 'Versão local');
+      expect(await store.cursor(), 4);
+      expect(await store.conflicts(), hasLength(1));
+
+      await repository.replace(account(name: 'Edição após conflito'));
+      expect(await store.pending(now: DateTime.now()), isEmpty);
+      expect(
+        (await store.conflicts()).single.localPayload['name'],
+        'Edição após conflito',
+      );
+      final remote3 = {...remote2, 'name': 'Versão remota 3'};
+      expect(
+        await store.applyRemote(
+          PullResult(
+            cursor: 5,
+            changes: [
+              RemoteChange(
+                cursor: 5,
+                entityType: 'account',
+                entityId: account().id,
+                version: 3,
+                deleted: false,
+                payload: remote3,
+              ),
+            ],
+          ),
+        ),
+        0,
+      );
+      final conflict =
+          (await database.select(database.syncConflictEntries).get()).single;
+      expect(conflict.remoteVersion, 3);
+      expect(conflict.remotePayloadJson, contains('Versão remota 3'));
+      expect(
+        (await repository.findById(account().id))?.name,
+        'Edição após conflito',
+      );
+
+      await store.resolveConflict(conflict.id, keepLocal: true);
+      final remaining = await store.pending(now: DateTime.now());
+      expect(remaining, hasLength(1));
+      expect(remaining.single.payload['name'], 'Edição após conflito');
+      expect(remaining.single.baseVersion, 3);
+      expect(await store.conflicts(), isEmpty);
+    },
+  );
 }
 
 class _FailingRecorder implements LocalMutationRecorder {

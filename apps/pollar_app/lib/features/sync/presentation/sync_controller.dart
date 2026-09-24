@@ -28,9 +28,10 @@ final syncServiceProvider = Provider<SyncService>(
 final syncControllerProvider =
     AsyncNotifierProvider<SyncController, SyncOverview>(SyncController.new);
 
-final syncConflictsProvider = FutureProvider<List<SyncConflictRecord>>(
-  (ref) => ref.watch(syncLocalStoreProvider).conflicts(),
-);
+final syncConflictsProvider = FutureProvider<List<SyncConflictRecord>>((ref) {
+  ref.watch(financialDataRevisionProvider);
+  return ref.watch(syncLocalStoreProvider).conflicts();
+});
 
 class SyncController extends AsyncNotifier<SyncOverview> {
   @override

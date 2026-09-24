@@ -8,16 +8,28 @@ class SyncUnavailableException implements Exception {
 }
 
 class SyncService {
-  const SyncService(this._session, this._local, this._remote);
+  SyncService(this._session, this._local, this._remote);
 
   final SyncSessionAccess _session;
   final SyncLocalStore _local;
   final SyncRemoteGateway? _remote;
+  Future<SyncRunResult>? _inFlight;
 
   Future<SyncOverview> overview() =>
       _local.overview(remoteConfigured: _remote != null);
 
-  Future<SyncRunResult> synchronize({required DateTime now}) async {
+  Future<SyncRunResult> synchronize({required DateTime now}) =>
+      _inFlight ??= _runAndClear(now);
+
+  Future<SyncRunResult> _runAndClear(DateTime now) async {
+    try {
+      return await _synchronize(now);
+    } finally {
+      _inFlight = null;
+    }
+  }
+
+  Future<SyncRunResult> _synchronize(DateTime now) async {
     if (_remote == null || !_session.isConfigured) {
       throw const SyncUnavailableException(
         'Configure o Supabase para sincronizar entre dispositivos.',

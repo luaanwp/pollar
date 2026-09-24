@@ -75,15 +75,22 @@ class LocalSyncStore implements SyncLocalStore {
     int limit = 100,
   }) async {
     final nowMicros = now.toUtc().microsecondsSinceEpoch;
+    final unresolved = await (_database.select(
+      _database.syncConflictEntries,
+    )..where((row) => row.resolvedAtMicros.isNull())).get();
+    final blocked = {
+      for (final row in unresolved) '${row.entityType}:${row.entityId}',
+    };
     final query = _database.select(_database.syncOutboxEntries)
       ..where(
         (row) =>
             row.nextAttemptAtMicros.isNull() |
             row.nextAttemptAtMicros.isSmallerOrEqualValue(nowMicros),
       )
-      ..orderBy([(row) => OrderingTerm.asc(row.occurredAtMicros)])
-      ..limit(limit);
+      ..orderBy([(row) => OrderingTerm.asc(row.occurredAtMicros)]);
     return (await query.get())
+        .where((row) => !blocked.contains('${row.entityType}:${row.entityId}'))
+        .take(limit)
         .map(
           (row) => SyncMutation(
             operationId: row.id,
@@ -181,20 +188,32 @@ class LocalSyncStore implements SyncLocalStore {
       });
     await _database.transaction(() async {
       for (final change in ordered) {
+        final unresolved = await _unresolvedConflict(
+          change.entityType,
+          change.entityId,
+        );
+        if (unresolved != null) {
+          if (change.version > unresolved.remoteVersion) {
+            await (_database.update(
+              _database.syncConflictEntries,
+            )..where((row) => row.id.equals(unresolved.id))).write(
+              SyncConflictEntriesCompanion(
+                remotePayloadJson: Value(jsonEncode(change.payload)),
+                remoteVersion: Value(change.version),
+                remoteDeleted: Value(change.deleted),
+              ),
+            );
+          }
+          continue;
+        }
         final metadata = await _metadata(change.entityType, change.entityId);
         if (metadata != null && metadata.remoteVersion >= change.version) {
           continue;
         }
-        final localMutation =
-            await (_database.select(_database.syncOutboxEntries)
-                  ..where(
-                    (row) =>
-                        row.entityType.equals(change.entityType) &
-                        row.entityId.equals(change.entityId),
-                  )
-                  ..orderBy([(row) => OrderingTerm.desc(row.occurredAtMicros)])
-                  ..limit(1))
-                .getSingleOrNull();
+        final localMutation = await _latestOutbox(
+          change.entityType,
+          change.entityId,
+        );
         if (localMutation != null) {
           conflicts++;
           await _storeConflict(
@@ -283,13 +302,17 @@ class LocalSyncStore implements SyncLocalStore {
       ..orderBy([(row) => OrderingTerm.desc(row.detectedAtMicros)]);
     final records = <SyncConflictRecord>[];
     for (final row in await query.get()) {
+      final latestEdit = await _latestOutbox(row.entityType, row.entityId);
       records.add(
         SyncConflictRecord(
           id: row.id,
           entityType: row.entityType,
           entityId: row.entityId,
           localPayload: await _displayPayload(
-            Map<String, Object?>.from(jsonDecode(row.localPayloadJson) as Map),
+            Map<String, Object?>.from(
+              jsonDecode(latestEdit?.payloadJson ?? row.localPayloadJson)
+                  as Map,
+            ),
           ),
           remotePayload: await _displayPayload(
             Map<String, Object?>.from(jsonDecode(row.remotePayloadJson) as Map),
@@ -334,6 +357,9 @@ class LocalSyncStore implements SyncLocalStore {
       if (conflict == null || conflict.resolvedAtMicros != null) {
         throw StateError('Sync conflict not found: $id');
       }
+      final latestEdit = keepLocal
+          ? await _latestOutbox(conflict.entityType, conflict.entityId)
+          : null;
       await (_database.delete(_database.syncOutboxEntries)..where(
             (row) =>
                 row.entityType.equals(conflict.entityType) &
@@ -348,8 +374,9 @@ class LocalSyncStore implements SyncLocalStore {
                 id: _uuid.v4(),
                 entityType: conflict.entityType,
                 entityId: conflict.entityId,
-                operation: conflict.localOperation,
-                payloadJson: conflict.localPayloadJson,
+                operation: latestEdit?.operation ?? conflict.localOperation,
+                payloadJson:
+                    latestEdit?.payloadJson ?? conflict.localPayloadJson,
                 baseVersion: Value(conflict.remoteVersion),
                 occurredAtMicros: DateTime.now().toUtc().microsecondsSinceEpoch,
               ),
@@ -408,6 +435,35 @@ class LocalSyncStore implements SyncLocalStore {
                 row.entityType.equals(entityType) &
                 row.entityId.equals(entityId),
           ))
+          .getSingleOrNull();
+
+  Future<StoredSyncOutboxEntry?> _latestOutbox(
+    String entityType,
+    String entityId,
+  ) =>
+      (_database.select(_database.syncOutboxEntries)
+            ..where(
+              (row) =>
+                  row.entityType.equals(entityType) &
+                  row.entityId.equals(entityId),
+            )
+            ..orderBy([(row) => OrderingTerm.desc(row.occurredAtMicros)])
+            ..limit(1))
+          .getSingleOrNull();
+
+  Future<StoredSyncConflict?> _unresolvedConflict(
+    String entityType,
+    String entityId,
+  ) =>
+      (_database.select(_database.syncConflictEntries)
+            ..where(
+              (row) =>
+                  row.entityType.equals(entityType) &
+                  row.entityId.equals(entityId) &
+                  row.resolvedAtMicros.isNull(),
+            )
+            ..orderBy([(row) => OrderingTerm.desc(row.detectedAtMicros)])
+            ..limit(1))
           .getSingleOrNull();
 
   Future<void> _upsertMetadata({
