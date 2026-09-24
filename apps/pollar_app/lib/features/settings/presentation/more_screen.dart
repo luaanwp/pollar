@@ -35,6 +35,14 @@ class MoreScreen extends StatelessWidget {
           ),
           const SizedBox(height: PollarSpacing.x3),
           _MoreDestination(
+            icon: LucideIcons.cloudCog,
+            title: 'Sincronização',
+            description:
+                'Conta, fila deste dispositivo e conflitos preservados.',
+            onTap: () => context.push('/more/sync'),
+          ),
+          const SizedBox(height: PollarSpacing.x3),
+          _MoreDestination(
             icon: LucideIcons.chartNoAxesCombined,
             title: 'Relatórios',
             description:

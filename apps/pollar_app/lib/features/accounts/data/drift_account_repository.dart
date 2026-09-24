@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 
 import '../../../core/money/currency.dart';
 import '../../../core/money/money.dart';
+import '../../../shared/application/local_mutation_recorder.dart';
 import '../../../shared/data/local_database.dart';
 import '../domain/account.dart';
 import '../domain/account_repository.dart';
@@ -12,10 +13,12 @@ class DriftAccountRepository implements AccountRepository {
   DriftAccountRepository(
     this._database, {
     Iterable<Account> initialAccounts = const [],
+    this._mutationRecorder = const NoopLocalMutationRecorder(),
   }) : _initialAccounts = List.unmodifiable(initialAccounts);
 
   final LocalDatabase _database;
   final List<Account> _initialAccounts;
+  final LocalMutationRecorder _mutationRecorder;
   Future<void>? _initialization;
 
   @override
@@ -38,20 +41,27 @@ class DriftAccountRepository implements AccountRepository {
   @override
   Future<void> add(Account account) async {
     await _ensureInitialized();
-    await _database
-        .into(_database.accountEntries)
-        .insert(_toCompanion(account));
+    await _database.transaction(() async {
+      await _database
+          .into(_database.accountEntries)
+          .insert(_toCompanion(account));
+      await _record(account);
+    });
   }
 
   @override
   Future<void> replace(Account account) async {
     await _ensureInitialized();
-    final updated = await (_database.update(
-      _database.accountEntries,
-    )..where((row) => row.id.equals(account.id))).write(_toCompanion(account));
-    if (updated == 0) {
-      throw StateError('Account ${account.id} does not exist');
-    }
+    await _database.transaction(() async {
+      final updated =
+          await (_database.update(_database.accountEntries)
+                ..where((row) => row.id.equals(account.id)))
+              .write(_toCompanion(account));
+      if (updated == 0) {
+        throw StateError('Account ${account.id} does not exist');
+      }
+      await _record(account);
+    });
   }
 
   Future<void> _ensureInitialized() => _initialization ??= _seedNewDatabase();
@@ -64,13 +74,33 @@ class DriftAccountRepository implements AccountRepository {
     final count = (await countQuery.getSingle()).read(countExpression) ?? 0;
     if (count != 0) return;
 
-    await _database.batch((batch) {
-      batch.insertAll(
-        _database.accountEntries,
-        _initialAccounts.map(_toCompanion).toList(growable: false),
-      );
+    await _database.transaction(() async {
+      for (final account in _initialAccounts) {
+        await _database
+            .into(_database.accountEntries)
+            .insert(_toCompanion(account));
+        await _record(account);
+      }
     });
   }
+
+  Future<void> _record(Account account) => _mutationRecorder.recordUpsert(
+    entityType: 'account',
+    entityId: account.id,
+    payload: {
+      'id': account.id,
+      'name': account.name,
+      'type': account.type.name,
+      'currency_code': account.currency.code,
+      'currency_decimal_digits': account.currency.decimalDigits,
+      'currency_symbol': account.currency.symbol,
+      'opening_balance_minor': account.openingBalance.minorUnits,
+      'status': account.status.name,
+      'credit_limit_minor': account.creditCardTerms?.creditLimit.minorUnits,
+      'closing_day': account.creditCardTerms?.closingDay,
+      'due_day': account.creditCardTerms?.dueDay,
+    },
+  );
 
   Account _toDomain(StoredAccount stored) {
     final currency = Currency(

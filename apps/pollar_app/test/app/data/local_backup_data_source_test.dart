@@ -1,6 +1,8 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pollar_app/app/data/local_backup_data_source.dart';
+import 'package:pollar_app/app/data/local_outbox_mutation_recorder.dart';
 import 'package:pollar_app/features/accounts/data/drift_account_repository.dart';
 import 'package:pollar_app/features/data_management/domain/data_backup.dart';
 import 'package:pollar_app/shared/data/local_database.dart';
@@ -37,6 +39,35 @@ void main() {
       _transaction,
     ]);
   });
+
+  test(
+    'restore resets sync state and queues restored financial rows',
+    () async {
+      final backup = await source.exportTables();
+      final synchronizedSource = LocalBackupDataSource(
+        database,
+        DriftAccountRepository(database),
+        mutationRecorder: LocalOutboxMutationRecorder(database),
+      );
+      await database
+          .into(database.syncRuntimeEntries)
+          .insert(
+            const SyncRuntimeEntriesCompanion(
+              id: drift.Value('primary'),
+              deviceId: drift.Value('old-device'),
+            ),
+          );
+
+      await synchronizedSource.restoreTables(backup);
+
+      final outbox = await database.select(database.syncOutboxEntries).get();
+      expect(
+        outbox.map((row) => row.entityType),
+        containsAll(['account', 'transaction']),
+      );
+      expect(await database.select(database.syncRuntimeEntries).get(), isEmpty);
+    },
+  );
 
   test('rejects broken references before replacing current data', () async {
     final backup = await source.exportTables();

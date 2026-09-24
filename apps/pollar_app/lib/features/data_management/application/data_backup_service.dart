@@ -20,7 +20,7 @@ class DataBackupService {
 
   static const format = 'pollar_backup';
   static const version = 1;
-  static const databaseSchema = 5;
+  static const databaseSchema = 6;
 
   final BackupDataSource _source;
   final BackupFileGateway _files;

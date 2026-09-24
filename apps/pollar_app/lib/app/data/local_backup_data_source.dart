@@ -11,13 +11,19 @@ import '../../features/transactions/domain/financial_transaction.dart';
 import '../../features/wealth/domain/wealth_asset.dart';
 import '../../features/wealth/domain/wealth_debt.dart';
 import '../../features/wealth/domain/wealth_goal.dart';
+import '../../shared/application/local_mutation_recorder.dart';
 import '../../shared/data/local_database.dart';
 
 class LocalBackupDataSource implements BackupDataSource {
-  LocalBackupDataSource(this._database, this._accounts);
+  LocalBackupDataSource(
+    this._database,
+    this._accounts, {
+    this.mutationRecorder = const NoopLocalMutationRecorder(),
+  });
 
   final LocalDatabase _database;
   final AccountRepository _accounts;
+  final LocalMutationRecorder mutationRecorder;
 
   @override
   Future<DataInventory> inventory() async {
@@ -92,6 +98,10 @@ class LocalBackupDataSource implements BackupDataSource {
       );
 
       await _database.transaction(() async {
+        await _database.delete(_database.syncOutboxEntries).go();
+        await _database.delete(_database.syncMetadataEntries).go();
+        await _database.delete(_database.syncConflictEntries).go();
+        await _database.delete(_database.syncRuntimeEntries).go();
         await _database.delete(_database.transactionEntries).go();
         await _database.delete(_database.recurringRuleEntries).go();
         await _database.delete(_database.budgetEntries).go();
@@ -104,11 +114,21 @@ class LocalBackupDataSource implements BackupDataSource {
           await _database
               .into(_database.accountEntries)
               .insert(row.toCompanion(true));
+          await mutationRecorder.recordUpsert(
+            entityType: 'account',
+            entityId: row.id,
+            payload: _accountPayload(row),
+          );
         }
         for (final row in transactions) {
           await _database
               .into(_database.transactionEntries)
               .insert(row.toCompanion(true));
+          await mutationRecorder.recordUpsert(
+            entityType: 'transaction',
+            entityId: row.id,
+            payload: _transactionPayload(row),
+          );
         }
         for (final row in budgets) {
           await _database
@@ -144,6 +164,44 @@ class LocalBackupDataSource implements BackupDataSource {
       );
     }
   }
+
+  Map<String, Object?> _accountPayload(StoredAccount row) => {
+    'id': row.id,
+    'name': row.name,
+    'type': row.type,
+    'currency_code': row.currencyCode,
+    'currency_decimal_digits': row.currencyDecimalDigits,
+    'currency_symbol': row.currencySymbol,
+    'opening_balance_minor': row.openingBalanceMinor,
+    'status': row.status,
+    'credit_limit_minor': row.creditLimitMinor,
+    'closing_day': row.closingDay,
+    'due_day': row.dueDay,
+  };
+
+  Map<String, Object?> _transactionPayload(StoredTransaction row) => {
+    'id': row.id,
+    'description': row.description,
+    'type': row.type,
+    'status': row.status,
+    'amount_minor': row.amountMinor,
+    'currency_code': row.currencyCode,
+    'currency_decimal_digits': row.currencyDecimalDigits,
+    'currency_symbol': row.currencySymbol,
+    'account_id': row.accountId,
+    'counter_account_id': row.counterAccountId,
+    'occurred_at': DateTime.fromMicrosecondsSinceEpoch(
+      row.occurredAtMicros,
+      isUtc: true,
+    ).toIso8601String(),
+    'category': row.category,
+    'note': row.note,
+    'installment_group_id': row.installmentGroupId,
+    'installment_number': row.installmentNumber,
+    'installment_count': row.installmentCount,
+    'purchase_total_minor': row.purchaseTotalMinor,
+    'statement_id': row.statementId,
+  };
 
   ({
     List<StoredAccount> accounts,

@@ -19,9 +19,10 @@ export PATH="/c/Users/luanl/orca/tools/pollar/supabase:$PATH"
 
 - ✅ Flutter, Dart, web — operational.
 - ✅ `flutter test`, `flutter analyze`, `dart format` — operational.
-- ⚠️ Windows desktop build: Visual Studio Build Tools present but the **C++
-  (Desktop development with C++) workload is incomplete**. Completing it needs
-  the Visual Studio Installer and administrator rights.
+- ⚠️ Windows desktop build: Visual Studio Build Tools are present but the **C++
+  (Desktop development with C++) workload and ATL headers are incomplete**
+  (`atlstr.h` is absent). Completing them needs the Visual Studio Installer and
+  administrator rights.
 - ⚠️ Windows plugin build additionally needs **Developer Mode** enabled
   (symlink support) — `start ms-settings:developers`.
 - ⚠️ Android: SDK not installed yet.
@@ -56,11 +57,21 @@ A remote Supabase project must NOT be created or connected without explicit
 authorization. Local development uses Docker:
 
 ```bash
-supabase start   # prints API URL + anon key for .env
+supabase start   # prints API URL + publishable key
 supabase stop
 ```
 
-Copy `apps/pollar_app/.env.example` to `.env` and fill values. Never commit `.env`.
+Run the client with compile-time values (a remote project still requires explicit
+authorization):
+
+```bash
+flutter run \
+  --dart-define=SUPABASE_URL=http://127.0.0.1:54321 \
+  --dart-define=SUPABASE_PUBLISHABLE_KEY=your-local-publishable-key
+```
+
+Without both values the app intentionally starts in local-only mode. Never put
+the `service_role` key in a client command or file.
 
 ## Repository layout
 

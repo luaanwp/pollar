@@ -3,14 +3,19 @@ import 'package:drift/drift.dart';
 import '../../../core/ledger/balance_rules.dart';
 import '../../../core/money/currency.dart';
 import '../../../core/money/money.dart';
+import '../../../shared/application/local_mutation_recorder.dart';
 import '../../../shared/data/local_database.dart';
 import '../domain/financial_transaction.dart';
 import '../domain/transaction_repository.dart';
 
 class DriftTransactionRepository implements TransactionRepository {
-  const DriftTransactionRepository(this._database);
+  const DriftTransactionRepository(
+    this._database, {
+    this._mutationRecorder = const NoopLocalMutationRecorder(),
+  });
 
   final LocalDatabase _database;
+  final LocalMutationRecorder _mutationRecorder;
 
   @override
   Future<List<FinancialTransaction>> findAll() async {
@@ -35,9 +40,12 @@ class DriftTransactionRepository implements TransactionRepository {
     if (await findById(transaction.id) != null) {
       throw StateError('Transaction already exists: ${transaction.id}');
     }
-    await _database
-        .into(_database.transactionEntries)
-        .insert(_toCompanion(transaction));
+    await _database.transaction(() async {
+      await _database
+          .into(_database.transactionEntries)
+          .insert(_toCompanion(transaction));
+      await _record(transaction);
+    });
   }
 
   @override
@@ -47,20 +55,50 @@ class DriftTransactionRepository implements TransactionRepository {
         await _database
             .into(_database.transactionEntries)
             .insert(_toCompanion(transaction), mode: InsertMode.insert);
+        await _record(transaction);
       }
     });
   }
 
   @override
   Future<void> replace(FinancialTransaction transaction) async {
-    final updated =
-        await (_database.update(_database.transactionEntries)
-              ..where((row) => row.id.equals(transaction.id)))
-            .write(_toCompanion(transaction));
-    if (updated == 0) {
-      throw StateError('Transaction ${transaction.id} does not exist');
-    }
+    await _database.transaction(() async {
+      final updated =
+          await (_database.update(_database.transactionEntries)
+                ..where((row) => row.id.equals(transaction.id)))
+              .write(_toCompanion(transaction));
+      if (updated == 0) {
+        throw StateError('Transaction ${transaction.id} does not exist');
+      }
+      await _record(transaction);
+    });
   }
+
+  Future<void> _record(FinancialTransaction transaction) =>
+      _mutationRecorder.recordUpsert(
+        entityType: 'transaction',
+        entityId: transaction.id,
+        payload: {
+          'id': transaction.id,
+          'description': transaction.description,
+          'type': transaction.type.name,
+          'status': transaction.status.name,
+          'amount_minor': transaction.amount.minorUnits,
+          'currency_code': transaction.amount.currency.code,
+          'currency_decimal_digits': transaction.amount.currency.decimalDigits,
+          'currency_symbol': transaction.amount.currency.symbol,
+          'account_id': transaction.accountId,
+          'counter_account_id': transaction.counterAccountId,
+          'occurred_at': transaction.occurredAt.toUtc().toIso8601String(),
+          'category': transaction.category,
+          'note': transaction.note,
+          'installment_group_id': transaction.installmentGroupId,
+          'installment_number': transaction.installmentNumber,
+          'installment_count': transaction.installmentCount,
+          'purchase_total_minor': transaction.purchaseTotal?.minorUnits,
+          'statement_id': transaction.statementId,
+        },
+      );
 
   FinancialTransaction _toDomain(StoredTransaction stored) {
     final currency = Currency(

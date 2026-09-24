@@ -139,6 +139,67 @@ class WealthDebtEntries extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
+@DataClassName('StoredSyncOutboxEntry')
+class SyncOutboxEntries extends Table {
+  TextColumn get id => text()();
+  TextColumn get entityType => text()();
+  TextColumn get entityId => text()();
+  TextColumn get operation => text()();
+  TextColumn get payloadJson => text()();
+  IntColumn get baseVersion => integer().withDefault(const Constant(0))();
+  IntColumn get occurredAtMicros => integer()();
+  IntColumn get attemptCount => integer().withDefault(const Constant(0))();
+  IntColumn get nextAttemptAtMicros => integer().nullable()();
+  TextColumn get lastError => text().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+@DataClassName('StoredSyncMetadata')
+class SyncMetadataEntries extends Table {
+  TextColumn get entityType => text()();
+  TextColumn get entityId => text()();
+  IntColumn get remoteVersion => integer().withDefault(const Constant(0))();
+  IntColumn get lastSyncedAtMicros => integer().nullable()();
+  BoolColumn get deleted => boolean().withDefault(const Constant(false))();
+
+  @override
+  Set<Column<Object>> get primaryKey => {entityType, entityId};
+}
+
+@DataClassName('StoredSyncConflict')
+class SyncConflictEntries extends Table {
+  TextColumn get id => text()();
+  TextColumn get entityType => text()();
+  TextColumn get entityId => text()();
+  TextColumn get localPayloadJson => text()();
+  TextColumn get localOperation =>
+      text().withDefault(const Constant('upsert'))();
+  TextColumn get remotePayloadJson => text()();
+  IntColumn get remoteVersion => integer()();
+  BoolColumn get remoteDeleted =>
+      boolean().withDefault(const Constant(false))();
+  TextColumn get reason => text()();
+  IntColumn get detectedAtMicros => integer()();
+  IntColumn get resolvedAtMicros => integer().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+@DataClassName('StoredSyncRuntime')
+class SyncRuntimeEntries extends Table {
+  TextColumn get id => text()();
+  TextColumn get deviceId => text()();
+  TextColumn get boundUserId => text().nullable()();
+  IntColumn get remoteCursor => integer().withDefault(const Constant(0))();
+  IntColumn get lastSyncedAtMicros => integer().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     AccountEntries,
@@ -148,13 +209,17 @@ class WealthDebtEntries extends Table {
     WealthGoalEntries,
     WealthAssetEntries,
     WealthDebtEntries,
+    SyncOutboxEntries,
+    SyncMetadataEntries,
+    SyncConflictEntries,
+    SyncRuntimeEntries,
   ],
 )
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase(super.executor);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -193,6 +258,12 @@ class LocalDatabase extends _$LocalDatabase {
         await migrator.createTable(wealthGoalEntries);
         await migrator.createTable(wealthAssetEntries);
         await migrator.createTable(wealthDebtEntries);
+      }
+      if (from < 6) {
+        await migrator.createTable(syncOutboxEntries);
+        await migrator.createTable(syncMetadataEntries);
+        await migrator.createTable(syncConflictEntries);
+        await migrator.createTable(syncRuntimeEntries);
       }
     },
     beforeOpen: (_) => customStatement('PRAGMA foreign_keys = ON'),

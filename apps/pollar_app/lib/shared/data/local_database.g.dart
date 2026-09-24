@@ -5195,6 +5195,2109 @@ class WealthDebtEntriesCompanion extends UpdateCompanion<StoredWealthDebt> {
   }
 }
 
+class $SyncOutboxEntriesTable extends SyncOutboxEntries
+    with TableInfo<$SyncOutboxEntriesTable, StoredSyncOutboxEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncOutboxEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entityTypeMeta = const VerificationMeta(
+    'entityType',
+  );
+  @override
+  late final GeneratedColumn<String> entityType = GeneratedColumn<String>(
+    'entity_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entityIdMeta = const VerificationMeta(
+    'entityId',
+  );
+  @override
+  late final GeneratedColumn<String> entityId = GeneratedColumn<String>(
+    'entity_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _operationMeta = const VerificationMeta(
+    'operation',
+  );
+  @override
+  late final GeneratedColumn<String> operation = GeneratedColumn<String>(
+    'operation',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadJsonMeta = const VerificationMeta(
+    'payloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> payloadJson = GeneratedColumn<String>(
+    'payload_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _baseVersionMeta = const VerificationMeta(
+    'baseVersion',
+  );
+  @override
+  late final GeneratedColumn<int> baseVersion = GeneratedColumn<int>(
+    'base_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _occurredAtMicrosMeta = const VerificationMeta(
+    'occurredAtMicros',
+  );
+  @override
+  late final GeneratedColumn<int> occurredAtMicros = GeneratedColumn<int>(
+    'occurred_at_micros',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _attemptCountMeta = const VerificationMeta(
+    'attemptCount',
+  );
+  @override
+  late final GeneratedColumn<int> attemptCount = GeneratedColumn<int>(
+    'attempt_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _nextAttemptAtMicrosMeta =
+      const VerificationMeta('nextAttemptAtMicros');
+  @override
+  late final GeneratedColumn<int> nextAttemptAtMicros = GeneratedColumn<int>(
+    'next_attempt_at_micros',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastErrorMeta = const VerificationMeta(
+    'lastError',
+  );
+  @override
+  late final GeneratedColumn<String> lastError = GeneratedColumn<String>(
+    'last_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    entityType,
+    entityId,
+    operation,
+    payloadJson,
+    baseVersion,
+    occurredAtMicros,
+    attemptCount,
+    nextAttemptAtMicros,
+    lastError,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_outbox_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoredSyncOutboxEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('entity_type')) {
+      context.handle(
+        _entityTypeMeta,
+        entityType.isAcceptableOrUnknown(data['entity_type']!, _entityTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityTypeMeta);
+    }
+    if (data.containsKey('entity_id')) {
+      context.handle(
+        _entityIdMeta,
+        entityId.isAcceptableOrUnknown(data['entity_id']!, _entityIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityIdMeta);
+    }
+    if (data.containsKey('operation')) {
+      context.handle(
+        _operationMeta,
+        operation.isAcceptableOrUnknown(data['operation']!, _operationMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_operationMeta);
+    }
+    if (data.containsKey('payload_json')) {
+      context.handle(
+        _payloadJsonMeta,
+        payloadJson.isAcceptableOrUnknown(
+          data['payload_json']!,
+          _payloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadJsonMeta);
+    }
+    if (data.containsKey('base_version')) {
+      context.handle(
+        _baseVersionMeta,
+        baseVersion.isAcceptableOrUnknown(
+          data['base_version']!,
+          _baseVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('occurred_at_micros')) {
+      context.handle(
+        _occurredAtMicrosMeta,
+        occurredAtMicros.isAcceptableOrUnknown(
+          data['occurred_at_micros']!,
+          _occurredAtMicrosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_occurredAtMicrosMeta);
+    }
+    if (data.containsKey('attempt_count')) {
+      context.handle(
+        _attemptCountMeta,
+        attemptCount.isAcceptableOrUnknown(
+          data['attempt_count']!,
+          _attemptCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('next_attempt_at_micros')) {
+      context.handle(
+        _nextAttemptAtMicrosMeta,
+        nextAttemptAtMicros.isAcceptableOrUnknown(
+          data['next_attempt_at_micros']!,
+          _nextAttemptAtMicrosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_error')) {
+      context.handle(
+        _lastErrorMeta,
+        lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoredSyncOutboxEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoredSyncOutboxEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      entityType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_type'],
+      )!,
+      entityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_id'],
+      )!,
+      operation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}operation'],
+      )!,
+      payloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload_json'],
+      )!,
+      baseVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_version'],
+      )!,
+      occurredAtMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}occurred_at_micros'],
+      )!,
+      attemptCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempt_count'],
+      )!,
+      nextAttemptAtMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}next_attempt_at_micros'],
+      ),
+      lastError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error'],
+      ),
+    );
+  }
+
+  @override
+  $SyncOutboxEntriesTable createAlias(String alias) {
+    return $SyncOutboxEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class StoredSyncOutboxEntry extends DataClass
+    implements Insertable<StoredSyncOutboxEntry> {
+  final String id;
+  final String entityType;
+  final String entityId;
+  final String operation;
+  final String payloadJson;
+  final int baseVersion;
+  final int occurredAtMicros;
+  final int attemptCount;
+  final int? nextAttemptAtMicros;
+  final String? lastError;
+  const StoredSyncOutboxEntry({
+    required this.id,
+    required this.entityType,
+    required this.entityId,
+    required this.operation,
+    required this.payloadJson,
+    required this.baseVersion,
+    required this.occurredAtMicros,
+    required this.attemptCount,
+    this.nextAttemptAtMicros,
+    this.lastError,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['entity_type'] = Variable<String>(entityType);
+    map['entity_id'] = Variable<String>(entityId);
+    map['operation'] = Variable<String>(operation);
+    map['payload_json'] = Variable<String>(payloadJson);
+    map['base_version'] = Variable<int>(baseVersion);
+    map['occurred_at_micros'] = Variable<int>(occurredAtMicros);
+    map['attempt_count'] = Variable<int>(attemptCount);
+    if (!nullToAbsent || nextAttemptAtMicros != null) {
+      map['next_attempt_at_micros'] = Variable<int>(nextAttemptAtMicros);
+    }
+    if (!nullToAbsent || lastError != null) {
+      map['last_error'] = Variable<String>(lastError);
+    }
+    return map;
+  }
+
+  SyncOutboxEntriesCompanion toCompanion(bool nullToAbsent) {
+    return SyncOutboxEntriesCompanion(
+      id: Value(id),
+      entityType: Value(entityType),
+      entityId: Value(entityId),
+      operation: Value(operation),
+      payloadJson: Value(payloadJson),
+      baseVersion: Value(baseVersion),
+      occurredAtMicros: Value(occurredAtMicros),
+      attemptCount: Value(attemptCount),
+      nextAttemptAtMicros: nextAttemptAtMicros == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextAttemptAtMicros),
+      lastError: lastError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastError),
+    );
+  }
+
+  factory StoredSyncOutboxEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoredSyncOutboxEntry(
+      id: serializer.fromJson<String>(json['id']),
+      entityType: serializer.fromJson<String>(json['entityType']),
+      entityId: serializer.fromJson<String>(json['entityId']),
+      operation: serializer.fromJson<String>(json['operation']),
+      payloadJson: serializer.fromJson<String>(json['payloadJson']),
+      baseVersion: serializer.fromJson<int>(json['baseVersion']),
+      occurredAtMicros: serializer.fromJson<int>(json['occurredAtMicros']),
+      attemptCount: serializer.fromJson<int>(json['attemptCount']),
+      nextAttemptAtMicros: serializer.fromJson<int?>(
+        json['nextAttemptAtMicros'],
+      ),
+      lastError: serializer.fromJson<String?>(json['lastError']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'entityType': serializer.toJson<String>(entityType),
+      'entityId': serializer.toJson<String>(entityId),
+      'operation': serializer.toJson<String>(operation),
+      'payloadJson': serializer.toJson<String>(payloadJson),
+      'baseVersion': serializer.toJson<int>(baseVersion),
+      'occurredAtMicros': serializer.toJson<int>(occurredAtMicros),
+      'attemptCount': serializer.toJson<int>(attemptCount),
+      'nextAttemptAtMicros': serializer.toJson<int?>(nextAttemptAtMicros),
+      'lastError': serializer.toJson<String?>(lastError),
+    };
+  }
+
+  StoredSyncOutboxEntry copyWith({
+    String? id,
+    String? entityType,
+    String? entityId,
+    String? operation,
+    String? payloadJson,
+    int? baseVersion,
+    int? occurredAtMicros,
+    int? attemptCount,
+    Value<int?> nextAttemptAtMicros = const Value.absent(),
+    Value<String?> lastError = const Value.absent(),
+  }) => StoredSyncOutboxEntry(
+    id: id ?? this.id,
+    entityType: entityType ?? this.entityType,
+    entityId: entityId ?? this.entityId,
+    operation: operation ?? this.operation,
+    payloadJson: payloadJson ?? this.payloadJson,
+    baseVersion: baseVersion ?? this.baseVersion,
+    occurredAtMicros: occurredAtMicros ?? this.occurredAtMicros,
+    attemptCount: attemptCount ?? this.attemptCount,
+    nextAttemptAtMicros: nextAttemptAtMicros.present
+        ? nextAttemptAtMicros.value
+        : this.nextAttemptAtMicros,
+    lastError: lastError.present ? lastError.value : this.lastError,
+  );
+  StoredSyncOutboxEntry copyWithCompanion(SyncOutboxEntriesCompanion data) {
+    return StoredSyncOutboxEntry(
+      id: data.id.present ? data.id.value : this.id,
+      entityType: data.entityType.present
+          ? data.entityType.value
+          : this.entityType,
+      entityId: data.entityId.present ? data.entityId.value : this.entityId,
+      operation: data.operation.present ? data.operation.value : this.operation,
+      payloadJson: data.payloadJson.present
+          ? data.payloadJson.value
+          : this.payloadJson,
+      baseVersion: data.baseVersion.present
+          ? data.baseVersion.value
+          : this.baseVersion,
+      occurredAtMicros: data.occurredAtMicros.present
+          ? data.occurredAtMicros.value
+          : this.occurredAtMicros,
+      attemptCount: data.attemptCount.present
+          ? data.attemptCount.value
+          : this.attemptCount,
+      nextAttemptAtMicros: data.nextAttemptAtMicros.present
+          ? data.nextAttemptAtMicros.value
+          : this.nextAttemptAtMicros,
+      lastError: data.lastError.present ? data.lastError.value : this.lastError,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoredSyncOutboxEntry(')
+          ..write('id: $id, ')
+          ..write('entityType: $entityType, ')
+          ..write('entityId: $entityId, ')
+          ..write('operation: $operation, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('baseVersion: $baseVersion, ')
+          ..write('occurredAtMicros: $occurredAtMicros, ')
+          ..write('attemptCount: $attemptCount, ')
+          ..write('nextAttemptAtMicros: $nextAttemptAtMicros, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    entityType,
+    entityId,
+    operation,
+    payloadJson,
+    baseVersion,
+    occurredAtMicros,
+    attemptCount,
+    nextAttemptAtMicros,
+    lastError,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoredSyncOutboxEntry &&
+          other.id == this.id &&
+          other.entityType == this.entityType &&
+          other.entityId == this.entityId &&
+          other.operation == this.operation &&
+          other.payloadJson == this.payloadJson &&
+          other.baseVersion == this.baseVersion &&
+          other.occurredAtMicros == this.occurredAtMicros &&
+          other.attemptCount == this.attemptCount &&
+          other.nextAttemptAtMicros == this.nextAttemptAtMicros &&
+          other.lastError == this.lastError);
+}
+
+class SyncOutboxEntriesCompanion
+    extends UpdateCompanion<StoredSyncOutboxEntry> {
+  final Value<String> id;
+  final Value<String> entityType;
+  final Value<String> entityId;
+  final Value<String> operation;
+  final Value<String> payloadJson;
+  final Value<int> baseVersion;
+  final Value<int> occurredAtMicros;
+  final Value<int> attemptCount;
+  final Value<int?> nextAttemptAtMicros;
+  final Value<String?> lastError;
+  final Value<int> rowid;
+  const SyncOutboxEntriesCompanion({
+    this.id = const Value.absent(),
+    this.entityType = const Value.absent(),
+    this.entityId = const Value.absent(),
+    this.operation = const Value.absent(),
+    this.payloadJson = const Value.absent(),
+    this.baseVersion = const Value.absent(),
+    this.occurredAtMicros = const Value.absent(),
+    this.attemptCount = const Value.absent(),
+    this.nextAttemptAtMicros = const Value.absent(),
+    this.lastError = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncOutboxEntriesCompanion.insert({
+    required String id,
+    required String entityType,
+    required String entityId,
+    required String operation,
+    required String payloadJson,
+    this.baseVersion = const Value.absent(),
+    required int occurredAtMicros,
+    this.attemptCount = const Value.absent(),
+    this.nextAttemptAtMicros = const Value.absent(),
+    this.lastError = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       entityType = Value(entityType),
+       entityId = Value(entityId),
+       operation = Value(operation),
+       payloadJson = Value(payloadJson),
+       occurredAtMicros = Value(occurredAtMicros);
+  static Insertable<StoredSyncOutboxEntry> custom({
+    Expression<String>? id,
+    Expression<String>? entityType,
+    Expression<String>? entityId,
+    Expression<String>? operation,
+    Expression<String>? payloadJson,
+    Expression<int>? baseVersion,
+    Expression<int>? occurredAtMicros,
+    Expression<int>? attemptCount,
+    Expression<int>? nextAttemptAtMicros,
+    Expression<String>? lastError,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (entityType != null) 'entity_type': entityType,
+      if (entityId != null) 'entity_id': entityId,
+      if (operation != null) 'operation': operation,
+      if (payloadJson != null) 'payload_json': payloadJson,
+      if (baseVersion != null) 'base_version': baseVersion,
+      if (occurredAtMicros != null) 'occurred_at_micros': occurredAtMicros,
+      if (attemptCount != null) 'attempt_count': attemptCount,
+      if (nextAttemptAtMicros != null)
+        'next_attempt_at_micros': nextAttemptAtMicros,
+      if (lastError != null) 'last_error': lastError,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncOutboxEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? entityType,
+    Value<String>? entityId,
+    Value<String>? operation,
+    Value<String>? payloadJson,
+    Value<int>? baseVersion,
+    Value<int>? occurredAtMicros,
+    Value<int>? attemptCount,
+    Value<int?>? nextAttemptAtMicros,
+    Value<String?>? lastError,
+    Value<int>? rowid,
+  }) {
+    return SyncOutboxEntriesCompanion(
+      id: id ?? this.id,
+      entityType: entityType ?? this.entityType,
+      entityId: entityId ?? this.entityId,
+      operation: operation ?? this.operation,
+      payloadJson: payloadJson ?? this.payloadJson,
+      baseVersion: baseVersion ?? this.baseVersion,
+      occurredAtMicros: occurredAtMicros ?? this.occurredAtMicros,
+      attemptCount: attemptCount ?? this.attemptCount,
+      nextAttemptAtMicros: nextAttemptAtMicros ?? this.nextAttemptAtMicros,
+      lastError: lastError ?? this.lastError,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (entityType.present) {
+      map['entity_type'] = Variable<String>(entityType.value);
+    }
+    if (entityId.present) {
+      map['entity_id'] = Variable<String>(entityId.value);
+    }
+    if (operation.present) {
+      map['operation'] = Variable<String>(operation.value);
+    }
+    if (payloadJson.present) {
+      map['payload_json'] = Variable<String>(payloadJson.value);
+    }
+    if (baseVersion.present) {
+      map['base_version'] = Variable<int>(baseVersion.value);
+    }
+    if (occurredAtMicros.present) {
+      map['occurred_at_micros'] = Variable<int>(occurredAtMicros.value);
+    }
+    if (attemptCount.present) {
+      map['attempt_count'] = Variable<int>(attemptCount.value);
+    }
+    if (nextAttemptAtMicros.present) {
+      map['next_attempt_at_micros'] = Variable<int>(nextAttemptAtMicros.value);
+    }
+    if (lastError.present) {
+      map['last_error'] = Variable<String>(lastError.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncOutboxEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('entityType: $entityType, ')
+          ..write('entityId: $entityId, ')
+          ..write('operation: $operation, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('baseVersion: $baseVersion, ')
+          ..write('occurredAtMicros: $occurredAtMicros, ')
+          ..write('attemptCount: $attemptCount, ')
+          ..write('nextAttemptAtMicros: $nextAttemptAtMicros, ')
+          ..write('lastError: $lastError, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SyncMetadataEntriesTable extends SyncMetadataEntries
+    with TableInfo<$SyncMetadataEntriesTable, StoredSyncMetadata> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncMetadataEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entityTypeMeta = const VerificationMeta(
+    'entityType',
+  );
+  @override
+  late final GeneratedColumn<String> entityType = GeneratedColumn<String>(
+    'entity_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entityIdMeta = const VerificationMeta(
+    'entityId',
+  );
+  @override
+  late final GeneratedColumn<String> entityId = GeneratedColumn<String>(
+    'entity_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _remoteVersionMeta = const VerificationMeta(
+    'remoteVersion',
+  );
+  @override
+  late final GeneratedColumn<int> remoteVersion = GeneratedColumn<int>(
+    'remote_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastSyncedAtMicrosMeta =
+      const VerificationMeta('lastSyncedAtMicros');
+  @override
+  late final GeneratedColumn<int> lastSyncedAtMicros = GeneratedColumn<int>(
+    'last_synced_at_micros',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _deletedMeta = const VerificationMeta(
+    'deleted',
+  );
+  @override
+  late final GeneratedColumn<bool> deleted = GeneratedColumn<bool>(
+    'deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("deleted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    entityType,
+    entityId,
+    remoteVersion,
+    lastSyncedAtMicros,
+    deleted,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_metadata_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoredSyncMetadata> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entity_type')) {
+      context.handle(
+        _entityTypeMeta,
+        entityType.isAcceptableOrUnknown(data['entity_type']!, _entityTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityTypeMeta);
+    }
+    if (data.containsKey('entity_id')) {
+      context.handle(
+        _entityIdMeta,
+        entityId.isAcceptableOrUnknown(data['entity_id']!, _entityIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityIdMeta);
+    }
+    if (data.containsKey('remote_version')) {
+      context.handle(
+        _remoteVersionMeta,
+        remoteVersion.isAcceptableOrUnknown(
+          data['remote_version']!,
+          _remoteVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_synced_at_micros')) {
+      context.handle(
+        _lastSyncedAtMicrosMeta,
+        lastSyncedAtMicros.isAcceptableOrUnknown(
+          data['last_synced_at_micros']!,
+          _lastSyncedAtMicrosMeta,
+        ),
+      );
+    }
+    if (data.containsKey('deleted')) {
+      context.handle(
+        _deletedMeta,
+        deleted.isAcceptableOrUnknown(data['deleted']!, _deletedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entityType, entityId};
+  @override
+  StoredSyncMetadata map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoredSyncMetadata(
+      entityType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_type'],
+      )!,
+      entityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_id'],
+      )!,
+      remoteVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}remote_version'],
+      )!,
+      lastSyncedAtMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}last_synced_at_micros'],
+      ),
+      deleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}deleted'],
+      )!,
+    );
+  }
+
+  @override
+  $SyncMetadataEntriesTable createAlias(String alias) {
+    return $SyncMetadataEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class StoredSyncMetadata extends DataClass
+    implements Insertable<StoredSyncMetadata> {
+  final String entityType;
+  final String entityId;
+  final int remoteVersion;
+  final int? lastSyncedAtMicros;
+  final bool deleted;
+  const StoredSyncMetadata({
+    required this.entityType,
+    required this.entityId,
+    required this.remoteVersion,
+    this.lastSyncedAtMicros,
+    required this.deleted,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entity_type'] = Variable<String>(entityType);
+    map['entity_id'] = Variable<String>(entityId);
+    map['remote_version'] = Variable<int>(remoteVersion);
+    if (!nullToAbsent || lastSyncedAtMicros != null) {
+      map['last_synced_at_micros'] = Variable<int>(lastSyncedAtMicros);
+    }
+    map['deleted'] = Variable<bool>(deleted);
+    return map;
+  }
+
+  SyncMetadataEntriesCompanion toCompanion(bool nullToAbsent) {
+    return SyncMetadataEntriesCompanion(
+      entityType: Value(entityType),
+      entityId: Value(entityId),
+      remoteVersion: Value(remoteVersion),
+      lastSyncedAtMicros: lastSyncedAtMicros == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncedAtMicros),
+      deleted: Value(deleted),
+    );
+  }
+
+  factory StoredSyncMetadata.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoredSyncMetadata(
+      entityType: serializer.fromJson<String>(json['entityType']),
+      entityId: serializer.fromJson<String>(json['entityId']),
+      remoteVersion: serializer.fromJson<int>(json['remoteVersion']),
+      lastSyncedAtMicros: serializer.fromJson<int?>(json['lastSyncedAtMicros']),
+      deleted: serializer.fromJson<bool>(json['deleted']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entityType': serializer.toJson<String>(entityType),
+      'entityId': serializer.toJson<String>(entityId),
+      'remoteVersion': serializer.toJson<int>(remoteVersion),
+      'lastSyncedAtMicros': serializer.toJson<int?>(lastSyncedAtMicros),
+      'deleted': serializer.toJson<bool>(deleted),
+    };
+  }
+
+  StoredSyncMetadata copyWith({
+    String? entityType,
+    String? entityId,
+    int? remoteVersion,
+    Value<int?> lastSyncedAtMicros = const Value.absent(),
+    bool? deleted,
+  }) => StoredSyncMetadata(
+    entityType: entityType ?? this.entityType,
+    entityId: entityId ?? this.entityId,
+    remoteVersion: remoteVersion ?? this.remoteVersion,
+    lastSyncedAtMicros: lastSyncedAtMicros.present
+        ? lastSyncedAtMicros.value
+        : this.lastSyncedAtMicros,
+    deleted: deleted ?? this.deleted,
+  );
+  StoredSyncMetadata copyWithCompanion(SyncMetadataEntriesCompanion data) {
+    return StoredSyncMetadata(
+      entityType: data.entityType.present
+          ? data.entityType.value
+          : this.entityType,
+      entityId: data.entityId.present ? data.entityId.value : this.entityId,
+      remoteVersion: data.remoteVersion.present
+          ? data.remoteVersion.value
+          : this.remoteVersion,
+      lastSyncedAtMicros: data.lastSyncedAtMicros.present
+          ? data.lastSyncedAtMicros.value
+          : this.lastSyncedAtMicros,
+      deleted: data.deleted.present ? data.deleted.value : this.deleted,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoredSyncMetadata(')
+          ..write('entityType: $entityType, ')
+          ..write('entityId: $entityId, ')
+          ..write('remoteVersion: $remoteVersion, ')
+          ..write('lastSyncedAtMicros: $lastSyncedAtMicros, ')
+          ..write('deleted: $deleted')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    entityType,
+    entityId,
+    remoteVersion,
+    lastSyncedAtMicros,
+    deleted,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoredSyncMetadata &&
+          other.entityType == this.entityType &&
+          other.entityId == this.entityId &&
+          other.remoteVersion == this.remoteVersion &&
+          other.lastSyncedAtMicros == this.lastSyncedAtMicros &&
+          other.deleted == this.deleted);
+}
+
+class SyncMetadataEntriesCompanion extends UpdateCompanion<StoredSyncMetadata> {
+  final Value<String> entityType;
+  final Value<String> entityId;
+  final Value<int> remoteVersion;
+  final Value<int?> lastSyncedAtMicros;
+  final Value<bool> deleted;
+  final Value<int> rowid;
+  const SyncMetadataEntriesCompanion({
+    this.entityType = const Value.absent(),
+    this.entityId = const Value.absent(),
+    this.remoteVersion = const Value.absent(),
+    this.lastSyncedAtMicros = const Value.absent(),
+    this.deleted = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncMetadataEntriesCompanion.insert({
+    required String entityType,
+    required String entityId,
+    this.remoteVersion = const Value.absent(),
+    this.lastSyncedAtMicros = const Value.absent(),
+    this.deleted = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : entityType = Value(entityType),
+       entityId = Value(entityId);
+  static Insertable<StoredSyncMetadata> custom({
+    Expression<String>? entityType,
+    Expression<String>? entityId,
+    Expression<int>? remoteVersion,
+    Expression<int>? lastSyncedAtMicros,
+    Expression<bool>? deleted,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (entityType != null) 'entity_type': entityType,
+      if (entityId != null) 'entity_id': entityId,
+      if (remoteVersion != null) 'remote_version': remoteVersion,
+      if (lastSyncedAtMicros != null)
+        'last_synced_at_micros': lastSyncedAtMicros,
+      if (deleted != null) 'deleted': deleted,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncMetadataEntriesCompanion copyWith({
+    Value<String>? entityType,
+    Value<String>? entityId,
+    Value<int>? remoteVersion,
+    Value<int?>? lastSyncedAtMicros,
+    Value<bool>? deleted,
+    Value<int>? rowid,
+  }) {
+    return SyncMetadataEntriesCompanion(
+      entityType: entityType ?? this.entityType,
+      entityId: entityId ?? this.entityId,
+      remoteVersion: remoteVersion ?? this.remoteVersion,
+      lastSyncedAtMicros: lastSyncedAtMicros ?? this.lastSyncedAtMicros,
+      deleted: deleted ?? this.deleted,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entityType.present) {
+      map['entity_type'] = Variable<String>(entityType.value);
+    }
+    if (entityId.present) {
+      map['entity_id'] = Variable<String>(entityId.value);
+    }
+    if (remoteVersion.present) {
+      map['remote_version'] = Variable<int>(remoteVersion.value);
+    }
+    if (lastSyncedAtMicros.present) {
+      map['last_synced_at_micros'] = Variable<int>(lastSyncedAtMicros.value);
+    }
+    if (deleted.present) {
+      map['deleted'] = Variable<bool>(deleted.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncMetadataEntriesCompanion(')
+          ..write('entityType: $entityType, ')
+          ..write('entityId: $entityId, ')
+          ..write('remoteVersion: $remoteVersion, ')
+          ..write('lastSyncedAtMicros: $lastSyncedAtMicros, ')
+          ..write('deleted: $deleted, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SyncConflictEntriesTable extends SyncConflictEntries
+    with TableInfo<$SyncConflictEntriesTable, StoredSyncConflict> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncConflictEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entityTypeMeta = const VerificationMeta(
+    'entityType',
+  );
+  @override
+  late final GeneratedColumn<String> entityType = GeneratedColumn<String>(
+    'entity_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entityIdMeta = const VerificationMeta(
+    'entityId',
+  );
+  @override
+  late final GeneratedColumn<String> entityId = GeneratedColumn<String>(
+    'entity_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _localPayloadJsonMeta = const VerificationMeta(
+    'localPayloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> localPayloadJson = GeneratedColumn<String>(
+    'local_payload_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _localOperationMeta = const VerificationMeta(
+    'localOperation',
+  );
+  @override
+  late final GeneratedColumn<String> localOperation = GeneratedColumn<String>(
+    'local_operation',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('upsert'),
+  );
+  static const VerificationMeta _remotePayloadJsonMeta = const VerificationMeta(
+    'remotePayloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> remotePayloadJson =
+      GeneratedColumn<String>(
+        'remote_payload_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _remoteVersionMeta = const VerificationMeta(
+    'remoteVersion',
+  );
+  @override
+  late final GeneratedColumn<int> remoteVersion = GeneratedColumn<int>(
+    'remote_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _remoteDeletedMeta = const VerificationMeta(
+    'remoteDeleted',
+  );
+  @override
+  late final GeneratedColumn<bool> remoteDeleted = GeneratedColumn<bool>(
+    'remote_deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("remote_deleted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _reasonMeta = const VerificationMeta('reason');
+  @override
+  late final GeneratedColumn<String> reason = GeneratedColumn<String>(
+    'reason',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _detectedAtMicrosMeta = const VerificationMeta(
+    'detectedAtMicros',
+  );
+  @override
+  late final GeneratedColumn<int> detectedAtMicros = GeneratedColumn<int>(
+    'detected_at_micros',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _resolvedAtMicrosMeta = const VerificationMeta(
+    'resolvedAtMicros',
+  );
+  @override
+  late final GeneratedColumn<int> resolvedAtMicros = GeneratedColumn<int>(
+    'resolved_at_micros',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    entityType,
+    entityId,
+    localPayloadJson,
+    localOperation,
+    remotePayloadJson,
+    remoteVersion,
+    remoteDeleted,
+    reason,
+    detectedAtMicros,
+    resolvedAtMicros,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_conflict_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoredSyncConflict> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('entity_type')) {
+      context.handle(
+        _entityTypeMeta,
+        entityType.isAcceptableOrUnknown(data['entity_type']!, _entityTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityTypeMeta);
+    }
+    if (data.containsKey('entity_id')) {
+      context.handle(
+        _entityIdMeta,
+        entityId.isAcceptableOrUnknown(data['entity_id']!, _entityIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityIdMeta);
+    }
+    if (data.containsKey('local_payload_json')) {
+      context.handle(
+        _localPayloadJsonMeta,
+        localPayloadJson.isAcceptableOrUnknown(
+          data['local_payload_json']!,
+          _localPayloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_localPayloadJsonMeta);
+    }
+    if (data.containsKey('local_operation')) {
+      context.handle(
+        _localOperationMeta,
+        localOperation.isAcceptableOrUnknown(
+          data['local_operation']!,
+          _localOperationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('remote_payload_json')) {
+      context.handle(
+        _remotePayloadJsonMeta,
+        remotePayloadJson.isAcceptableOrUnknown(
+          data['remote_payload_json']!,
+          _remotePayloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_remotePayloadJsonMeta);
+    }
+    if (data.containsKey('remote_version')) {
+      context.handle(
+        _remoteVersionMeta,
+        remoteVersion.isAcceptableOrUnknown(
+          data['remote_version']!,
+          _remoteVersionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_remoteVersionMeta);
+    }
+    if (data.containsKey('remote_deleted')) {
+      context.handle(
+        _remoteDeletedMeta,
+        remoteDeleted.isAcceptableOrUnknown(
+          data['remote_deleted']!,
+          _remoteDeletedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reason')) {
+      context.handle(
+        _reasonMeta,
+        reason.isAcceptableOrUnknown(data['reason']!, _reasonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_reasonMeta);
+    }
+    if (data.containsKey('detected_at_micros')) {
+      context.handle(
+        _detectedAtMicrosMeta,
+        detectedAtMicros.isAcceptableOrUnknown(
+          data['detected_at_micros']!,
+          _detectedAtMicrosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_detectedAtMicrosMeta);
+    }
+    if (data.containsKey('resolved_at_micros')) {
+      context.handle(
+        _resolvedAtMicrosMeta,
+        resolvedAtMicros.isAcceptableOrUnknown(
+          data['resolved_at_micros']!,
+          _resolvedAtMicrosMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoredSyncConflict map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoredSyncConflict(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      entityType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_type'],
+      )!,
+      entityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_id'],
+      )!,
+      localPayloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_payload_json'],
+      )!,
+      localOperation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_operation'],
+      )!,
+      remotePayloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}remote_payload_json'],
+      )!,
+      remoteVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}remote_version'],
+      )!,
+      remoteDeleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}remote_deleted'],
+      )!,
+      reason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reason'],
+      )!,
+      detectedAtMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}detected_at_micros'],
+      )!,
+      resolvedAtMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}resolved_at_micros'],
+      ),
+    );
+  }
+
+  @override
+  $SyncConflictEntriesTable createAlias(String alias) {
+    return $SyncConflictEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class StoredSyncConflict extends DataClass
+    implements Insertable<StoredSyncConflict> {
+  final String id;
+  final String entityType;
+  final String entityId;
+  final String localPayloadJson;
+  final String localOperation;
+  final String remotePayloadJson;
+  final int remoteVersion;
+  final bool remoteDeleted;
+  final String reason;
+  final int detectedAtMicros;
+  final int? resolvedAtMicros;
+  const StoredSyncConflict({
+    required this.id,
+    required this.entityType,
+    required this.entityId,
+    required this.localPayloadJson,
+    required this.localOperation,
+    required this.remotePayloadJson,
+    required this.remoteVersion,
+    required this.remoteDeleted,
+    required this.reason,
+    required this.detectedAtMicros,
+    this.resolvedAtMicros,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['entity_type'] = Variable<String>(entityType);
+    map['entity_id'] = Variable<String>(entityId);
+    map['local_payload_json'] = Variable<String>(localPayloadJson);
+    map['local_operation'] = Variable<String>(localOperation);
+    map['remote_payload_json'] = Variable<String>(remotePayloadJson);
+    map['remote_version'] = Variable<int>(remoteVersion);
+    map['remote_deleted'] = Variable<bool>(remoteDeleted);
+    map['reason'] = Variable<String>(reason);
+    map['detected_at_micros'] = Variable<int>(detectedAtMicros);
+    if (!nullToAbsent || resolvedAtMicros != null) {
+      map['resolved_at_micros'] = Variable<int>(resolvedAtMicros);
+    }
+    return map;
+  }
+
+  SyncConflictEntriesCompanion toCompanion(bool nullToAbsent) {
+    return SyncConflictEntriesCompanion(
+      id: Value(id),
+      entityType: Value(entityType),
+      entityId: Value(entityId),
+      localPayloadJson: Value(localPayloadJson),
+      localOperation: Value(localOperation),
+      remotePayloadJson: Value(remotePayloadJson),
+      remoteVersion: Value(remoteVersion),
+      remoteDeleted: Value(remoteDeleted),
+      reason: Value(reason),
+      detectedAtMicros: Value(detectedAtMicros),
+      resolvedAtMicros: resolvedAtMicros == null && nullToAbsent
+          ? const Value.absent()
+          : Value(resolvedAtMicros),
+    );
+  }
+
+  factory StoredSyncConflict.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoredSyncConflict(
+      id: serializer.fromJson<String>(json['id']),
+      entityType: serializer.fromJson<String>(json['entityType']),
+      entityId: serializer.fromJson<String>(json['entityId']),
+      localPayloadJson: serializer.fromJson<String>(json['localPayloadJson']),
+      localOperation: serializer.fromJson<String>(json['localOperation']),
+      remotePayloadJson: serializer.fromJson<String>(json['remotePayloadJson']),
+      remoteVersion: serializer.fromJson<int>(json['remoteVersion']),
+      remoteDeleted: serializer.fromJson<bool>(json['remoteDeleted']),
+      reason: serializer.fromJson<String>(json['reason']),
+      detectedAtMicros: serializer.fromJson<int>(json['detectedAtMicros']),
+      resolvedAtMicros: serializer.fromJson<int?>(json['resolvedAtMicros']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'entityType': serializer.toJson<String>(entityType),
+      'entityId': serializer.toJson<String>(entityId),
+      'localPayloadJson': serializer.toJson<String>(localPayloadJson),
+      'localOperation': serializer.toJson<String>(localOperation),
+      'remotePayloadJson': serializer.toJson<String>(remotePayloadJson),
+      'remoteVersion': serializer.toJson<int>(remoteVersion),
+      'remoteDeleted': serializer.toJson<bool>(remoteDeleted),
+      'reason': serializer.toJson<String>(reason),
+      'detectedAtMicros': serializer.toJson<int>(detectedAtMicros),
+      'resolvedAtMicros': serializer.toJson<int?>(resolvedAtMicros),
+    };
+  }
+
+  StoredSyncConflict copyWith({
+    String? id,
+    String? entityType,
+    String? entityId,
+    String? localPayloadJson,
+    String? localOperation,
+    String? remotePayloadJson,
+    int? remoteVersion,
+    bool? remoteDeleted,
+    String? reason,
+    int? detectedAtMicros,
+    Value<int?> resolvedAtMicros = const Value.absent(),
+  }) => StoredSyncConflict(
+    id: id ?? this.id,
+    entityType: entityType ?? this.entityType,
+    entityId: entityId ?? this.entityId,
+    localPayloadJson: localPayloadJson ?? this.localPayloadJson,
+    localOperation: localOperation ?? this.localOperation,
+    remotePayloadJson: remotePayloadJson ?? this.remotePayloadJson,
+    remoteVersion: remoteVersion ?? this.remoteVersion,
+    remoteDeleted: remoteDeleted ?? this.remoteDeleted,
+    reason: reason ?? this.reason,
+    detectedAtMicros: detectedAtMicros ?? this.detectedAtMicros,
+    resolvedAtMicros: resolvedAtMicros.present
+        ? resolvedAtMicros.value
+        : this.resolvedAtMicros,
+  );
+  StoredSyncConflict copyWithCompanion(SyncConflictEntriesCompanion data) {
+    return StoredSyncConflict(
+      id: data.id.present ? data.id.value : this.id,
+      entityType: data.entityType.present
+          ? data.entityType.value
+          : this.entityType,
+      entityId: data.entityId.present ? data.entityId.value : this.entityId,
+      localPayloadJson: data.localPayloadJson.present
+          ? data.localPayloadJson.value
+          : this.localPayloadJson,
+      localOperation: data.localOperation.present
+          ? data.localOperation.value
+          : this.localOperation,
+      remotePayloadJson: data.remotePayloadJson.present
+          ? data.remotePayloadJson.value
+          : this.remotePayloadJson,
+      remoteVersion: data.remoteVersion.present
+          ? data.remoteVersion.value
+          : this.remoteVersion,
+      remoteDeleted: data.remoteDeleted.present
+          ? data.remoteDeleted.value
+          : this.remoteDeleted,
+      reason: data.reason.present ? data.reason.value : this.reason,
+      detectedAtMicros: data.detectedAtMicros.present
+          ? data.detectedAtMicros.value
+          : this.detectedAtMicros,
+      resolvedAtMicros: data.resolvedAtMicros.present
+          ? data.resolvedAtMicros.value
+          : this.resolvedAtMicros,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoredSyncConflict(')
+          ..write('id: $id, ')
+          ..write('entityType: $entityType, ')
+          ..write('entityId: $entityId, ')
+          ..write('localPayloadJson: $localPayloadJson, ')
+          ..write('localOperation: $localOperation, ')
+          ..write('remotePayloadJson: $remotePayloadJson, ')
+          ..write('remoteVersion: $remoteVersion, ')
+          ..write('remoteDeleted: $remoteDeleted, ')
+          ..write('reason: $reason, ')
+          ..write('detectedAtMicros: $detectedAtMicros, ')
+          ..write('resolvedAtMicros: $resolvedAtMicros')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    entityType,
+    entityId,
+    localPayloadJson,
+    localOperation,
+    remotePayloadJson,
+    remoteVersion,
+    remoteDeleted,
+    reason,
+    detectedAtMicros,
+    resolvedAtMicros,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoredSyncConflict &&
+          other.id == this.id &&
+          other.entityType == this.entityType &&
+          other.entityId == this.entityId &&
+          other.localPayloadJson == this.localPayloadJson &&
+          other.localOperation == this.localOperation &&
+          other.remotePayloadJson == this.remotePayloadJson &&
+          other.remoteVersion == this.remoteVersion &&
+          other.remoteDeleted == this.remoteDeleted &&
+          other.reason == this.reason &&
+          other.detectedAtMicros == this.detectedAtMicros &&
+          other.resolvedAtMicros == this.resolvedAtMicros);
+}
+
+class SyncConflictEntriesCompanion extends UpdateCompanion<StoredSyncConflict> {
+  final Value<String> id;
+  final Value<String> entityType;
+  final Value<String> entityId;
+  final Value<String> localPayloadJson;
+  final Value<String> localOperation;
+  final Value<String> remotePayloadJson;
+  final Value<int> remoteVersion;
+  final Value<bool> remoteDeleted;
+  final Value<String> reason;
+  final Value<int> detectedAtMicros;
+  final Value<int?> resolvedAtMicros;
+  final Value<int> rowid;
+  const SyncConflictEntriesCompanion({
+    this.id = const Value.absent(),
+    this.entityType = const Value.absent(),
+    this.entityId = const Value.absent(),
+    this.localPayloadJson = const Value.absent(),
+    this.localOperation = const Value.absent(),
+    this.remotePayloadJson = const Value.absent(),
+    this.remoteVersion = const Value.absent(),
+    this.remoteDeleted = const Value.absent(),
+    this.reason = const Value.absent(),
+    this.detectedAtMicros = const Value.absent(),
+    this.resolvedAtMicros = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncConflictEntriesCompanion.insert({
+    required String id,
+    required String entityType,
+    required String entityId,
+    required String localPayloadJson,
+    this.localOperation = const Value.absent(),
+    required String remotePayloadJson,
+    required int remoteVersion,
+    this.remoteDeleted = const Value.absent(),
+    required String reason,
+    required int detectedAtMicros,
+    this.resolvedAtMicros = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       entityType = Value(entityType),
+       entityId = Value(entityId),
+       localPayloadJson = Value(localPayloadJson),
+       remotePayloadJson = Value(remotePayloadJson),
+       remoteVersion = Value(remoteVersion),
+       reason = Value(reason),
+       detectedAtMicros = Value(detectedAtMicros);
+  static Insertable<StoredSyncConflict> custom({
+    Expression<String>? id,
+    Expression<String>? entityType,
+    Expression<String>? entityId,
+    Expression<String>? localPayloadJson,
+    Expression<String>? localOperation,
+    Expression<String>? remotePayloadJson,
+    Expression<int>? remoteVersion,
+    Expression<bool>? remoteDeleted,
+    Expression<String>? reason,
+    Expression<int>? detectedAtMicros,
+    Expression<int>? resolvedAtMicros,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (entityType != null) 'entity_type': entityType,
+      if (entityId != null) 'entity_id': entityId,
+      if (localPayloadJson != null) 'local_payload_json': localPayloadJson,
+      if (localOperation != null) 'local_operation': localOperation,
+      if (remotePayloadJson != null) 'remote_payload_json': remotePayloadJson,
+      if (remoteVersion != null) 'remote_version': remoteVersion,
+      if (remoteDeleted != null) 'remote_deleted': remoteDeleted,
+      if (reason != null) 'reason': reason,
+      if (detectedAtMicros != null) 'detected_at_micros': detectedAtMicros,
+      if (resolvedAtMicros != null) 'resolved_at_micros': resolvedAtMicros,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncConflictEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? entityType,
+    Value<String>? entityId,
+    Value<String>? localPayloadJson,
+    Value<String>? localOperation,
+    Value<String>? remotePayloadJson,
+    Value<int>? remoteVersion,
+    Value<bool>? remoteDeleted,
+    Value<String>? reason,
+    Value<int>? detectedAtMicros,
+    Value<int?>? resolvedAtMicros,
+    Value<int>? rowid,
+  }) {
+    return SyncConflictEntriesCompanion(
+      id: id ?? this.id,
+      entityType: entityType ?? this.entityType,
+      entityId: entityId ?? this.entityId,
+      localPayloadJson: localPayloadJson ?? this.localPayloadJson,
+      localOperation: localOperation ?? this.localOperation,
+      remotePayloadJson: remotePayloadJson ?? this.remotePayloadJson,
+      remoteVersion: remoteVersion ?? this.remoteVersion,
+      remoteDeleted: remoteDeleted ?? this.remoteDeleted,
+      reason: reason ?? this.reason,
+      detectedAtMicros: detectedAtMicros ?? this.detectedAtMicros,
+      resolvedAtMicros: resolvedAtMicros ?? this.resolvedAtMicros,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (entityType.present) {
+      map['entity_type'] = Variable<String>(entityType.value);
+    }
+    if (entityId.present) {
+      map['entity_id'] = Variable<String>(entityId.value);
+    }
+    if (localPayloadJson.present) {
+      map['local_payload_json'] = Variable<String>(localPayloadJson.value);
+    }
+    if (localOperation.present) {
+      map['local_operation'] = Variable<String>(localOperation.value);
+    }
+    if (remotePayloadJson.present) {
+      map['remote_payload_json'] = Variable<String>(remotePayloadJson.value);
+    }
+    if (remoteVersion.present) {
+      map['remote_version'] = Variable<int>(remoteVersion.value);
+    }
+    if (remoteDeleted.present) {
+      map['remote_deleted'] = Variable<bool>(remoteDeleted.value);
+    }
+    if (reason.present) {
+      map['reason'] = Variable<String>(reason.value);
+    }
+    if (detectedAtMicros.present) {
+      map['detected_at_micros'] = Variable<int>(detectedAtMicros.value);
+    }
+    if (resolvedAtMicros.present) {
+      map['resolved_at_micros'] = Variable<int>(resolvedAtMicros.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncConflictEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('entityType: $entityType, ')
+          ..write('entityId: $entityId, ')
+          ..write('localPayloadJson: $localPayloadJson, ')
+          ..write('localOperation: $localOperation, ')
+          ..write('remotePayloadJson: $remotePayloadJson, ')
+          ..write('remoteVersion: $remoteVersion, ')
+          ..write('remoteDeleted: $remoteDeleted, ')
+          ..write('reason: $reason, ')
+          ..write('detectedAtMicros: $detectedAtMicros, ')
+          ..write('resolvedAtMicros: $resolvedAtMicros, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SyncRuntimeEntriesTable extends SyncRuntimeEntries
+    with TableInfo<$SyncRuntimeEntriesTable, StoredSyncRuntime> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncRuntimeEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deviceIdMeta = const VerificationMeta(
+    'deviceId',
+  );
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+    'device_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _boundUserIdMeta = const VerificationMeta(
+    'boundUserId',
+  );
+  @override
+  late final GeneratedColumn<String> boundUserId = GeneratedColumn<String>(
+    'bound_user_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _remoteCursorMeta = const VerificationMeta(
+    'remoteCursor',
+  );
+  @override
+  late final GeneratedColumn<int> remoteCursor = GeneratedColumn<int>(
+    'remote_cursor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastSyncedAtMicrosMeta =
+      const VerificationMeta('lastSyncedAtMicros');
+  @override
+  late final GeneratedColumn<int> lastSyncedAtMicros = GeneratedColumn<int>(
+    'last_synced_at_micros',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    deviceId,
+    boundUserId,
+    remoteCursor,
+    lastSyncedAtMicros,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_runtime_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoredSyncRuntime> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(
+        _deviceIdMeta,
+        deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('bound_user_id')) {
+      context.handle(
+        _boundUserIdMeta,
+        boundUserId.isAcceptableOrUnknown(
+          data['bound_user_id']!,
+          _boundUserIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('remote_cursor')) {
+      context.handle(
+        _remoteCursorMeta,
+        remoteCursor.isAcceptableOrUnknown(
+          data['remote_cursor']!,
+          _remoteCursorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_synced_at_micros')) {
+      context.handle(
+        _lastSyncedAtMicrosMeta,
+        lastSyncedAtMicros.isAcceptableOrUnknown(
+          data['last_synced_at_micros']!,
+          _lastSyncedAtMicrosMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoredSyncRuntime map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoredSyncRuntime(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      deviceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}device_id'],
+      )!,
+      boundUserId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bound_user_id'],
+      ),
+      remoteCursor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}remote_cursor'],
+      )!,
+      lastSyncedAtMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}last_synced_at_micros'],
+      ),
+    );
+  }
+
+  @override
+  $SyncRuntimeEntriesTable createAlias(String alias) {
+    return $SyncRuntimeEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class StoredSyncRuntime extends DataClass
+    implements Insertable<StoredSyncRuntime> {
+  final String id;
+  final String deviceId;
+  final String? boundUserId;
+  final int remoteCursor;
+  final int? lastSyncedAtMicros;
+  const StoredSyncRuntime({
+    required this.id,
+    required this.deviceId,
+    this.boundUserId,
+    required this.remoteCursor,
+    this.lastSyncedAtMicros,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['device_id'] = Variable<String>(deviceId);
+    if (!nullToAbsent || boundUserId != null) {
+      map['bound_user_id'] = Variable<String>(boundUserId);
+    }
+    map['remote_cursor'] = Variable<int>(remoteCursor);
+    if (!nullToAbsent || lastSyncedAtMicros != null) {
+      map['last_synced_at_micros'] = Variable<int>(lastSyncedAtMicros);
+    }
+    return map;
+  }
+
+  SyncRuntimeEntriesCompanion toCompanion(bool nullToAbsent) {
+    return SyncRuntimeEntriesCompanion(
+      id: Value(id),
+      deviceId: Value(deviceId),
+      boundUserId: boundUserId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(boundUserId),
+      remoteCursor: Value(remoteCursor),
+      lastSyncedAtMicros: lastSyncedAtMicros == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncedAtMicros),
+    );
+  }
+
+  factory StoredSyncRuntime.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoredSyncRuntime(
+      id: serializer.fromJson<String>(json['id']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      boundUserId: serializer.fromJson<String?>(json['boundUserId']),
+      remoteCursor: serializer.fromJson<int>(json['remoteCursor']),
+      lastSyncedAtMicros: serializer.fromJson<int?>(json['lastSyncedAtMicros']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'boundUserId': serializer.toJson<String?>(boundUserId),
+      'remoteCursor': serializer.toJson<int>(remoteCursor),
+      'lastSyncedAtMicros': serializer.toJson<int?>(lastSyncedAtMicros),
+    };
+  }
+
+  StoredSyncRuntime copyWith({
+    String? id,
+    String? deviceId,
+    Value<String?> boundUserId = const Value.absent(),
+    int? remoteCursor,
+    Value<int?> lastSyncedAtMicros = const Value.absent(),
+  }) => StoredSyncRuntime(
+    id: id ?? this.id,
+    deviceId: deviceId ?? this.deviceId,
+    boundUserId: boundUserId.present ? boundUserId.value : this.boundUserId,
+    remoteCursor: remoteCursor ?? this.remoteCursor,
+    lastSyncedAtMicros: lastSyncedAtMicros.present
+        ? lastSyncedAtMicros.value
+        : this.lastSyncedAtMicros,
+  );
+  StoredSyncRuntime copyWithCompanion(SyncRuntimeEntriesCompanion data) {
+    return StoredSyncRuntime(
+      id: data.id.present ? data.id.value : this.id,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      boundUserId: data.boundUserId.present
+          ? data.boundUserId.value
+          : this.boundUserId,
+      remoteCursor: data.remoteCursor.present
+          ? data.remoteCursor.value
+          : this.remoteCursor,
+      lastSyncedAtMicros: data.lastSyncedAtMicros.present
+          ? data.lastSyncedAtMicros.value
+          : this.lastSyncedAtMicros,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoredSyncRuntime(')
+          ..write('id: $id, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('boundUserId: $boundUserId, ')
+          ..write('remoteCursor: $remoteCursor, ')
+          ..write('lastSyncedAtMicros: $lastSyncedAtMicros')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, deviceId, boundUserId, remoteCursor, lastSyncedAtMicros);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoredSyncRuntime &&
+          other.id == this.id &&
+          other.deviceId == this.deviceId &&
+          other.boundUserId == this.boundUserId &&
+          other.remoteCursor == this.remoteCursor &&
+          other.lastSyncedAtMicros == this.lastSyncedAtMicros);
+}
+
+class SyncRuntimeEntriesCompanion extends UpdateCompanion<StoredSyncRuntime> {
+  final Value<String> id;
+  final Value<String> deviceId;
+  final Value<String?> boundUserId;
+  final Value<int> remoteCursor;
+  final Value<int?> lastSyncedAtMicros;
+  final Value<int> rowid;
+  const SyncRuntimeEntriesCompanion({
+    this.id = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.boundUserId = const Value.absent(),
+    this.remoteCursor = const Value.absent(),
+    this.lastSyncedAtMicros = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncRuntimeEntriesCompanion.insert({
+    required String id,
+    required String deviceId,
+    this.boundUserId = const Value.absent(),
+    this.remoteCursor = const Value.absent(),
+    this.lastSyncedAtMicros = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       deviceId = Value(deviceId);
+  static Insertable<StoredSyncRuntime> custom({
+    Expression<String>? id,
+    Expression<String>? deviceId,
+    Expression<String>? boundUserId,
+    Expression<int>? remoteCursor,
+    Expression<int>? lastSyncedAtMicros,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (deviceId != null) 'device_id': deviceId,
+      if (boundUserId != null) 'bound_user_id': boundUserId,
+      if (remoteCursor != null) 'remote_cursor': remoteCursor,
+      if (lastSyncedAtMicros != null)
+        'last_synced_at_micros': lastSyncedAtMicros,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncRuntimeEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? deviceId,
+    Value<String?>? boundUserId,
+    Value<int>? remoteCursor,
+    Value<int?>? lastSyncedAtMicros,
+    Value<int>? rowid,
+  }) {
+    return SyncRuntimeEntriesCompanion(
+      id: id ?? this.id,
+      deviceId: deviceId ?? this.deviceId,
+      boundUserId: boundUserId ?? this.boundUserId,
+      remoteCursor: remoteCursor ?? this.remoteCursor,
+      lastSyncedAtMicros: lastSyncedAtMicros ?? this.lastSyncedAtMicros,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (boundUserId.present) {
+      map['bound_user_id'] = Variable<String>(boundUserId.value);
+    }
+    if (remoteCursor.present) {
+      map['remote_cursor'] = Variable<int>(remoteCursor.value);
+    }
+    if (lastSyncedAtMicros.present) {
+      map['last_synced_at_micros'] = Variable<int>(lastSyncedAtMicros.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncRuntimeEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('boundUserId: $boundUserId, ')
+          ..write('remoteCursor: $remoteCursor, ')
+          ..write('lastSyncedAtMicros: $lastSyncedAtMicros, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
   $LocalDatabaseManager get managers => $LocalDatabaseManager(this);
@@ -5210,6 +7313,14 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
       $WealthAssetEntriesTable(this);
   late final $WealthDebtEntriesTable wealthDebtEntries =
       $WealthDebtEntriesTable(this);
+  late final $SyncOutboxEntriesTable syncOutboxEntries =
+      $SyncOutboxEntriesTable(this);
+  late final $SyncMetadataEntriesTable syncMetadataEntries =
+      $SyncMetadataEntriesTable(this);
+  late final $SyncConflictEntriesTable syncConflictEntries =
+      $SyncConflictEntriesTable(this);
+  late final $SyncRuntimeEntriesTable syncRuntimeEntries =
+      $SyncRuntimeEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5222,6 +7333,10 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
     wealthGoalEntries,
     wealthAssetEntries,
     wealthDebtEntries,
+    syncOutboxEntries,
+    syncMetadataEntries,
+    syncConflictEntries,
+    syncRuntimeEntries,
   ];
 }
 
@@ -8394,6 +10509,1157 @@ typedef $$WealthDebtEntriesTableProcessedTableManager =
       StoredWealthDebt,
       PrefetchHooks Function()
     >;
+typedef $$SyncOutboxEntriesTableCreateCompanionBuilder =
+    SyncOutboxEntriesCompanion Function({
+      required String id,
+      required String entityType,
+      required String entityId,
+      required String operation,
+      required String payloadJson,
+      Value<int> baseVersion,
+      required int occurredAtMicros,
+      Value<int> attemptCount,
+      Value<int?> nextAttemptAtMicros,
+      Value<String?> lastError,
+      Value<int> rowid,
+    });
+typedef $$SyncOutboxEntriesTableUpdateCompanionBuilder =
+    SyncOutboxEntriesCompanion Function({
+      Value<String> id,
+      Value<String> entityType,
+      Value<String> entityId,
+      Value<String> operation,
+      Value<String> payloadJson,
+      Value<int> baseVersion,
+      Value<int> occurredAtMicros,
+      Value<int> attemptCount,
+      Value<int?> nextAttemptAtMicros,
+      Value<String?> lastError,
+      Value<int> rowid,
+    });
+
+class $$SyncOutboxEntriesTableFilterComposer
+    extends Composer<_$LocalDatabase, $SyncOutboxEntriesTable> {
+  $$SyncOutboxEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get operation => $composableBuilder(
+    column: $table.operation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get baseVersion => $composableBuilder(
+    column: $table.baseVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get occurredAtMicros => $composableBuilder(
+    column: $table.occurredAtMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get attemptCount => $composableBuilder(
+    column: $table.attemptCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get nextAttemptAtMicros => $composableBuilder(
+    column: $table.nextAttemptAtMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SyncOutboxEntriesTableOrderingComposer
+    extends Composer<_$LocalDatabase, $SyncOutboxEntriesTable> {
+  $$SyncOutboxEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get operation => $composableBuilder(
+    column: $table.operation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get baseVersion => $composableBuilder(
+    column: $table.baseVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get occurredAtMicros => $composableBuilder(
+    column: $table.occurredAtMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get attemptCount => $composableBuilder(
+    column: $table.attemptCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get nextAttemptAtMicros => $composableBuilder(
+    column: $table.nextAttemptAtMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SyncOutboxEntriesTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $SyncOutboxEntriesTable> {
+  $$SyncOutboxEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get entityId =>
+      $composableBuilder(column: $table.entityId, builder: (column) => column);
+
+  GeneratedColumn<String> get operation =>
+      $composableBuilder(column: $table.operation, builder: (column) => column);
+
+  GeneratedColumn<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get baseVersion => $composableBuilder(
+    column: $table.baseVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get occurredAtMicros => $composableBuilder(
+    column: $table.occurredAtMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get attemptCount => $composableBuilder(
+    column: $table.attemptCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get nextAttemptAtMicros => $composableBuilder(
+    column: $table.nextAttemptAtMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastError =>
+      $composableBuilder(column: $table.lastError, builder: (column) => column);
+}
+
+class $$SyncOutboxEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$LocalDatabase,
+          $SyncOutboxEntriesTable,
+          StoredSyncOutboxEntry,
+          $$SyncOutboxEntriesTableFilterComposer,
+          $$SyncOutboxEntriesTableOrderingComposer,
+          $$SyncOutboxEntriesTableAnnotationComposer,
+          $$SyncOutboxEntriesTableCreateCompanionBuilder,
+          $$SyncOutboxEntriesTableUpdateCompanionBuilder,
+          (
+            StoredSyncOutboxEntry,
+            BaseReferences<
+              _$LocalDatabase,
+              $SyncOutboxEntriesTable,
+              StoredSyncOutboxEntry
+            >,
+          ),
+          StoredSyncOutboxEntry,
+          PrefetchHooks Function()
+        > {
+  $$SyncOutboxEntriesTableTableManager(
+    _$LocalDatabase db,
+    $SyncOutboxEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SyncOutboxEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SyncOutboxEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SyncOutboxEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> entityType = const Value.absent(),
+                Value<String> entityId = const Value.absent(),
+                Value<String> operation = const Value.absent(),
+                Value<String> payloadJson = const Value.absent(),
+                Value<int> baseVersion = const Value.absent(),
+                Value<int> occurredAtMicros = const Value.absent(),
+                Value<int> attemptCount = const Value.absent(),
+                Value<int?> nextAttemptAtMicros = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncOutboxEntriesCompanion(
+                id: id,
+                entityType: entityType,
+                entityId: entityId,
+                operation: operation,
+                payloadJson: payloadJson,
+                baseVersion: baseVersion,
+                occurredAtMicros: occurredAtMicros,
+                attemptCount: attemptCount,
+                nextAttemptAtMicros: nextAttemptAtMicros,
+                lastError: lastError,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String entityType,
+                required String entityId,
+                required String operation,
+                required String payloadJson,
+                Value<int> baseVersion = const Value.absent(),
+                required int occurredAtMicros,
+                Value<int> attemptCount = const Value.absent(),
+                Value<int?> nextAttemptAtMicros = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncOutboxEntriesCompanion.insert(
+                id: id,
+                entityType: entityType,
+                entityId: entityId,
+                operation: operation,
+                payloadJson: payloadJson,
+                baseVersion: baseVersion,
+                occurredAtMicros: occurredAtMicros,
+                attemptCount: attemptCount,
+                nextAttemptAtMicros: nextAttemptAtMicros,
+                lastError: lastError,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SyncOutboxEntriesTable, StoredSyncOutboxEntry>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$LocalDatabase,
+                    $SyncOutboxEntriesTable,
+                    StoredSyncOutboxEntry
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SyncOutboxEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LocalDatabase,
+      $SyncOutboxEntriesTable,
+      StoredSyncOutboxEntry,
+      $$SyncOutboxEntriesTableFilterComposer,
+      $$SyncOutboxEntriesTableOrderingComposer,
+      $$SyncOutboxEntriesTableAnnotationComposer,
+      $$SyncOutboxEntriesTableCreateCompanionBuilder,
+      $$SyncOutboxEntriesTableUpdateCompanionBuilder,
+      (
+        StoredSyncOutboxEntry,
+        BaseReferences<
+          _$LocalDatabase,
+          $SyncOutboxEntriesTable,
+          StoredSyncOutboxEntry
+        >,
+      ),
+      StoredSyncOutboxEntry,
+      PrefetchHooks Function()
+    >;
+typedef $$SyncMetadataEntriesTableCreateCompanionBuilder =
+    SyncMetadataEntriesCompanion Function({
+      required String entityType,
+      required String entityId,
+      Value<int> remoteVersion,
+      Value<int?> lastSyncedAtMicros,
+      Value<bool> deleted,
+      Value<int> rowid,
+    });
+typedef $$SyncMetadataEntriesTableUpdateCompanionBuilder =
+    SyncMetadataEntriesCompanion Function({
+      Value<String> entityType,
+      Value<String> entityId,
+      Value<int> remoteVersion,
+      Value<int?> lastSyncedAtMicros,
+      Value<bool> deleted,
+      Value<int> rowid,
+    });
+
+class $$SyncMetadataEntriesTableFilterComposer
+    extends Composer<_$LocalDatabase, $SyncMetadataEntriesTable> {
+  $$SyncMetadataEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get remoteVersion => $composableBuilder(
+    column: $table.remoteVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lastSyncedAtMicros => $composableBuilder(
+    column: $table.lastSyncedAtMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get deleted => $composableBuilder(
+    column: $table.deleted,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SyncMetadataEntriesTableOrderingComposer
+    extends Composer<_$LocalDatabase, $SyncMetadataEntriesTable> {
+  $$SyncMetadataEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get remoteVersion => $composableBuilder(
+    column: $table.remoteVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lastSyncedAtMicros => $composableBuilder(
+    column: $table.lastSyncedAtMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get deleted => $composableBuilder(
+    column: $table.deleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SyncMetadataEntriesTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $SyncMetadataEntriesTable> {
+  $$SyncMetadataEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get entityId =>
+      $composableBuilder(column: $table.entityId, builder: (column) => column);
+
+  GeneratedColumn<int> get remoteVersion => $composableBuilder(
+    column: $table.remoteVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lastSyncedAtMicros => $composableBuilder(
+    column: $table.lastSyncedAtMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get deleted =>
+      $composableBuilder(column: $table.deleted, builder: (column) => column);
+}
+
+class $$SyncMetadataEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$LocalDatabase,
+          $SyncMetadataEntriesTable,
+          StoredSyncMetadata,
+          $$SyncMetadataEntriesTableFilterComposer,
+          $$SyncMetadataEntriesTableOrderingComposer,
+          $$SyncMetadataEntriesTableAnnotationComposer,
+          $$SyncMetadataEntriesTableCreateCompanionBuilder,
+          $$SyncMetadataEntriesTableUpdateCompanionBuilder,
+          (
+            StoredSyncMetadata,
+            BaseReferences<
+              _$LocalDatabase,
+              $SyncMetadataEntriesTable,
+              StoredSyncMetadata
+            >,
+          ),
+          StoredSyncMetadata,
+          PrefetchHooks Function()
+        > {
+  $$SyncMetadataEntriesTableTableManager(
+    _$LocalDatabase db,
+    $SyncMetadataEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SyncMetadataEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SyncMetadataEntriesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SyncMetadataEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> entityType = const Value.absent(),
+                Value<String> entityId = const Value.absent(),
+                Value<int> remoteVersion = const Value.absent(),
+                Value<int?> lastSyncedAtMicros = const Value.absent(),
+                Value<bool> deleted = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncMetadataEntriesCompanion(
+                entityType: entityType,
+                entityId: entityId,
+                remoteVersion: remoteVersion,
+                lastSyncedAtMicros: lastSyncedAtMicros,
+                deleted: deleted,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String entityType,
+                required String entityId,
+                Value<int> remoteVersion = const Value.absent(),
+                Value<int?> lastSyncedAtMicros = const Value.absent(),
+                Value<bool> deleted = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncMetadataEntriesCompanion.insert(
+                entityType: entityType,
+                entityId: entityId,
+                remoteVersion: remoteVersion,
+                lastSyncedAtMicros: lastSyncedAtMicros,
+                deleted: deleted,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SyncMetadataEntriesTable, StoredSyncMetadata>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$LocalDatabase,
+                    $SyncMetadataEntriesTable,
+                    StoredSyncMetadata
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SyncMetadataEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LocalDatabase,
+      $SyncMetadataEntriesTable,
+      StoredSyncMetadata,
+      $$SyncMetadataEntriesTableFilterComposer,
+      $$SyncMetadataEntriesTableOrderingComposer,
+      $$SyncMetadataEntriesTableAnnotationComposer,
+      $$SyncMetadataEntriesTableCreateCompanionBuilder,
+      $$SyncMetadataEntriesTableUpdateCompanionBuilder,
+      (
+        StoredSyncMetadata,
+        BaseReferences<
+          _$LocalDatabase,
+          $SyncMetadataEntriesTable,
+          StoredSyncMetadata
+        >,
+      ),
+      StoredSyncMetadata,
+      PrefetchHooks Function()
+    >;
+typedef $$SyncConflictEntriesTableCreateCompanionBuilder =
+    SyncConflictEntriesCompanion Function({
+      required String id,
+      required String entityType,
+      required String entityId,
+      required String localPayloadJson,
+      Value<String> localOperation,
+      required String remotePayloadJson,
+      required int remoteVersion,
+      Value<bool> remoteDeleted,
+      required String reason,
+      required int detectedAtMicros,
+      Value<int?> resolvedAtMicros,
+      Value<int> rowid,
+    });
+typedef $$SyncConflictEntriesTableUpdateCompanionBuilder =
+    SyncConflictEntriesCompanion Function({
+      Value<String> id,
+      Value<String> entityType,
+      Value<String> entityId,
+      Value<String> localPayloadJson,
+      Value<String> localOperation,
+      Value<String> remotePayloadJson,
+      Value<int> remoteVersion,
+      Value<bool> remoteDeleted,
+      Value<String> reason,
+      Value<int> detectedAtMicros,
+      Value<int?> resolvedAtMicros,
+      Value<int> rowid,
+    });
+
+class $$SyncConflictEntriesTableFilterComposer
+    extends Composer<_$LocalDatabase, $SyncConflictEntriesTable> {
+  $$SyncConflictEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localPayloadJson => $composableBuilder(
+    column: $table.localPayloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localOperation => $composableBuilder(
+    column: $table.localOperation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get remotePayloadJson => $composableBuilder(
+    column: $table.remotePayloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get remoteVersion => $composableBuilder(
+    column: $table.remoteVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get remoteDeleted => $composableBuilder(
+    column: $table.remoteDeleted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get detectedAtMicros => $composableBuilder(
+    column: $table.detectedAtMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get resolvedAtMicros => $composableBuilder(
+    column: $table.resolvedAtMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SyncConflictEntriesTableOrderingComposer
+    extends Composer<_$LocalDatabase, $SyncConflictEntriesTable> {
+  $$SyncConflictEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localPayloadJson => $composableBuilder(
+    column: $table.localPayloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localOperation => $composableBuilder(
+    column: $table.localOperation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get remotePayloadJson => $composableBuilder(
+    column: $table.remotePayloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get remoteVersion => $composableBuilder(
+    column: $table.remoteVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get remoteDeleted => $composableBuilder(
+    column: $table.remoteDeleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get detectedAtMicros => $composableBuilder(
+    column: $table.detectedAtMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get resolvedAtMicros => $composableBuilder(
+    column: $table.resolvedAtMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SyncConflictEntriesTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $SyncConflictEntriesTable> {
+  $$SyncConflictEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get entityId =>
+      $composableBuilder(column: $table.entityId, builder: (column) => column);
+
+  GeneratedColumn<String> get localPayloadJson => $composableBuilder(
+    column: $table.localPayloadJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get localOperation => $composableBuilder(
+    column: $table.localOperation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get remotePayloadJson => $composableBuilder(
+    column: $table.remotePayloadJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get remoteVersion => $composableBuilder(
+    column: $table.remoteVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get remoteDeleted => $composableBuilder(
+    column: $table.remoteDeleted,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get reason =>
+      $composableBuilder(column: $table.reason, builder: (column) => column);
+
+  GeneratedColumn<int> get detectedAtMicros => $composableBuilder(
+    column: $table.detectedAtMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get resolvedAtMicros => $composableBuilder(
+    column: $table.resolvedAtMicros,
+    builder: (column) => column,
+  );
+}
+
+class $$SyncConflictEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$LocalDatabase,
+          $SyncConflictEntriesTable,
+          StoredSyncConflict,
+          $$SyncConflictEntriesTableFilterComposer,
+          $$SyncConflictEntriesTableOrderingComposer,
+          $$SyncConflictEntriesTableAnnotationComposer,
+          $$SyncConflictEntriesTableCreateCompanionBuilder,
+          $$SyncConflictEntriesTableUpdateCompanionBuilder,
+          (
+            StoredSyncConflict,
+            BaseReferences<
+              _$LocalDatabase,
+              $SyncConflictEntriesTable,
+              StoredSyncConflict
+            >,
+          ),
+          StoredSyncConflict,
+          PrefetchHooks Function()
+        > {
+  $$SyncConflictEntriesTableTableManager(
+    _$LocalDatabase db,
+    $SyncConflictEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SyncConflictEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SyncConflictEntriesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SyncConflictEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> entityType = const Value.absent(),
+                Value<String> entityId = const Value.absent(),
+                Value<String> localPayloadJson = const Value.absent(),
+                Value<String> localOperation = const Value.absent(),
+                Value<String> remotePayloadJson = const Value.absent(),
+                Value<int> remoteVersion = const Value.absent(),
+                Value<bool> remoteDeleted = const Value.absent(),
+                Value<String> reason = const Value.absent(),
+                Value<int> detectedAtMicros = const Value.absent(),
+                Value<int?> resolvedAtMicros = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncConflictEntriesCompanion(
+                id: id,
+                entityType: entityType,
+                entityId: entityId,
+                localPayloadJson: localPayloadJson,
+                localOperation: localOperation,
+                remotePayloadJson: remotePayloadJson,
+                remoteVersion: remoteVersion,
+                remoteDeleted: remoteDeleted,
+                reason: reason,
+                detectedAtMicros: detectedAtMicros,
+                resolvedAtMicros: resolvedAtMicros,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String entityType,
+                required String entityId,
+                required String localPayloadJson,
+                Value<String> localOperation = const Value.absent(),
+                required String remotePayloadJson,
+                required int remoteVersion,
+                Value<bool> remoteDeleted = const Value.absent(),
+                required String reason,
+                required int detectedAtMicros,
+                Value<int?> resolvedAtMicros = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncConflictEntriesCompanion.insert(
+                id: id,
+                entityType: entityType,
+                entityId: entityId,
+                localPayloadJson: localPayloadJson,
+                localOperation: localOperation,
+                remotePayloadJson: remotePayloadJson,
+                remoteVersion: remoteVersion,
+                remoteDeleted: remoteDeleted,
+                reason: reason,
+                detectedAtMicros: detectedAtMicros,
+                resolvedAtMicros: resolvedAtMicros,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SyncConflictEntriesTable, StoredSyncConflict>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$LocalDatabase,
+                    $SyncConflictEntriesTable,
+                    StoredSyncConflict
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SyncConflictEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LocalDatabase,
+      $SyncConflictEntriesTable,
+      StoredSyncConflict,
+      $$SyncConflictEntriesTableFilterComposer,
+      $$SyncConflictEntriesTableOrderingComposer,
+      $$SyncConflictEntriesTableAnnotationComposer,
+      $$SyncConflictEntriesTableCreateCompanionBuilder,
+      $$SyncConflictEntriesTableUpdateCompanionBuilder,
+      (
+        StoredSyncConflict,
+        BaseReferences<
+          _$LocalDatabase,
+          $SyncConflictEntriesTable,
+          StoredSyncConflict
+        >,
+      ),
+      StoredSyncConflict,
+      PrefetchHooks Function()
+    >;
+typedef $$SyncRuntimeEntriesTableCreateCompanionBuilder =
+    SyncRuntimeEntriesCompanion Function({
+      required String id,
+      required String deviceId,
+      Value<String?> boundUserId,
+      Value<int> remoteCursor,
+      Value<int?> lastSyncedAtMicros,
+      Value<int> rowid,
+    });
+typedef $$SyncRuntimeEntriesTableUpdateCompanionBuilder =
+    SyncRuntimeEntriesCompanion Function({
+      Value<String> id,
+      Value<String> deviceId,
+      Value<String?> boundUserId,
+      Value<int> remoteCursor,
+      Value<int?> lastSyncedAtMicros,
+      Value<int> rowid,
+    });
+
+class $$SyncRuntimeEntriesTableFilterComposer
+    extends Composer<_$LocalDatabase, $SyncRuntimeEntriesTable> {
+  $$SyncRuntimeEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+    column: $table.deviceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get boundUserId => $composableBuilder(
+    column: $table.boundUserId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get remoteCursor => $composableBuilder(
+    column: $table.remoteCursor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lastSyncedAtMicros => $composableBuilder(
+    column: $table.lastSyncedAtMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SyncRuntimeEntriesTableOrderingComposer
+    extends Composer<_$LocalDatabase, $SyncRuntimeEntriesTable> {
+  $$SyncRuntimeEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+    column: $table.deviceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get boundUserId => $composableBuilder(
+    column: $table.boundUserId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get remoteCursor => $composableBuilder(
+    column: $table.remoteCursor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lastSyncedAtMicros => $composableBuilder(
+    column: $table.lastSyncedAtMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SyncRuntimeEntriesTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $SyncRuntimeEntriesTable> {
+  $$SyncRuntimeEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<String> get boundUserId => $composableBuilder(
+    column: $table.boundUserId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get remoteCursor => $composableBuilder(
+    column: $table.remoteCursor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lastSyncedAtMicros => $composableBuilder(
+    column: $table.lastSyncedAtMicros,
+    builder: (column) => column,
+  );
+}
+
+class $$SyncRuntimeEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$LocalDatabase,
+          $SyncRuntimeEntriesTable,
+          StoredSyncRuntime,
+          $$SyncRuntimeEntriesTableFilterComposer,
+          $$SyncRuntimeEntriesTableOrderingComposer,
+          $$SyncRuntimeEntriesTableAnnotationComposer,
+          $$SyncRuntimeEntriesTableCreateCompanionBuilder,
+          $$SyncRuntimeEntriesTableUpdateCompanionBuilder,
+          (
+            StoredSyncRuntime,
+            BaseReferences<
+              _$LocalDatabase,
+              $SyncRuntimeEntriesTable,
+              StoredSyncRuntime
+            >,
+          ),
+          StoredSyncRuntime,
+          PrefetchHooks Function()
+        > {
+  $$SyncRuntimeEntriesTableTableManager(
+    _$LocalDatabase db,
+    $SyncRuntimeEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SyncRuntimeEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SyncRuntimeEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SyncRuntimeEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> deviceId = const Value.absent(),
+                Value<String?> boundUserId = const Value.absent(),
+                Value<int> remoteCursor = const Value.absent(),
+                Value<int?> lastSyncedAtMicros = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncRuntimeEntriesCompanion(
+                id: id,
+                deviceId: deviceId,
+                boundUserId: boundUserId,
+                remoteCursor: remoteCursor,
+                lastSyncedAtMicros: lastSyncedAtMicros,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String deviceId,
+                Value<String?> boundUserId = const Value.absent(),
+                Value<int> remoteCursor = const Value.absent(),
+                Value<int?> lastSyncedAtMicros = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncRuntimeEntriesCompanion.insert(
+                id: id,
+                deviceId: deviceId,
+                boundUserId: boundUserId,
+                remoteCursor: remoteCursor,
+                lastSyncedAtMicros: lastSyncedAtMicros,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SyncRuntimeEntriesTable, StoredSyncRuntime>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$LocalDatabase,
+                    $SyncRuntimeEntriesTable,
+                    StoredSyncRuntime
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SyncRuntimeEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LocalDatabase,
+      $SyncRuntimeEntriesTable,
+      StoredSyncRuntime,
+      $$SyncRuntimeEntriesTableFilterComposer,
+      $$SyncRuntimeEntriesTableOrderingComposer,
+      $$SyncRuntimeEntriesTableAnnotationComposer,
+      $$SyncRuntimeEntriesTableCreateCompanionBuilder,
+      $$SyncRuntimeEntriesTableUpdateCompanionBuilder,
+      (
+        StoredSyncRuntime,
+        BaseReferences<
+          _$LocalDatabase,
+          $SyncRuntimeEntriesTable,
+          StoredSyncRuntime
+        >,
+      ),
+      StoredSyncRuntime,
+      PrefetchHooks Function()
+    >;
 
 class $LocalDatabaseManager {
   final _$LocalDatabase _db;
@@ -8412,4 +11678,12 @@ class $LocalDatabaseManager {
       $$WealthAssetEntriesTableTableManager(_db, _db.wealthAssetEntries);
   $$WealthDebtEntriesTableTableManager get wealthDebtEntries =>
       $$WealthDebtEntriesTableTableManager(_db, _db.wealthDebtEntries);
+  $$SyncOutboxEntriesTableTableManager get syncOutboxEntries =>
+      $$SyncOutboxEntriesTableTableManager(_db, _db.syncOutboxEntries);
+  $$SyncMetadataEntriesTableTableManager get syncMetadataEntries =>
+      $$SyncMetadataEntriesTableTableManager(_db, _db.syncMetadataEntries);
+  $$SyncConflictEntriesTableTableManager get syncConflictEntries =>
+      $$SyncConflictEntriesTableTableManager(_db, _db.syncConflictEntries);
+  $$SyncRuntimeEntriesTableTableManager get syncRuntimeEntries =>
+      $$SyncRuntimeEntriesTableTableManager(_db, _db.syncRuntimeEntries);
 }

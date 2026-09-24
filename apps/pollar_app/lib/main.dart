@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'app/auth/backend_configuration.dart';
+import 'app/auth/auth_sync_session_access.dart';
+import 'app/auth/secure_supabase_storage.dart';
 import 'app/routing/app_router.dart';
 import 'app/data/account_transaction_catalog.dart';
 import 'app/data/dashboard_overview_data_source.dart';
 import 'app/data/card_statement_data_source.dart';
 import 'app/data/local_database_provider.dart';
+import 'app/data/local_outbox_mutation_recorder.dart';
+import 'app/data/local_sync_store.dart';
 import 'app/data/local_backup_data_source.dart';
 import 'app/data/planning_ledger_data_source.dart';
 import 'app/data/report_ledger_data_source.dart';
@@ -16,6 +22,8 @@ import 'app/theme/theme_mode_provider.dart';
 import 'features/accounts/data/default_accounts.dart';
 import 'features/accounts/data/drift_account_repository.dart';
 import 'features/accounts/presentation/accounts_controller.dart';
+import 'features/auth/data/supabase_auth_gateway.dart';
+import 'features/auth/presentation/auth_controller.dart';
 import 'features/data_management/data/local_backup_file_gateway.dart';
 import 'features/data_management/presentation/data_management_controller.dart';
 import 'features/overview/presentation/overview_controller.dart';
@@ -24,23 +32,57 @@ import 'features/planning/presentation/planning_controller.dart';
 import 'features/reports/data/local_report_exporter.dart';
 import 'features/reports/presentation/reports_controller.dart';
 import 'features/statements/presentation/statement_controller.dart';
+import 'features/sync/data/supabase_sync_gateway.dart';
+import 'features/sync/presentation/sync_controller.dart';
 import 'features/transactions/data/drift_transaction_repository.dart';
 import 'features/transactions/presentation/transactions_controller.dart';
 import 'features/wealth/data/drift_wealth_repository.dart';
 import 'features/wealth/presentation/wealth_controller.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SupabaseClient? supabase;
+  if (BackendConfiguration.isConfigured) {
+    await Supabase.initialize(
+      url: BackendConfiguration.url,
+      publishableKey: BackendConfiguration.publishableKey,
+      authOptions: const FlutterAuthClientOptions(
+        localStorage: SecureSupabaseStorage(),
+      ),
+    );
+    supabase = Supabase.instance.client;
+  }
   runApp(
     ProviderScope(
       overrides: [
+        if (supabase case final client?) ...[
+          authGatewayProvider.overrideWithValue(SupabaseAuthGateway(client)),
+          syncRemoteGatewayProvider.overrideWithValue(
+            SupabaseSyncGateway(client),
+          ),
+        ],
+        syncLocalStoreProvider.overrideWith(
+          (ref) => LocalSyncStore(ref.watch(localDatabaseProvider)),
+        ),
+        syncSessionAccessProvider.overrideWith(
+          (ref) => AuthSyncSessionAccess(ref.watch(authGatewayProvider)),
+        ),
         accountRepositoryProvider.overrideWith((ref) {
           return DriftAccountRepository(
             ref.watch(localDatabaseProvider),
             initialAccounts: createDefaultAccounts(),
+            mutationRecorder: LocalOutboxMutationRecorder(
+              ref.watch(localDatabaseProvider),
+            ),
           );
         }),
         transactionRepositoryProvider.overrideWith(
-          (ref) => DriftTransactionRepository(ref.watch(localDatabaseProvider)),
+          (ref) => DriftTransactionRepository(
+            ref.watch(localDatabaseProvider),
+            mutationRecorder: LocalOutboxMutationRecorder(
+              ref.watch(localDatabaseProvider),
+            ),
+          ),
         ),
         transactionAccountCatalogProvider.overrideWith(
           (ref) =>
@@ -87,6 +129,9 @@ void main() {
           (ref) => LocalBackupDataSource(
             ref.watch(localDatabaseProvider),
             ref.watch(accountRepositoryProvider),
+            mutationRecorder: LocalOutboxMutationRecorder(
+              ref.watch(localDatabaseProvider),
+            ),
           ),
         ),
         backupFileGatewayProvider.overrideWithValue(

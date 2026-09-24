@@ -427,6 +427,24 @@ O planejamento mensal reconcilia limites, gasto registrado e compromissos projet
 
 **The Recoverable Pause Rule.** Pausar é reversível e preserva a configuração; estado e consequência devem ser declarados antes da mudança.
 
+### Identidade e sincronização
+
+A entrada funciona como um limiar de privacidade, não como campanha de
+aquisição: propósito e garantias locais precedem o formulário. Em largura ampla,
+contexto e formulário dividem duas colunas; no compacto, contexto, garantias e
+formulário formam uma única sequência rolável.
+
+A superfície de sincronização é um console do livro-caixa. Status, contagem exata
+da fila e ação principal ocupam a primeira faixa; identidade e conflitos vêm
+depois. Conflitos sempre mostram que as duas versões foram preservadas e exigem
+uma comparação antes das escolhas “usar servidor” e “manter deste dispositivo”.
+Em texto ampliado, títulos e badges quebram para linhas independentes.
+
+**The Visible Replication Rule.** Sincronização nunca é uma promessa abstrata de
+nuvem: fila, último sucesso, falha recuperável e conflito têm texto e estado
+visíveis. Nenhuma divergência financeira é resolvida apenas por cor ou em
+silêncio.
+
 ## Do's and Don'ts
 
 ### Do:

@@ -41,8 +41,7 @@ inválidas, IDs repetidos, round-trip no SQLite, confirmação destrutiva e text
 200%. Goldens cobrem layouts compacto, amplo, escala de texto e a prévia de
 restauração.
 
-## Próximo slice
+## Continuidade
 
-Autenticação e sincronização remota ficam para o próximo slice, quando também
-serão definidos identidade remota, política de conflito, operação offline e
-proteções do backend.
+Autenticação e sincronização remota foram implementadas no slice seguinte; o
+protocolo e as garantias estão em `docs/identity-sync-slice.md`.

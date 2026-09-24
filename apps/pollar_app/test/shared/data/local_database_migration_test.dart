@@ -6,7 +6,7 @@ import 'package:pollar_app/shared/data/local_database.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 void main() {
-  test('schema 1 accounts migrate to schema 5 without data loss', () async {
+  test('schema 1 accounts migrate to schema 6 without data loss', () async {
     final tempDirectory = await Directory.systemTemp.createTemp(
       'pollar-local-database-migration-',
     );
@@ -53,7 +53,9 @@ void main() {
     expect(await database.select(database.wealthGoalEntries).get(), isEmpty);
     expect(await database.select(database.wealthAssetEntries).get(), isEmpty);
     expect(await database.select(database.wealthDebtEntries).get(), isEmpty);
-    expect(database.schemaVersion, 5);
+    expect(database.schemaVersion, 6);
+    expect(await database.select(database.syncOutboxEntries).get(), isEmpty);
+    expect(await database.select(database.syncConflictEntries).get(), isEmpty);
 
     await database.close();
     final resolvedTemp = tempDirectory.absolute.path;
@@ -65,7 +67,7 @@ void main() {
   });
 
   test(
-    'schema 2 transactions migrate to schema 5 with metadata empty',
+    'schema 2 transactions migrate to schema 6 with metadata empty',
     () async {
       final tempDirectory = await Directory.systemTemp.createTemp(
         'pollar-local-database-migration-v2-',
@@ -116,7 +118,7 @@ void main() {
       expect(await database.select(database.wealthGoalEntries).get(), isEmpty);
       expect(await database.select(database.wealthAssetEntries).get(), isEmpty);
       expect(await database.select(database.wealthDebtEntries).get(), isEmpty);
-      expect(database.schemaVersion, 5);
+      expect(database.schemaVersion, 6);
       await database.close();
 
       final resolvedTemp = tempDirectory.absolute.path;
@@ -180,7 +182,7 @@ void main() {
       expect(await database.select(database.wealthGoalEntries).get(), isEmpty);
       expect(await database.select(database.wealthAssetEntries).get(), isEmpty);
       expect(await database.select(database.wealthDebtEntries).get(), isEmpty);
-      expect(database.schemaVersion, 5);
+      expect(database.schemaVersion, 6);
       await database.close();
 
       final resolvedTemp = tempDirectory.absolute.path;
@@ -253,7 +255,7 @@ void main() {
     expect(await database.select(database.wealthGoalEntries).get(), isEmpty);
     expect(await database.select(database.wealthAssetEntries).get(), isEmpty);
     expect(await database.select(database.wealthDebtEntries).get(), isEmpty);
-    expect(database.schemaVersion, 5);
+    expect(database.schemaVersion, 6);
     await database.close();
 
     final resolvedTemp = tempDirectory.absolute.path;

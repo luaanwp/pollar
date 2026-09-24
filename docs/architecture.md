@@ -117,5 +117,13 @@ simples e deixa substituições futuras explícitas.
 - Backups são envelopes JSON versionados com checksum SHA-256. Eles permanecem
   deliberadamente portáveis e não criptografados, propriedade comunicada antes
   das ações de exportar e restaurar.
+- Autenticação e sincronização são capacidades independentes. O adaptador
+  `app/auth/auth_sync_session_access.dart` traduz a sessão para o contrato
+  mínimo de sync, sem imports diretos entre features.
+- SQLite permanece a fonte imediata da interface. Escritas financeiras e
+  outbox são atômicas; o adaptador remoto usa operações idempotentes, versões,
+  cursor e tombstones, preservando conflitos até uma decisão explícita.
+- Supabase é opt-in na composição por `--dart-define`. Sem URL e chave
+  publicável, o mesmo binário opera somente com dados locais.
 - O quinto destino da navegação é `Mais`, que agrupa capacidades secundárias e
   preserva o limite de cinco destinos das barras nativas mobile.
