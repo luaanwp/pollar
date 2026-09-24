@@ -23,7 +23,10 @@ class AccountsController extends AsyncNotifier<List<Account>> {
   AccountService get _service => ref.read(accountServiceProvider);
 
   @override
-  Future<List<Account>> build() => _service.list(includeArchived: true);
+  Future<List<Account>> build() {
+    ref.watch(financialDataRevisionProvider);
+    return _service.list(includeArchived: true);
+  }
 
   Future<void> create(Account account) async {
     await _service.create(account);

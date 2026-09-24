@@ -7,6 +7,7 @@ import 'app/data/account_transaction_catalog.dart';
 import 'app/data/dashboard_overview_data_source.dart';
 import 'app/data/card_statement_data_source.dart';
 import 'app/data/local_database_provider.dart';
+import 'app/data/local_backup_data_source.dart';
 import 'app/data/planning_ledger_data_source.dart';
 import 'app/data/report_ledger_data_source.dart';
 import 'app/data/wealth_ledger_data_source.dart';
@@ -15,6 +16,8 @@ import 'app/theme/theme_mode_provider.dart';
 import 'features/accounts/data/default_accounts.dart';
 import 'features/accounts/data/drift_account_repository.dart';
 import 'features/accounts/presentation/accounts_controller.dart';
+import 'features/data_management/data/local_backup_file_gateway.dart';
+import 'features/data_management/presentation/data_management_controller.dart';
 import 'features/overview/presentation/overview_controller.dart';
 import 'features/planning/data/drift_planning_repository.dart';
 import 'features/planning/presentation/planning_controller.dart';
@@ -79,6 +82,15 @@ void main() {
             ref.watch(accountRepositoryProvider),
             ref.watch(transactionRepositoryProvider),
           ),
+        ),
+        backupDataSourceProvider.overrideWith(
+          (ref) => LocalBackupDataSource(
+            ref.watch(localDatabaseProvider),
+            ref.watch(accountRepositoryProvider),
+          ),
+        ),
+        backupFileGatewayProvider.overrideWithValue(
+          const LocalBackupFileGateway(),
         ),
       ],
       child: const PollarApp(),

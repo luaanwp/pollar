@@ -43,6 +43,14 @@ class MoreScreen extends StatelessWidget {
           ),
           const SizedBox(height: PollarSpacing.x3),
           _MoreDestination(
+            icon: LucideIcons.databaseBackup,
+            title: 'Dados e backup',
+            description:
+                'Cópia completa, verificação e restauração dos dados locais.',
+            onTap: () => context.push('/more/data'),
+          ),
+          const SizedBox(height: PollarSpacing.x3),
+          _MoreDestination(
             icon: LucideIcons.settings,
             title: 'Preferências',
             description: 'Aparência e configurações do aplicativo.',

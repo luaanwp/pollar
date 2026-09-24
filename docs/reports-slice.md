@@ -50,5 +50,6 @@ dívidas manuais não aparecem como uma série histórica porque o produto ainda
 não registra versões de avaliação. O dossiê de patrimônio continua sendo a
 fonte da posição patrimonial atual.
 
-O próximo slice recomendado é gestão de dados e hardening: importação segura,
-backup/restauração, autenticação, sincronização e testes de conflito.
+O slice seguinte de gestão de dados e backup foi concluído em
+`docs/data-management-slice.md`. Autenticação, sincronização e testes de
+conflito permanecem para o próximo ciclo.

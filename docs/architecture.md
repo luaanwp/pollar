@@ -110,5 +110,12 @@ simples e deixa substituições futuras explícitas.
 - Exportações são documentos determinísticos produzidos na camada de aplicação.
   A implementação local grava o CSV e seu SHA-256, mantendo sistema de arquivos
   e `path_provider` fora das regras financeiras.
+- A feature `data_management` coordena backup e restauração por contratos
+  neutros. O adaptador em `app/data` é a única peça autorizada a reunir as sete
+  tabelas locais; valida todo o documento antes da confirmação e substitui o
+  banco em uma transação única.
+- Backups são envelopes JSON versionados com checksum SHA-256. Eles permanecem
+  deliberadamente portáveis e não criptografados, propriedade comunicada antes
+  das ações de exportar e restaurar.
 - O quinto destino da navegação é `Mais`, que agrupa capacidades secundárias e
   preserva o limite de cinco destinos das barras nativas mobile.
