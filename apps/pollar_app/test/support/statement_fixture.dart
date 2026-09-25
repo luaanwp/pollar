@@ -6,7 +6,8 @@ import 'package:pollar_app/features/statements/application/statement_data_source
 final statementFixtureNow = DateTime(2026, 9, 8);
 
 class StatementFixtureDataSource implements StatementDataSource {
-  StatementFixtureDataSource();
+  StatementFixtureDataSource({this.pendingPaymentMinor = 0});
+  final int pendingPaymentMinor;
   final payments = <StatementPaymentCommand>[];
   Money _brl(int value) => Money(minorUnits: value, currency: Currency.brl);
 
@@ -83,6 +84,18 @@ class StatementFixtureDataSource implements StatementDataSource {
         installmentCount: 3,
         purchaseTotal: _brl(96249),
       ),
+      if (pendingPaymentMinor > 0)
+        StatementTransactionRecord(
+          id: 'pending-payment',
+          description: 'Pagamento pendente',
+          type: TransactionType.cardStatementPayment,
+          status: TransactionStatus.pendente,
+          amount: _brl(pendingPaymentMinor),
+          accountId: 'bank',
+          counterAccountId: 'card',
+          occurredAt: DateTime(2026, 9, 8),
+          statementId: 'card:2026-09-20',
+        ),
     ],
   );
 

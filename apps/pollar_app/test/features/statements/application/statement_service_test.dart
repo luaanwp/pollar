@@ -208,6 +208,88 @@ void main() {
     );
     expect(source.payments, isEmpty);
   });
+
+  test(
+    'planned and pending payments reserve value without counting as paid',
+    () async {
+      final source = _Source(
+        StatementSourceData(
+          accounts: [
+            StatementAccountRecord(
+              id: 'card',
+              name: 'Cartão',
+              currency: Currency.brl,
+              openingBalance: brl(0),
+              isCreditCard: true,
+              isArchived: false,
+              creditLimit: brl(100000),
+              closingDay: 20,
+              dueDay: 28,
+            ),
+            StatementAccountRecord(
+              id: 'bank',
+              name: 'Conta',
+              currency: Currency.brl,
+              openingBalance: brl(20000),
+              isCreditCard: false,
+              isArchived: false,
+            ),
+          ],
+          transactions: [
+            StatementTransactionRecord(
+              id: 'purchase',
+              description: 'Compra',
+              type: TransactionType.cardPurchase,
+              status: TransactionStatus.compensado,
+              amount: brl(10000),
+              accountId: 'card',
+              occurredAt: DateTime(2026, 9, 10),
+            ),
+            for (final (id, status, amount) in [
+              ('planned', TransactionStatus.previsto, 2000),
+              ('pending', TransactionStatus.pendente, 3000),
+            ])
+              StatementTransactionRecord(
+                id: id,
+                description: 'Pagamento',
+                type: TransactionType.cardStatementPayment,
+                status: status,
+                amount: brl(amount),
+                accountId: 'bank',
+                counterAccountId: 'card',
+                occurredAt: DateTime(2026, 9, 22),
+                statementId: 'card:2026-09-20',
+              ),
+          ],
+        ),
+      );
+      final service = StatementService(source);
+      final snapshot = await service.load('card', DateTime(2026, 10, 1));
+
+      expect(snapshot.statement.id, 'card:2026-09-20');
+      expect(snapshot.statement.paid, brl(0));
+      expect(snapshot.statement.pendingPayments, brl(5000));
+      expect(snapshot.statement.outstanding, brl(10000));
+      expect(snapshot.statement.availableToPay, brl(5000));
+      expect(snapshot.statement.status, CardStatementStatus.overdue);
+      expect(snapshot.availableLimit, brl(90000));
+      await expectLater(
+        service.pay(
+          snapshot: snapshot,
+          command: StatementPaymentCommand(
+            id: 'extra',
+            statementId: snapshot.statement.id,
+            cardId: 'card',
+            sourceAccountId: 'bank',
+            amount: brl(5001),
+            occurredAt: DateTime(2026, 10, 1),
+          ),
+        ),
+        throwsA(isA<InvalidStatementPaymentException>()),
+      );
+      expect(source.payments, isEmpty);
+    },
+  );
 }
 
 class _Source implements StatementDataSource {

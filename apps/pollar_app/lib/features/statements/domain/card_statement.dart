@@ -57,6 +57,7 @@ class CardStatement {
     required this.status,
     required this.total,
     required this.paid,
+    required this.pendingPayments,
     required this.outstanding,
     required this.purchases,
   });
@@ -68,8 +69,14 @@ class CardStatement {
   final CardStatementStatus status;
   final Money total;
   final Money paid;
+  final Money pendingPayments;
   final Money outstanding;
   final List<StatementPurchase> purchases;
+
+  Money get availableToPay {
+    final remainder = outstanding - pendingPayments;
+    return remainder.isNegative ? Money.zero(outstanding.currency) : remainder;
+  }
 }
 
 @immutable

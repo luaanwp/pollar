@@ -66,7 +66,7 @@ class StatementService {
                   item.type == TransactionType.cardStatementPayment &&
                   item.counterAccountId == cardId &&
                   item.statementId == candidateId &&
-                  item.status != TransactionStatus.cancelado,
+                  item.status.affectsConfirmed,
             )
             .map((item) => item.amount),
         card.currency,
@@ -99,7 +99,18 @@ class StatementService {
           item.status != TransactionStatus.cancelado,
     );
     final total = _sum(relevant.map((item) => item.amount), card.currency);
-    final paid = _sum(payments.map((item) => item.amount), card.currency);
+    final paid = _sum(
+      payments
+          .where((item) => item.status.affectsConfirmed)
+          .map((item) => item.amount),
+      card.currency,
+    );
+    final pendingPayments = _sum(
+      payments
+          .where((item) => !item.status.affectsConfirmed)
+          .map((item) => item.amount),
+      card.currency,
+    );
     final outstandingMinor = (total.minorUnits - paid.minorUnits).clamp(
       0,
       total.minorUnits,
@@ -121,6 +132,8 @@ class StatementService {
     final cardTransactions = data.transactions.where(
       (item) =>
           item.status != TransactionStatus.cancelado &&
+          (item.type != TransactionType.cardStatementPayment ||
+              item.status.affectsConfirmed) &&
           (item.accountId == cardId || item.counterAccountId == cardId),
     );
     final projected = computeAccountBalance(
@@ -175,6 +188,7 @@ class StatementService {
         status: status,
         total: total,
         paid: paid,
+        pendingPayments: pendingPayments,
         outstanding: outstanding,
         purchases: [
           for (final item in relevant)
@@ -213,9 +227,9 @@ class StatementService {
         command.amount.currency != snapshot.currency) {
       throw const InvalidStatementPaymentException('Pagamento inválido');
     }
-    if (command.amount.compareTo(snapshot.statement.outstanding) > 0) {
+    if (command.amount.compareTo(snapshot.statement.availableToPay) > 0) {
       throw const InvalidStatementPaymentException(
-        'Pagamento maior que o saldo da fatura',
+        'Pagamento maior que o saldo disponível após pagamentos pendentes',
       );
     }
     if (!snapshot.paymentAccounts.any(

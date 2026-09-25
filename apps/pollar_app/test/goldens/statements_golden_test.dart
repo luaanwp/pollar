@@ -21,7 +21,12 @@ void main() {
     await Future.wait([inter.load(), lucide.load()]);
   });
 
-  Future<void> render(WidgetTester tester, Size size, String golden) async {
+  Future<void> render(
+    WidgetTester tester,
+    Size size,
+    String golden, {
+    int pendingPaymentMinor = 0,
+  }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -30,7 +35,9 @@ void main() {
       ProviderScope(
         overrides: [
           statementDataSourceProvider.overrideWithValue(
-            StatementFixtureDataSource(),
+            StatementFixtureDataSource(
+              pendingPaymentMinor: pendingPaymentMinor,
+            ),
           ),
           statementClockProvider.overrideWithValue(() => statementFixtureNow),
         ],
@@ -60,5 +67,25 @@ void main() {
   testWidgets(
     'statement wide 1200x900',
     (tester) => render(tester, const Size(1200, 900), 'statement_1200x900.png'),
+  );
+
+  testWidgets(
+    'statement with pending payment compact 390x844',
+    (tester) => render(
+      tester,
+      const Size(390, 844),
+      'statement_pending_390x844.png',
+      pendingPaymentMinor: 20000,
+    ),
+  );
+
+  testWidgets(
+    'statement with pending payment wide 1200x900',
+    (tester) => render(
+      tester,
+      const Size(1200, 900),
+      'statement_pending_1200x900.png',
+      pendingPaymentMinor: 20000,
+    ),
   );
 }

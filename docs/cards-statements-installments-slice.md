@@ -18,6 +18,10 @@ Este slice transforma os termos já pertencentes às contas de cartão em ciclos
 - O vencimento usa o mesmo mês somente quando ocorre depois do fechamento; caso contrário, usa o mês seguinte.
 - Faturas distinguem Aberta, Fechada, Parcialmente paga, Paga e Vencida.
 - Pagamentos integrais, parciais ou múltiplos são transferências da conta escolhida para o passivo do cartão e nunca uma nova despesa.
+- Só pagamentos compensados ou conciliados contam como “Pago” na fatura.
+  Pagamentos previstos/pendentes aparecem separados, reservam valor contra
+  novos pagamentos e não reduzem o saldo confirmado em aberto nem antecipam a
+  liberação do limite do cartão.
 - Totais, pagamentos, saldo em aberto, limite disponível, compras e parcelas futuras usam a moeda do cartão.
 
 ## Persistência

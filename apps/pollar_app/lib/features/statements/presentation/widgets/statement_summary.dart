@@ -74,6 +74,46 @@ class StatementSummary extends StatelessWidget {
                   : context.pollar.textSecondary,
             ),
           ),
+          if (statement.pendingPayments.isPositive) ...[
+            const SizedBox(height: PollarSpacing.x3),
+            Wrap(
+              spacing: PollarSpacing.x2,
+              runSpacing: PollarSpacing.x1,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(
+                  'Pagamento pendente',
+                  style: Theme.of(context).textTheme.bodySmall
+                      ?.copyWith(color: context.pollar.textSecondary),
+                ),
+                PrivacyAmount(
+                  statement.pendingPayments,
+                  hidden: privacyHidden,
+                  style: Theme.of(context).textTheme.bodySmall,
+                  semantic: MoneySemantic.neutral,
+                ),
+              ],
+            ),
+            const SizedBox(height: PollarSpacing.x1),
+            Wrap(
+              spacing: PollarSpacing.x2,
+              runSpacing: PollarSpacing.x1,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(
+                  'Disponível para pagar',
+                  style: Theme.of(context).textTheme.bodySmall
+                      ?.copyWith(color: context.pollar.textSecondary),
+                ),
+                PrivacyAmount(
+                  statement.availableToPay,
+                  hidden: privacyHidden,
+                  style: Theme.of(context).textTheme.bodySmall,
+                  semantic: MoneySemantic.neutral,
+                ),
+              ],
+            ),
+          ],
           const SizedBox(height: PollarSpacing.x5),
           if (accessible)
             Column(

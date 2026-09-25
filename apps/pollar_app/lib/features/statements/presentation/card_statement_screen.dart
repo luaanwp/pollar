@@ -64,7 +64,7 @@ class _StatementContent extends ConsumerWidget {
     final compact =
         MediaQuery.sizeOf(context).width < PollarBreakpoints.mediumMin;
     final canPay =
-        snapshot.statement.outstanding.isPositive &&
+        snapshot.statement.availableToPay.isPositive &&
         snapshot.paymentAccounts.isNotEmpty;
     final summary = StatementSummary(
       snapshot: snapshot,
@@ -86,7 +86,7 @@ class _StatementContent extends ConsumerWidget {
           children: [
             _StatementHeader(snapshot: snapshot),
             const SizedBox(height: PollarSpacing.x6),
-            if (snapshot.statement.outstanding.isPositive &&
+            if (snapshot.statement.availableToPay.isPositive &&
                 snapshot.paymentAccounts.isEmpty) ...[
               const PollarBanner(
                 tone: PollarStatusTone.info,
@@ -144,7 +144,7 @@ class _StatementContent extends ConsumerWidget {
 
   Future<void> _pay(BuildContext context, WidgetRef ref) async {
     var accountId = snapshot.paymentAccounts.first.id;
-    Money? amount = snapshot.statement.outstanding;
+    Money? amount = snapshot.statement.availableToPay;
     final formKey = GlobalKey<FormState>();
     final confirmed = await showPollarAdaptiveModal<bool>(
       context: context,
@@ -171,14 +171,14 @@ class _StatementContent extends ConsumerWidget {
               key: const Key('statement-payment-amount'),
               label: 'Valor do pagamento',
               currency: snapshot.currency,
-              initialValue: snapshot.statement.outstanding,
+              initialValue: snapshot.statement.availableToPay,
               onChanged: (value) => amount = value,
               validator: (value) {
                 if (value == null || !value.isPositive) {
                   return 'Informe um valor maior que zero.';
                 }
-                if (value.compareTo(snapshot.statement.outstanding) > 0) {
-                  return 'O pagamento não pode superar o saldo da fatura.';
+                if (value.compareTo(snapshot.statement.availableToPay) > 0) {
+                  return 'O pagamento não pode superar o saldo após pagamentos pendentes.';
                 }
                 return null;
               },

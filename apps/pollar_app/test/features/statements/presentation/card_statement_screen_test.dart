@@ -59,10 +59,25 @@ void main() {
     await tester.tap(find.byKey(const Key('confirm-statement-payment')));
     await tester.pumpAndSettle();
     expect(
-      find.text('O pagamento não pode superar o saldo da fatura.'),
+      find.text(
+        'O pagamento não pode superar o saldo após pagamentos pendentes.',
+      ),
       findsOneWidget,
     );
     expect(find.text('Registrar pagamento da fatura?'), findsOneWidget);
+  });
+
+  testWidgets('shows pending payment separately and blocks duplicate payment', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(StatementFixtureDataSource(pendingPaymentMinor: 55563)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Pagamento pendente'), findsOneWidget);
+    expect(find.text('Pagar fatura'), findsNothing);
+    expect(find.text(r'R$ 555,63'), findsWidgets);
   });
 }
 
