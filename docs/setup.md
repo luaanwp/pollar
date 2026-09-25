@@ -51,10 +51,9 @@ Accounts are persisted in `pollar.sqlite` under the platform application-support
 directory. Native persistence is currently composed for Windows, Android and
 iOS; browser storage remains outside the V1 target.
 
-## Supabase (local only)
+## Supabase
 
-A remote Supabase project must NOT be created or connected without explicit
-authorization. Local development uses Docker:
+Local development uses Docker:
 
 ```bash
 supabase start   # prints API URL + publishable key
@@ -81,11 +80,28 @@ previously verified device may alternatively unlock with OS biometrics/PIN
 (Windows Hello on Windows), including offline. A new device must enroll TOTP
 online. Native OS unlock was not yet exercised on physical devices.
 
-For a remote Supabase project, apply both new migrations, enable TOTP enroll
-and verify, set the Magic Link and confirmation email templates to show
-`{{ .Token }}`, configure production SMTP, and supply only the project URL and
-publishable key to the app. Do not reuse local keys or send `service_role` to a
-client. The project must be explicitly selected/authorized before linking it.
+The authorized remote project is `gcalogvthpoofyrveikz`. Its three migrations
+(`20260924000100`, `20260925000100`, `20260925000200`) were applied and checked
+on 2026-09-25. The public URL and publishable key are in
+`apps/pollar_app/config/supabase.remote.json`; this file contains no admin or
+database credential. From `apps/pollar_app`, run the remote-backed app with:
+
+```bash
+flutter run --dart-define-from-file=config/supabase.remote.json
+```
+
+The hosted project's Auth settings are **not** deployed by `db push`. In its
+Dashboard, set both Magic Link and Confirm Signup email templates to the content
+of `supabase/templates/access_code.html` (which displays `{{ .Token }}`), and
+check that TOTP enrollment and verification are enabled. Configure custom SMTP
+for production email delivery. The local `supabase/config.toml` has local-only
+values such as `site_url = "http://127.0.0.1:3000"`; do not push that entire
+config to the hosted project. Never send `service_role`, a management token,
+SMTP credentials, or the database password to the client or repository.
+
+Remaining remote acceptance checks: receive an OTP at an authorized email,
+enroll and verify TOTP, sync an account and transaction, reopen and unlock on a
+real device, and verify that a second user cannot read the first user's data.
 
 ## Repository layout
 
