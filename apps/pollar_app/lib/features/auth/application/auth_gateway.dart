@@ -1,5 +1,14 @@
 import '../domain/auth_session.dart';
 
+class AuthenticatorEnrollment {
+  const AuthenticatorEnrollment({required this.factorId, this.secret});
+
+  final String factorId;
+
+  /// Present only during first enrollment; never persist this secret locally.
+  final String? secret;
+}
+
 class AuthFailure implements Exception {
   const AuthFailure(this.message);
 
@@ -11,16 +20,22 @@ abstract interface class AuthGateway {
 
   AuthSession? get currentSession;
 
+  bool get isSecondFactorVerified;
+
+  bool get hasRecentEmailCode;
+
   Stream<AuthSession?> sessionChanges();
 
-  Future<void> signIn({required String email, required String password});
+  Future<void> sendEmailCode(String email);
 
-  Future<SignUpResult> signUp({
-    required String email,
-    required String password,
+  Future<void> verifyEmailCode({required String email, required String code});
+
+  Future<AuthenticatorEnrollment> prepareAuthenticator();
+
+  Future<void> verifyAuthenticator({
+    required String factorId,
+    required String code,
   });
-
-  Future<void> sendMagicLink(String email);
 
   Future<void> signOut();
 }
@@ -35,6 +50,12 @@ class UnconfiguredAuthGateway implements AuthGateway {
   AuthSession? get currentSession => null;
 
   @override
+  bool get isSecondFactorVerified => false;
+
+  @override
+  bool get hasRecentEmailCode => false;
+
+  @override
   Stream<AuthSession?> sessionChanges() => Stream.value(null);
 
   Never _unavailable() => throw StateError(
@@ -42,19 +63,23 @@ class UnconfiguredAuthGateway implements AuthGateway {
   );
 
   @override
-  Future<void> signIn({
+  Future<void> sendEmailCode(String email) async => _unavailable();
+
+  @override
+  Future<void> verifyEmailCode({
     required String email,
-    required String password,
+    required String code,
   }) async => _unavailable();
 
   @override
-  Future<SignUpResult> signUp({
-    required String email,
-    required String password,
-  }) async => _unavailable();
+  Future<AuthenticatorEnrollment> prepareAuthenticator() async =>
+      _unavailable();
 
   @override
-  Future<void> sendMagicLink(String email) async => _unavailable();
+  Future<void> verifyAuthenticator({
+    required String factorId,
+    required String code,
+  }) async => _unavailable();
 
   @override
   Future<void> signOut() async {}

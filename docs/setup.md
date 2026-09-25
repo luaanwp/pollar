@@ -73,6 +73,20 @@ flutter run \
 Without both values the app intentionally starts in local-only mode. Never put
 the `service_role` key in a client command or file.
 
+The configured sign-in is passwordless: the local Auth email template sends a
+six-digit OTP, followed by TOTP enrollment/verification in an authenticator
+app. Local messages appear in Mailpit at `http://127.0.0.1:54324`. The app
+requires a new email OTP after ten days and a TOTP code on a fresh launch; a
+previously verified device may alternatively unlock with OS biometrics/PIN
+(Windows Hello on Windows), including offline. A new device must enroll TOTP
+online. Native OS unlock was not yet exercised on physical devices.
+
+For a remote Supabase project, apply both new migrations, enable TOTP enroll
+and verify, set the Magic Link and confirmation email templates to show
+`{{ .Token }}`, configure production SMTP, and supply only the project URL and
+publishable key to the app. Do not reuse local keys or send `service_role` to a
+client. The project must be explicitly selected/authorized before linking it.
+
 ## Repository layout
 
 ```

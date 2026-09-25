@@ -4,9 +4,3 @@ class AuthSession {
   final String userId;
   final String email;
 }
-
-class SignUpResult {
-  const SignUpResult({required this.needsEmailConfirmation});
-
-  final bool needsEmailConfirmation;
-}

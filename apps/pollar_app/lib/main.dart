@@ -19,7 +19,6 @@ import 'app/data/report_ledger_data_source.dart';
 import 'app/data/wealth_ledger_data_source.dart';
 import 'app/theme/pollar_theme.dart';
 import 'app/theme/theme_mode_provider.dart';
-import 'features/accounts/data/default_accounts.dart';
 import 'features/accounts/data/drift_account_repository.dart';
 import 'features/accounts/presentation/accounts_controller.dart';
 import 'features/auth/data/supabase_auth_gateway.dart';
@@ -70,7 +69,6 @@ Future<void> main() async {
         accountRepositoryProvider.overrideWith((ref) {
           return DriftAccountRepository(
             ref.watch(localDatabaseProvider),
-            initialAccounts: createDefaultAccounts(),
             mutationRecorder: LocalOutboxMutationRecorder(
               ref.watch(localDatabaseProvider),
             ),

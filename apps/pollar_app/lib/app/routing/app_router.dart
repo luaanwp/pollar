@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/accounts/presentation/account_form_screen.dart';
 import '../../features/accounts/presentation/accounts_screen.dart';
 import '../../features/auth/presentation/auth_controller.dart';
+import '../../features/auth/presentation/authenticator_screen.dart';
 import '../../features/auth/presentation/sign_in_screen.dart';
 import '../../features/design_system/presentation/forms_catalog_screen.dart';
 import '../../features/data_management/presentation/data_management_screen.dart';
@@ -27,6 +28,7 @@ import 'app_shell.dart';
 ///
 final routerProvider = Provider<GoRouter>((ref) {
   final auth = ref.watch(authGatewayProvider);
+  final unlocked = ref.watch(authenticatorUnlockedProvider);
   final session =
       ref.watch(authSessionProvider).asData?.value ?? auth.currentSession;
   return GoRouter(
@@ -34,14 +36,23 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) async {
       if (!auth.isConfigured) return null;
       final onSignIn = state.matchedLocation == '/sign-in';
+      final onAuthenticator = state.matchedLocation == '/authenticator';
       final onMismatch = state.matchedLocation == '/account-mismatch';
       if (session == null && !onSignIn) return '/sign-in';
       if (session != null) {
+        if (!auth.hasRecentEmailCode) {
+          return onSignIn ? null : '/sign-in';
+        }
+        if (!auth.isSecondFactorVerified || !unlocked) {
+          return onAuthenticator ? null : '/authenticator';
+        }
         final matches = await ref
             .read(syncLocalStoreProvider)
             .bindIdentity(session.userId);
         if (!matches && !onMismatch) return '/account-mismatch';
-        if (matches && (onSignIn || onMismatch)) return '/overview';
+        if (matches && (onSignIn || onAuthenticator || onMismatch)) {
+          return '/overview';
+        }
       }
       return null;
     },
@@ -49,6 +60,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/sign-in',
         builder: (context, state) => const SignInScreen(),
+      ),
+      GoRoute(
+        path: '/authenticator',
+        builder: (context, state) => const AuthenticatorScreen(),
       ),
       GoRoute(
         path: '/account-mismatch',

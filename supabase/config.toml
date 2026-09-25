@@ -232,6 +232,14 @@ otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
 otp_expiry = 3600
 
+[auth.email.template.magic_link]
+subject = "Código de acesso Pollar"
+content_path = "./supabase/templates/access_code.html"
+
+[auth.email.template.confirmation]
+subject = "Confirme seu acesso ao Pollar"
+content_path = "./supabase/templates/access_code.html"
+
 # Use a production-ready SMTP server
 # [auth.email.smtp]
 # enabled = true
@@ -299,8 +307,8 @@ max_enrolled_factors = 10
 
 # Control MFA via App Authenticator (TOTP)
 [auth.mfa.totp]
-enroll_enabled = false
-verify_enabled = false
+enroll_enabled = true
+verify_enabled = true
 
 # Configure MFA via Phone Messaging
 [auth.mfa.phone]

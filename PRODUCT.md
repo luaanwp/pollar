@@ -31,7 +31,8 @@ confiável e privacidade visível, sem gamificação nem simplificação dos nú
 - Cadastro e consulta frequente de receitas, despesas e transferências.
 - Uso rápido no celular e análise mais densa no desktop.
 - Valores podem ser ocultados sem remover contexto ou alterar o layout.
-- O produto começa local-first; sincronização remota é uma etapa posterior.
+- O produto é local-first, com sincronização Supabase opcional quando configurada.
+- Open Finance e conexão bancária permanecem fora da V1, previstos para a V1.1.
 
 ## Capabilities and Constraints
 

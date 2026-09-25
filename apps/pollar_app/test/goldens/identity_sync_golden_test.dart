@@ -225,24 +225,31 @@ class _ConfiguredAuth implements AuthGateway {
   @override
   bool get isConfigured => true;
   @override
+  bool get isSecondFactorVerified => true;
+  @override
+  bool get hasRecentEmailCode => true;
+  @override
   AuthSession? get currentSession =>
       const AuthSession(userId: 'user', email: 'luan@pollar.app');
   @override
   Stream<AuthSession?> sessionChanges() => Stream.value(currentSession);
   @override
-  Future<void> sendMagicLink(String email) async {}
+  Future<void> sendEmailCode(String email) async {}
   @override
-  Future<void> signIn({
+  Future<void> verifyEmailCode({
     required String email,
-    required String password,
+    required String code,
+  }) async {}
+  @override
+  Future<AuthenticatorEnrollment> prepareAuthenticator() async =>
+      const AuthenticatorEnrollment(factorId: 'factor');
+  @override
+  Future<void> verifyAuthenticator({
+    required String factorId,
+    required String code,
   }) async {}
   @override
   Future<void> signOut() async {}
-  @override
-  Future<SignUpResult> signUp({
-    required String email,
-    required String password,
-  }) async => const SignUpResult(needsEmailConfirmation: false);
 }
 
 class _TestSyncSession implements SyncSessionAccess {

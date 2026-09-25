@@ -434,6 +434,12 @@ aquisição: propósito e garantias locais precedem o formulário. Em largura am
 contexto e formulário dividem duas colunas; no compacto, contexto, garantias e
 formulário formam uma única sequência rolável.
 
+O formulário de entrada usa código de e-mail, sem campo de senha. O segundo
+passo mostra o código TOTP como ação principal e, somente em dispositivo já
+confirmado, a alternativa nativa de biometria/PIN (Windows Hello no desktop).
+Quando o servidor está indisponível, a alternativa local preserva o acesso ao
+livro-caixa sem afirmar que houve nova verificação remota.
+
 A superfície de sincronização é um console do livro-caixa. Status, contagem exata
 da fila e ação principal ocupam a primeira faixa; identidade e conflitos vêm
 depois. Conflitos sempre mostram que as duas versões foram preservadas e exigem

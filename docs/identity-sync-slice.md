@@ -33,11 +33,22 @@ local e funcional.
 
 ## Identidade e segurança
 
-E-mail/senha e magic link usam Supabase Auth. A sessão é persistida por
-`flutter_secure_storage`, não por preferências comuns. Todas as tabelas remotas
-têm RLS habilitada e apenas política de leitura das próprias linhas; mutações
-passam pelas RPCs autenticadas, que validam `auth.uid()` e posse de dispositivo,
-operação e entidade. `service_role` nunca pertence ao cliente.
+O acesso usa código de e-mail (OTP) e, em seguida, código TOTP de um app
+autenticador. Não há senha do Pollar para armazenar ou aplicar hash. A sessão é
+persistida por `flutter_secure_storage`, não por preferências comuns; o último
+e-mail informado também fica no armazenamento seguro. O código de e-mail
+precisa ser renovado após 10 dias. Em cada nova abertura do aplicativo, o
+autenticador é a ação principal. Em dispositivo que já concluiu TOTP e ainda
+tem sessão válida, biometria/PIN do sistema pode desbloquear os dados locais
+sem internet; no Windows, isso usa Windows Hello. O Pollar não recebe o PIN
+nem os dados biométricos.
+
+Todas as tabelas remotas têm RLS com posse da linha, `aal2` e código de e-mail
+recente. As RPCs `SECURITY DEFINER` verificam as mesmas condições antes de
+enviar ou buscar dados. IDs de contas e lançamentos são únicos por usuário,
+não globalmente. `service_role` nunca pertence ao cliente. O desbloqueio local
+não equivale a uma nova verificação TOTP no servidor; para sincronizar, a sessão
+`aal2` anterior e a regra dos 10 dias continuam obrigatórias.
 
 Na primeira sincronização, o ledger local é vinculado ao identificador da conta.
 Uma sessão diferente no mesmo perfil do sistema é desviada para uma tela de
@@ -64,4 +75,6 @@ separada e explicitamente autorizada.
 
 Flutter cobre migração local, outbox, retry, pull e conflitos; goldens cobrem
 entrada e sincronização em tamanhos compacto, amplo e texto a 200%. Os testes
-SQL usam pgTAP e dependem de Docker/Supabase local disponível.
+SQL usam pgTAP e dependem de Docker/Supabase local disponível. O fluxo OTP
+foi exercitado contra Auth e Mailpit locais. Implantação remota, SMTP de
+produção e validação em dispositivos reais ainda são etapas separadas.

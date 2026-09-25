@@ -15,6 +15,25 @@ class SupabaseAuthGateway implements AuthGateway {
   domain.AuthSession? get currentSession => _map(_client.auth.currentSession);
 
   @override
+  bool get isSecondFactorVerified =>
+      _client.auth.mfa.getAuthenticatorAssuranceLevel().currentLevel ==
+      AuthenticatorAssuranceLevels.aal2;
+
+  @override
+  bool get hasRecentEmailCode {
+    final methods = _client.auth.mfa
+        .getAuthenticatorAssuranceLevel()
+        .currentAuthenticationMethods;
+    final threshold = DateTime.now().subtract(const Duration(days: 10));
+    return methods.any(
+      (entry) =>
+          (entry.method == AMRMethod.otp ||
+              entry.method == AMRMethod.magiclink) &&
+          entry.timestamp.isAfter(threshold),
+    );
+  }
+
+  @override
   Stream<domain.AuthSession?> sessionChanges() async* {
     yield currentSession;
     await for (final event in _client.auth.onAuthStateChange) {
@@ -23,34 +42,7 @@ class SupabaseAuthGateway implements AuthGateway {
   }
 
   @override
-  Future<void> signIn({required String email, required String password}) async {
-    try {
-      await _client.auth.signInWithPassword(email: email, password: password);
-    } on AuthException catch (error) {
-      throw _failure(error);
-    }
-  }
-
-  @override
-  Future<domain.SignUpResult> signUp({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      final response = await _client.auth.signUp(
-        email: email,
-        password: password,
-      );
-      return domain.SignUpResult(
-        needsEmailConfirmation: response.session == null,
-      );
-    } on AuthException catch (error) {
-      throw _failure(error);
-    }
-  }
-
-  @override
-  Future<void> sendMagicLink(String email) async {
+  Future<void> sendEmailCode(String email) async {
     try {
       await _client.auth.signInWithOtp(email: email);
     } on AuthException catch (error) {
@@ -59,7 +51,58 @@ class SupabaseAuthGateway implements AuthGateway {
   }
 
   @override
-  Future<void> signOut() => _client.auth.signOut();
+  Future<void> verifyEmailCode({
+    required String email,
+    required String code,
+  }) async {
+    try {
+      await _client.auth.verifyOTP(
+        email: email,
+        token: code,
+        type: OtpType.email,
+      );
+    } on AuthException catch (error) {
+      throw _failure(error);
+    }
+  }
+
+  @override
+  Future<AuthenticatorEnrollment> prepareAuthenticator() async {
+    try {
+      final factors = await _client.auth.mfa.listFactors();
+      if (factors.totp.isNotEmpty) {
+        return AuthenticatorEnrollment(factorId: factors.totp.first.id);
+      }
+      final enrolled = await _client.auth.mfa.enroll(
+        factorType: FactorType.totp,
+        issuer: 'Pollar',
+        friendlyName: 'Pollar',
+      );
+      return AuthenticatorEnrollment(
+        factorId: enrolled.id,
+        secret: enrolled.totp?.secret,
+      );
+    } on AuthException catch (error) {
+      throw _failure(error);
+    }
+  }
+
+  @override
+  Future<void> verifyAuthenticator({
+    required String factorId,
+    required String code,
+  }) async {
+    try {
+      await _client.auth.mfa.challengeAndVerify(factorId: factorId, code: code);
+    } on AuthException catch (_) {
+      throw const AuthFailure(
+        'Código não conferiu. Confira o relógio do celular e tente novamente.',
+      );
+    }
+  }
+
+  @override
+  Future<void> signOut() => _client.auth.signOut(scope: SignOutScope.local);
 
   domain.AuthSession? _map(Session? session) {
     final user = session?.user;
@@ -69,26 +112,9 @@ class SupabaseAuthGateway implements AuthGateway {
 
   AuthFailure _failure(AuthException error) {
     final normalized = error.message.toLowerCase();
-    if (normalized.contains('invalid login') ||
-        normalized.contains('invalid credentials')) {
+    if (normalized.contains('invalid') || normalized.contains('expired')) {
       return const AuthFailure(
-        'E-mail ou senha não conferem. Revise os dados e tente novamente.',
-      );
-    }
-    if (normalized.contains('email not confirmed')) {
-      return const AuthFailure(
-        'Confirme o e-mail antes de entrar. Verifique sua caixa de entrada.',
-      );
-    }
-    if (normalized.contains('already registered') ||
-        normalized.contains('already exists')) {
-      return const AuthFailure(
-        'Este e-mail já possui uma conta. Entre com a senha cadastrada.',
-      );
-    }
-    if (normalized.contains('password')) {
-      return const AuthFailure(
-        'A senha não atende aos requisitos do servidor. Use pelo menos 8 caracteres.',
+        'Código inválido ou expirado. Solicite outro e tente novamente.',
       );
     }
     return const AuthFailure(
