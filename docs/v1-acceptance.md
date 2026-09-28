@@ -19,8 +19,11 @@ sincronização; faça um backup antes de qualquer teste de restauração.
 - O usuário criou uma despesa de teste de R$ 0,01 na conta `Teste sync V1` e
   confirmou “Dados em dia”, 0 pendentes após sincronizar. Depois cancelou a
   despesa, confirmou que ela permaneceu no histórico como cancelada e obteve
-  novamente “Dados em dia”, 0 pendentes. Ainda não houve leitura independente
-  das linhas remotas.
+  novamente “Dados em dia”, 0 pendentes.
+- Em consulta `SELECT` no SQL Editor do projeto hospedado, o usuário obteve uma
+  linha para `Teste sync V1`: saldo inicial de 0 centavos, conta ativa, despesa
+  `oi` de 1 centavo com estado `cancelado`, versão 2 e linha preservada no
+  histórico. Isso confirma o estado remoto independentemente do SQLite local.
 - Após recompilar e reabrir o app com o Supabase remoto, o usuário confirmou
   que a conta e a despesa cancelada continuam visíveis no mesmo perfil Windows.
   Isso confirma persistência local, não restauração remota em dispositivo novo.
@@ -31,16 +34,16 @@ sincronização; faça um backup antes de qualquer teste de restauração.
 - As quatro migrações do projeto remoto estão aplicadas; o teste pgTAP usa as
   mesmas funções e políticas, mas não substitui a checagem hospedada.
 
-## Ainda não confirmado no ambiente hospedado
+## Ainda não confirmado
 
-1. Ler as linhas da conta e da despesa cancelada no ambiente hospedado com
-   credenciais próprias ou restaurá-las em outro dispositivo; a UI já confirmou
-   envio e 0 pendentes, mas ainda não houve verificação independente do estado
-   remoto.
+1. Restaurar a conta e a despesa em outro dispositivo/perfil limpo. A leitura
+   direta no SQL Editor confirma armazenamento remoto, mas não prova o fluxo de
+   restauração do app.
 2. Usar uma segunda conta de e-mail em outro perfil/dispositivo para verificar
    que as RPCs remotas não mostram dados da primeira. Não entrar com outra
    identidade no mesmo perfil local: o Pollar bloqueia essa troca para proteger
-   o ledger existente.
+   o ledger existente. O SQL Editor usa privilégios administrativos e não testa
+   as políticas RLS do usuário; os testes pgTAP cobrem esse isolamento localmente.
 
 Antes de distribuição ampla, validar Android/iOS em dispositivos reais e
 configurar SMTP próprio para a entrega de e-mail em produção. Open Finance fica
