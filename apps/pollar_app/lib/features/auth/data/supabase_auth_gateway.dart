@@ -24,12 +24,20 @@ class SupabaseAuthGateway implements AuthGateway {
     final methods = _client.auth.mfa
         .getAuthenticatorAssuranceLevel()
         .currentAuthenticationMethods;
-    final threshold = DateTime.now().subtract(const Duration(days: 10));
+    return hasRecentEmailMethod(methods, now: DateTime.now());
+  }
+
+  static bool hasRecentEmailMethod(
+    Iterable<AMREntry> methods, {
+    required DateTime now,
+  }) {
+    final threshold = now.subtract(const Duration(days: 10));
     return methods.any(
       (entry) =>
           (entry.method == AMRMethod.otp ||
-              entry.method == AMRMethod.magiclink) &&
-          entry.timestamp.isAfter(threshold),
+              entry.method == AMRMethod.magiclink ||
+              entry.method == AMRMethod.emailSignUp) &&
+          !entry.timestamp.isBefore(threshold),
     );
   }
 

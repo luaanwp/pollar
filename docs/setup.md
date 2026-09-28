@@ -82,9 +82,12 @@ previously verified device may alternatively unlock with OS biometrics/PIN
 (Windows Hello on Windows), including offline. A new device must enroll TOTP
 online. Native OS unlock was not yet exercised on physical devices.
 
-The authorized remote project is `gcalogvthpoofyrveikz`. Its three migrations
-(`20260924000100`, `20260925000100`, `20260925000200`) were applied and checked
-on 2026-09-25. The public URL and publishable key are in
+The authorized remote project is `gcalogvthpoofyrveikz`. Its four migrations
+(`20260924000100`, `20260925000100`, `20260925000200`,
+`20260928000100`) were applied and checked through 2026-09-28. The last one
+recognizes a confirmed first-time signup (`email/signup`) as recent email
+verification while retaining the AAL2 requirement. The public URL and
+publishable key are in
 `apps/pollar_app/config/supabase.remote.json`; this file contains no admin or
 database credential. From `apps/pollar_app`, run the remote-backed app with:
 

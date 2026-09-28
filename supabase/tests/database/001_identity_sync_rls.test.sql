@@ -1,7 +1,7 @@
 create extension if not exists pgtap with schema extensions;
 
 begin;
-select plan(22);
+select plan(25);
 
 select has_table('public', 'accounts', 'accounts table exists');
 select has_table('public', 'sync_mutations', 'idempotency ledger exists');
@@ -188,6 +188,26 @@ select throws_ok(
   '42501', 'recent email code required',
   'expired email verification cannot pull changes'
 );
+
+do $claims$ begin
+  perform set_config('request.jwt.claims', jsonb_build_object(
+    'sub', '20000000-0000-0000-0000-000000000002', 'aal', 'aal2',
+    'amr', jsonb_build_array(jsonb_build_object('method', 'email/signup', 'timestamp', extract(epoch from now())::bigint))
+  )::text, true);
+end $claims$;
+select is(public.has_recent_email_code(), true,
+  'confirmed first-time email signup counts as recent verification');
+select is((select count(*) from public.accounts), 1::bigint,
+  'confirmed first-time signup can read its own data after MFA');
+
+do $claims$ begin
+  perform set_config('request.jwt.claims', jsonb_build_object(
+    'sub', '20000000-0000-0000-0000-000000000002', 'aal', 'aal1',
+    'amr', jsonb_build_array(jsonb_build_object('method', 'email/signup', 'timestamp', extract(epoch from now())::bigint))
+  )::text, true);
+end $claims$;
+select is(public.has_recent_email_code(), false,
+  'signup code alone does not bypass the MFA requirement');
 
 select * from finish();
 rollback;
