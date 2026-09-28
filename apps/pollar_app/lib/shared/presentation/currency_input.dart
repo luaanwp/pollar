@@ -18,6 +18,7 @@ class CurrencyInput extends StatefulWidget {
     this.initialValue,
     this.installments = 1,
     this.allowNegative = false,
+    this.emptyMeansZero = false,
     this.enabled = true,
     this.readOnly = false,
     this.validator,
@@ -29,6 +30,7 @@ class CurrencyInput extends StatefulWidget {
   final ValueChanged<Money?> onChanged;
   final int installments;
   final bool allowNegative;
+  final bool emptyMeansZero;
   final bool enabled;
   final bool readOnly;
   final FormFieldValidator<Money>? validator;
@@ -98,7 +100,9 @@ class _CurrencyInputState extends State<CurrencyInput> {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: InputDecoration(
             labelText: '${widget.label} (${widget.currency.code})',
-            helperText: 'Use vírgula para os centavos, como 100,50.',
+            helperText: widget.emptyMeansZero
+                ? 'Se ficar vazio, será R\$ 0,00. Use vírgula para centavos.'
+                : 'Use vírgula para os centavos, como 100,50.',
           ),
           onChanged: (text) {
             final parsed = _parse(text);
@@ -106,7 +110,9 @@ class _CurrencyInputState extends State<CurrencyInput> {
             widget.onChanged(parsed);
           },
           validator: (text) {
-            if (text == null || text.trim().isEmpty) return 'Informe o valor.';
+            if (text == null || text.trim().isEmpty) {
+              return widget.emptyMeansZero ? null : 'Informe o valor.';
+            }
             final parsed = _parse(text);
             if (parsed == null) {
               return widget.allowNegative

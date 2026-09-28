@@ -63,6 +63,52 @@ void main() {
     expect(find.text('Conta cadastrada.'), findsOneWidget);
   });
 
+  testWidgets('defaults an untouched checking balance to zero', (tester) async {
+    await openAccounts(tester);
+    await tester.tap(find.text('Cadastrar conta ou cartão'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(field('account-name'), 'Teste sync V1');
+    expect(find.widgetWithText(TextFormField, r'R$ 0,00'), findsOneWidget);
+    await tester.tap(find.text('Salvar conta'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Teste sync V1'), findsOneWidget);
+    expect(find.text(r'R$ 0,00'), findsOneWidget);
+    expect(find.text('Conta cadastrada.'), findsOneWidget);
+  });
+
+  testWidgets('treats a cleared checking balance as zero', (tester) async {
+    await openAccounts(tester);
+    await tester.tap(find.text('Cadastrar conta ou cartão'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(field('account-name'), 'Conta vazia');
+    await tester.enterText(field('opening-balance'), '');
+    await tester.tap(find.text('Salvar conta'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Conta vazia'), findsOneWidget);
+    expect(find.text(r'R$ 0,00'), findsOneWidget);
+  });
+
+  testWidgets('does not silently turn malformed balance into zero', (
+    tester,
+  ) async {
+    await openAccounts(tester);
+    await tester.tap(find.text('Cadastrar conta ou cartão'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(field('account-name'), 'Conta inválida');
+    await tester.enterText(field('opening-balance'), 'abc');
+    await tester.tap(find.text('Salvar conta'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Informe um valor válido, como −100,50.'), findsOneWidget);
+    expect(find.text('Conta inválida'), findsOneWidget);
+    expect(find.text('Conta cadastrada.'), findsNothing);
+  });
+
   testWidgets('card fields create a liability account with billing terms', (
     tester,
   ) async {

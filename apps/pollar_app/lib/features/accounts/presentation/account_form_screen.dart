@@ -146,7 +146,11 @@ class _AccountFormScreenState extends ConsumerState<AccountFormScreen> {
                         key: ValueKey(_isCard),
                         label: _isCard ? 'Dívida atual' : 'Saldo inicial',
                         currency: Currency.brl,
+                        initialValue: _isCard
+                            ? null
+                            : const Money.zero(Currency.brl),
                         allowNegative: !_isCard,
+                        emptyMeansZero: !_isCard,
                         onChanged: (value) => _openingBalance = value,
                         validator: _isCard
                             ? (value) => value != null && value.isNegative
@@ -206,8 +210,8 @@ class _AccountFormScreenState extends ConsumerState<AccountFormScreen> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
-    final opening = _openingBalance;
-    if (opening == null || (_isCard && _creditLimit == null)) return;
+    final opening = _openingBalance ?? const Money.zero(Currency.brl);
+    if (_isCard && _creditLimit == null) return;
 
     setState(() {
       _saving = true;
