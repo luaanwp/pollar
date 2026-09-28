@@ -19,12 +19,7 @@ export PATH="/c/Users/luanl/orca/tools/pollar/supabase:$PATH"
 
 - ✅ Flutter, Dart, web — operational.
 - ✅ `flutter test`, `flutter analyze`, `dart format` — operational.
-- ⚠️ Windows desktop build: Visual Studio Build Tools are present but the **C++
-  (Desktop development with C++) workload and ATL headers are incomplete**
-  (`atlstr.h` is absent). Completing them needs the Visual Studio Installer and
-  administrator rights.
-- ⚠️ Windows plugin build additionally needs **Developer Mode** enabled
-  (symlink support) — `start ms-settings:developers`.
+- ✅ Windows desktop debug build runs with the provisioned toolchain.
 - ⚠️ Android: SDK not installed yet.
 
 Until the native toolchains are complete, work runs through unit/widget tests,
@@ -80,7 +75,8 @@ in Mailpit at `http://127.0.0.1:54324`. The app
 requires a new email OTP after ten days and a TOTP code on a fresh launch; a
 previously verified device may alternatively unlock with OS biometrics/PIN
 (Windows Hello on Windows), including offline. A new device must enroll TOTP
-online. Native OS unlock was not yet exercised on physical devices.
+online. Windows Hello was confirmed by the user on Windows on 2026-09-28;
+Android/iOS native unlock has not yet been exercised on physical devices.
 
 The authorized remote project is `gcalogvthpoofyrveikz`. Its four migrations
 (`20260924000100`, `20260925000100`, `20260925000200`,
@@ -95,6 +91,10 @@ database credential. From `apps/pollar_app`, run the remote-backed app with:
 flutter run --dart-define-from-file=config/supabase.remote.json
 ```
 
+On this Windows checkout, `./run-pollar.ps1 -Remote` from the repository root
+is the equivalent shortcut. Without `-Remote`, the launcher deliberately starts
+in local-only mode. Keep the `flutter run` terminal open while using the app.
+
 The hosted project's Auth settings are **not** deployed by `db push`. In its
 Dashboard, set both Magic Link and Confirm Signup email templates to the content
 of `supabase/templates/access_code.html` (which displays `{{ .Token }}`), and
@@ -104,9 +104,12 @@ values such as `site_url = "http://127.0.0.1:3000"`; do not push that entire
 config to the hosted project. Never send `service_role`, a management token,
 SMTP credentials, or the database password to the client or repository.
 
-Remaining remote acceptance checks: receive an OTP at an authorized email,
-enroll and verify TOTP, sync an account and transaction, reopen and unlock on a
-real device, and verify that a second user cannot read the first user's data.
+The user confirmed hosted email OTP, TOTP enrollment/verification, and Windows
+Hello unlock on Windows on 2026-09-28. Remaining remote acceptance checks:
+sync an account and transaction, reopen and verify the synchronized data, and
+verify that a second user cannot read the first user's data. Android/iOS device
+acceptance and production SMTP remain separate release tasks.
+The current acceptance checklist is in [`v1-acceptance.md`](v1-acceptance.md).
 
 ## Repository layout
 

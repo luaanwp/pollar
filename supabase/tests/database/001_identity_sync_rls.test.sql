@@ -1,7 +1,7 @@
 create extension if not exists pgtap with schema extensions;
 
 begin;
-select plan(25);
+select plan(31);
 
 select has_table('public', 'accounts', 'accounts table exists');
 select has_table('public', 'sync_mutations', 'idempotency ledger exists');
@@ -103,6 +103,8 @@ select is(
   1::bigint,
   'transaction can reference a seeded non-UUID account'
 );
+select is((select count(*) from public.transactions), 1::bigint,
+  'the owner can read the synchronized transaction');
 
 select is(
   (public.pull_sync_changes(0, 1)->>'cursor')::bigint,
@@ -153,6 +155,37 @@ select is(
   jsonb_array_length(public.pull_sync_changes(0, 500)->'changes'),
   1,
   'pull sees only this user change despite matching entity ID'
+);
+select is((select count(*) from public.transactions), 0::bigint,
+  'RLS hides another user transaction');
+select is(
+  (
+    select remote_version from public.apply_sync_mutations(
+      '20000000-0000-0000-0000-000000000010',
+      jsonb_build_array(jsonb_build_object(
+        'operation_id', '20000000-0000-0000-0000-000000000021',
+        'entity_type', 'transaction',
+        'entity_id', 'tx-local-1',
+        'operation', 'upsert',
+        'base_version', 0,
+        'payload', jsonb_build_object(
+          'id', 'tx-local-1', 'account_id', 'checking-main',
+          'description', 'Outra despesa', 'amount_minor', 200
+        )
+      ))
+    )
+  ),
+  1::bigint,
+  'different users can sync the same local transaction ID'
+);
+select is((select count(*) from public.transactions), 1::bigint,
+  'each user sees only their own transaction with a shared local ID');
+select is((select count(*) from public.transactions where payload->>'description' = 'Despesa teste'), 0::bigint,
+  'RLS hides the other user transaction payload');
+select is(
+  jsonb_array_length(public.pull_sync_changes(0, 500)->'changes'),
+  2,
+  'pull returns only this user account and transaction changes'
 );
 
 do $claims$ begin
