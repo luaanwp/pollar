@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/accounts/presentation/account_form_screen.dart';
 import '../../features/accounts/presentation/accounts_screen.dart';
+import '../../features/auth/domain/auth_session.dart';
 import '../../features/auth/presentation/auth_controller.dart';
 import '../../features/auth/presentation/authenticator_screen.dart';
 import '../../features/auth/presentation/sign_in_screen.dart';
@@ -27,14 +30,16 @@ import 'app_shell.dart';
 /// navigator per top-level destination so each tab preserves its own state.
 ///
 final routerProvider = Provider<GoRouter>((ref) {
-  final auth = ref.watch(authGatewayProvider);
-  final unlocked = ref.watch(authenticatorUnlockedProvider);
-  final session =
-      ref.watch(authSessionProvider).asData?.value ?? auth.currentSession;
-  return GoRouter(
+  final auth = ref.read(authGatewayProvider);
+  final refresh = _AuthRouterRefresh(auth.sessionChanges());
+  ref.listen(authenticatorUnlockedProvider, (_, _) => refresh.refresh());
+  final router = GoRouter(
     initialLocation: '/overview',
+    refreshListenable: refresh,
     redirect: (context, state) async {
       if (!auth.isConfigured) return null;
+      final session = auth.currentSession;
+      final unlocked = ref.read(authenticatorUnlockedProvider);
       final onSignIn = state.matchedLocation == '/sign-in';
       final onAuthenticator = state.matchedLocation == '/authenticator';
       final onMismatch = state.matchedLocation == '/account-mismatch';
@@ -173,4 +178,28 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
+  ref.onDispose(() {
+    router.dispose();
+    refresh.dispose();
+  });
+  return router;
 });
+
+class _AuthRouterRefresh extends ChangeNotifier {
+  _AuthRouterRefresh(Stream<AuthSession?> changes) {
+    _subscription = changes.listen(
+      (_) => refresh(),
+      onError: (Object _, StackTrace _) => refresh(),
+    );
+  }
+
+  late final StreamSubscription<AuthSession?> _subscription;
+
+  void refresh() => notifyListeners();
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
