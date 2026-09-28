@@ -21,6 +21,9 @@ sincronização; faça um backup antes de qualquer teste de restauração.
   despesa, confirmou que ela permaneceu no histórico como cancelada e obteve
   novamente “Dados em dia”, 0 pendentes. Ainda não houve leitura independente
   das linhas remotas.
+- Após recompilar e reabrir o app com o Supabase remoto, o usuário confirmou
+  que a conta e a despesa cancelada continuam visíveis no mesmo perfil Windows.
+  Isso confirma persistência local, não restauração remota em dispositivo novo.
 - `flutter analyze` passou e os 264 testes Flutter passaram após a correção do
   saldo inicial vazio para R$ 0,00.
 - Os 31 testes pgTAP locais passaram, inclusive isolamento de contas e
@@ -30,14 +33,11 @@ sincronização; faça um backup antes de qualquer teste de restauração.
 
 ## Ainda não confirmado no ambiente hospedado
 
-1. Ler a linha da conta no ambiente hospedado com credenciais próprias ou
-   restaurá-la em outro dispositivo; a UI já confirmou envio e 0 pendentes,
-   mas ainda não houve verificação independente do estado remoto.
-2. Após sincronizar o lançamento cancelado, fechar e reabrir o Pollar no mesmo perfil
-   Windows, desbloquear com TOTP ou Windows Hello e confirmar o lançamento.
-   A conta já sobreviveu a esse teste. Isso testa persistência da sessão e do
-   SQLite, mas **não** prova restauração remota em dispositivo novo.
-3. Usar uma segunda conta de e-mail em outro perfil/dispositivo para verificar
+1. Ler as linhas da conta e da despesa cancelada no ambiente hospedado com
+   credenciais próprias ou restaurá-las em outro dispositivo; a UI já confirmou
+   envio e 0 pendentes, mas ainda não houve verificação independente do estado
+   remoto.
+2. Usar uma segunda conta de e-mail em outro perfil/dispositivo para verificar
    que as RPCs remotas não mostram dados da primeira. Não entrar com outra
    identidade no mesmo perfil local: o Pollar bloqueia essa troca para proteger
    o ledger existente.
