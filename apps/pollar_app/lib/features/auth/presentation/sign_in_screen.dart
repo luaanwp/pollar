@@ -67,9 +67,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       });
       return;
     }
-    if (_codeSent && !RegExp(r'^\d{6}$').hasMatch(_code.text.trim())) {
+    if (_codeSent && !RegExp(r'^\d{6,10}$').hasMatch(_code.text.trim())) {
       setState(() {
-        _message = 'Informe os 6 dígitos enviados por e-mail.';
+        _message = 'Informe o código de 6 a 10 dígitos enviado por e-mail.';
         _messageTone = PollarStatusTone.danger;
       });
       return;
@@ -159,7 +159,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           const SizedBox(height: PollarSpacing.x2),
           Text(
             _codeSent
-                ? 'Digite o código de 6 dígitos enviado para ${_email.text.trim()}.'
+                ? 'Digite o código enviado para ${_email.text.trim()}.'
                 : 'Sem senha. O e-mail confirma o acesso neste dispositivo.',
             style: Theme.of(context).textTheme.bodyMedium
                 ?.copyWith(color: context.pollar.textSecondary),
@@ -196,7 +196,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               autofillHints: const [AutofillHints.oneTimeCode],
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(6),
+                LengthLimitingTextInputFormatter(10),
               ],
               onSubmitted: (_) => _submit(),
               decoration: const InputDecoration(

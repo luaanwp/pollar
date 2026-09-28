@@ -74,7 +74,9 @@ the `service_role` key in a client command or file.
 
 The configured sign-in is passwordless: the local Auth email template sends a
 six-digit OTP, followed by TOTP enrollment/verification in an authenticator
-app. Local messages appear in Mailpit at `http://127.0.0.1:54324`. The app
+app. Hosted projects may use a different email OTP length; the app accepts
+6–10 digits, matching Supabase's supported configuration. Local messages appear
+in Mailpit at `http://127.0.0.1:54324`. The app
 requires a new email OTP after ten days and a TOTP code on a fresh launch; a
 previously verified device may alternatively unlock with OS biometrics/PIN
 (Windows Hello on Windows), including offline. A new device must enroll TOTP
