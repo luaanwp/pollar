@@ -20,11 +20,12 @@ export PATH="/c/Users/luanl/orca/tools/pollar/supabase:$PATH"
 - ✅ Flutter, Dart, web — operational.
 - ✅ `flutter test`, `flutter analyze`, `dart format` — operational.
 - ✅ Windows desktop debug build runs with the provisioned toolchain.
-- ⚠️ Android: SDK not installed yet.
+- ✅ Android SDK installed; a remote-backed release APK for internal testing
+  compiled on 2026-09-30. No physical Android device has been tested yet.
 
-Until the native toolchains are complete, work runs through unit/widget tests,
-static analysis, and (optionally) the web target. No native build is required
-for the domain and data layers.
+Unit/widget tests and static analysis remain the primary automated checks.
+The Android APK is an internal test build signed with the debug key; device
+acceptance is tracked in [`android-v1-acceptance.md`](android-v1-acceptance.md).
 
 ## Common commands
 
@@ -105,10 +106,11 @@ config to the hosted project. Never send `service_role`, a management token,
 SMTP credentials, or the database password to the client or repository.
 
 The user confirmed hosted email OTP, TOTP enrollment/verification, and Windows
-Hello unlock on Windows on 2026-09-28. Remaining remote acceptance checks:
-sync an account and transaction, reopen and verify the synchronized data, and
-verify that a second user cannot read the first user's data. Android/iOS device
-acceptance and production SMTP remain separate release tasks.
+Hello unlock on Windows on 2026-09-28. Account and canceled-transaction sync,
+local persistence after restart, and the hosted SQL state were verified.
+Remaining checks are restoration on another device and isolation with a second
+user session. Android/iOS physical-device acceptance and production SMTP remain
+separate release tasks.
 The current acceptance checklist is in [`v1-acceptance.md`](v1-acceptance.md).
 
 ## Repository layout
