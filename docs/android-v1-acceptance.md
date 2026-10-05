@@ -16,8 +16,10 @@ O pacote exige Android 7.0/API 24 ou mais recente, inclui a permissão
 `INTERNET` e passou na verificação de assinatura APK v2. O `build.gradle.kts`
 ainda usa a chave de **debug** para assinar a variante release: este APK é
 somente para teste interno, não para publicação ou atualização futura na loja.
-Nenhum celular estava conectado via ADB durante o build; a instalação e o fluxo
-de login ainda não foram exercitados em aparelho físico.
+Nenhum celular estava conectado via ADB durante o build. Em 2026-10-05, o
+usuário instalou o APK em um Android e confirmou a sincronização e restauração
+da conta `Teste sync V1` (R$ 0,00) e da despesa de R$ 0,01 como **Cancelada**.
+Ainda não foi confirmado o comportamento após fechar e reabrir o app Android.
 
 Para instalar, copie **esse arquivo** para o celular por USB, abra-o no app
 Arquivos e autorize a instalação desse APK de teste quando o Android solicitar.
@@ -61,6 +63,12 @@ original e bloqueia essa troca.
 Um resultado vazio sem sincronização concluída **não** prova isolamento. O SQL
 Editor do Supabase usa privilégios administrativos e também não substitui este
 teste com duas sessões reais.
+
+O usuário não dispõe de segundo Android nem de perfil separado no aparelho.
+Não trocar a identidade nesta instalação. Como alternativa futura, usar um
+emulador Android com armazenamento novo no computador ou verificar as RPCs
+com uma segunda sessão autenticada em um processo isolado; nenhum desses
+testes hospedados foi realizado ainda.
 
 ## Registro
 

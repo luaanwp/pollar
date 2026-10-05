@@ -27,6 +27,10 @@ sincronização; faça um backup antes de qualquer teste de restauração.
 - Após recompilar e reabrir o app com o Supabase remoto, o usuário confirmou
   que a conta e a despesa cancelada continuam visíveis no mesmo perfil Windows.
   Isso confirma persistência local, não restauração remota em dispositivo novo.
+- Em 2026-10-05, o usuário instalou o APK Android em um celular, sincronizou e
+  confirmou que `Teste sync V1` foi restaurada com saldo R$ 0,00 e que a despesa
+  de R$ 0,01 aparece como **Cancelada**. Isso valida a restauração desses dois
+  registros em um segundo dispositivo, além da leitura direta no SQL Editor.
 - `flutter analyze` passou e os 264 testes Flutter passaram após a correção do
   saldo inicial vazio para R$ 0,00.
 - Os 31 testes pgTAP locais passaram, inclusive isolamento de contas e
@@ -36,15 +40,14 @@ sincronização; faça um backup antes de qualquer teste de restauração.
 
 ## Ainda não confirmado
 
-1. Restaurar a conta e a despesa em outro dispositivo/perfil limpo. A leitura
-   direta no SQL Editor confirma armazenamento remoto, mas não prova o fluxo de
-   restauração do app.
+1. Fechar e reabrir o app Android e confirmar que os registros restaurados
+   continuam visíveis, com a despesa cancelada e sem pendências de sincronização.
 2. Usar uma segunda conta de e-mail em outro perfil/dispositivo para verificar
    que as RPCs remotas não mostram dados da primeira. Não entrar com outra
    identidade no mesmo perfil local: o Pollar bloqueia essa troca para proteger
    o ledger existente. O SQL Editor usa privilégios administrativos e não testa
    as políticas RLS do usuário; os testes pgTAP cobrem esse isolamento localmente.
 
-Antes de distribuição ampla, validar Android/iOS em dispositivos reais e
-configurar SMTP próprio para a entrega de e-mail em produção. Open Finance fica
-fora da V1, conforme `PRODUCT.md`.
+Antes de distribuição ampla, ampliar a validação Android, testar iOS em
+dispositivo real e configurar SMTP próprio para a entrega de e-mail em
+produção. Open Finance fica fora da V1, conforme `PRODUCT.md`.
