@@ -70,6 +70,13 @@ emulador Android com armazenamento novo no computador ou verificar as RPCs
 com uma segunda sessão autenticada em um processo isolado; nenhum desses
 testes hospedados foi realizado ainda.
 
+Em 2026-10-06, o usuário informou que já havia saído da primeira identidade
+no mesmo APK, entrado com outro e-mail sem limpar/reinstalar o app e sincronizado
+com 0 pendentes. A tela de proteção esperada não apareceu; os registros de
+teste da primeira identidade não estavam visíveis. A sequência precisa ser
+investigada antes de considerar o isolamento aprovado. Até lá, não criar
+lançamentos nem repetir trocas de identidade nessa instalação.
+
 ## Registro
 
 Anote modelo/versão do Android, resultado de cada etapa e qualquer erro. Não

@@ -47,6 +47,12 @@ sincronização; faça um backup antes de qualquer teste de restauração.
    identidade no mesmo perfil local: o Pollar bloqueia essa troca para proteger
    o ledger existente. O SQL Editor usa privilégios administrativos e não testa
    as políticas RLS do usuário; os testes pgTAP cobrem esse isolamento localmente.
+   Em 2026-10-06, o usuário relatou que saiu da primeira conta no mesmo APK
+   Android, entrou com outro e-mail sem limpar/reinstalar, sincronizou com
+   0 pendentes e viu telas normais sem os registros `Teste sync V1`/`oi`.
+   A tela de proteção esperada não apareceu. A identidade exibida na tela de
+   sincronização e a origem dos outros dados ainda precisam ser confirmadas;
+   **não considerar o isolamento hospedado aprovado** com esse relato.
 
 Antes de distribuição ampla, ampliar a validação Android, testar iOS em
 dispositivo real e configurar SMTP próprio para a entrega de e-mail em
