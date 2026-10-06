@@ -31,6 +31,9 @@ sincronização; faça um backup antes de qualquer teste de restauração.
   confirmou que `Teste sync V1` foi restaurada com saldo R$ 0,00 e que a despesa
   de R$ 0,01 aparece como **Cancelada**. Isso valida a restauração desses dois
   registros em um segundo dispositivo, além da leitura direta no SQL Editor.
+- Uma consulta `count(DISTINCT id)` em `auth.users` para os dois e-mails usados
+  no teste retornou **2**: são identidades distintas no Supabase. Os endereços
+  não foram registrados neste documento.
 - `flutter analyze` passou e os 264 testes Flutter passaram após a correção do
   saldo inicial vazio para R$ 0,00.
 - Os 31 testes pgTAP locais passaram, inclusive isolamento de contas e
@@ -52,7 +55,9 @@ sincronização; faça um backup antes de qualquer teste de restauração.
    0 pendentes e viu telas normais sem os registros `Teste sync V1`/`oi`.
    A tela de proteção esperada não apareceu. A identidade exibida no cartão
    **Conta** durante a segunda sessão não foi conferida; **não considerar o
-   isolamento hospedado aprovado** com esse relato.
+   isolamento hospedado aprovado** com esse relato. A consulta posterior ao
+   Supabase confirmou dois `userId` distintos, portanto e-mails que apontam
+   para o mesmo usuário não explicam o comportamento observado.
    O usuário voltou depois à primeira identidade e informou que os registros
    de teste só reapareceram após nova sincronização, não antes. Isso também
    exige investigar a persistência/vinculação local entre sessões.

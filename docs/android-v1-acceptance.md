@@ -80,6 +80,9 @@ Ao voltar à primeira identidade, os registros de teste só reapareceram após
 nova sincronização. O e-mail mostrado no cartão **Conta** durante a segunda
 sessão não foi conferido; a observação posterior mostrou a primeira identidade
 porque o usuário já havia voltado a ela.
+Uma consulta somente leitura ao Supabase para os dois e-mails retornou
+`usuarios_distintos = 2`. A hipótese de uma única identidade com dois e-mails
+foi descartada; falta reproduzir e corrigir a troca sem proteção no Android.
 
 ## Registro
 
