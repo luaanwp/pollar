@@ -76,6 +76,10 @@ com 0 pendentes. A tela de proteção esperada não apareceu; os registros de
 teste da primeira identidade não estavam visíveis. A sequência precisa ser
 investigada antes de considerar o isolamento aprovado. Até lá, não criar
 lançamentos nem repetir trocas de identidade nessa instalação.
+Ao voltar à primeira identidade, os registros de teste só reapareceram após
+nova sincronização. O e-mail mostrado no cartão **Conta** durante a segunda
+sessão não foi conferido; a observação posterior mostrou a primeira identidade
+porque o usuário já havia voltado a ela.
 
 ## Registro
 

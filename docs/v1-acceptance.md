@@ -50,9 +50,12 @@ sincronização; faça um backup antes de qualquer teste de restauração.
    Em 2026-10-06, o usuário relatou que saiu da primeira conta no mesmo APK
    Android, entrou com outro e-mail sem limpar/reinstalar, sincronizou com
    0 pendentes e viu telas normais sem os registros `Teste sync V1`/`oi`.
-   A tela de proteção esperada não apareceu. A identidade exibida na tela de
-   sincronização e a origem dos outros dados ainda precisam ser confirmadas;
-   **não considerar o isolamento hospedado aprovado** com esse relato.
+   A tela de proteção esperada não apareceu. A identidade exibida no cartão
+   **Conta** durante a segunda sessão não foi conferida; **não considerar o
+   isolamento hospedado aprovado** com esse relato.
+   O usuário voltou depois à primeira identidade e informou que os registros
+   de teste só reapareceram após nova sincronização, não antes. Isso também
+   exige investigar a persistência/vinculação local entre sessões.
 
 Antes de distribuição ampla, ampliar a validação Android, testar iOS em
 dispositivo real e configurar SMTP próprio para a entrega de e-mail em
