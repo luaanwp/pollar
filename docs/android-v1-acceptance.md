@@ -5,12 +5,11 @@ a chave publicável no cliente; nunca inclua chave administrativa no APK.
 Execute os passos abaixo com dados de teste e internet disponível. Não limpe os
 dados do Pollar no Windows nem no celular para repetir o teste.
 
-O APK de teste `1.0.0+2` foi compilado em 2026-10-06 e verificado em
-2026-10-13 em
+O APK de teste `1.0.0+3` foi compilado e verificado em 2026-10-13 em
 `apps/pollar_app/build/app/outputs/flutter-apk/app-release.apk` (66,8 MB):
 
 ```text
-SHA-256: 884AF2D81F1D1B4B4E577A74EF5C083566F6B453030C6154B3370D38FD263F4A
+SHA-256: 372E20DCBE06271C0D03C2DC04AB355F695D35B7004C0FE9439C5852806FC8AC
 ```
 
 O pacote exige Android 7.0/API 24 ou mais recente, inclui a permissão
@@ -107,6 +106,22 @@ Este procedimento testa a proteção da instalação existente. O teste de RLS
 hospedada da seção 2 ainda exige uma instalação/perfil separado.
 
 ## Registro do teste atualizado
+
+### Confirmação de e-mail — 2026-10-13
+
+O usuário confirmou a conta `Teste sync V1` com R$ 0,00 e a despesa cancelada,
+mas relatou que a confirmação do código de e-mail não avançava; um segundo
+clique retornava código expirado. O APK `1.0.0+3` faz a transição explícita para
+o autenticador após sucesso, sem esperar a gravação opcional do e-mail. Um
+código aceito não é verificado novamente. A resposta de confirmação precisa
+conter uma sessão; TOTP, validade do e-mail e vínculo local continuam sendo
+exigidos pelo roteador.
+
+O fluxo foi testado com o roteador real, evento de sessão ausente e gravação
+segura atrasada. A validação dessa correção no aparelho permanece pendente:
+instalar como atualização, solicitar **um código novo** e confirmar uma vez.
+A próxima tela deve ser a do autenticador, não o livro-caixa. Não reutilizar
+os códigos das tentativas anteriores.
 
 Anote modelo/versão do Android, resultado de cada etapa e qualquer erro. Não
 envie códigos de e-mail, TOTP, chaves de API nem capturas que os mostrem.

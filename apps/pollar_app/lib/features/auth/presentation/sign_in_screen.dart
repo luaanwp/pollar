@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../app/theme/pollar_theme.dart';
@@ -25,6 +28,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _email = TextEditingController();
   final _code = TextEditingController();
   var _codeSent = false;
+  var _emailConfirmed = false;
   var _loading = false;
   String? _message;
   PollarStatusTone _messageTone = PollarStatusTone.info;
@@ -57,6 +61,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   Future<void> _submit() async {
     if (_loading) return;
+    if (_emailConfirmed) {
+      GoRouter.maybeOf(context)?.go('/authenticator');
+      return;
+    }
     final email = _email.text.trim();
     if (email.isEmpty ||
         !email.contains('@') ||
@@ -82,11 +90,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       final auth = ref.read(authControllerProvider);
       if (_codeSent) {
         await auth.verifyEmailCode(email: email, code: _code.text);
-        try {
-          await _storage.write(key: _emailStorageKey, value: email);
-        } catch (_) {
-          // Remembering the address is convenience, not an auth requirement.
-        }
+        // The OTP is single-use. Never verify it again after acceptance, even
+        // if the session event or the OS credential store is delayed.
+        unawaited(_rememberEmail(email));
+        if (!mounted) return;
+        setState(() {
+          _emailConfirmed = true;
+          _message = 'E-mail confirmado. Continue no autenticador.';
+          _messageTone = PollarStatusTone.success;
+        });
+        GoRouter.maybeOf(context)?.go('/authenticator');
       } else {
         await auth.sendEmailCode(email);
         if (mounted) {
@@ -113,6 +126,14 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       }
     } finally {
       if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _rememberEmail(String email) async {
+    try {
+      await _storage.write(key: _emailStorageKey, value: email);
+    } catch (_) {
+      // Remembering the address is convenience, not an auth requirement.
     }
   }
 
@@ -189,7 +210,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             TextField(
               key: const Key('auth-email-code'),
               controller: _code,
-              enabled: !_loading,
+              enabled: !_loading && !_emailConfirmed,
               autofocus: true,
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.done,
@@ -207,7 +228,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           ],
           const SizedBox(height: PollarSpacing.x5),
           PollarButton(
-            label: _codeSent
+            label: _emailConfirmed
+                ? 'Continuar para o autenticador'
+                : _codeSent
                 ? 'Confirmar código do e-mail'
                 : 'Receber código por e-mail',
             onPressed: _loading ? null : _submit,
@@ -223,6 +246,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   ? null
                   : () => setState(() {
                       _codeSent = false;
+                      _emailConfirmed = false;
                       _code.clear();
                       _message = null;
                     }),

@@ -61,6 +61,17 @@ a validação no aparelho com o APK `1.0.0+2` permanece pendente.
 
 ### Validações no aparelho/projeto hospedado
 
+Em 2026-10-13, o usuário confirmou os valores da conta de teste e da despesa
+cancelada. A confirmação de e-mail, porém, não avançava e a repetição retornava
+código expirado. O APK `1.0.0+3` passa a navegar explicitamente para o
+autenticador após sucesso e não reenvia um OTP já aceito; o teste automatizado
+cobre evento de sessão ausente e armazenamento seguro atrasado. Confirmar
+essa etapa no Android antes de prosseguir com a troca protegida de conta.
+
+Após essa correção, `flutter analyze` passou sem problemas e os 274 testes
+Flutter passaram, incluindo navegação real sem evento de sessão, armazenamento
+seguro atrasado, repetição de clique após sucesso e resposta sem sessão.
+
 1. Fechar e reabrir o app Android e confirmar que os registros restaurados
    continuam visíveis, com a despesa cancelada e sem pendências de sincronização.
 2. Usar uma segunda conta de e-mail em outro perfil/dispositivo para verificar

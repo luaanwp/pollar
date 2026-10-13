@@ -64,11 +64,16 @@ class SupabaseAuthGateway implements AuthGateway {
     required String code,
   }) async {
     try {
-      await _client.auth.verifyOTP(
+      final response = await _client.auth.verifyOTP(
         email: email,
         token: code,
         type: OtpType.email,
       );
+      if (response.session == null) {
+        throw const AuthFailure(
+          'A confirmação não criou uma sessão. Solicite um novo código para entrar.',
+        );
+      }
     } on AuthException catch (error) {
       throw _failure(error);
     }
