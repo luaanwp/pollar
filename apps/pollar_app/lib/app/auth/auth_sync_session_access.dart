@@ -19,5 +19,9 @@ class AuthSyncSessionAccess implements SyncSessionAccess {
   String? get email => _auth.currentSession?.email;
 
   @override
+  Stream<String?> identityChanges() =>
+      _auth.sessionChanges().map((session) => session?.userId);
+
+  @override
   Future<void> signOut() => _auth.signOut();
 }

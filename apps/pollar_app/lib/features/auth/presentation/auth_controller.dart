@@ -26,7 +26,21 @@ final authenticatorUnlockedProvider =
 
 class AuthenticatorUnlocked extends Notifier<bool> {
   @override
-  bool build() => false;
+  bool build() {
+    final auth = ref.watch(authGatewayProvider);
+    var userId = auth.currentSession?.userId;
+    final subscription = auth.sessionChanges().listen((session) {
+      final nextUserId = session?.userId;
+      if (nextUserId != userId) {
+        userId = nextUserId;
+        state = false;
+      }
+    }, onError: (Object _, StackTrace _) => state = false);
+    ref.onDispose(() {
+      subscription.cancel();
+    });
+    return false;
+  }
 
   void unlock() => state = true;
 

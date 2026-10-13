@@ -9,6 +9,10 @@ abstract interface class SyncSessionAccess {
 
   String? get email;
 
+  /// Emits identity changes, including null on logout. Token refreshes may
+  /// emit the same identity and must not invalidate an ongoing run.
+  Stream<String?> identityChanges();
+
   Future<void> signOut();
 }
 

@@ -43,6 +43,24 @@ sincronização; faça um backup antes de qualquer teste de restauração.
 
 ## Ainda não confirmado
 
+### Correção de proteção entre sessões — 2026-10-06
+
+Foram reproduzidas em testes duas lacunas: o desbloqueio local permanecia
+ativo após logout/troca de usuário, e uma sincronização em andamento podia
+terminar usando uma sessão diferente da inicial. A correção invalida o
+desbloqueio na mudança de identidade, interrompe o ciclo de sincronização e
+descarta respostas recebidas após a mudança. Uma segunda identidade não pode
+compartilhar a operação da primeira. O roteador também revalida a sessão
+depois de aguardar o vínculo SQLite.
+
+Os 270 testes Flutter passaram e `flutter analyze` não encontrou problemas.
+O teste com SQLite em arquivo confirmou que dados e vínculo sobrevivem à
+reabertura e que outra identidade é rejeitada. Esses resultados **não
+reproduzem nem explicam integralmente** o comportamento relatado no Android;
+a validação no aparelho com o APK `1.0.0+2` permanece pendente.
+
+### Validações no aparelho/projeto hospedado
+
 1. Fechar e reabrir o app Android e confirmar que os registros restaurados
    continuam visíveis, com a despesa cancelada e sem pendências de sincronização.
 2. Usar uma segunda conta de e-mail em outro perfil/dispositivo para verificar

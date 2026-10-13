@@ -18,6 +18,98 @@ void main() {
   });
   tearDown(() => database.close());
 
+  test(
+    'identity change during pull discards response and completion',
+    () async {
+      final session = _MutableSession();
+      addTearDown(session.changes.close);
+      final remote = _BlockingRemote(
+        result: PullResult(
+          cursor: 1,
+          changes: [
+            RemoteChange(
+              cursor: 1,
+              entityType: 'account',
+              entityId: 'remote-account',
+              version: 1,
+              deleted: true,
+              payload: const {},
+            ),
+          ],
+        ),
+      );
+      final service = SyncService(session, store, remote);
+      final run = service.synchronize(now: DateTime.utc(2026, 10, 6));
+      await remote.started.future;
+      session.currentUserId = 'user-two';
+      final assertion = expectLater(
+        run,
+        throwsA(isA<SyncUnavailableException>()),
+      );
+      remote.release.complete();
+      await assertion;
+      expect(
+        (await store.overview(remoteConfigured: true)).lastSyncedAt,
+        isNull,
+      );
+      expect(await store.bindIdentity('user-two'), isFalse);
+      expect(await store.cursor(), 0);
+      expect(
+        await database.select(database.syncMetadataEntries).get(),
+        isEmpty,
+      );
+    },
+  );
+
+  test('another identity cannot join the previous synchronization', () async {
+    final session = _MutableSession();
+    addTearDown(session.changes.close);
+    final remote = _BlockingRemote();
+    final service = SyncService(session, store, remote);
+    final run = service.synchronize(now: DateTime.utc(2026, 10, 6));
+    await remote.started.future;
+    session.currentUserId = 'user-two';
+    final assertion = expectLater(
+      run,
+      throwsA(isA<SyncUnavailableException>()),
+    );
+    final joined = expectLater(
+      service.synchronize(now: DateTime.utc(2026, 10, 6)),
+      throwsA(isA<SyncUnavailableException>()),
+    );
+    remote.release.complete();
+    await Future.wait([assertion, joined]);
+  });
+
+  test(
+    'leaving and returning to the same identity aborts the old run',
+    () async {
+      final session = _MutableSession();
+      addTearDown(session.changes.close);
+      final remote = _BlockingRemote();
+      final service = SyncService(session, store, remote);
+      final run = service.synchronize(now: DateTime.utc(2026, 10, 6));
+      await remote.started.future;
+      session.currentUserId = null;
+      session.currentUserId = 'user-one';
+      final assertion = expectLater(
+        run,
+        throwsA(isA<SyncUnavailableException>()),
+      );
+      remote.release.complete();
+      await assertion;
+      expect(
+        (await store.overview(remoteConfigured: true)).lastSyncedAt,
+        isNull,
+      );
+      await service.synchronize(now: DateTime.utc(2026, 10, 6));
+      expect(
+        (await store.overview(remoteConfigured: true)).lastSyncedAt,
+        isNotNull,
+      );
+    },
+  );
+
   test('pulls every page before reporting completion', () async {
     final remote = _PagedRemote();
     final now = DateTime.utc(2026, 9, 24);
@@ -82,7 +174,34 @@ class _Session implements SyncSessionAccess {
   @override
   String? get email => 'user@example.test';
   @override
+  Stream<String?> identityChanges() => Stream.value(userId);
+  @override
   Future<void> signOut() async {}
+}
+
+class _MutableSession implements SyncSessionAccess {
+  final changes = StreamController<String?>.broadcast(sync: true);
+  String? _currentUserId = 'user-one';
+  String? get currentUserId => _currentUserId;
+  set currentUserId(String? value) {
+    _currentUserId = value;
+    changes.add(value);
+  }
+
+  @override
+  Stream<String?> identityChanges() => changes.stream;
+  @override
+  bool get isConfigured => true;
+  @override
+  bool get hasSession => currentUserId != null;
+  @override
+  String? get userId => currentUserId;
+  @override
+  String? get email => 'test@example.test';
+  @override
+  Future<void> signOut() async {
+    currentUserId = null;
+  }
 }
 
 class _PagedRemote implements SyncRemoteGateway {
@@ -123,6 +242,9 @@ class _PagedRemote implements SyncRemoteGateway {
 }
 
 class _BlockingRemote implements SyncRemoteGateway {
+  _BlockingRemote({this.result});
+
+  final PullResult? result;
   final started = Completer<void>();
   final release = Completer<void>();
   int pullCalls = 0;
@@ -132,7 +254,7 @@ class _BlockingRemote implements SyncRemoteGateway {
     pullCalls++;
     if (!started.isCompleted) started.complete();
     await release.future;
-    return PullResult(cursor: afterCursor, changes: const []);
+    return result ?? PullResult(cursor: afterCursor, changes: const []);
   }
 
   @override

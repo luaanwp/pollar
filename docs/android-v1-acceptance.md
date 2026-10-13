@@ -5,11 +5,12 @@ a chave publicável no cliente; nunca inclua chave administrativa no APK.
 Execute os passos abaixo com dados de teste e internet disponível. Não limpe os
 dados do Pollar no Windows nem no celular para repetir o teste.
 
-O APK de teste foi compilado em 2026-09-30 em
+O APK de teste `1.0.0+2` foi compilado em 2026-10-06 e verificado em
+2026-10-13 em
 `apps/pollar_app/build/app/outputs/flutter-apk/app-release.apk` (66,8 MB):
 
 ```text
-SHA-256: A2F68A81F1EBA6463A2080E5160F22A34E2B4CDB98594ECA7A2ED02CB8FFA1FA
+SHA-256: 884AF2D81F1D1B4B4E577A74EF5C083566F6B453030C6154B3370D38FD263F4A
 ```
 
 O pacote exige Android 7.0/API 24 ou mais recente, inclui a permissão
@@ -84,7 +85,28 @@ Uma consulta somente leitura ao Supabase para os dois e-mails retornou
 `usuarios_distintos = 2`. A hipótese de uma única identidade com dois e-mails
 foi descartada; falta reproduzir e corrigir a troca sem proteção no Android.
 
-## Registro
+## Atualização de proteção entre sessões — 2026-10-06
+
+O APK `1.0.0+2` inclui o bloqueio do desbloqueio local após logout/troca de
+usuário, a interrupção de sincronizações cuja identidade mudou e a
+revalidação da sessão após o vínculo SQLite. As falhas foram reproduzidas e
+corrigidas em testes automatizados, mas a sequência observada no celular
+ainda não foi reproduzida integralmente. Não considerar o isolamento remoto
+aprovado apenas com esses testes.
+
+Instale como **atualização**, sem desinstalar nem limpar os dados. Antes de
+sincronizar, feche/reabra com a identidade original e confira os registros
+restaurados. Para validar somente a proteção local, use **Sair da conta**,
+entre com a segunda identidade e conclua o TOTP: deve aparecer a tela
+“Estes dados pertencem a outra conta”, sem acesso ao ledger nem sincronização.
+Retorne à identidade original e confira que os dados continuam visíveis antes
+de sincronizar. Se isso não ocorrer, interrompa o teste e registre a etapa;
+não crie novos lançamentos nessa sessão.
+
+Este procedimento testa a proteção da instalação existente. O teste de RLS
+hospedada da seção 2 ainda exige uma instalação/perfil separado.
+
+## Registro do teste atualizado
 
 Anote modelo/versão do Android, resultado de cada etapa e qualquer erro. Não
 envie códigos de e-mail, TOTP, chaves de API nem capturas que os mostrem.

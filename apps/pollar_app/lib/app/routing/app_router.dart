@@ -54,6 +54,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         final matches = await ref
             .read(syncLocalStoreProvider)
             .bindIdentity(session.userId);
+        // An auth event can replace the session while SQLite is opening.
+        // Never complete that older redirect using the new user's session.
+        if (auth.currentSession?.userId != session.userId) {
+          return auth.currentSession == null ? '/sign-in' : '/authenticator';
+        }
+        if (!auth.hasRecentEmailCode) return '/sign-in';
+        if (!auth.isSecondFactorVerified ||
+            !ref.read(authenticatorUnlockedProvider)) {
+          return '/authenticator';
+        }
         if (!matches && !onMismatch) return '/account-mismatch';
         if (matches && (onSignIn || onAuthenticator || onMismatch)) {
           return '/overview';

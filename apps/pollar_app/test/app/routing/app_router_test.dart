@@ -8,6 +8,49 @@ import 'package:pollar_app/features/auth/domain/auth_session.dart';
 import 'package:pollar_app/features/auth/presentation/auth_controller.dart';
 
 void main() {
+  test(
+    'logout clears the device unlock and replacement identity stays locked',
+    () async {
+      final gateway = _AuthGateway()..signIn();
+      final container = ProviderContainer(
+        overrides: [authGatewayProvider.overrideWithValue(gateway)],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await gateway.dispose();
+      });
+      final unlock = container.read(authenticatorUnlockedProvider.notifier);
+      unlock.unlock();
+      gateway.refresh();
+      await Future<void>.delayed(Duration.zero);
+      expect(container.read(authenticatorUnlockedProvider), isTrue);
+      await gateway.signOut();
+      await Future<void>.delayed(Duration.zero);
+      expect(container.read(authenticatorUnlockedProvider), isFalse);
+      gateway.signIn(userId: 'other-user');
+      await Future<void>.delayed(Duration.zero);
+      expect(container.read(authenticatorUnlockedProvider), isFalse);
+    },
+  );
+
+  test(
+    'direct identity replacement clears the previous device unlock',
+    () async {
+      final gateway = _AuthGateway()..signIn();
+      final container = ProviderContainer(
+        overrides: [authGatewayProvider.overrideWithValue(gateway)],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await gateway.dispose();
+      });
+      container.read(authenticatorUnlockedProvider.notifier).unlock();
+      gateway.signIn(userId: 'other-user');
+      await Future<void>.delayed(Duration.zero);
+      expect(container.read(authenticatorUnlockedProvider), isFalse);
+    },
+  );
+
   test('auth events and unlock changes preserve the same router', () async {
     final gateway = _AuthGateway();
     final container = ProviderContainer(
@@ -36,11 +79,8 @@ class _AuthGateway implements AuthGateway {
   final _changes = StreamController<AuthSession?>.broadcast();
   AuthSession? _session;
 
-  void signIn() {
-    _session = const AuthSession(
-      userId: 'test-user',
-      email: 'user@example.test',
-    );
+  void signIn({String userId = 'test-user'}) {
+    _session = AuthSession(userId: userId, email: 'user@example.test');
     _changes.add(_session);
   }
 

@@ -270,6 +270,10 @@ class _TestSyncSession implements SyncSessionAccess {
   String? get userId => auth.currentSession?.userId;
 
   @override
+  Stream<String?> identityChanges() =>
+      auth.sessionChanges().map((session) => session?.userId);
+
+  @override
   Future<void> signOut() => auth.signOut();
 }
 

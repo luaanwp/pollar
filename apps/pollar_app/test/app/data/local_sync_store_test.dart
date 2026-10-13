@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pollar_app/app/data/local_outbox_mutation_recorder.dart';
@@ -122,6 +124,34 @@ void main() {
     expect(await store.bindIdentity('user-one'), isTrue);
     expect(await store.bindIdentity('user-two'), isFalse);
   });
+
+  test(
+    'file-backed ledger retains identity and records after reopening',
+    () async {
+      final directory = await Directory.systemTemp.createTemp(
+        'pollar-identity-test-',
+      );
+      final file = File(
+        '${directory.path}${Platform.pathSeparator}pollar.sqlite',
+      );
+      var persisted = LocalDatabase(NativeDatabase(file));
+      addTearDown(() async {
+        await persisted.close();
+        await directory.delete(recursive: true);
+      });
+      await DriftAccountRepository(persisted).add(account());
+      expect(await LocalSyncStore(persisted).bindIdentity('user-one'), isTrue);
+      await persisted.close();
+      persisted = LocalDatabase(NativeDatabase(file));
+      final reopened = LocalSyncStore(persisted);
+      expect(await reopened.bindIdentity('user-two'), isFalse);
+      expect(await reopened.bindIdentity('user-one'), isTrue);
+      expect(
+        (await DriftAccountRepository(persisted).findAll()).single.id,
+        account().id,
+      );
+    },
+  );
 
   test('remote tombstone is preserved through conflict resolution', () async {
     final repository = DriftAccountRepository(
