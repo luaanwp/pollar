@@ -5,6 +5,27 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pollar_app/app/theme/pollar_theme.dart';
 
 void main() {
+  for (final colors in [PollarColors.light, PollarColors.dark]) {
+    test(
+      'financial solid surface keeps primary, secondary and financial colors readable (${colors.canvas})',
+      () {
+        expect(colors.financialSurface, colors.primarySoft);
+        for (final foreground in [
+          colors.textPrimary,
+          colors.textSecondary,
+          colors.success,
+          colors.danger,
+          colors.warning,
+          colors.info,
+        ]) {
+          expect(
+            _contrast(foreground, colors.financialSurface),
+            greaterThanOrEqualTo(4.5),
+          );
+        }
+      },
+    );
+  }
   test('compact light-theme text pairs meet WCAG AA contrast', () {
     const colors = PollarColors.light;
 

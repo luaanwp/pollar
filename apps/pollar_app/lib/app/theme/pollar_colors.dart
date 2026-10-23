@@ -37,6 +37,10 @@ class PollarColors extends ThemeExtension<PollarColors> {
   /// Pale tint used for selection surfaces (never color alone for state).
   final Color primarySoft;
 
+  /// Solid focal financial surface. Alias, not a new brand color.
+  /// Supporting copy uses textSecondary, not low-contrast muted metadata.
+  Color get financialSurface => primarySoft;
+
   /// Card fill. Max two background values per screen: [canvas] + [background].
   final Color canvas;
 

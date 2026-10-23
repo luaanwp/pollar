@@ -11,6 +11,20 @@ enum MoneySemantic { automatic, balance, debt, income, expense, neutral }
 /// positive/negative semantic colors. Screen readers hear polarity + currency
 /// ("entrada"/"saída"), never color alone.
 class MoneyText extends StatelessWidget {
+  /// Line-break opportunities only; exact formatting and semantics stay intact.
+  static String wrapDisplay(
+    String exactText, {
+    required bool allowWrap,
+    bool allowGroupBreaks = true,
+    String groupSeparator = '.',
+  }) {
+    if (!allowWrap) return exactText;
+    final spaced = exactText.replaceAll(' ', ' \u200B');
+    return allowGroupBreaks && groupSeparator.isNotEmpty
+        ? spaced.replaceAll(groupSeparator, '$groupSeparator\u200B')
+        : spaced;
+  }
+
   const MoneyText(
     this.money, {
     super.key,
@@ -20,6 +34,7 @@ class MoneyText extends StatelessWidget {
     this.semantic = MoneySemantic.automatic,
     this.formatter = const MoneyFormatter.ptBr(),
     this.allowWrap = false,
+    this.allowGroupBreaks = true,
   });
 
   final Money money;
@@ -38,6 +53,10 @@ class MoneyText extends StatelessWidget {
   final MoneyFormatter formatter;
   final bool allowWrap;
 
+  /// A size-aware parent can prefer a whole numeric token on its own line.
+  /// The default preserves legacy wrapping until that parent is migrated.
+  final bool allowGroupBreaks;
+
   @override
   Widget build(BuildContext context) {
     final pollar = context.pollar;
@@ -51,9 +70,12 @@ class MoneyText extends StatelessWidget {
     }
 
     final exactText = formatter.format(money, showSign: showSign);
-    final text = allowWrap
-        ? exactText.replaceAll(' ', ' \u200B').replaceAll('.', '.\u200B')
-        : exactText;
+    final text = wrapDisplay(
+      exactText,
+      allowWrap: allowWrap,
+      allowGroupBreaks: allowGroupBreaks,
+      groupSeparator: formatter.groupSeparator,
+    );
 
     final meaning = switch (semantic) {
       MoneySemantic.balance => 'saldo',

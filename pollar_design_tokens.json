@@ -2,7 +2,7 @@
   "$schema": "https://design-tokens.github.io/community-group/format/",
   "meta": {
     "name": "Pollar Design Tokens",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "baseUnit": 4,
     "defaultLocale": "pt-BR"
   },
@@ -45,6 +45,19 @@
       "categorical": ["#087F6B", "#2667C9", "#8B5707", "#7C55C7", "#C44E82", "#438A9E", "#7A7950", "#C53B3B"]
     }
   },
+  "surface": {
+    "financial": {
+      "light": { "value": "{color.light.primarySoft}" },
+      "dark": { "value": "{color.dark.primarySoft}" },
+      "description": "Solid focal surface; primary and secondary text only. Gradient deferred until audited."
+    },
+    "cardVariants": {
+      "default": "outlined",
+      "borderless": "flat",
+      "focal": "financial",
+      "interactiveBorder": true
+    }
+  },
   "spacing": {
     "0": { "value": 0 }, "1": { "value": 4 }, "2": { "value": 8 },
     "3": { "value": 12 }, "4": { "value": 16 }, "5": { "value": 20 },
@@ -81,6 +94,7 @@
     "label": { "desktop": 13, "mobile": 13, "weight": 600, "lineHeight": 1.35 },
     "caption": { "desktop": 12, "mobile": 12, "weight": 500, "lineHeight": 1.4 },
     "amountHero": { "desktop": 34, "mobile": 30, "weight": 650, "lineHeight": 1.15 },
+    "balanceHero": { "desktop": 40, "mobile": 34, "weight": 600, "lineHeight": 1.15, "wideComponentMin": 600 },
     "amountStandard": { "desktop": 16, "mobile": 16, "weight": 600, "lineHeight": 1.3 }
   }
 }

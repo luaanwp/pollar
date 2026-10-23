@@ -27,6 +27,27 @@ abstract final class PollarTypography {
     fontFeatures: _tnum,
   );
 
+  /// Redesign opening amount. Legacy amountHero remains unchanged until each
+  /// screen is migrated. Choose by component width, never shrink to fit money.
+  static const TextStyle balanceHero = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 40,
+    height: 1.15,
+    fontWeight: FontWeight.w600,
+    fontFeatures: _tnum,
+  );
+
+  static const TextStyle balanceHeroCompact = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 34,
+    height: 1.15,
+    fontWeight: FontWeight.w600,
+    fontFeatures: _tnum,
+  );
+
+  static TextStyle balanceHeroForWidth(double availableWidth) =>
+      availableWidth >= 600 ? balanceHero : balanceHeroCompact;
+
   /// Inline amount in rows/cards. Token `amountStandard` 16/600.
   static const TextStyle amountStandard = TextStyle(
     fontFamily: fontFamily,

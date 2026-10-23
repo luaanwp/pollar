@@ -1,5 +1,22 @@
 # Pollar Design System
 
+## Flutter authority and redesign migration
+
+For production Flutter work, use the repository-root `DESIGN.md`,
+`pollar_design_system.md`, `pollar_design_tokens.json` and the implemented phase
+of `UI_UX_REDESIGN_POLLAR.md`. The HTML kits and `uploads/` below are historical
+visual references, not a replacement for current Dart tokens or live behavior.
+Inter and Lucide are bundled by the Flutter app; do not add their web CDNs.
+
+Redesign phase 1 adds explicit `PollarCard` roles: legacy `outlined` (default),
+borderless `flat`, and one focal `financial` surface using the existing
+`primarySoft` color. Interactive cards retain a boundary and a 2px info-colored
+keyboard focus ring. Balance opening roles are 40px when component width is at
+least 600px and 34px otherwise; legacy amount styles remain unchanged.
+The focal surface is solid in this phase. A later focal-only tonal gradient
+requires derived tokens and AA contrast in both themes; no blanket gradients.
+Use primary/secondary text on the focal surface, not muted metadata.
+
 Implementation-ready design language for a **personal-finance product** (Flutter desktop + mobile), reconstructed as a web design system: CSS tokens, React primitives and two full UI-kit recreations.
 
 Pollar is the official product name. Brand personality: private, composed, dependable, intelligent, precise, contemporary. Product principles: calm clarity, financial precision, trust through restraint, progressive disclosure, accessible by default, cross-platform familiarity. Default locale **pt-BR** (BRL), and all product copy in this system is written in Portuguese.
@@ -37,15 +54,15 @@ Product copy is **Portuguese (pt-BR)**, calm, plain and specific. The register i
 
 ## Visual foundations
 
-**Palette.** One brand hue: a deep desaturated teal (`#087F6B`) with a pale mint tint (`#EAF8F4`) for selection. Neutrals are green-leaning greys (`#F7F9F8 → #13201D`), so the whole UI reads slightly cool and clinical. Four semantic colors only — positive `#16834F`, negative `#C53B3B`, warning `#A86508`, info `#2667C9` — each with a derived soft fill for badges/banners. Dark theme flips to a lighter teal (`#5ED3B8`) on near-black greens. Max two background values on any screen: `--surface-background` behind, `--surface-canvas` for cards.
+**Palette.** One brand hue: a deep desaturated teal (`#087F6B`) with a pale mint tint (`#EAF8F4`) for selection. Neutrals are green-leaning greys (`#F7F9F8 → #13201D`), so the whole UI reads slightly cool and clinical. Four semantic colors only — positive `#0F7444`, negative `#C53B3B`, warning `#8B5707`, info `#2667C9` — each with a derived soft fill for badges/banners. Dark theme flips to a lighter teal (`#5ED3B8`) on near-black greens. Canvas/background remain the base; a focal financial surface may use the existing primary-soft role once per viewport.
 
 **Type.** Inter throughout, no second product face. Tight weights rather than sizes carry hierarchy (650/700 for display and amounts, 600 for labels, 400 body). Display and H1 get slight negative tracking (−0.015 to −0.02em); body gets none. **Tabular numerals on every figure** (`.fin-tnum`) so columns align — non-negotiable for money, dates in tables, percentages and installment counts.
 
 **Spacing & layout.** Base 4, rhythm 8; scale 0–80. 24px page gutters on desktop, 32 wide, 16 mobile. 12/8/4-column grid with 16/24px gutters. Content caps: 1600 overall, 1280 for dashboard reading columns, 360px contextual panel, 256/72px sidebar. Fixed elements: sidebar, 60px top bar, mobile bottom nav (64px) and its 56px floating quick-add — everything else scrolls.
 
-**Backgrounds.** Flat surfaces only. **No gradients, no glassmorphism, no textures, no patterns, no full-bleed imagery, no hand-drawn illustration.** The spec explicitly rules out noisy gradients and glass; the only "decoration" is a 1px border and a tint change.
+**Backgrounds.** Flat surfaces by default. No glassmorphism, textures, patterns, full-bleed imagery or hand-drawn illustration. A focal-only tonal gradient is conditionally allowed by the redesign plan after token and contrast validation; phase 1 implements the solid fallback only. Never put gradients on amounts, charts or list backgrounds.
 
-**Cards.** `--surface-canvas` fill, 1px `--border`, 14px radius, 20px padding, **no shadow at rest**. Interactive cards gain `--elevation-1` and `--border-strong` on hover. Never nested.
+**Cards.** Legacy default: canvas fill, 1px border, 14px radius, 20px padding, no shadow at rest. Explicit `flat` and `financial` information groups omit the border; interactive variants retain a boundary and gain restrained hover elevation. Never nested.
 
 **Borders & shadows.** 1px borders do the structural work. Shadows are reserved for layers that genuinely float: elevation 1 hover, 2 menus/popovers/toasts, 3 dialogs/sheets — all low-alpha near-black-green, no colored shadows, no inner shadows anywhere.
 
@@ -99,4 +116,4 @@ Each directory has a `*.card.html` specimen; each component has a `.d.ts` props 
 - `ui_kits/mobile/` — 430-wide compact app: Início, Transações (day-grouped list + filter chips), Cartão, Orçamentos, detail page, Mais. Bottom nav with quick-add sheet, currency input with installment preview, payment sheet, dark theme.
 
 ## Accessibility rules that are part of the design, not an afterthought
-WCAG AA in both themes; visible 2px focus rings; keyboard operation and logical focus order; status conveyed by icon + text + color; screen-reader amount labels include polarity and currency (`MoneyText` emits *entrada/saída*); charts ship a value table or caption; 44×44 minimum mobile targets; text scaling to 200%; destructive actions kept away from primary ones; reduced motion honoured.
+WCAG AA in both themes; visible 2px focus rings; keyboard operation and logical focus order; status conveyed by icon + text + color; screen-reader amount labels include polarity and currency (`MoneyText` emits *entrada/saída*); charts ship a value table or caption; 48×48 minimum Android targets (44×44 on iOS); text scaling to 200%; destructive actions kept away from primary ones; reduced motion honoured.

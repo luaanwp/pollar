@@ -74,6 +74,18 @@ typography:
     fontWeight: 600
     lineHeight: 1.3
     fontFeature: "tnum"
+  balance-hero:
+    fontFamily: "Inter"
+    fontSize: "40px"
+    fontWeight: 600
+    lineHeight: 1.15
+    fontFeature: "tnum"
+  balance-hero-compact:
+    fontFamily: "Inter"
+    fontSize: "34px"
+    fontWeight: 600
+    lineHeight: 1.15
+    fontFeature: "tnum"
   eyebrow:
     fontFamily: "Inter"
     fontSize: "11px"
@@ -135,6 +147,16 @@ components:
     textColor: "{colors.text-primary}"
     rounded: "{rounded.card}"
     padding: "20px"
+  card-flat:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.text-primary}"
+    rounded: "{rounded.card}"
+    padding: "20px"
+  card-financial:
+    backgroundColor: "{colors.primary-soft}"
+    textColor: "{colors.text-primary}"
+    rounded: "{rounded.card}"
+    padding: "20px"
   badge-neutral:
     backgroundColor: "{colors.surface-alt}"
     textColor: "{colors.text-secondary}"
@@ -151,16 +173,29 @@ components:
 
 Pollar é uma interface de operação financeira privada, composta e precisa. A linguagem visual reduz ruído para que contas, cartões, saldos e estados possam ser reconhecidos e operados com segurança; configuração de uma conta permanece separada de seus lançamentos.
 
-O sistema usa superfícies planas, neutros levemente esverdeados e uma única voz de marca em teal. Hierarquia vem de peso tipográfico, espaçamento e bordas finas, não de ornamentação. Interações mantêm a familiaridade nativa do Flutter/Material 3, enquanto componentes Pollar fixam cor, forma e densidade.
+O sistema usa superfícies planas, neutros levemente esverdeados e uma única voz de marca em teal. Hierarquia vem de tipografia, espaçamento, alinhamento e bordas onde delimitam estrutura ou interação. Interações mantêm a familiaridade nativa do Flutter/Material 3, enquanto componentes Pollar fixam cor, forma e densidade.
 
 **Key Characteristics:**
 
 - Interface de operação calma, compacta e legível.
-- Duas superfícies principais por tela: fundo e canvas.
-- Teal raro, reservado a ação, seleção e identidade.
-- Estrutura por bordas de 1px e mudanças tonais discretas.
-- Valores financeiros exatos, alinhados por algarismos tabulares e ocultáveis sem mudar o layout.
+- Fundo e canvas como base, com uma superfície financeira focal opcional por viewport.
+- Teal reservado a ação, seleção, identidade e à superfície focal nomeada.
+- Agrupamentos por alinhamento e espaço; bordas de 1px para estrutura e interação.
+- Valores financeiros exatos, algarismos tabulares e privacidade com reserva explícita de layout nos saldos que fazem reflow.
 - Iconografia Lucide de contorno arredondado, sempre com rótulo acessível quando o controle não tem texto.
+
+### Migração do redesign — fase 1
+
+Esta atualização incorpora somente os fundamentos implementados de `UI_UX_REDESIGN_POLLAR.md`: variantes de cartão, superfície focal sólida, novos papéis de saldo e reserva de layout. O catálogo de desenvolvimento demonstra esses papéis; as novas composições do shell e da visão geral continuam nas fases 2 e 3. As regras operacionais das telas abaixo permanecem vigentes até sua migração explícita.
+
+| Regra anterior | Regra vigente e limite |
+| --- | --- |
+| Todo cartão tem borda de 1px | `outlined` continua padrão; `flat` e `financial` informativos omitem a borda. Qualquer cartão interativo conserva limite visível e foco informativo de 2px. |
+| Teal restrito a pequenos sinais | Uma superfície financeira focal por viewport pode usar `financialSurface`, alias de `primarySoft`, sem nova cor. |
+| Proibição incondicional de gradientes | Gradiente tonal focal é uma possibilidade futura condicionada a tokens derivados e contraste AA nos dois temas. A implementação atual usa somente o fallback sólido. |
+| Um único papel de saldo destacado | `amountHero` legado conserva 34/30px nas composições existentes; `balanceHero`/`balanceHeroCompact` acrescentam 40/34px por largura disponível do componente. |
+
+O registro de execução e seus limites de validação ficam em [`docs/redesign-progress.md`](docs/redesign-progress.md). Nenhuma regra de cálculo, identidade, sincronização ou privacidade financeira foi substituída por esta extensão visual.
 
 ## Colors
 
@@ -170,7 +205,7 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 
 - **Teal de confiança:** ações primárias, seleção de navegação e pequenos sinais de marca.
 - **Teal de resposta:** estado hover de ações primárias.
-- **Menta de seleção:** fundo de seleção e foco tonal; deve vir acompanhado por texto ou ícone teal.
+- **Menta de seleção:** fundo de seleção e foco tonal, acompanhado por texto ou ícone teal nesses estados. O mesmo token sustenta a superfície financeira focal sólida.
 
 ### Secondary
 
@@ -185,7 +220,7 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 - **Borda estrutural e borda forte:** separação padrão e reforço interativo.
 - **Texto primário, secundário e atenuado:** conteúdo, explicação e metadados, respectivamente.
 
-**The One Voice Rule.** O teal é a única cor de marca e não funciona como decoração de superfícies extensas.
+**The One Voice Rule.** O teal é a única cor de marca. Uma superfície financeira focal por viewport pode usar `financialSurface`; não repetir esse preenchimento em listas, relatórios ou todos os cartões. `financialSurface` é alias de `primarySoft` em cada tema, sem novo hex. Use texto primário ou secundário e cores semânticas financeiras com contraste AA validado; texto atenuado não é usado nessa superfície.
 
 **The Paired Meaning Rule.** Estado nunca depende apenas de cor; combine tom com texto e, quando houver símbolo reconhecível, com ícone.
 
@@ -204,10 +239,13 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 - **Title:** nomes de itens e títulos compactos, incluindo nomes de contas e cartões.
 - **Body:** texto corrente; a variação grande usa 16px e legendas usam 12px/500.
 - **Label:** botões e rótulos de campos.
-- **Amount:** dinheiro em linhas e cartões; o total de destaque usa 34px/600.
+- **Amount:** dinheiro em linhas e cartões usa 16px/600. `amountHero` legado permanece 34px/600 e conserva a redução compacta de 30px onde já aplicada.
+- **Balance hero:** abertura financeira migrada usa `balanceHero` de 40px/600 com pelo menos 600px disponíveis no componente; abaixo disso, `balanceHeroCompact` de 34px/600. Ambos usam entrelinha 1,15 e algarismos tabulares. Selecione por `balanceHeroForWidth`, sem substituir automaticamente o papel legado.
 - **Eyebrow:** reservado a cabeçalhos de tabela e divisores de navegação, em caixa alta.
 
 **The Exact Figure Rule.** Todo valor monetário, percentual, data tabular e contagem parcelada usa algarismos tabulares; valores não são abreviados nem têm os dígitos animados.
+
+O saldo faz reflow sem reduzir sua fonte. Em `PrivacyAmount` com `reserveLayout: true` e `allowWrap: true`, prefira quebrar após a moeda e manter o token numérico íntegro; quebras entre grupos numéricos só são liberadas quando o próprio corpo numérico excede a largura disponível. Medição e pintura usam a mesma política. Quando a quebra está habilitada, `MoneyText` conserva a permissão legada de quebra entre grupos por padrão; a política por largura exige adesão explícita do componente pai.
 
 **The Contextual Money Rule.** `MoneySemantic` é sempre declarado pelo significado no contexto: `balance` para saldos, patrimônio e ativos; `debt` para obrigações; `income` e `expense` para fluxos; `neutral` para alvo, reservado e restante. `automatic` só é aceitável quando o próprio sinal define integralmente a natureza. Com texto ampliado, ofereça quebra entre rótulo e valor ou entre ações, preservando o rótulo exato, visível e sem truncamento.
 
@@ -241,13 +279,13 @@ Texto ampliado provoca reflow por conteúdo, não redução tipográfica nem rec
 
 ## Elevation & Depth
 
-Superfícies são planas em repouso. Fundo, canvas, mudança tonal e bordas de 1px criam profundidade suficiente. Elevação 1 aparece apenas no hover de cartões interativos; menus, toasts e diálogos usam as elevações nativas 2 e 3. Não há blur, gradiente, textura, sombra colorida ou sombra interna.
+Superfícies são planas em repouso. Fundo, canvas, mudança tonal e bordas estruturais criam profundidade suficiente. Elevação 1 aparece apenas no hover de cartões interativos; menus, toasts e diálogos usam as elevações nativas 2 e 3. Não há blur, textura, sombra colorida ou sombra interna. A superfície financeira atual é sólida. O plano admite futuramente um gradiente tonal somente no cartão financeiro focal ou abertura mobile, após registrar tokens derivados por tema e validar contraste AA; sem esses requisitos, permanece o fallback sólido. Essa possibilidade não autoriza gradientes em números, gráficos, listas ou fundo da tela.
 
 **The Flat-by-Default Rule.** Uma superfície em repouso não recebe sombra; elevação comunica camada real ou resposta interativa.
 
 ## Shapes
 
-A geometria é suavemente arredondada e funcional: chips usam raio pequeno, campos, tabelas e botões usam raio médio, e cartões e diálogos usam raio grande. O raio totalmente circular é exclusivo de badges. Cartões recebem recorte antialias e uma borda estrutural de 1px.
+A geometria é suavemente arredondada e funcional: chips usam raio pequeno, campos, tabelas e botões usam raio médio, e cartões e diálogos usam raio grande. O raio totalmente circular é exclusivo de badges. Cartões recebem recorte antialias; a borda estrutural de 1px pertence ao padrão `outlined` e a qualquer variante interativa, enquanto `flat` e `financial` informativos a omitem.
 
 **The Honest Radius Rule.** Botões nunca viram pílulas; cada categoria conserva seu degrau de raio.
 
@@ -269,11 +307,24 @@ Contidos e verbais, os botões priorizam a tarefa sobre a marca.
 Cartões agrupam informação, não decoram a página.
 
 - **Corner Style:** raio grande.
-- **Background:** canvas; a variação alternativa usa a superfície alternativa para estados como arquivamento.
-- **Shadow Strategy:** sem sombra em repouso; cartões interativos recebem elevação 1 e borda forte no hover.
-- **Border:** traço estrutural de 1px.
+- **Variants:** `PollarCardVariant.outlined` é o padrão legado; `flat` agrupa informação sem borda; `financial` é o papel focal sólido, também sem borda quando informativo. A migração é explícita por instância.
+- **Background:** `outlined` e `flat` usam canvas, ou superfície alternativa com `alt: true` para estados como arquivamento. `financial` usa `financialSurface` e esse papel prevalece sobre `alt`.
+- **Shadow Strategy:** sem sombra em repouso; cartões interativos de qualquer variante recebem elevação 1 e borda forte no hover.
+- **Border / Focus:** padrão `outlined` e qualquer variante com `onTap` mantêm traço de 1px; foco de teclado interativo recebe borda informativa explícita de 2px e semântica de botão. `flat`/`financial` sem ação omitem a borda.
 - **Internal Padding:** 0, 12px, 16px ou 20px conforme densidade; 20px é o padrão.
 - **Nesting:** cartões não são aninhados.
+
+### Money and Privacy
+
+`MoneyText` e `PrivacyAmount` conservam moeda, sinal, valor exato e significado contextual. A máscara anuncia “Valor oculto pelo modo privacidade” e não expõe o valor original na árvore acessível.
+
+`PrivacyAmount.reserveLayout` é optativo e permanece `false` por padrão. Nos saldos que fazem reflow, ative-o para reservar as dimensões máximas entre texto visível e máscara na largura e escala tipográfica atuais. O valor oculto é apenas medido: não é pintado nem exposto à acessibilidade. A altura reservada pode incluir espaço vazio quando a máscara ocupa menos linhas; isso mantém os blocos seguintes na mesma posição.
+
+### Development Catalogue
+
+A aba **Fundamentos** em `forms_catalog_screen.dart` usa `foundations_catalog.dart` para mostrar superfície financeira, agrupamento sem borda, padrão interativo e privacidade, com dados explicitamente demonstrativos. `tool/design_catalog.dart` inicia essa amostra isolada sem autenticação, perfil ou banco financeiro. É uma ferramenta de desenvolvimento.
+
+Goldens cobrem claro/escuro, larguras 320/390/1440px e texto ampliado, incluindo 1,3× e 2×; testes de widget verificam foco/Enter, contraste e privacidade semântica. A inspeção nativa observou a interface anterior; não equivale a uma verificação física de teclado ou leitor de tela do catálogo atualizado. Capturas de referência incluem `foundations_1440_light_1x.png`, `foundations_390_dark_1x.png` e o par visível/oculto `foundations_320_light_130pct*.png` em `apps/pollar_app/test/goldens/`.
 
 ### Inputs / Fields
 
@@ -476,8 +527,8 @@ silêncio.
 
 ### Don't:
 
-- **Don't** usar teal como preenchimento decorativo amplo ou depender apenas de cor para significado.
-- **Don't** adicionar gradientes, vidro, blur, textura, padrões, sombras coloridas, sombras internas ou imagens de fundo.
+- **Don't** repetir a superfície teal focal em vários blocos do viewport ou depender apenas de cor para significado.
+- **Don't** adicionar gradientes sem os tokens e a validação exigidos para a exceção focal futura; a fase 1 usa superfície sólida. Vidro, blur, textura, padrões, sombras coloridas, sombras internas e imagens de fundo continuam fora do sistema.
 - **Don't** aninhar cartões, transformar botões em pílulas ou elevar superfícies estáticas.
 - **Don't** misturar famílias de ícones, usar emoji como ícone ou deixar um controle apenas com ícone sem tooltip e nome acessível.
 - **Don't** esconder conteúdo essencial no layout compacto nem misturar campos específicos de cartão em contas comuns.

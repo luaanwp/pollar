@@ -2,6 +2,8 @@
 
 Implementation-ready design language for Flutter desktop and mobile applications. This file is the canonical human-readable specification. Machine-readable values live in `pollar_design_tokens.json`.
 
+The implemented visual rules are also recorded in root `DESIGN.md`. Redesign phase 1 extends existing components explicitly; the new shell and overview compositions in `UI_UX_REDESIGN_POLLAR.md` remain later phases. This merge preserves the existing screen and financial behavior until each screen is migrated. Execution evidence and remaining validation are recorded in `docs/redesign-progress.md`.
+
 ## 1. Product principles
 
 1. **Calm clarity:** Reduce anxiety. Show the next useful action without flooding the screen.
@@ -61,6 +63,8 @@ Product name: **Pollar**. Use an abstract ledger/flow mark rather than currency 
 
 ### Color rules
 
+- `financialSurface` aliases the existing `primarySoft` role in each theme; it introduces no new hex value. Allow one focal financial surface per viewport. Use primary/secondary text and the AA-checked financial semantic colors on it; do not use muted metadata text there.
+- Phase 1 uses a solid focal surface. The redesign conditionally allows a future tonal gradient only on the focal financial card or mobile opening, after derived tokens for both themes and AA contrast validation. Use the solid fallback otherwise; gradients do not belong on amounts, charts, lists or page backgrounds.
 - Never communicate status by color alone. Pair it with an icon and text.
 - Expenses may be red in summaries, but normal transaction rows should favor neutral text plus a minus sign to avoid visual alarm fatigue.
 - Income uses a plus sign and positive semantic color.
@@ -85,9 +89,12 @@ Use tabular numerals for amounts, percentages, dates in tables, and installment 
 | Label | 13 | 13 | 550/600 | 1.35 |
 | Caption | 12 | 12 | 400/500 | 1.40 |
 | Amount hero | 34 | 30 | 650 | 1.15 |
+| Balance hero (explicit redesign role) | 40 | 34 | 600 | 1.15 |
 | Amount standard | 16 | 16 | 600 | 1.30 |
 
 Do not use font weight alone to distinguish interactive states. Never shrink financial content below 12 px logical size.
+
+Legacy `amountHero` remains unchanged; bundled Flutter weights map its 650 token to 600. The new `balanceHero`/`balanceHeroCompact` roles use 40/34 px, selected by `balanceHeroForWidth` at **600 px of available component width**, rather than window width. Reflow exact amounts when space is tight; never shrink them to retain a column or animate their digits.
 
 ## 5. Layout and spacing
 
@@ -115,7 +122,8 @@ Grid: desktop 12 columns, tablet 8, mobile 4; 16 px gutters compact and 24 px gu
 - Radius large: 14 (dashboard cards, dialogs).
 - Radius pill: 999 (status badges only).
 - Standard border: 1 px.
-- Focus ring: 2 px information/primary color with 2 px outer offset.
+- Card exception: informational `flat` and `financial` variants omit the border. `outlined` remains the default; any interactive variant keeps a visible boundary and an explicit 2 px information-colored focus stroke.
+- Focus ring: 2 px information/primary color with 2 px outer offset for controls using an outer ring; `PollarCard` uses the explicit information-colored border stroke above.
 - Use shadows sparingly. Prefer border and surface contrast.
 - Elevation 1: floating toolbar/card hover. Elevation 2: menu/popover. Elevation 3: dialog/bottom sheet.
 
@@ -159,6 +167,10 @@ Currency input behavior:
 
 Use cards only to group related information, not for every piece of content. Dashboard cards have a title, optional helper/action, primary metric, supporting comparison, and optionally a compact visualization. Avoid nested cards.
 
+`PollarCardVariant.outlined` preserves the legacy canvas fill, 1 px border, 14 px radius and default 20 px padding. Migrate an instance explicitly to `flat` for an informational borderless group, or `financial` for the focal solid `financialSurface`. `alt: true` selects the alternative surface for outlined/flat; financial takes precedence over `alt`. Padding options remain 0, 12, 16 and 20 px.
+
+Any variant with `onTap` retains the boundary, button semantics, restrained hover elevation and a stronger hover border. Keyboard focus has an explicit 2 px information-colored stroke. Informational groups have no resting elevation. Text, alignment and spacing must establish their grouping when there is no border.
+
 ### Tables and lists
 
 Desktop tables support sorting, filtering, column selection, row selection, keyboard navigation, sticky headers, and a contextual detail panel. Amounts are right-aligned. Dates, status, and identifiers remain scannable.
@@ -196,6 +208,9 @@ Toasts confirm low-risk success. Inline banners communicate offline state, sync 
 
 - Brazilian example: `R$ 1.234,56`; negative: `−R$ 123,45`; positive where comparison matters: `+R$ 123,45`.
 - Privacy hidden: `R$ ••••••` while preserving approximate layout width.
+- For reflowing amounts, opt into `PrivacyAmount.reserveLayout: true` with `allowWrap: true`. It reserves the maximum visible/masked bounds at the current width and text scale; the original hidden value is measured only, never painted or exposed to assistive technology. The default remains `false` for legacy callers.
+- With layout reservation, prefer a break after the currency before splitting the intact numeric token; allow continuation between numeric groups only if the numeric body itself exceeds the available width. Measurement and rendering share this policy. When wrapping is enabled, `MoneyText` retains legacy group-break permission by default (`allowGroupBreaks: true`); a size-aware parent opts into the tighter policy.
+- Keep currency, polarity and contextual `MoneySemantic` explicit. Hidden semantics announce the privacy state without the original amount.
 - Installment: `3 de 12` in prose; `3/12` in compact rows.
 - Credit available: pair amount with utilization percentage.
 - Dates in pt-BR: `1 set 2026` in compact UI; full form for critical due dates.
@@ -249,6 +264,12 @@ Top app bar + scrollable content + bottom navigation + quick-add action. Details
 - Use adaptive composition, not platform checks scattered through widgets. Centralize breakpoints and layout decisions.
 - Use tabular numeral font features for `MoneyText`.
 - Create reusable `MoneyText`, `StatusBadge`, `TransactionTile`, `StatementSummary`, `BudgetProgress`, `SyncBanner`, `PrivacyAmount`, and `ResponsiveScaffold` widgets.
+
+The development-only **Fundamentos** tab in `foundations_catalog.dart` demonstrates the phase-1 roles with explicitly labelled demo data. Run its isolated entry from `apps/pollar_app` with `flutter run -d windows -t tool/design_catalog.dart`; it does not initialize authentication, a user profile or the financial database. This specimen is not the redesigned overview screen.
+
+Widget tests cover legacy defaults, focus/Enter, AA contrast on the solid focal surface and hidden semantics. Light/dark goldens exercise 320/390/1440 px and text scales including 1.3×/2×, with visible/hidden comparisons at 320 px/1.3×. The updated catalog has not been claimed physically verified with keyboard or a screen reader; the observed native baseline and automated checks have distinct scopes.
+
+Phase 1 supersedes the universal card-border rule, teal limited to small accents, and unconditional gradient prohibition with the bounded roles above. The 34/30 px legacy hero is preserved alongside the new opt-in 40/34 px balance roles. All financial, platform, accessibility and screen-pattern requirements remain in force.
 
 ## 14. Claude Code implementation prompt
 

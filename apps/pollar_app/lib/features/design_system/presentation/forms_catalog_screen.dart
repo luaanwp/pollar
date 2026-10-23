@@ -17,6 +17,7 @@ import '../../../shared/presentation/pollar_states.dart';
 import '../../../shared/presentation/pollar_text_field.dart';
 import '../../../shared/presentation/pollar_toast.dart';
 import '../../../shared/presentation/status_badge.dart';
+import 'foundations_catalog.dart';
 
 /// Development-only component catalog. Examples never create financial data.
 class FormsCatalogScreen extends ConsumerStatefulWidget {
@@ -36,7 +37,7 @@ class _FormsCatalogScreenState extends ConsumerState<FormsCatalogScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Design system'),
@@ -53,10 +54,13 @@ class _FormsCatalogScreenState extends ConsumerState<FormsCatalogScreen> {
             const SizedBox(width: PollarSpacing.x2),
           ],
           bottom: const TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
             tabs: [
               Tab(text: 'Formulários'),
               Tab(text: 'Componentes'),
               Tab(text: 'Feedback'),
+              Tab(text: 'Fundamentos'),
             ],
           ),
         ),
@@ -65,6 +69,7 @@ class _FormsCatalogScreenState extends ConsumerState<FormsCatalogScreen> {
             _CatalogPage(child: _buildForms()),
             const _CatalogPage(child: _ComponentsCatalog()),
             _CatalogPage(child: _FeedbackCatalog(onRetry: () {})),
+            const _CatalogPage(child: FoundationsCatalog()),
           ],
         ),
       ),

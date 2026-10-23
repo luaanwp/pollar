@@ -4,6 +4,9 @@ import '../../app/theme/pollar_theme.dart';
 
 enum PollarCardPadding { none, small, medium, large }
 
+/// Outlined is the legacy default; other roles are migrated explicitly.
+enum PollarCardVariant { outlined, flat, financial }
+
 /// Bordered grouping surface. Interactive cards expose button semantics and a
 /// restrained hover elevation on pointer devices.
 class PollarCard extends StatefulWidget {
@@ -12,6 +15,7 @@ class PollarCard extends StatefulWidget {
     required this.child,
     this.padding = PollarCardPadding.large,
     this.alt = false,
+    this.variant = PollarCardVariant.outlined,
     this.onTap,
     this.semanticLabel,
   });
@@ -19,6 +23,7 @@ class PollarCard extends StatefulWidget {
   final Widget child;
   final PollarCardPadding padding;
   final bool alt;
+  final PollarCardVariant variant;
   final VoidCallback? onTap;
   final String? semanticLabel;
 
@@ -28,11 +33,19 @@ class PollarCard extends StatefulWidget {
 
 class _PollarCardState extends State<PollarCard> {
   var _hovered = false;
+  var _focused = false;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.pollar;
     final interactive = widget.onTap != null;
+    final bordered =
+        interactive || widget.variant == PollarCardVariant.outlined;
+    final background = widget.variant == PollarCardVariant.financial
+        ? colors.financialSurface
+        : widget.alt
+        ? colors.surfaceAlt
+        : colors.canvas;
     final padding = switch (widget.padding) {
       PollarCardPadding.none => EdgeInsets.zero,
       PollarCardPadding.small => const EdgeInsets.all(PollarSpacing.x3),
@@ -47,19 +60,25 @@ class _PollarCardState extends State<PollarCard> {
         onEnter: interactive ? (_) => setState(() => _hovered = true) : null,
         onExit: interactive ? (_) => setState(() => _hovered = false) : null,
         child: Card(
-          color: widget.alt ? colors.surfaceAlt : colors.canvas,
+          color: background,
           elevation: interactive && _hovered ? 1 : 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(PollarRadii.large),
-            side: BorderSide(
-              color: interactive && _hovered
-                  ? colors.borderStrong
-                  : colors.border,
-            ),
+            side: _focused && interactive
+                ? BorderSide(color: colors.info, width: 2)
+                : bordered
+                ? BorderSide(
+                    color: interactive && _hovered
+                        ? colors.borderStrong
+                        : colors.border,
+                  )
+                : BorderSide.none,
           ),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: widget.onTap,
+            canRequestFocus: interactive,
+            onFocusChange: (focused) => setState(() => _focused = focused),
             hoverColor: colors.surfaceAlt,
             focusColor: colors.primarySoft,
             child: Padding(padding: padding, child: widget.child),
