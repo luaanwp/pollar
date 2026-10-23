@@ -71,8 +71,11 @@ enviar e-mails, acessar Supabase ou ler dados financeiros reais.
 - ZIP gerado com 16.609.028 bytes; os 33 arquivos do manifesto foram
   conferidos dentro do ZIP por tamanho e SHA-256, sem arquivos extras além
   do próprio manifesto.
-- O executável não foi iniciado neste slice: não houve fechamento de janelas,
-  alteração de sessão nem teste manual em outra máquina.
+- O agente não iniciou o executável durante o empacotamento. Posteriormente,
+  em 2026-10-23, o usuário informou que fez o teste e autorizou considerar
+  validado o checklist proposto: abertura sem terminal, login, Windows Hello,
+  persistência e sincronização. É aceite manual informado pelo usuário no seu
+  ambiente, não teste independente em outra máquina ou instalação limpa.
 
 Artefato local:
 `dist/pollar-windows-1.0.0+3-remote-20261023-124037-ff82e798.zip`
@@ -80,3 +83,5 @@ Artefato local:
 ```text
 SHA-256: 46EA690FEEFB398BDB64CC6AFA41C497B14E4E3E654A282FA382B9F8920BF903
 ```
+
+As notas da versão candidata estão em [`release-notes-v1.md`](release-notes-v1.md).

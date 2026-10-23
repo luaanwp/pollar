@@ -6,6 +6,11 @@ sincronização; faça um backup antes de qualquer teste de restauração.
 
 ## Confirmado
 
+- Em 2026-10-23, o usuário informou que testou o pacote Windows portátil e
+  autorizou considerar validado o checklist proposto: abrir sem terminal,
+  login, Windows Hello, persistência e sincronização. Trata-se de aceite
+  manual no ambiente do usuário, não validação em instalação limpa ou outro PC.
+
 - Em 2026-10-23, no Android, o usuário confirmou que o fluxo avançou para o
   autenticador e que a segunda identidade recebeu a tela “Estes dados
   pertencem a outra conta”. Ao voltar à identidade original, `Teste sync V1`
@@ -114,5 +119,7 @@ separados. Ele continua pendente, sem necessidade de apagar os dados existentes.
 O slice seguinte gerou o pacote Windows portátil para teste interno, documentado
 em `windows-distribution.md`: análise sem problemas, 274 testes Flutter e
 verificações de empacotamento aprovados. O conteúdo do ZIP foi conferido por
-SHA-256; o novo executável não foi aberto neste slice. Gerar esse pacote não
-equivale a aprovar a V1 para distribuição pública.
+SHA-256. Depois, o usuário confirmou o teste manual do pacote e autorizou
+considerá-lo validado no seu ambiente. As notas foram consolidadas em
+`release-notes-v1.md`, como versão candidata para uso interno. Isso não aprova
+o isolamento remoto adiado nem equivale a liberar distribuição pública.

@@ -21,7 +21,9 @@ export PATH="/c/Users/luanl/orca/tools/pollar/supabase:$PATH"
 - ✅ `flutter test`, `flutter analyze`, `dart format` — operational.
 - ✅ Windows desktop debug build runs with the provisioned toolchain.
 - ✅ Windows release `1.0.0+3` and internal portable ZIP generated on 2026-10-23;
-  ZIP contents/checksums verified without launching the new executable.
+  ZIP contents/checksums verified. The user subsequently accepted the manual
+  checklist for standalone launch, login, Windows Hello, persistence and sync
+  in their existing environment; a clean-machine test is not implied.
 - ✅ Android SDK installed; remote-backed APK `1.0.0+3` compiled on 2026-10-13.
   Android restoration, email/TOTP access and local identity protection were
   confirmed on a physical device; hosted cross-user isolation remains deferred.
