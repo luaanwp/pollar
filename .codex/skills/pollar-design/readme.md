@@ -50,6 +50,17 @@ text scale drive stacking; all amounts wrap and reserve privacy geometry.
 Create/archive controls opt into adaptive button height for complete large-text
 labels; other buttons retain defaults. No current balance or aggregate is added.
 
+Phase 4B migrates Transactions: search and type combine, result count and clear
+action explain the current scope. Type chips require 960px of local width and
+text up to 1.3×; otherwise use a labeled native selector with content-driven
+item height. Complete rows reflow, preserving exact money, status and motion.
+The 360px detail panel requires 1020px after rail/gutters; narrower layouts use
+the root modal, with a bounded scrolling viewport on desktop. Large text,
+short windows and narrow containers scroll controls with the list without
+losing search focus. Privacy remains reactive in an open modal and reserves
+amount geometry. Despesas includes card purchases; Transferências includes
+statement payments. Canceling preserves history. Planning remains phase 4C.
+
 Implementation-ready design language for a **personal-finance product** (Flutter desktop + mobile), reconstructed as a web design system: CSS tokens, React primitives and two full UI-kit recreations.
 
 Pollar is the official product name. Brand personality: private, composed, dependable, intelligent, precise, contemporary. Product principles: calm clarity, financial precision, trust through restraint, progressive disclosure, accessible by default, cross-platform familiarity. Default locale **pt-BR** (BRL), and all product copy in this system is written in Portuguese.

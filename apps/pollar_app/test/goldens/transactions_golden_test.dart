@@ -31,11 +31,15 @@ void main() {
     bool openForm = false,
     bool openDetail = false,
     bool openDiscardConfirmation = false,
+    bool dark = false,
+    double textScale = 1,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
+    tester.platformDispatcher.textScaleFactorTestValue = textScale;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     final today = DateTime(2026, 9, 8);
     final repository = InMemoryTransactionRepository(
       seed: [
@@ -84,8 +88,24 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Transações').first);
+    await tester.tap(
+      find.byType(NavigationRail).evaluate().isNotEmpty
+          ? find
+                .descendant(
+                  of: find.byType(NavigationRail),
+                  matching: find.byTooltip('Transações'),
+                )
+                .first
+          : find.descendant(
+              of: find.byType(NavigationBar),
+              matching: find.text('Transações'),
+            ),
+    );
     await tester.pumpAndSettle();
+    if (dark) {
+      await tester.tap(find.byTooltip('Tema escuro'));
+      await tester.pumpAndSettle();
+    }
     if (openForm) {
       await tester.tap(find.text('Nova transação'));
       await tester.pumpAndSettle();
@@ -124,6 +144,16 @@ void main() {
     );
   });
 
+  testWidgets('notebook detail uses a bounded dialog', (tester) async {
+    await renderTransactions(
+      tester,
+      size: const Size(1200, 900),
+      golden: 'transaction_detail_1200_modal.png',
+      openDetail: true,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('transaction form compact 390x900', (tester) async {
     await renderTransactions(
       tester,
@@ -153,6 +183,56 @@ void main() {
       openDiscardConfirmation: true,
     );
   });
+
+  for (final sample in [
+    (
+      size: const Size(320, 844),
+      scale: 1.3,
+      dark: false,
+      name: 'transactions_320_light_130pct.png',
+    ),
+    (
+      size: const Size(390, 900),
+      scale: 1.0,
+      dark: true,
+      name: 'transactions_390_dark.png',
+    ),
+    (
+      size: const Size(390, 900),
+      scale: 2.0,
+      dark: false,
+      name: 'transactions_390_light_2x.png',
+    ),
+    (
+      size: const Size(800, 1000),
+      scale: 1.0,
+      dark: false,
+      name: 'transactions_800_light.png',
+    ),
+    (
+      size: const Size(1440, 900),
+      scale: 1.0,
+      dark: true,
+      name: 'transactions_1440_dark.png',
+    ),
+    (
+      size: const Size(1440, 1000),
+      scale: 2.0,
+      dark: false,
+      name: 'transactions_1440_light_2x.png',
+    ),
+  ]) {
+    testWidgets(sample.name, (tester) async {
+      await renderTransactions(
+        tester,
+        size: sample.size,
+        golden: sample.name,
+        dark: sample.dark,
+        textScale: sample.scale,
+      );
+      expect(tester.takeException(), isNull);
+    });
+  }
 }
 
 class _GoldenAccountCatalog implements TransactionAccountCatalog {

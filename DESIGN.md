@@ -188,7 +188,7 @@ O sistema usa superfícies planas, neutros levemente esverdeados e uma única vo
 
 As fases implementadas de `UI_UX_REDESIGN_POLLAR.md` incluem fundamentos, navegação e Visão geral: variantes de cartão, superfície focal sólida, papéis de saldo, reserva de layout, rail recolhível e leitura financeira antes da ação no compacto. O catálogo demonstra os fundamentos; a Visão geral já os utiliza. As demais telas conservam suas regras operacionais até a migração explícita.
 
-A fase 4A migra a listagem de Contas e cartões: linhas para contas/arquivadas, crédito com motion preservado, largura real e texto ampliado. Transações e Planejamento ainda aguardam suas partes da fase 4.
+A fase 4A migra a listagem de Contas e cartões: linhas para contas/arquivadas, crédito com motion preservado, largura real e texto ampliado. A fase 4B migra Transações com controles adaptáveis, linhas completas e detalhe conforme a largura disponível. Planejamento continua na fase 4C.
 
 | Regra anterior | Regra vigente e limite |
 | --- | --- |
@@ -429,10 +429,11 @@ A fatura reconcilia o saldo em aberto com as compras que o formaram e com os com
 
 O ledger privilegia comparação vertical rápida: identidade à esquerda, consequência financeira e estado à direita.
 
-- **Controls:** a busca consulta descrição ou categoria; filtros de Todas, Receitas, Despesas e Transferências usam chips contornados, com check, borda teal e fundo menta apenas no selecionado.
-- **Row anatomy:** ícone de natureza, descrição, categoria e conta formam o bloco de identidade; data, valor assinado e badge formam o bloco financeiro. Metadados podem truncar antes do valor ou do estado.
+- **Controls:** a busca consulta descrição ou categoria e combina com Todas, Receitas, Despesas e Transferências. Com pelo menos 960px disponíveis e texto até 1,3×, tipos usam chips contornados; abaixo disso, seletor nativo rotulado Tipo. Busca e seletor empilham abaixo de 600px ou com texto ampliado. Contagem informa o resultado; “Limpar busca e filtro” restaura ambos sem alterar registros.
+- **Filter meaning:** Despesas inclui despesas e compras no cartão; Transferências inclui transferências e pagamentos de fatura. Canceladas continuam no histórico e nos filtros correspondentes.
+- **Row anatomy:** ícone de natureza, descrição, categoria e conta formam o bloco de identidade; data, valor assinado e badge formam o bloco financeiro. Linhas migradas usam `reflowContent`: nomes e metadados completos, dinheiro com quebra e geometria reservada em privacidade. O padrão dos consumidores legados permanece.
 - **Desktop:** uma única superfície plana e contornada recebe cabeçalho eyebrow, divisores de 1px e linhas densas; a linha selecionada usa fundo menta sem remover sua borda ou qualquer dado.
-- **Mobile:** cada dia recebe um título textual como Hoje, Ontem ou a data localizada e um único cartão sem padding externo entre linhas, separadas por divisores de 1px.
+- **Mobile:** cada dia recebe um título textual como Hoje, Ontem ou a data localizada e um único grupo `flat` sem padding externo entre linhas, separadas por divisores de 1px. Controles e lista rolam juntos com menos de 600px disponíveis, altura inferior a 500px ou escala acima de 1,3×; a busca mantém texto e foco ao mudar de composição.
 - **Amounts:** receitas exibem sinal positivo e verde; saídas exibem sinal negativo. Transferências continuam identificadas por tipo, conta e ícone, sem serem apresentadas como receita ou despesa.
 - **Privacy:** ocultar valores conserva alinhamento, largura e sinais de estado; descrição, tipo, conta, data e badge permanecem legíveis.
 
@@ -440,8 +441,9 @@ O ledger privilegia comparação vertical rápida: identidade à esquerda, conse
 
 O detalhe confirma o significado do lançamento antes de oferecer uma ação de ciclo de vida.
 
-- **Desktop:** painel contextual de 360px, plano e contornado, alinhado à altura do ledger; título, fechar, descrição, badge e valor antecedem os campos rotulados.
-- **Mobile:** modal raiz em folha inferior com alça, ícone de natureza, título, tipo, fechar e valor antes dos campos; a ação segura de fechar permanece explícita e separada da ação destrutiva.
+- **Desktop:** painel contextual de 360px somente com pelo menos 1020px disponíveis após rail e gutters, reservando 640px ao ledger e 20px de intervalo. Descrição, badge, valor e campos rolam entre cabeçalho e ação. Sem essa largura, ou com composição rolável, abre modal raiz; no desktop, seu conteúdo tem viewport limitado e rolável. Seleção excluída pela busca ou tipo deixa de exibir painel.
+- **Mobile:** modal raiz em folha inferior com alça, ícone de natureza, título, tipo, badge e valor antes dos campos; a ação segura de fechar permanece explícita e separada da ação destrutiva. Ações adotam altura adaptável para rótulos ampliados.
+- **Privacy and money:** painel e modal observam a privacidade atual, inclusive durante a abertura. Valores quebram e reservam geometria; receitas e despesas declaram seu significado financeiro, transferências e pagamentos de fatura usam semântica neutra.
 - **Fields:** tipo, conta, data e categoria usam pares verticais de rótulo atenuado e valor primário; origem e destino substituem conta única quando a natureza exigir.
 - **Cancellation:** “Cancelar transação” altera o estado e mantém o lançamento no histórico. A confirmação explica que o item deixará de afetar os saldos confirmado e projetado; “Manter transação” é a saída segura.
 

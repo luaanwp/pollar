@@ -21,6 +21,7 @@ class PollarSelect<T> extends StatelessWidget {
     this.hint,
     this.enabled = true,
     this.validator,
+    this.itemHeight = kMinInteractiveDimension,
   });
 
   final String label;
@@ -30,10 +31,12 @@ class PollarSelect<T> extends StatelessWidget {
   final bool enabled;
   final ValueChanged<T?> onChanged;
   final FormFieldValidator<T>? validator;
+  final double? itemHeight;
 
   @override
   Widget build(BuildContext context) => DropdownButtonFormField<T>(
     initialValue: initialValue,
+    itemHeight: itemHeight,
     isExpanded: true,
     icon: const Icon(LucideIcons.chevronDown, size: 20),
     decoration: InputDecoration(labelText: label, helperText: hint),

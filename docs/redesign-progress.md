@@ -201,9 +201,52 @@ arquivos e quatro renders examinados. Essa revisão foi estática/visual; não
 equivale a teste físico, leitor de tela ou medição de FPS. Não há novo APK/ZIP
 nesta parte. A fase 4 ainda inclui Transações e Planejamento.
 
+## Fase 4B — Transações
+
+Implementação da listagem e do detalhe, preservando cadastro, persistência e
+cancelamento com confirmação e histórico:
+
+- Busca e tipo combinam; contagem informa o resultado e “Limpar busca e filtro”
+  restaura ambos. Despesas continua incluindo compras no cartão e Transferências
+  inclui pagamentos de fatura; canceladas permanecem consultáveis.
+- Chips aparecem com pelo menos 960px disponíveis e texto até 1,3×. Abaixo disso,
+  seletor nativo rotulado Tipo conserva as quatro opções, com altura conforme o
+  conteúdo. Abaixo de 600px ou acima de 1,3×, busca e seletor empilham.
+- Linhas migradas exibem descrição e metadados completos, com dinheiro exato,
+  semântica financeira explícita e geometria reservada em privacidade. Grupos
+  diários passam a `flat`; divisores, status e reveal com movimento reduzido
+  continuam presentes.
+- O painel de 360px exige 1020px disponíveis depois do rail e gutters,
+  reservando 640px ao ledger e 20px de intervalo. Sem essa largura, usa modal
+  raiz. Busca ou tipo que exclui a seleção deixa de apresentar o painel.
+- Texto ampliado, largura disponível inferior a 600px ou altura inferior a
+  500px colocam controles e lista na mesma rolagem. Chaves estáveis conservam
+  texto e foco da busca tanto nessa troca quanto nas composições dos filtros.
+- Descrição, estado, valor e campos do painel são roláveis. O modal desktop
+  limita seu viewport de conteúdo para conciliar a medição responsiva dos
+  valores com o diálogo nativo; a folha compacta mantém seu fluxo natural.
+  Privacidade reage enquanto o modal está aberto, sem conservar valores
+  acessíveis. Ações da listagem, detalhe e confirmação usam altura adaptável.
+
+Dez testes novos cobrem os tipos contábeis em 390/1440px, busca combinada e
+limpeza, painel conforme a largura local, seleção filtrada, privacidade ao vivo
+em modais 390/1200px, descrição e dinheiro extensos em 320px/2×, opção longa no
+seletor, privacidade no desktop e busca com foco ao mudar largura/altura.
+O teste de foco reproduziu a falha na revisão independente e passou com a
+correção. Sete novos goldens cobrem 320/390/800/1440px, claro/escuro, 1,3×/2×
+e diálogo em notebook 1200px. Três goldens existentes foram atualizados;
+formulários e demais telas conservam suas imagens de referência.
+
+Detector de layout antes/depois: lista vazia. Verificação visual em duas
+rodadas confirmou hierarquia, grupos, reflow e detalhe nos estados renderizados.
+Revisão independente final: **PASS**, após corrigir a perda de foco ao trocar
+a disposição interna da busca e do tipo, sem outros achados materiais.
+Resultado final: **375 testes passaram**, com análise estática sem problemas.
+Validação de widgets e pintura não equivale a teste físico de Android/iOS,
+leitor de tela ou medição de FPS. Não foi gerado novo APK/ZIP nesta parte.
+
 ## Sequência restante
 
-4B. Transações: densidade, agrupamentos, filtros e reflow, preservando operações.
 4C. Planejamento: hierarquia e reflow de agenda/compromissos, preservando regras.
 5. Análises/patrimônio: perguntas, critérios, valores e alternativas textuais.
 6. Inteligência: fase condicional de produto, **não incluída** no redesign

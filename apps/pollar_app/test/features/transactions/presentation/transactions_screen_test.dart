@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../../support/find_money_text.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pollar_app/core/ledger/balance_rules.dart';
@@ -68,7 +71,19 @@ void main() {
   ) async {
     await tester.pumpWidget(app(repository));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Transações').first);
+    await tester.tap(
+      find.byType(NavigationRail).evaluate().isNotEmpty
+          ? find
+                .descendant(
+                  of: find.byType(NavigationRail),
+                  matching: find.byTooltip('Transações'),
+                )
+                .first
+          : find.descendant(
+              of: find.byType(NavigationBar),
+              matching: find.text('Transações'),
+            ),
+    );
     await tester.pumpAndSettle();
   }
 
@@ -88,16 +103,22 @@ void main() {
 
     expect(find.text('Mercado'), findsOneWidget);
     expect(find.text('Salário'), findsOneWidget);
-    expect(find.text(r'−R$ 234,80'), findsOneWidget);
+    expect(findMoneyText(r'−R$ 234,80'), findsOneWidget);
 
-    await tester.tap(find.text('Receitas'));
+    if (find.byKey(const ValueKey('filter-income')).evaluate().isNotEmpty) {
+      await tester.tap(find.byKey(const ValueKey('filter-income')));
+    } else {
+      await tester.tap(find.byKey(const ValueKey('transaction-type-all')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Receitas').last);
+    }
     await tester.pumpAndSettle();
     expect(find.text('Mercado'), findsNothing);
     expect(find.text('Salário'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Ocultar valores'));
     await tester.pump();
-    expect(find.text(r'+R$ 9.200,00'), findsNothing);
+    expect(findMoneyText(r'+R$ 9.200,00'), findsNothing);
     expect(find.textContaining('•••••'), findsWidgets);
   });
 

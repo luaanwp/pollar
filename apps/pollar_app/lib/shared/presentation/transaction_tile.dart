@@ -7,6 +7,7 @@ import '../../app/theme/pollar_theme.dart';
 import '../../core/money/money.dart';
 import '../../core/money/money_formatter.dart';
 import 'privacy_amount.dart';
+import 'money_text.dart';
 import 'status_badge.dart';
 
 enum TransactionKind { expense, income, transfer, cardPayment }
@@ -50,6 +51,15 @@ class TransactionTile extends StatelessWidget {
   /// Other ledger screens retain their existing presentation until migrated.
   final bool reflowContent;
   final VoidCallback? onTap;
+
+  MoneySemantic get _amountSemantic => !reflowContent
+      ? MoneySemantic.automatic
+      : switch (kind) {
+          TransactionKind.income => MoneySemantic.income,
+          TransactionKind.expense => MoneySemantic.expense,
+          TransactionKind.transfer ||
+          TransactionKind.cardPayment => MoneySemantic.neutral,
+        };
 
   @override
   Widget build(BuildContext context) {
@@ -165,8 +175,10 @@ class TransactionTile extends StatelessWidget {
                           Flexible(
                             child: Text(
                               title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              maxLines: reflowContent ? null : 1,
+                              overflow: reflowContent
+                                  ? null
+                                  : TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(fontWeight: FontWeight.w500),
                             ),
@@ -203,8 +215,10 @@ class TransactionTile extends StatelessWidget {
                         const SizedBox(height: 2),
                         Text(
                           metadata,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          maxLines: reflowContent ? null : 1,
+                          overflow: reflowContent
+                              ? null
+                              : TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: pollar.textMuted),
                         ),
@@ -219,6 +233,7 @@ class TransactionTile extends StatelessWidget {
                     PrivacyAmount(
                       amount,
                       hidden: privacyHidden,
+                      semantic: _amountSemantic,
                       maskDigits: 5,
                       showSign: kind == TransactionKind.income,
                       colorBySign: kind == TransactionKind.income,
@@ -319,8 +334,10 @@ class TransactionTile extends StatelessWidget {
                             const SizedBox(height: 2),
                             Text(
                               metadata,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                              maxLines: reflowContent ? null : 2,
+                              overflow: reflowContent
+                                  ? null
+                                  : TextOverflow.ellipsis,
                               style: text.bodySmall?.copyWith(
                                 color: pollar.textMuted,
                               ),
@@ -348,6 +365,7 @@ class TransactionTile extends StatelessWidget {
                   child: PrivacyAmount(
                     amount,
                     hidden: privacyHidden,
+                    semantic: _amountSemantic,
                     maskDigits: 5,
                     showSign: kind == TransactionKind.income,
                     colorBySign: kind == TransactionKind.income,
