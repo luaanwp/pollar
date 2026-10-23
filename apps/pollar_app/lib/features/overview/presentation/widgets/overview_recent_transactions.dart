@@ -24,9 +24,12 @@ class OverviewRecentTransactions extends StatelessWidget {
   Widget build(BuildContext context) {
     final pollar = context.pollar;
     final accessible = MediaQuery.textScalerOf(context).scale(1) > 1.3;
-    final title = Text(
-      'Transações recentes',
-      style: Theme.of(context).textTheme.titleMedium,
+    final title = Semantics(
+      header: true,
+      child: Text(
+        'Transações recentes',
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
     );
     final action = PollarButton(
       label: 'Ver transações',
@@ -36,6 +39,7 @@ class OverviewRecentTransactions extends StatelessWidget {
       onPressed: onOpenTransactions,
     );
     return PollarCard(
+      variant: PollarCardVariant.flat,
       padding: PollarCardPadding.none,
       child: Column(
         children: [
@@ -92,6 +96,7 @@ class OverviewRecentTransactions extends StatelessWidget {
             for (final (index, transaction) in transactions.indexed) ...[
               if (index > 0) Divider(height: 1, color: pollar.border),
               TransactionTile(
+                reflowContent: true,
                 title: transaction.description,
                 category: transaction.category,
                 account: transaction.accountLabel,

@@ -2,7 +2,7 @@
 
 Implementation-ready design language for Flutter desktop and mobile applications. This file is the canonical human-readable specification. Machine-readable values live in `pollar_design_tokens.json`.
 
-The implemented visual rules are also recorded in root `DESIGN.md`. Redesign phase 1 extends existing components explicitly. Phase 2 adds session-only sidebar collapse, a subordinate route context in the utility bar, and grouped More rows. Overview and subsequent page compositions in `UI_UX_REDESIGN_POLLAR.md` remain later phases. Financial behavior stays unchanged. Execution evidence and remaining validation are recorded in `docs/redesign-progress.md`.
+The implemented visual rules are also recorded in root `DESIGN.md`. Redesign phase 1 extends existing components explicitly. Phase 2 adds session-only sidebar collapse, a subordinate route context in the utility bar, and grouped More rows. Phase 3 migrates Overview to a focal confirmed balance, supporting monthly result and flat evidence lists, with the action after the summaries on stacked layouts. Subsequent page compositions in `UI_UX_REDESIGN_POLLAR.md` remain later phases. Financial behavior stays unchanged. Execution evidence and remaining validation are recorded in `docs/redesign-progress.md`.
 
 ## 1. Product principles
 
@@ -231,10 +231,11 @@ Top app bar + scrollable content + bottom navigation + quick-add action. Details
 
 ### Dashboard hierarchy
 
-1. Total balance/net worth and monthly result.
-2. Cash-flow trend and open card statements.
-3. Budgets, upcoming bills, and credit utilization.
-4. Recent transactions and secondary insights.
+1. Confirmed cash balance in one solid financial surface (40/34px by component width), projected cash and separately labelled projected card debt.
+2. Projected monthly result (22px), income and expenses, without an equally weighted outline.
+3. Account positions and recent movements as flat groups with dividers; two columns only when width and text scale allow.
+
+Stacked layouts place Nova transação after the two summaries; wide layouts keep it in the header. Exact monetary values wrap without shrinking and reserve visible/hidden geometry. Account names and primary movement descriptions remain complete. TransactionTile content-aware reflow is opt-in for Overview; other screens retain their defaults until migrated. States and first-account setup scroll when height is insufficient. Cash is never labelled net worth, currencies remain separate, and no history chart, budget or insight is invented for this page.
 
 ### Credit-card statement hierarchy
 

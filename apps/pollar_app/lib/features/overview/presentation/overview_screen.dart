@@ -1,7 +1,7 @@
 // THESIS: A posição financeira nasce do mesmo livro-caixa que a explica; recusa métricas demonstrativas e gráficos sem histórico.
-// OWN-WORLD: Superfícies planas contornadas, teal restrito a ações, valores tabulares exatos e estados semânticos do Pollar.
+// OWN-WORLD: Uma superfície focal de saldo; evidências planas, valores exatos e privacidade estável.
 // STORY: A pessoa distingue dinheiro confirmado do projetado, entende o resultado mensal e encontra os lançamentos que moveram as contas.
-// FIRST VIEWPORT: Cabeçalho operacional e resumo assimétrico lideram; posições por conta e movimentos recentes formam a segunda leitura.
+// FIRST VIEWPORT: Saldo e contexto mensal antecedem a ação no compacto; contas e movimentos explicam a posição.
 // FORM: Extensão “fechamento de caixa imediato”, sem concept seed por herdar uma superfície e um sistema precisamente definidos.
 // FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 
@@ -82,61 +82,81 @@ class _OverviewContentState extends ConsumerState<_OverviewContent> {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: PollarSizes.dashboardMax),
-        child: ListView(
-          padding: EdgeInsets.all(
-            compact ? PollarSpacing.x4 : PollarSpacing.x6,
-          ),
-          children: [
-            _OverviewHeader(
-              compact: compact,
-              currencies: snapshot.summaries
-                  .map((item) => item.currency)
-                  .toList(growable: false),
-              selectedCurrency: summary.currency,
-              onCurrencyChanged: (currency) =>
-                  setState(() => _selectedCurrency = currency),
-              onNewTransaction: () => context.go('/transactions/new'),
-            ),
-            const SizedBox(height: PollarSpacing.x5),
-            OverviewMetrics(
-              summary: summary,
-              accountCount: visibleAccounts.length,
-              privacyHidden: privacyHidden,
-            ),
-            const SizedBox(height: PollarSpacing.x4),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final wide = constraints.maxWidth >= 880;
-                final accounts = OverviewAccountPositions(
-                  accounts: visibleAccounts,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final stacked =
+                constraints.maxWidth < 960 ||
+                MediaQuery.textScalerOf(context).scale(1) > 1.3;
+            return ListView(
+              padding: EdgeInsets.all(
+                compact ? PollarSpacing.x4 : PollarSpacing.x6,
+              ),
+              children: [
+                _OverviewHeader(
+                  compact: stacked,
+                  currencies: snapshot.summaries
+                      .map((item) => item.currency)
+                      .toList(growable: false),
+                  selectedCurrency: summary.currency,
+                  onCurrencyChanged: (currency) =>
+                      setState(() => _selectedCurrency = currency),
+                  onNewTransaction: stacked
+                      ? null
+                      : () => context.go('/transactions/new'),
+                ),
+                const SizedBox(height: PollarSpacing.x5),
+                OverviewMetrics(
+                  summary: summary,
+                  accountCount: visibleAccounts.length,
                   privacyHidden: privacyHidden,
-                  onOpenAccounts: () => context.go('/accounts'),
-                );
-                final recent = OverviewRecentTransactions(
-                  transactions: visibleTransactions,
-                  privacyHidden: privacyHidden,
-                  onOpenTransactions: () => context.go('/transactions'),
-                );
-                if (!wide) {
-                  return Column(
-                    children: [
-                      accounts,
-                      const SizedBox(height: PollarSpacing.x4),
-                      recent,
-                    ],
-                  );
-                }
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(flex: 4, child: accounts),
-                    const SizedBox(width: PollarSpacing.x4),
-                    Expanded(flex: 6, child: recent),
-                  ],
-                );
-              },
-            ),
-          ],
+                ),
+                if (stacked) ...[
+                  const SizedBox(height: PollarSpacing.x5),
+                  PollarButton(
+                    label: 'Nova transação',
+                    leadingIcon: LucideIcons.plus,
+                    fullWidth: true,
+                    onPressed: () => context.go('/transactions/new'),
+                  ),
+                ],
+                const SizedBox(height: PollarSpacing.x8),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final wide =
+                        constraints.maxWidth >= 880 &&
+                        MediaQuery.textScalerOf(context).scale(1) <= 1.3;
+                    final accounts = OverviewAccountPositions(
+                      accounts: visibleAccounts,
+                      privacyHidden: privacyHidden,
+                      onOpenAccounts: () => context.go('/accounts'),
+                    );
+                    final recent = OverviewRecentTransactions(
+                      transactions: visibleTransactions,
+                      privacyHidden: privacyHidden,
+                      onOpenTransactions: () => context.go('/transactions'),
+                    );
+                    if (!wide) {
+                      return Column(
+                        children: [
+                          accounts,
+                          const SizedBox(height: PollarSpacing.x8),
+                          recent,
+                        ],
+                      );
+                    }
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(flex: 4, child: accounts),
+                        const SizedBox(width: PollarSpacing.x4),
+                        Expanded(flex: 6, child: recent),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -156,22 +176,19 @@ class _OverviewHeader extends StatelessWidget {
   final List<Currency> currencies;
   final Currency selectedCurrency;
   final ValueChanged<Currency> onCurrencyChanged;
-  final VoidCallback onNewTransaction;
+  final VoidCallback? onNewTransaction;
 
   @override
   Widget build(BuildContext context) {
     final copy = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Posição atual',
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        const SizedBox(height: PollarSpacing.x1),
-        Text(
-          'Saldos calculados a partir das suas contas e transações.',
-          style: Theme.of(context).textTheme.bodyMedium
-              ?.copyWith(color: context.pollar.textSecondary),
+        Semantics(
+          header: true,
+          child: Text(
+            'Posição atual',
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
         ),
       ],
     );
@@ -207,8 +224,6 @@ class _OverviewHeader extends StatelessWidget {
             const SizedBox(height: PollarSpacing.x4),
             currencyControl,
           ],
-          const SizedBox(height: PollarSpacing.x4),
-          action,
         ],
       );
     }
@@ -221,7 +236,7 @@ class _OverviewHeader extends StatelessWidget {
           currencyControl,
           const SizedBox(width: PollarSpacing.x2),
         ],
-        action,
+        if (onNewTransaction != null) action,
       ],
     );
   }
@@ -236,7 +251,7 @@ class _EmptyOverview extends StatelessWidget {
   Widget build(BuildContext context) => Center(
     child: ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 440),
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(PollarSpacing.x6),
         child: PollarCard(
           child: Column(

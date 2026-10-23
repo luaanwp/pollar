@@ -101,4 +101,46 @@ void main() {
       textScale: 2,
     );
   });
+
+  for (final sample in [
+    (
+      width: 320.0,
+      height: 844.0,
+      scale: 1.3,
+      dark: false,
+      name: 'overview_320_light_130pct.png',
+    ),
+    (
+      width: 390.0,
+      height: 844.0,
+      scale: 2.0,
+      dark: true,
+      name: 'overview_390_dark_2x.png',
+    ),
+    (
+      width: 800.0,
+      height: 900.0,
+      scale: 1.0,
+      dark: false,
+      name: 'overview_800_light.png',
+    ),
+    (
+      width: 1920.0,
+      height: 1080.0,
+      scale: 1.0,
+      dark: false,
+      name: 'overview_1920_light.png',
+    ),
+  ]) {
+    testWidgets(sample.name, (tester) async {
+      await renderOverview(
+        tester,
+        size: Size(sample.width, sample.height),
+        golden: sample.name,
+        textScale: sample.scale,
+        dark: sample.dark,
+      );
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

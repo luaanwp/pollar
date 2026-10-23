@@ -23,22 +23,21 @@ class OverviewMetrics extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
-      final accessible = MediaQuery.textScalerOf(context).scale(1) > 1.3;
-      final wide = constraints.maxWidth >= 760 && !accessible;
-      final balance = _BalancePositionCard(
+      final wide =
+          constraints.maxWidth >= 960 &&
+          MediaQuery.textScalerOf(context).scale(1) <= 1.3;
+      final balance = _BalancePosition(
         summary: summary,
         accountCount: accountCount,
-        privacyHidden: privacyHidden,
+        hidden: privacyHidden,
       );
-      final result = _MonthlyResultCard(
-        summary: summary,
-        privacyHidden: privacyHidden,
-      );
+      final result = _MonthlyResult(summary: summary, hidden: privacyHidden);
       if (!wide) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             balance,
-            const SizedBox(height: PollarSpacing.x4),
+            const SizedBox(height: PollarSpacing.x6),
             result,
           ],
         );
@@ -47,283 +46,210 @@ class OverviewMetrics extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(flex: 7, child: balance),
-          const SizedBox(width: PollarSpacing.x4),
-          Expanded(flex: 3, child: result),
+          const SizedBox(width: PollarSpacing.x8),
+          Expanded(flex: 4, child: result),
         ],
       );
     },
   );
 }
 
-class _BalancePositionCard extends StatelessWidget {
-  const _BalancePositionCard({
+class _BalancePosition extends StatelessWidget {
+  const _BalancePosition({
     required this.summary,
     required this.accountCount,
-    required this.privacyHidden,
+    required this.hidden,
   });
 
   final OverviewCurrencySummary summary;
   final int accountCount;
-  final bool privacyHidden;
-
-  @override
-  Widget build(BuildContext context) {
-    final pollar = context.pollar;
-    final accessible = MediaQuery.textScalerOf(context).scale(1) > 1.3;
-    return PollarCard(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final split = constraints.maxWidth >= 500 && !accessible;
-          final confirmed = _MetricBlock(
-            title: 'Saldo confirmado',
-            amount: summary.confirmed,
-            hidden: privacyHidden,
-            hero: true,
-            helper:
-                '$accountCount ${accountCount == 1 ? 'posição ativa' : 'posições ativas'} · ${summary.currency.code}',
-          );
-          final projected = _MetricBlock(
-            title: 'Saldo projetado',
-            amount: summary.projected,
-            hidden: privacyHidden,
-            helper: 'Inclui lançamentos previstos e pendentes',
-          );
-          final content = split
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(flex: 6, child: confirmed),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: PollarSpacing.x5,
-                      ),
-                      child: SizedBox(
-                        height: 86,
-                        child: VerticalDivider(width: 1, color: pollar.border),
-                      ),
-                    ),
-                    Expanded(flex: 5, child: projected),
-                  ],
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    confirmed,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: PollarSpacing.x4,
-                      ),
-                      child: Divider(height: 1, color: pollar.border),
-                    ),
-                    projected,
-                  ],
-                );
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              content,
-              if (!summary.projectedCardDebt.isZero) ...[
-                const SizedBox(height: PollarSpacing.x4),
-                Container(
-                  padding: const EdgeInsets.all(PollarSpacing.x3),
-                  decoration: BoxDecoration(
-                    color: pollar.surfaceAlt,
-                    borderRadius: BorderRadius.circular(PollarRadii.medium),
-                  ),
-                  child: accessible
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  LucideIcons.creditCard,
-                                  size: 18,
-                                  color: pollar.info,
-                                ),
-                                const SizedBox(width: PollarSpacing.x2),
-                                Expanded(
-                                  child: Text(
-                                    'Dívida projetada nos cartões',
-                                    style: Theme.of(context).textTheme.bodySmall
-                                        ?.copyWith(color: pollar.textSecondary),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: PollarSpacing.x2),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: PrivacyAmount(
-                                summary.projectedCardDebt,
-                                hidden: privacyHidden,
-                                maskDigits: 5,
-                                semantic: MoneySemantic.debt,
-                              ),
-                            ),
-                          ],
-                        )
-                      : Row(
-                          children: [
-                            Icon(
-                              LucideIcons.creditCard,
-                              size: 18,
-                              color: pollar.info,
-                            ),
-                            const SizedBox(width: PollarSpacing.x2),
-                            Expanded(
-                              child: Text(
-                                'Dívida projetada nos cartões',
-                                style: Theme.of(context).textTheme.bodySmall
-                                    ?.copyWith(color: pollar.textSecondary),
-                              ),
-                            ),
-                            const SizedBox(width: PollarSpacing.x3),
-                            PrivacyAmount(
-                              summary.projectedCardDebt,
-                              hidden: privacyHidden,
-                              maskDigits: 5,
-                              semantic: MoneySemantic.debt,
-                            ),
-                          ],
-                        ),
-                ),
-              ],
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _MonthlyResultCard extends StatelessWidget {
-  const _MonthlyResultCard({
-    required this.summary,
-    required this.privacyHidden,
-  });
-
-  final OverviewCurrencySummary summary;
-  final bool privacyHidden;
+  final bool hidden;
 
   @override
   Widget build(BuildContext context) => PollarCard(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _MetricBlock(
-          title: 'Resultado projetado do mês',
-          amount: summary.projectedMonthlyResult,
-          hidden: privacyHidden,
-          hero: true,
-          colorBySign: true,
-          helper: 'Receitas menos despesas',
-        ),
-        const SizedBox(height: PollarSpacing.x4),
-        _FlowLine(
-          label: 'Entradas',
-          amount: summary.projectedMonthlyIncome,
-          hidden: privacyHidden,
-          positive: true,
-        ),
-        const SizedBox(height: PollarSpacing.x2),
-        _FlowLine(
-          label: 'Saídas',
-          amount: summary.projectedMonthlyExpenses,
-          hidden: privacyHidden,
-        ),
-      ],
+    variant: PollarCardVariant.financial,
+    child: LayoutBuilder(
+      builder: (context, constraints) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Saldo confirmado',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: PollarSpacing.x2),
+          PrivacyAmount(
+            summary.confirmed,
+            key: const Key('overview-confirmed'),
+            hidden: hidden,
+            style: PollarTypography.balanceHeroForWidth(constraints.maxWidth),
+            semantic: MoneySemantic.balance,
+            allowWrap: true,
+            reserveLayout: true,
+          ),
+          const SizedBox(height: PollarSpacing.x1),
+          Text(
+            '$accountCount ${accountCount == 1 ? 'posição ativa' : 'posições ativas'} · ${summary.currency.code}',
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: context.pollar.textSecondary),
+          ),
+          const SizedBox(height: PollarSpacing.x5),
+          _AmountLine(
+            label: 'Saldo projetado',
+            amount: summary.projected,
+            hidden: hidden,
+            style: PollarTypography.tabular(
+              Theme.of(context).textTheme.headlineSmall!,
+            ),
+          ),
+          const SizedBox(height: PollarSpacing.x1),
+          Text(
+            'Inclui lançamentos previstos e pendentes',
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: context.pollar.textSecondary),
+          ),
+          if (!summary.projectedCardDebt.isZero) ...[
+            const SizedBox(height: PollarSpacing.x4),
+            Divider(height: 1, color: context.pollar.borderStrong),
+            const SizedBox(height: PollarSpacing.x3),
+            _AmountLine(
+              label: 'Dívida projetada nos cartões',
+              amount: summary.projectedCardDebt,
+              hidden: hidden,
+              semantic: MoneySemantic.debt,
+              icon: LucideIcons.creditCard,
+            ),
+          ],
+        ],
+      ),
     ),
   );
 }
 
-class _MetricBlock extends StatelessWidget {
-  const _MetricBlock({
-    required this.title,
-    required this.amount,
-    required this.hidden,
-    required this.helper,
-    this.hero = false,
-    this.colorBySign = false,
-  });
-
-  final String title;
-  final Money amount;
+class _MonthlyResult extends StatelessWidget {
+  const _MonthlyResult({required this.summary, required this.hidden});
+  final OverviewCurrencySummary summary;
   final bool hidden;
-  final String helper;
-  final bool hero;
-  final bool colorBySign;
 
   @override
   Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      Text(title, style: Theme.of(context).textTheme.titleMedium),
+      Semantics(
+        header: true,
+        child: Text(
+          'Resultado projetado do mês',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+      ),
       const SizedBox(height: PollarSpacing.x2),
       PrivacyAmount(
-        amount,
+        summary.projectedMonthlyResult,
         hidden: hidden,
-        maskDigits: hero ? 6 : 5,
-        colorBySign: colorBySign,
-        showSign: colorBySign && amount.isPositive,
-        style: hero
-            ? PollarTypography.amountHero
-            : PollarTypography.amountStandard,
-        semantic: colorBySign ? MoneySemantic.neutral : MoneySemantic.balance,
+        style: PollarTypography.tabular(
+          Theme.of(context).textTheme.headlineMedium!,
+        ),
+        colorBySign: true,
+        showSign: summary.projectedMonthlyResult.isPositive,
+        semantic: MoneySemantic.neutral,
+        allowWrap: true,
+        reserveLayout: true,
       ),
       const SizedBox(height: PollarSpacing.x1),
       Text(
-        helper,
+        'Receitas menos despesas',
         style: Theme.of(context).textTheme.bodySmall
             ?.copyWith(color: context.pollar.textSecondary),
+      ),
+      const SizedBox(height: PollarSpacing.x4),
+      _AmountLine(
+        label: 'Entradas',
+        amount: summary.projectedMonthlyIncome,
+        hidden: hidden,
+        semantic: MoneySemantic.income,
+        positive: true,
+      ),
+      const SizedBox(height: PollarSpacing.x2),
+      _AmountLine(
+        label: 'Saídas',
+        amount: summary.projectedMonthlyExpenses,
+        hidden: hidden,
+        semantic: MoneySemantic.expense,
       ),
     ],
   );
 }
 
-class _FlowLine extends StatelessWidget {
-  const _FlowLine({
+/// Values always have bounded width, including when large text stacks the pair.
+class _AmountLine extends StatelessWidget {
+  const _AmountLine({
     required this.label,
     required this.amount,
     required this.hidden,
+    this.style,
+    this.semantic = MoneySemantic.balance,
     this.positive = false,
+    this.icon,
   });
 
   final String label;
   final Money amount;
   final bool hidden;
+  final TextStyle? style;
+  final MoneySemantic semantic;
   final bool positive;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
-    final labelWidget = Text(
-      label,
-      style: Theme.of(context).textTheme.bodySmall
-          ?.copyWith(color: context.pollar.textSecondary),
+    final labelWidget = Row(
+      children: [
+        if (icon != null) ...[
+          Icon(icon, size: 16, color: context.pollar.textSecondary),
+          const SizedBox(width: PollarSpacing.x2),
+        ],
+        Expanded(
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium
+                ?.copyWith(color: context.pollar.textSecondary),
+          ),
+        ),
+      ],
     );
     final amountWidget = PrivacyAmount(
       amount,
       hidden: hidden,
+      style: style,
       maskDigits: 5,
+      semantic: semantic,
       showSign: positive,
       colorBySign: positive,
-      semantic: positive ? MoneySemantic.income : MoneySemantic.expense,
+      allowWrap: true,
+      reserveLayout: true,
+      alignment: AlignmentDirectional.topEnd,
     );
-    if (MediaQuery.textScalerOf(context).scale(1) > 1.3) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          labelWidget,
-          const SizedBox(height: PollarSpacing.x1),
-          Align(alignment: Alignment.centerRight, child: amountWidget),
-        ],
-      );
-    }
-    return Row(
-      children: [
-        Expanded(child: labelWidget),
-        amountWidget,
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 280 ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.3) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              labelWidget,
+              const SizedBox(height: PollarSpacing.x1),
+              amountWidget,
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: 5, child: labelWidget),
+            const SizedBox(width: PollarSpacing.x3),
+            Expanded(flex: 5, child: amountWidget),
+          ],
+        );
+      },
     );
   }
 }

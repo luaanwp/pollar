@@ -27,6 +27,15 @@ page gutters remain 16/24px; later web-kit measurements below are references.
 The toolbar is normally 56px and grows for the compact enlarged page heading;
 there is no additional mobile quick-add control in the implemented shell.
 
+Redesign phase 3 migrates Overview: one solid financial surface leads with
+confirmed cash (40/34px by available width), then projected cash and separately
+labelled card debt. Monthly result supports it at 22px without an outer card.
+On stacked layouts the create action follows both summaries; on wide layouts
+it stays in the header. Evidence lists are flat, with 18px headings and row
+dividers. All overview amounts wrap and reserve privacy geometry; recent
+transactions opt into content-aware reflow, while other screens keep defaults.
+Do not add history charts, insight claims or financial calculations to the UI.
+
 Implementation-ready design language for a **personal-finance product** (Flutter desktop + mobile), reconstructed as a web design system: CSS tokens, React primitives and two full UI-kit recreations.
 
 Pollar is the official product name. Brand personality: private, composed, dependable, intelligent, precise, contemporary. Product principles: calm clarity, financial precision, trust through restraint, progressive disclosure, accessible by default, cross-platform familiarity. Default locale **pt-BR** (BRL), and all product copy in this system is written in Portuguese.

@@ -22,6 +22,7 @@ class PrivacyAmount extends StatelessWidget {
     this.formatter = const MoneyFormatter.ptBr(),
     this.allowWrap = false,
     this.reserveLayout = false,
+    this.alignment = AlignmentDirectional.topStart,
   }) : assert(maskDigits > 0);
 
   final Money money;
@@ -37,6 +38,9 @@ class PrivacyAmount extends StatelessWidget {
   /// Opt-in for reflowing hero amounts: reserve both visible/masked metrics.
   /// Original text is measured only, never painted or exposed when hidden.
   final bool reserveLayout;
+
+  /// Alignment within the reserved footprint; defaults preserve existing UI.
+  final AlignmentGeometry alignment;
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +127,7 @@ class PrivacyAmount extends StatelessWidget {
               : math.max(visibleSize.width, maskedSize.width),
           height: math.max(visibleSize.height, maskedSize.height),
           child: Align(
-            alignment: AlignmentDirectional.topStart,
+            alignment: alignment,
             child: content(allowGroupBreaks: allowGroupBreaks),
           ),
         );

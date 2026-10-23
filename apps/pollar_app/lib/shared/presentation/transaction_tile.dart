@@ -1,8 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/theme/pollar_theme.dart';
 import '../../core/money/money.dart';
+import '../../core/money/money_formatter.dart';
 import 'privacy_amount.dart';
 import 'status_badge.dart';
 
@@ -25,6 +28,7 @@ class TransactionTile extends StatelessWidget {
     this.icon,
     this.privacyHidden = false,
     this.selected = false,
+    this.reflowContent = false,
     this.onTap,
   });
 
@@ -41,6 +45,10 @@ class TransactionTile extends StatelessWidget {
   final IconData? icon;
   final bool privacyHidden;
   final bool selected;
+
+  /// Opt-in for migrated summaries: complete copy and bounded, wrapping money.
+  /// Other ledger screens retain their existing presentation until migrated.
+  final bool reflowContent;
   final VoidCallback? onTap;
 
   @override
@@ -49,10 +57,75 @@ class TransactionTile extends StatelessWidget {
     final metadata = [category, account].whereType<String>().join(' · ');
     final colors = _kindColors(pollar);
 
+    if (reflowContent) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final stacked =
+              MediaQuery.textScalerOf(context).scale(1) > 1.3 ||
+              !_fitsInline(context, constraints.maxWidth, metadata);
+          return stacked
+              ? _buildAccessibleLayout(context, pollar, metadata, colors)
+              : _buildInlineLayout(context, pollar, metadata, colors);
+        },
+      );
+    }
     if (MediaQuery.textScalerOf(context).scale(1) > 1.3) {
       return _buildAccessibleLayout(context, pollar, metadata, colors);
     }
 
+    return _buildInlineLayout(context, pollar, metadata, colors);
+  }
+
+  bool _fitsInline(BuildContext context, double width, String metadata) {
+    if (width < 560) return false;
+    final painter = TextPainter(
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+      maxLines: 1,
+    );
+    double measure(String value, TextStyle style) {
+      painter.text = TextSpan(text: value, style: style);
+      painter.layout();
+      return painter.width;
+    }
+
+    try {
+      final exact = const MoneyFormatter.ptBr().format(
+        amount,
+        showSign: kind == TransactionKind.income,
+      );
+      final amountWidth = math.max(
+        measure(exact, PollarTypography.amountStandard),
+        measure(
+          '${amount.currency.symbol} •••••',
+          PollarTypography.amountStandard.copyWith(letterSpacing: 0.64),
+        ),
+      );
+      final copyWidth =
+          width -
+          PollarSpacing.x4 * 2 -
+          36 -
+          PollarSpacing.x3 * 2 -
+          amountWidth;
+      return measure(
+                title,
+                Theme.of(context).textTheme.bodyMedium!
+                    .copyWith(fontWeight: FontWeight.w500),
+              ) <=
+              copyWidth &&
+          measure(metadata, Theme.of(context).textTheme.bodySmall!) <=
+              copyWidth;
+    } finally {
+      painter.dispose();
+    }
+  }
+
+  Widget _buildInlineLayout(
+    BuildContext context,
+    PollarColors pollar,
+    String metadata,
+    _TransactionKindColors colors,
+  ) {
     return Semantics(
       button: onTap != null,
       selected: selected,
@@ -149,6 +222,9 @@ class TransactionTile extends StatelessWidget {
                       maskDigits: 5,
                       showSign: kind == TransactionKind.income,
                       colorBySign: kind == TransactionKind.income,
+                      allowWrap: reflowContent,
+                      reserveLayout: reflowContent,
+                      alignment: AlignmentDirectional.topEnd,
                     ),
                     if (date != null || status != null) ...[
                       const SizedBox(height: PollarSpacing.x1),
@@ -231,8 +307,10 @@ class TransactionTile extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                            maxLines: reflowContent ? null : 2,
+                            overflow: reflowContent
+                                ? null
+                                : TextOverflow.ellipsis,
                             style: text.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w500,
                             ),
@@ -273,6 +351,9 @@ class TransactionTile extends StatelessWidget {
                     maskDigits: 5,
                     showSign: kind == TransactionKind.income,
                     colorBySign: kind == TransactionKind.income,
+                    allowWrap: reflowContent,
+                    reserveLayout: reflowContent,
+                    alignment: AlignmentDirectional.topEnd,
                   ),
                 ),
                 if (date != null || status != null) ...[

@@ -22,7 +22,9 @@ Show balances derived from account opening values and the canonical ledger rules
 
 ## Direction
 
-“Fechamento de caixa imediato”: a compact financial summary leads, account positions explain the total, and recent movements provide evidence. The established Pollar world remains unchanged: flat bordered surfaces, restrained teal, exact tabular amounts, semantic status labels, no invented historical charts.
+“Fechamento de caixa imediato”: one solid financial surface leads with confirmed cash at 40/34px, then projected cash and separately labelled card debt. Monthly result supports it at 22px without a competing outline. Flat account and transaction lists explain the position, using dividers and 18px headings. Exact tabular amounts, semantic states and existing teal remain authoritative; no invented charts or insights.
+
+In stacked layouts, confirmed/projected and monthly context precede Nova transação. Wide layouts retain the action in the header. Layout uses actual component width and stacks evidence columns above 1.3× text. Values wrap without shrinking and reserve both visible/hidden geometry. Recent rows use the shared TransactionTile with opt-in content-aware reflow; other product rows retain their defaults.
 
 ## Memorable moment
 
@@ -35,3 +37,12 @@ The overview feature cannot import accounts or transactions. Cross-feature mappi
 ## Unresolved
 
 Period switching, historical trend charts, budgets, statement summaries, and export wait for their owning slices.
+
+## Verification boundary
+
+Widget tests verify exact balances, currency separation, real create routes,
+320px/2× large positive/negative amounts and complete names, privacy geometry,
+stacked desktop evidence and a reachable first-account action in a short
+window. Goldens cover 320/390/800/1200/1440/1920px, themes and text scaling.
+These are Flutter renders and simulated input, not physical device or assistive
+technology acceptance. Authentication/synchronization behavior is not changed.

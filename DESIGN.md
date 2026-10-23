@@ -184,9 +184,9 @@ O sistema usa superfícies planas, neutros levemente esverdeados e uma única vo
 - Valores financeiros exatos, algarismos tabulares e privacidade com reserva explícita de layout nos saldos que fazem reflow.
 - Iconografia Lucide de contorno arredondado, sempre com rótulo acessível quando o controle não tem texto.
 
-### Migração do redesign — fase 1
+### Migração do redesign — fases 1 a 3
 
-Esta atualização incorpora somente os fundamentos implementados de `UI_UX_REDESIGN_POLLAR.md`: variantes de cartão, superfície focal sólida, novos papéis de saldo e reserva de layout. O catálogo de desenvolvimento demonstra esses papéis; as novas composições do shell e da visão geral continuam nas fases 2 e 3. As regras operacionais das telas abaixo permanecem vigentes até sua migração explícita.
+As fases implementadas de `UI_UX_REDESIGN_POLLAR.md` incluem fundamentos, navegação e Visão geral: variantes de cartão, superfície focal sólida, papéis de saldo, reserva de layout, rail recolhível e leitura financeira antes da ação no compacto. O catálogo demonstra os fundamentos; a Visão geral já os utiliza. As demais telas conservam suas regras operacionais até a migração explícita.
 
 | Regra anterior | Regra vigente e limite |
 | --- | --- |
@@ -362,13 +362,15 @@ A navegação acompanha a largura sem mudar o mapa mental.
 
 A visão geral funciona como fechamento de caixa imediato: distingue dinheiro disponível, compromissos futuros e resultado do período antes de apresentar sua composição.
 
-- **Summary pair:** saldo confirmado e saldo projetado formam um par explícito; confirmado lidera visualmente e projetado declara que inclui lançamentos previstos e pendentes.
-- **Monthly result:** resultado projetado é receitas menos despesas do mês e expõe entradas e saídas como componentes verificáveis, nunca como métrica isolada ou gamificada.
+- **Summary pair:** uma única superfície `financial` sólida reúne confirmado, projetado e dívida projetada explicitamente separada do caixa. Confirmado usa `balanceHeroForWidth` (40/34px por largura do componente); projetado tem escala de apoio e explica previstos/pendentes.
+- **Monthly result:** grupo sem moldura com título de seção, valor de 22px e entradas/saídas; confirma que o resultado é projetado e representa receitas menos despesas do mês, sem competir tipograficamente com o saldo.
+- **Reading/action order:** no compacto e em largura insuficiente, posição → mês → Nova transação → contas → transações recentes. No amplo, a ação fica no cabeçalho. Cabeçalho e grade usam largura disponível e texto ampliado, sem esconder o seletor de moeda.
+- **Evidence:** listas usam `flat`, títulos de 18px e divisores. Contas preservam nomes completos e valores com largura limitada; transações recentes optam pelo `TransactionTile.reflowContent`, mantendo linhas densas quando descrição, metadados e valor cabem e empilhando quando necessário. Outras instâncias mantêm o padrão até sua fase.
 - **Financial semantics:** contas ativas compõem os saldos de caixa; cartões são passivos e sua dívida projetada aparece separadamente. Contas arquivadas não entram nas posições ativas, e transações canceladas podem permanecer no histórico recente sem afetar os totais.
 - **Multiple currencies:** totais de moedas diferentes nunca são somados. Quando houver mais de uma moeda, um seletor explícito filtra resumo, posições e transações como uma unidade; o código da moeda permanece visível no contexto do saldo.
-- **Privacy:** o controle global oculta todos os valores da superfície de uma vez. A máscara mantém símbolo monetário, pegada visual, alinhamento e hierarquia; nomes, explicações, quantidade de posições, moeda e estados continuam legíveis.
+- **Privacy:** o controle global oculta todos os valores da superfície de uma vez. `reserveLayout` e `allowWrap` mantêm pegada e valor exato mesmo em texto ampliado; alinhamento reservado pode ser ao fim nas linhas. Nomes, explicações, quantidade de posições, moeda e estados continuam legíveis. O original não entra na semântica oculta.
 - **Responsive behavior:** o resumo assimétrico e as duas colunas inferiores existem apenas quando largura e escala tipográfica permitem; o reflow vertical preserva a sequência operacional e mantém valores alinhados ao fim.
-- **States:** carregamento informa que a posição está sendo calculada; erro recuperável afirma que os dados permanecem salvos e oferece recalcular; ausência de contas apresenta uma única chamada para cadastrar a primeira conta; ausência apenas de transações preserva o resumo e explica que o saldo inicial já compõe a posição.
+- **States:** carregamento informa que a posição está sendo calculada; erro recuperável afirma que os dados permanecem salvos e oferece recalcular; ausência de contas apresenta uma única chamada para cadastrar a primeira conta; ausência apenas de transações preserva o resumo e explica que o saldo inicial já compõe a posição. Vazio e estados compartilhados rolam quando a altura disponível não comporta o conteúdo.
 - **No synthetic history:** não introduza gráficos, tendências, comparações históricas, orçamentos ou troca de período sem dados reais e sem a fatia de produto correspondente.
 
 **The Currency Isolation Rule.** Cada moeda constitui uma visão financeira completa e independente; nenhum total, posição ou lançamento de outra moeda atravessa a seleção ativa.

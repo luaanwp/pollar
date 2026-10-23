@@ -24,6 +24,7 @@ class OverviewAccountPositions extends StatelessWidget {
   Widget build(BuildContext context) {
     final pollar = context.pollar;
     return PollarCard(
+      variant: PollarCardVariant.flat,
       padding: PollarCardPadding.none,
       child: Column(
         children: [
@@ -73,8 +74,6 @@ class _AccountPositionRow extends StatelessWidget {
             children: [
               Text(
                 account.name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodyMedium
                     ?.copyWith(fontWeight: FontWeight.w500),
               ),
@@ -101,6 +100,9 @@ class _AccountPositionRow extends StatelessWidget {
           semantic: account.isCreditCard
               ? MoneySemantic.debt
               : MoneySemantic.balance,
+          allowWrap: true,
+          reserveLayout: true,
+          alignment: AlignmentDirectional.topEnd,
         ),
         if (!account.isCreditCard &&
             account.balance.projected != account.balance.confirmed) ...[
@@ -110,6 +112,9 @@ class _AccountPositionRow extends StatelessWidget {
             hidden: privacyHidden,
             maskDigits: 5,
             semantic: MoneySemantic.balance,
+            allowWrap: true,
+            reserveLayout: true,
+            alignment: AlignmentDirectional.topEnd,
             style: Theme.of(context).textTheme.bodySmall
                 ?.copyWith(color: pollar.textMuted),
           ),
@@ -135,7 +140,7 @@ class _AccountPositionRow extends StatelessWidget {
               children: [
                 Expanded(child: identity),
                 const SizedBox(width: PollarSpacing.x3),
-                amounts,
+                Expanded(child: amounts),
               ],
             ),
     );
@@ -149,9 +154,12 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = Text(
-      'Posições por conta',
-      style: Theme.of(context).textTheme.titleMedium,
+    final title = Semantics(
+      header: true,
+      child: Text(
+        'Posições por conta',
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
     );
     final action = PollarButton(
       label: 'Ver contas',

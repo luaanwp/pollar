@@ -9,6 +9,7 @@ import 'package:pollar_app/core/money/money.dart';
 import 'package:pollar_app/main.dart';
 
 import '../../../support/overview_fixture.dart';
+import '../../../support/find_money_text.dart';
 
 void main() {
   testWidgets('shows exact derived balances and recent transaction evidence', (
@@ -18,8 +19,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Saldo confirmado'), findsOneWidget);
-    expect(find.text(r'R$ 8.030,00'), findsOneWidget);
-    expect(find.text(r'R$ 9.350,00'), findsWidgets);
+    expect(findMoneyText(r'R$ 8.030,00'), findsOneWidget);
+    expect(findMoneyText(r'R$ 9.350,00'), findsWidgets);
     expect(find.text('Dívida projetada nos cartões'), findsOneWidget);
 
     await tester.scrollUntilVisible(

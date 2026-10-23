@@ -107,10 +107,41 @@ para isolar o shell; não ampliam o aceite dos fluxos de autenticação/sync.
 Os renders e a área segura são simulados: não há novo aceite físico Android,
 iOS, leitor de tela ou pacote APK/ZIP nesta fase.
 
+## Fase 3 — Visão geral
+
+Implementação em 2026-10-23:
+
+- Uma superfície financeira sólida destaca o confirmado em 40/34px conforme a
+  largura real; projetado e dívida de cartão conservam seus significados.
+- O resultado projetado mensal usa escala de apoio, sem moldura equivalente.
+  Entradas e saídas continuam explícitas. No layout empilhado, “Nova transação”
+  vem depois dos dois resumos; no amplo, permanece no cabeçalho.
+- Contas e transações recentes usam agrupamentos planos, títulos de 18px e
+  divisores. A grade empilha acima de 1,3×; não usa só o tamanho da janela.
+- Valores têm largura limitada, quebra e reserva da geometria em privacidade.
+  Nomes de conta e descrições principais não são truncados. O reflow optativo
+  do TransactionTile mantém linhas densas quando o conteúdo cabe, preservando
+  o padrão das instâncias de outras telas.
+- Estados compartilhados e primeiro cadastro podem rolar em altura baixa.
+- Seleção de moeda, rotas, serviços, data source, domínio, autenticação e
+  sincronização permanecem preservados; nenhum gráfico/insight foi criado.
+
+Oito testes novos cobrem ordem inicial e rota real da ação, geometria e
+semântica da privacidade em três tamanhos/escalas, valores positivos/negativos
+extensos em 320px/2×, nomes completos, empilhamento desktop ampliado e cadastro
+inicial em janela de 360px de altura. Quatro novos goldens ampliam a matriz
+para 320/390/800/1200/1440/1920px, claro/escuro, 1,3× e 2×. Os cinco goldens
+anteriores da Visão geral foram atualizados; os demais preservam a aparência.
+
+Detector de layout antes/depois: lista vazia. Revisão independente: **PASS**,
+sem achados materiais nos sete arquivos de produção e nove renders examinados.
+Resultado final: **327 testes passaram**, com análise estática sem problemas.
+São renders Flutter e entradas simuladas, sem novo aceite físico Android/iOS,
+teclado/leitor de tela ou pacote APK/ZIP. As limitações de aceite da V1 não
+foram transformadas em aprovações por esta alteração visual.
+
 ## Sequência restante
 
-3. Visão geral: saldo antes da ação no mobile e hierarquia editorial; não
-   alterar serviço, data source ou regras financeiras.
 4. Contas, cartões, transações e planejamento: densidade, agrupamentos e reflow,
    mantendo todas as operações.
 5. Análises/patrimônio: perguntas, critérios, valores e alternativas textuais.

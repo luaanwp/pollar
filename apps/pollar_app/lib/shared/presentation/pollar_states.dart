@@ -84,7 +84,7 @@ class _PollarStateLayout extends StatelessWidget {
     child: Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 360),
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(PollarSpacing.x6),
           child: Column(
             mainAxisSize: MainAxisSize.min,

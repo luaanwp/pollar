@@ -9,6 +9,7 @@ import 'package:pollar_app/features/overview/presentation/overview_controller.da
 import 'package:pollar_app/main.dart';
 
 import 'support/overview_fixture.dart';
+import 'support/find_money_text.dart';
 
 void main() {
   Widget app() => ProviderScope(
@@ -59,13 +60,13 @@ void main() {
     await tester.pumpWidget(app());
     await tester.pumpAndSettle();
 
-    expect(find.text('R\$ 8.030,00'), findsOneWidget);
+    expect(findMoneyText(r'R$ 8.030,00'), findsOneWidget);
     expect(find.text('R\$ ••••••'), findsNothing);
 
     await tester.tap(find.byTooltip('Ocultar valores'));
     await tester.pump();
 
-    expect(find.text('R\$ 8.030,00'), findsNothing);
+    expect(findMoneyText(r'R$ 8.030,00'), findsNothing);
     expect(find.text('R\$ ••••••'), findsWidgets);
     expect(find.text('R\$ •••••'), findsWidgets);
     expect(find.byTooltip('Mostrar valores'), findsOneWidget);
