@@ -82,6 +82,19 @@
   "duration": {
     "fast": { "value": 100 }, "standard": { "value": 180 }, "panel": { "value": 240 }
   },
+  "pollarMotion": {
+    "feedbackMs": 140,
+    "changeMs": 240,
+    "focalMs": 360,
+    "celebrationMs": 700,
+    "staggerStepMs": 20,
+    "staggerMaxIndex": 5,
+    "curve": "easeOutCubic",
+    "pressCurve": "easeOutBack",
+    "pressScale": 0.98,
+    "tiltRadians": 0.035,
+    "reducedMotion": "instant; retain native controls and exact values"
+  },
   "typography": {
     "fontFamily": { "value": "Inter" },
     "fallbacks": { "value": ["SF Pro Text", "Segoe UI", "Roboto", "sans-serif"] },

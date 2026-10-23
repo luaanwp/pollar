@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/theme/pollar_theme.dart';
+import 'pollar_motion.dart';
 
 enum PollarButtonVariant { primary, secondary, ghost, danger }
 
@@ -89,63 +90,66 @@ class PollarButton extends StatelessWidget {
       ],
     );
 
-    return Semantics(
-      label: loading ? '$label, carregando' : label,
-      button: true,
+    return PollarPressMotion(
       enabled: !disabled,
-      excludeSemantics: true,
-      child: SizedBox(
-        width: fullWidth ? double.infinity : null,
-        height: height,
-        child: TextButton(
-          onPressed: disabled ? null : onPressed,
-          style: ButtonStyle(
-            padding: WidgetStatePropertyAll(
-              EdgeInsets.symmetric(horizontal: horizontalPadding),
-            ),
-            elevation: const WidgetStatePropertyAll(0),
-            shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(PollarRadii.medium),
+      child: Semantics(
+        label: loading ? '$label, carregando' : label,
+        button: true,
+        enabled: !disabled,
+        excludeSemantics: true,
+        child: SizedBox(
+          width: fullWidth ? double.infinity : null,
+          height: height,
+          child: TextButton(
+            onPressed: disabled ? null : onPressed,
+            style: ButtonStyle(
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: horizontalPadding),
               ),
-            ),
-            textStyle: WidgetStatePropertyAll(
-              Theme.of(context).textTheme.labelLarge,
-            ),
-            foregroundColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.disabled)) {
-                return foreground.withValues(alpha: 0.55);
-              }
-              if (states.contains(WidgetState.hovered) &&
-                  variant != PollarButtonVariant.primary &&
-                  variant != PollarButtonVariant.danger) {
-                return colors.textPrimary;
-              }
-              return foreground;
-            }),
-            backgroundColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.disabled)) {
-                return background.withValues(alpha: 0.55);
-              }
-              if (states.contains(WidgetState.hovered)) {
-                if (variant == PollarButtonVariant.primary) {
-                  return colors.primaryHover;
+              elevation: const WidgetStatePropertyAll(0),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(PollarRadii.medium),
+                ),
+              ),
+              textStyle: WidgetStatePropertyAll(
+                Theme.of(context).textTheme.labelLarge,
+              ),
+              foregroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.disabled)) {
+                  return foreground.withValues(alpha: 0.55);
                 }
-                if (variant == PollarButtonVariant.secondary ||
-                    variant == PollarButtonVariant.ghost) {
-                  return colors.surfaceAlt;
+                if (states.contains(WidgetState.hovered) &&
+                    variant != PollarButtonVariant.primary &&
+                    variant != PollarButtonVariant.danger) {
+                  return colors.textPrimary;
                 }
-              }
-              return background;
-            }),
-            side: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.focused)) {
-                return BorderSide(color: colors.info, width: 2);
-              }
-              return BorderSide(color: _border(colors));
-            }),
+                return foreground;
+              }),
+              backgroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.disabled)) {
+                  return background.withValues(alpha: 0.55);
+                }
+                if (states.contains(WidgetState.hovered)) {
+                  if (variant == PollarButtonVariant.primary) {
+                    return colors.primaryHover;
+                  }
+                  if (variant == PollarButtonVariant.secondary ||
+                      variant == PollarButtonVariant.ghost) {
+                    return colors.surfaceAlt;
+                  }
+                }
+                return background;
+              }),
+              side: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.focused)) {
+                  return BorderSide(color: colors.info, width: 2);
+                }
+                return BorderSide(color: _border(colors));
+              }),
+            ),
+            child: content,
           ),
-          child: content,
         ),
       ),
     );
@@ -184,6 +188,7 @@ class PollarIconButton extends StatelessWidget {
     this.size = PollarControlSize.standard,
     this.outlined = false,
     this.selected = false,
+    this.focusNode,
   });
 
   final IconData icon;
@@ -192,6 +197,7 @@ class PollarIconButton extends StatelessWidget {
   final PollarControlSize size;
   final bool outlined;
   final bool selected;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -213,6 +219,7 @@ class PollarIconButton extends StatelessWidget {
         : requested;
 
     return IconButton(
+      focusNode: focusNode,
       tooltip: label,
       onPressed: onPressed,
       isSelected: selected,

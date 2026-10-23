@@ -1,11 +1,13 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../app/theme/pollar_theme.dart';
 import '../../../../core/money/money_formatter.dart';
+import '../../../../shared/presentation/pollar_motion.dart';
 import '../../domain/report_snapshot.dart';
 
 class MonthlyComparisonChart extends StatelessWidget {
@@ -51,12 +53,15 @@ class MonthlyComparisonChart extends StatelessWidget {
             width: double.infinity,
             child: privacyHidden
                 ? const _HiddenChart()
-                : CustomPaint(
-                    painter: _ComparisonPainter(
-                      months: months,
-                      incomeColor: colors.success,
-                      expenseColor: colors.danger,
-                      baselineColor: colors.borderStrong,
+                : _ChartMorph(
+                    values: _comparisonGeometry(months),
+                    builder: (values, reveal) => CustomPaint(
+                      painter: _ComparisonPainter(
+                        heights: values.map((v) => v * reveal).toList(),
+                        incomeColor: colors.success,
+                        expenseColor: colors.danger,
+                        baselineColor: colors.borderStrong,
+                      ),
                     ),
                   ),
           ),
@@ -116,11 +121,15 @@ class BalanceTrendChart extends StatelessWidget {
             width: double.infinity,
             child: privacyHidden
                 ? const _HiddenChart()
-                : CustomPaint(
-                    painter: _TrendPainter(
-                      months: months,
-                      lineColor: colors.primary,
-                      baselineColor: colors.borderStrong,
+                : _ChartMorph(
+                    values: _trendGeometry(months),
+                    builder: (values, reveal) => CustomPaint(
+                      painter: _TrendPainter(
+                        positions: values,
+                        reveal: reveal,
+                        lineColor: colors.primary,
+                        baselineColor: colors.borderStrong,
+                      ),
                     ),
                   ),
           ),
@@ -200,19 +209,113 @@ class _Legend extends StatelessWidget {
   );
 }
 
+// These are drawing coordinates, never interpolated financial records.
+List<double> _comparisonGeometry(List<ReportMonth> months) {
+  final maxValue = months.fold<int>(
+    1,
+    (v, m) => math.max(v, math.max(m.income.minorUnits, m.expenses.minorUnits)),
+  );
+  return [
+    for (final month in months) ...[
+      month.income.minorUnits / maxValue,
+      month.expenses.minorUnits / maxValue,
+    ],
+  ];
+}
+
+List<double> _trendGeometry(List<ReportMonth> months) {
+  if (months.isEmpty) return [];
+  final values = months.map((m) => m.accountNetBalance.minorUnits).toList();
+  final minValue = math.min(0, values.reduce(math.min));
+  final maxValue = math.max(0, values.reduce(math.max));
+  final span = math.max(1, maxValue - minValue);
+  return [
+    maxValue / span,
+    for (final value in values) (maxValue - value) / span,
+  ];
+}
+
+class _ChartMorph extends StatefulWidget {
+  const _ChartMorph({required this.values, required this.builder});
+  final List<double> values;
+  final Widget Function(List<double> positions, double reveal) builder;
+  @override
+  State<_ChartMorph> createState() => _ChartMorphState();
+}
+
+class _ChartMorphState extends State<_ChartMorph>
+    with SingleTickerProviderStateMixin {
+  late final _controller = AnimationController(
+    vsync: this,
+    duration: PollarMotion.focal,
+  );
+  late List<double> _from = widget.values;
+  bool _reveal = true;
+  List<double> get _positions {
+    final t = PollarMotion.curve.transform(_controller.value);
+    return [
+      for (var i = 0; i < widget.values.length; i++)
+        _from[i] + (widget.values[i] - _from[i]) * t,
+    ];
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (PollarMotion.reduced(context)) {
+      _controller.value = 1;
+    } else if (_controller.value == 0) {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _ChartMorph oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (listEquals(oldWidget.values, widget.values)) return;
+    final t = PollarMotion.curve.transform(_controller.value);
+    final current = [
+      for (var i = 0; i < oldWidget.values.length; i++)
+        _from[i] + (oldWidget.values[i] - _from[i]) * t,
+    ];
+    _reveal = current.length != widget.values.length;
+    _from = _reveal ? widget.values : current;
+    if (PollarMotion.reduced(context)) {
+      _controller.value = 1;
+    } else {
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => RepaintBoundary(
+    child: AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) => widget.builder(
+        _positions,
+        _reveal ? PollarMotion.curve.transform(_controller.value) : 1,
+      ),
+    ),
+  );
+}
+
 class _ComparisonPainter extends CustomPainter {
   const _ComparisonPainter({
-    required this.months,
+    required this.heights,
     required this.incomeColor,
     required this.expenseColor,
     required this.baselineColor,
   });
-
-  final List<ReportMonth> months;
+  final List<double> heights;
   final Color incomeColor;
   final Color expenseColor;
   final Color baselineColor;
-
   @override
   void paint(Canvas canvas, Size size) {
     final baseline = size.height - 1;
@@ -223,94 +326,50 @@ class _ComparisonPainter extends CustomPainter {
         ..color = baselineColor
         ..strokeWidth = 1,
     );
-    if (months.isEmpty) return;
-    final maxMinor = months.fold<int>(
-      1,
-      (value, item) => math.max(
-        value,
-        math.max(item.income.minorUnits, item.expenses.minorUnits),
-      ),
-    );
-    final groupWidth = size.width / months.length;
+    if (heights.isEmpty) return;
+    final groupWidth = size.width / (heights.length / 2);
     final barWidth = math.min(18.0, groupWidth * 0.25);
     final gap = math.min(4.0, groupWidth * 0.06);
-    for (var index = 0; index < months.length; index++) {
-      final item = months[index];
-      final center = groupWidth * index + groupWidth / 2;
-      _bar(
-        canvas,
-        center - gap / 2 - barWidth,
-        baseline,
-        barWidth,
-        item.income.minorUnits,
-        maxMinor,
-        incomeColor,
-        size.height,
-      );
-      _bar(
-        canvas,
-        center + gap / 2,
-        baseline,
-        barWidth,
-        item.expenses.minorUnits,
-        maxMinor,
-        expenseColor,
-        size.height,
+    for (var i = 0; i < heights.length; i++) {
+      final center = groupWidth * (i ~/ 2) + groupWidth / 2;
+      final height = math.max(2.0, heights[i] * (size.height - 8));
+      final left = i.isEven ? center - gap / 2 - barWidth : center + gap / 2;
+      canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(left, baseline - height, barWidth, height),
+          topLeft: const Radius.circular(PollarRadii.small),
+          topRight: const Radius.circular(PollarRadii.small),
+        ),
+        Paint()..color = i.isEven ? incomeColor : expenseColor,
       );
     }
   }
 
-  void _bar(
-    Canvas canvas,
-    double left,
-    double baseline,
-    double width,
-    int value,
-    int maxValue,
-    Color color,
-    double availableHeight,
-  ) {
-    final height = math.max(2.0, value / maxValue * (availableHeight - 8));
-    canvas.drawRRect(
-      RRect.fromRectAndCorners(
-        Rect.fromLTWH(left, baseline - height, width, height),
-        topLeft: const Radius.circular(PollarRadii.small),
-        topRight: const Radius.circular(PollarRadii.small),
-      ),
-      Paint()..color = color,
-    );
-  }
-
   @override
-  bool shouldRepaint(covariant _ComparisonPainter oldDelegate) =>
-      oldDelegate.months != months ||
-      oldDelegate.incomeColor != incomeColor ||
-      oldDelegate.expenseColor != expenseColor ||
-      oldDelegate.baselineColor != baselineColor;
+  bool shouldRepaint(covariant _ComparisonPainter old) =>
+      !listEquals(old.heights, heights) ||
+      old.incomeColor != incomeColor ||
+      old.expenseColor != expenseColor ||
+      old.baselineColor != baselineColor;
 }
 
 class _TrendPainter extends CustomPainter {
   const _TrendPainter({
-    required this.months,
+    required this.positions,
+    required this.reveal,
     required this.lineColor,
     required this.baselineColor,
   });
-
-  final List<ReportMonth> months;
+  final List<double> positions;
+  final double reveal;
   final Color lineColor;
   final Color baselineColor;
-
   @override
   void paint(Canvas canvas, Size size) {
-    if (months.isEmpty) return;
-    final values = months.map((item) => item.accountNetBalance.minorUnits);
-    final minValue = math.min(0, values.reduce(math.min));
-    final maxValue = math.max(0, values.reduce(math.max));
-    final span = math.max(1, maxValue - minValue);
+    if (positions.length < 2) return;
     const inset = 6.0;
-    final graphHeight = size.height - inset * 2;
-    double yFor(int value) => inset + (maxValue - value) / span * graphHeight;
-    final zeroY = yFor(0);
+    double y(double value) => inset + value * (size.height - inset * 2);
+    final zeroY = y(positions.first);
     canvas.drawLine(
       Offset(0, zeroY),
       Offset(size.width, zeroY),
@@ -318,28 +377,38 @@ class _TrendPainter extends CustomPainter {
         ..color = baselineColor
         ..strokeWidth = 1,
     );
-
-    final path = Path();
-    final points = <Offset>[];
-    for (var index = 0; index < months.length; index++) {
-      final x = months.length == 1
-          ? size.width / 2
-          : index / (months.length - 1) * size.width;
-      final point = Offset(x, yFor(months[index].accountNetBalance.minorUnits));
-      points.add(point);
-      if (index == 0) {
-        path.moveTo(point.dx, point.dy);
-      } else {
-        path.lineTo(point.dx, point.dy);
-      }
+    final points = [
+      for (var i = 1; i < positions.length; i++)
+        Offset(
+          positions.length == 2
+              ? size.width / 2
+              : (i - 1) / (positions.length - 2) * size.width,
+          y(positions[i]),
+        ),
+    ];
+    final path = Path()..moveTo(points.first.dx, points.first.dy);
+    for (final point in points.skip(1)) {
+      path.lineTo(point.dx, point.dy);
     }
     final area = Path.from(path)
       ..lineTo(points.last.dx, zeroY)
       ..lineTo(points.first.dx, zeroY)
       ..close();
-    canvas.drawPath(area, Paint()..color = lineColor.withValues(alpha: 0.10));
     canvas.drawPath(
-      path,
+      area,
+      Paint()..color = lineColor.withValues(alpha: 0.10 * reveal),
+    );
+    final visible = reveal == 1 ? path : Path();
+    if (reveal < 1) {
+      for (final metric in path.computeMetrics()) {
+        visible.addPath(
+          metric.extractPath(0, metric.length * reveal),
+          Offset.zero,
+        );
+      }
+    }
+    canvas.drawPath(
+      visible,
       Paint()
         ..color = lineColor
         ..style = PaintingStyle.stroke
@@ -347,12 +416,15 @@ class _TrendPainter extends CustomPainter {
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round,
     );
-    canvas.drawCircle(points.last, 4, Paint()..color = lineColor);
+    if (reveal == 1) {
+      canvas.drawCircle(points.last, 4, Paint()..color = lineColor);
+    }
   }
 
   @override
-  bool shouldRepaint(covariant _TrendPainter oldDelegate) =>
-      oldDelegate.months != months ||
-      oldDelegate.lineColor != lineColor ||
-      oldDelegate.baselineColor != baselineColor;
+  bool shouldRepaint(covariant _TrendPainter old) =>
+      !listEquals(old.positions, positions) ||
+      old.reveal != reveal ||
+      old.lineColor != lineColor ||
+      old.baselineColor != baselineColor;
 }

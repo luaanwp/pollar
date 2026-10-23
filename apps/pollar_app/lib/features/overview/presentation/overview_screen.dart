@@ -30,6 +30,7 @@ class OverviewScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final overview = ref.watch(overviewProvider);
     return overview.when(
+      skipLoadingOnReload: true,
       loading: () => const PollarLoadingState(
         message: 'Calculando sua posição financeira…',
       ),

@@ -8,6 +8,8 @@ import '../../../app/theme/pollar_theme.dart';
 import '../../../shared/presentation/empty_state.dart';
 import '../../../shared/presentation/pollar_button.dart';
 import '../../../shared/presentation/pollar_card.dart';
+import '../../../shared/presentation/pollar_kinetic_card.dart';
+import '../../../shared/presentation/pollar_motion.dart';
 import '../../../shared/presentation/pollar_modal.dart';
 import '../../../shared/presentation/pollar_states.dart';
 import '../../../shared/presentation/pollar_toast.dart';
@@ -373,7 +375,7 @@ class _AccountCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.pollar;
     final terms = account.creditCardTerms;
-    return PollarCard(
+    Widget front(VoidCallback? flip, FocusNode? focus) => PollarCard(
       alt: archived,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,6 +416,14 @@ class _AccountCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (flip != null)
+                PollarIconButton(
+                  icon: LucideIcons.flipHorizontal,
+                  label: 'Virar ${account.name}',
+                  focusNode: focus,
+                  size: PollarControlSize.compact,
+                  onPressed: flip,
+                ),
               PollarIconButton(
                 icon: archived
                     ? LucideIcons.archiveRestore
@@ -481,6 +491,67 @@ class _AccountCard extends StatelessWidget {
             ],
           ],
         ],
+      ),
+    );
+    if (!account.isCreditCard || terms == null || archived) {
+      return front(null, null);
+    }
+    return PollarCardMorph(
+      tag: 'card-statement-${account.id}',
+      child: PollarKineticCard(
+        front: (flip, focus) => front(flip, focus),
+        back: (flip, focus) => PollarCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Condições do cartão',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                  ),
+                  PollarIconButton(
+                    icon: LucideIcons.flipHorizontal,
+                    label: 'Voltar à frente do cartão',
+                    focusNode: focus,
+                    onPressed: flip,
+                  ),
+                ],
+              ),
+              const SizedBox(height: PollarSpacing.x4),
+              _CardMetadata(
+                label: 'Limite cadastrado',
+                child: PrivacyAmount(
+                  terms.creditLimit,
+                  hidden: privacyHidden,
+                  allowWrap: true,
+                  reserveLayout: true,
+                ),
+              ),
+              const SizedBox(height: PollarSpacing.x4),
+              Text(
+                'Fechamento no dia ${terms.closingDay}',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: PollarSpacing.x2),
+              Text(
+                'Vencimento no dia ${terms.dueDay}',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              if (onOpen != null) ...[
+                const SizedBox(height: PollarSpacing.x4),
+                PollarButton(
+                  label: 'Ver fatura',
+                  trailingIcon: LucideIcons.arrowRight,
+                  variant: PollarButtonVariant.ghost,
+                  onPressed: onOpen,
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

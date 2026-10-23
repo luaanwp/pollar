@@ -69,7 +69,7 @@ As superfícies suaves semânticas permanecem as do front matter de `DESIGN.md`.
 
 **Profundidade:** fundo e canvas criam separação; divisores em linhas e áreas densas, menos bordas em blocos informativos. Overlay e card interativo em hover podem usar elevação mínima existente. **Exceção proposta à proibição atual de gradiente:** somente superfície de um cartão financeiro focal ou abertura mobile, usando derivações do teal do próprio tema e com contraste testado. Não aplicar gradiente em números, gráficos, listas, fundo da tela ou todos os cards. Se a implementação não puder garantir contraste nos dois temas, usar superfície sólida. Registrar os dois stops como tokens derivados após auditoria, sem atribuir hex arbitrário agora.
 
-**Motion:** 150–240ms para seleção/revelação, curva nativa consistente; respeitar redução de movimento. Valor monetário não conta dígitos nem interpola uma quantia falsa.
+**Motion:** a proposta inicial de 150–240ms foi ampliada pelo adendo autorizado de movimento ao final deste plano. Preservar redução de movimento e valores reais; não interpolar uma quantia financeira fictícia.
 
 ### Decisões que substituem regras visuais vigentes
 
@@ -167,7 +167,7 @@ Nomes acima são **papéis**, não necessariamente nomes de classes. Reusar `Pol
 
 ## 15. Microinterações
 
-Transição curta para revelar detalhe e mudar período; feedback de salvar/sincronizar com estado textual; expansão de insight preserva posição de leitura; gráfico atualiza sem animar números monetários. Nenhuma animação de saldo em contagem, movimento indispensável à compreensão ou efeito de gradiente contínuo. Respeitar `reduce motion` e foco do teclado.
+Transição curta para revelar detalhe e mudar período; feedback de salvar/sincronizar com estado textual; expansão de insight preserva posição de leitura. O adendo autorizado permite rolagem visual entre estados reais do saldo e transformação da geometria dos gráficos. Não interpolar quantias financeiras fictícias, tornar movimento indispensável à compreensão ou usar gradiente contínuo. Respeitar `reduce motion` e foco do teclado.
 
 ## 16. Estados da interface
 
@@ -231,7 +231,7 @@ Todos os caminhos são relativos à raiz real do repositório. Esta é uma previ
 
 **Gate 0 concluído para planejamento estático:** commit, rotas, temas, componentes, dependências e capturas existentes inventariados. Antes de codificar, confirmar que o branch de trabalho ainda corresponde ao commit auditado e executar o app para verificar fluxos/teclado em ambiente real.
 
-1. **Foundations:** `pollar_design_tokens.json` → `pollar_colors.dart`/`pollar_typography.dart`/`pollar_theme.dart`; criar papéis de saldo e `PollarCard` sem borda, com legado como default. Definir amostra clara/escura no catálogo, contraste e fallback sólido. Atualizar regras conflitantes em `DESIGN.md` e no guia local. **Critério:** catálogo e componentes antigos mantêm aparência/semântica, novos papéis têm tokens documentados, nenhum valor monetário anima.
+1. **Foundations:** `pollar_design_tokens.json` → `pollar_colors.dart`/`pollar_typography.dart`/`pollar_theme.dart`; criar papéis de saldo e `PollarCard` sem borda, com legado como default. Definir amostra clara/escura no catálogo, contraste e fallback sólido. Atualizar regras conflitantes em `DESIGN.md` e no guia local. **Critério:** catálogo e componentes antigos mantêm aparência/semântica, novos papéis têm tokens documentados; fundamentos estáticos, com animação optativa posterior conforme o adendo de movimento.
 2. **Shell/navegação:** `app_shell.dart` com controle de rail 72/256, título sem duplicação e bottom nav preservada; não alterar mapa de rotas na primeira iteração. **Critério:** cinco destinos, subrotas e estado de cada branch continuam acessíveis por toque/teclado; privacidade/tema seguem globais.
 3. **Visão geral:** `overview_screen.dart` + `widgets/overview_*.dart`; saldo acima de CTA no mobile, resumo menos encaixotado e listas com hierarquia diferente. Não tocar cálculo de `overview_service.dart`/data source. **Critério:** confirmado, projetado, resultado, passivo e moeda reconciliam; primeira viewport mobile apresenta saldo e começo do contexto mensal.
 4. **Contas, cartões, transações:** migrar linhas e agrupamentos, manter operações e confirmação; testar ledger, sheet e painel.
@@ -254,6 +254,26 @@ Cada fase deve entregar capturas claro/escuro desktop/mobile, lista de arquivos 
 - [ ] Modo privacidade mascara todas as magnitudes e preserva estrutura e contexto nos dois temas.
 - [ ] Contraste AA, foco, teclado, leitor de tela, 48dp e texto ampliado verificados nos componentes centrais.
 - [ ] Capturas dos fluxos principais e checagens de regressão documentadas por fase.
+
+## 22. Adendo de movimento autorizado pelo usuário
+
+As referências adicionais de Material 3 Expressive, fluidez Apple, listas
+coordenadas e microinterações 3D entram **junto do redesign existente**, sem
+substituir as fases 1–3. Elas ampliam a regra inicial de motion e autorizam:
+
+1. Rolagem visual do saldo entre dois valores reais; sem calcular quantias
+   intermediárias e com semântica do valor atual durante toda a transição.
+2. Transformação do cartão na fatura existente, com retorno preservado.
+3. Tilt limitado e flip com botão acessível; verso apenas com dados disponíveis.
+4. Desenho e transformação de gráficos sustentados por séries reais.
+5. Progresso fluido e celebração breve após uma meta realmente concluída.
+
+Feedback, seleção e listas compartilham o mesmo vocabulário de movimento.
+Redução de movimento, privacidade, teclado, rolagem e precisão continuam
+obrigatórios. A solicitação não cria novos dados, detalhes bancários, gráficos
+ou funcionalidades financeiras. Tokens, implementação e limites de validação
+estão em [docs/pollar-motion.md](docs/pollar-motion.md). A fase 4 continua
+pendente; esta extensão não descarta nem reinicia o plano visual.
 
 ## Limitações da auditoria
 

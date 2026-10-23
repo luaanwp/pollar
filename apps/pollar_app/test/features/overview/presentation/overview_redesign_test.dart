@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +14,8 @@ import 'package:pollar_app/features/overview/presentation/overview_screen.dart';
 import 'package:pollar_app/main.dart';
 import 'package:pollar_app/shared/presentation/money_text.dart';
 import 'package:pollar_app/shared/presentation/privacy_amount.dart';
+import 'package:pollar_app/shared/presentation/pollar_rolling_amount.dart';
+import 'package:pollar_app/shared/application/financial_data_revision.dart';
 
 import '../../../support/overview_fixture.dart';
 
@@ -199,6 +203,54 @@ void main() {
   }
 
   testWidgets(
+    'a real financial reload preserves the balance animator and then shows the exact new value',
+    (tester) async {
+      final source = _ReloadingSource();
+      await mount(tester, source: source);
+      final before = tester.state(find.byType(PollarRollingAmount));
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(OverviewScreen)),
+      );
+      container.read(financialDataRevisionProvider.notifier).bump();
+      await tester.pump();
+      expect(find.text('Saldo confirmado'), findsOneWidget);
+      expect(tester.state(find.byType(PollarRollingAmount)), same(before));
+      final data = await const OverviewFixtureDataSource().load();
+      final account = data.accounts.first;
+      source.pending.complete(
+        OverviewSourceData(
+          accounts: [
+            OverviewAccountRecord(
+              id: account.id,
+              name: account.name,
+              currency: account.currency,
+              openingBalance:
+                  account.openingBalance +
+                  const Money(minorUnits: 10000, currency: Currency.brl),
+              kind: account.kind,
+              isArchived: account.isArchived,
+            ),
+            ...data.accounts.skip(1),
+          ],
+          transactions: data.transactions,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 70));
+      expect(tester.state(find.byType(PollarRollingAmount)), same(before));
+      expect(
+        tester
+            .widget<PrivacyAmount>(find.byKey(const Key('overview-confirmed')))
+            .money
+            .minorUnits,
+        813000,
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'first account action remains reachable in a short window at 2x',
     (tester) async {
       await mount(
@@ -225,6 +277,14 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+}
+
+class _ReloadingSource implements OverviewDataSource {
+  var calls = 0;
+  final pending = Completer<OverviewSourceData>();
+  @override
+  Future<OverviewSourceData> load() =>
+      calls++ == 0 ? const OverviewFixtureDataSource().load() : pending.future;
 }
 
 class _EmptySource implements OverviewDataSource {

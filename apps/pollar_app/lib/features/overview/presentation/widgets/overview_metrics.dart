@@ -80,6 +80,7 @@ class _BalancePosition extends StatelessWidget {
           PrivacyAmount(
             summary.confirmed,
             key: const Key('overview-confirmed'),
+            animateChanges: true,
             hidden: hidden,
             style: PollarTypography.balanceHeroForWidth(constraints.maxWidth),
             semantic: MoneySemantic.balance,

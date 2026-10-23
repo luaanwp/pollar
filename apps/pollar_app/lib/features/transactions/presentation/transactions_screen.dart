@@ -15,6 +15,7 @@ import '../../../app/theme/pollar_theme.dart';
 import '../../../core/ledger/balance_rules.dart';
 import '../../../shared/presentation/empty_state.dart';
 import '../../../shared/presentation/pollar_button.dart';
+import '../../../shared/presentation/pollar_motion.dart';
 import '../../../shared/presentation/pollar_card.dart';
 import '../../../shared/presentation/pollar_modal.dart';
 import '../../../shared/presentation/pollar_states.dart';
@@ -58,9 +59,16 @@ class TransactionsScreen extends ConsumerStatefulWidget {
 }
 
 class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
+  final _searchController = TextEditingController();
   var _filter = _TransactionFilter.all;
   var _query = '';
   String? _selectedId;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +122,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
               ),
               const SizedBox(height: PollarSpacing.x5),
               _FilterBar(
+                controller: _searchController,
                 filter: _filter,
                 onFilterChanged: (value) => setState(() => _filter = value),
                 onQueryChanged: (value) => setState(() => _query = value),
@@ -165,6 +174,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
               ),
               const SizedBox(height: PollarSpacing.x5),
               _FilterBar(
+                controller: _searchController,
                 filter: _filter,
                 onFilterChanged: (value) => setState(() => _filter = value),
                 onQueryChanged: (value) => setState(() => _query = value),
@@ -381,12 +391,14 @@ class _TransactionsHeader extends StatelessWidget {
 
 class _FilterBar extends StatelessWidget {
   const _FilterBar({
+    required this.controller,
     required this.filter,
     required this.onFilterChanged,
     required this.onQueryChanged,
   });
 
   final _TransactionFilter filter;
+  final TextEditingController controller;
   final ValueChanged<_TransactionFilter> onFilterChanged;
   final ValueChanged<String> onQueryChanged;
 
@@ -396,6 +408,7 @@ class _FilterBar extends StatelessWidget {
       width: 280,
       child: PollarTextField(
         key: const Key('transaction-search'),
+        controller: controller,
         label: 'Buscar transações',
         hint: 'Descrição ou categoria',
         leadingIcon: LucideIcons.search,
@@ -492,11 +505,17 @@ class _CompactLedger extends StatelessWidget {
                 for (final (index, item) in entry.value.indexed) ...[
                   if (index > 0)
                     Divider(height: 1, color: context.pollar.border),
-                  _TransactionRow(
-                    transaction: item,
-                    accounts: accounts,
-                    privacyHidden: privacyHidden,
-                    onTap: () => onSelected(item),
+                  PollarReveal(
+                    key: ValueKey(item.id),
+                    identity: item.id,
+                    index: index,
+                    onArrival: true,
+                    child: _TransactionRow(
+                      transaction: item,
+                      accounts: accounts,
+                      privacyHidden: privacyHidden,
+                      onTap: () => onSelected(item),
+                    ),
                   ),
                 ],
               ],
@@ -562,12 +581,18 @@ class _DesktopLedger extends StatelessWidget {
                 Divider(height: 1, color: context.pollar.border),
             itemBuilder: (context, index) {
               final item = items[index];
-              return _TransactionRow(
-                transaction: item,
-                accounts: accounts,
-                privacyHidden: privacyHidden,
-                selected: selectedId == item.id,
-                onTap: () => onSelected(item),
+              return PollarReveal(
+                key: ValueKey(item.id),
+                identity: item.id,
+                index: index,
+                onArrival: true,
+                child: _TransactionRow(
+                  transaction: item,
+                  accounts: accounts,
+                  privacyHidden: privacyHidden,
+                  selected: selectedId == item.id,
+                  onTap: () => onSelected(item),
+                ),
               );
             },
           ),

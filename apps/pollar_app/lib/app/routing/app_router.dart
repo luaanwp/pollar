@@ -25,8 +25,9 @@ import '../../features/transactions/presentation/transactions_screen.dart';
 import '../../features/transactions/presentation/transaction_form_screen.dart';
 import '../../features/wealth/presentation/wealth_screen.dart';
 import 'app_shell.dart';
+import '../../shared/presentation/pollar_motion.dart';
 
-/// The app's [GoRouter]. A [StatefulShellRoute.indexedStack] keeps a separate
+/// The app's [GoRouter]. A [StatefulShellRoute] with an animated IndexedStack keeps a separate
 /// navigator per top-level destination so each tab preserves its own state.
 ///
 final routerProvider = Provider<GoRouter>((ref) {
@@ -94,7 +95,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/design-system/forms',
           redirect: (context, state) => '/design-system',
         ),
-      StatefulShellRoute.indexedStack(
+      StatefulShellRoute(
+        navigatorContainerBuilder: (context, shell, children) =>
+            PollarBranchStack(index: shell.currentIndex, children: children),
         builder: (context, state, navigationShell) =>
             AppShell(navigationShell: navigationShell),
         branches: [
@@ -114,8 +117,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'new',
-                    builder: (context, state) => TransactionFormScreen(
-                      initialAccountId: state.uri.queryParameters['cardId'],
+                    pageBuilder: (context, state) => pollarMotionPage(
+                      context: context,
+                      key: state.pageKey,
+                      child: TransactionFormScreen(
+                        initialAccountId: state.uri.queryParameters['cardId'],
+                      ),
                     ),
                   ),
                 ],
@@ -130,12 +137,20 @@ final routerProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'new',
-                    builder: (context, state) => const AccountFormScreen(),
+                    pageBuilder: (context, state) => pollarMotionPage(
+                      context: context,
+                      key: state.pageKey,
+                      child: const AccountFormScreen(),
+                    ),
                   ),
                   GoRoute(
                     path: ':cardId/statement',
-                    builder: (context, state) => CardStatementScreen(
-                      cardId: state.pathParameters['cardId']!,
+                    pageBuilder: (context, state) => pollarMotionPage(
+                      context: context,
+                      key: state.pageKey,
+                      child: CardStatementScreen(
+                        cardId: state.pathParameters['cardId']!,
+                      ),
                     ),
                   ),
                 ],
@@ -158,11 +173,19 @@ final routerProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'wealth',
-                    builder: (context, state) => const WealthScreen(),
+                    pageBuilder: (context, state) => pollarMotionPage(
+                      context: context,
+                      key: state.pageKey,
+                      child: const WealthScreen(),
+                    ),
                   ),
                   GoRoute(
                     path: 'reports',
-                    builder: (context, state) => const ReportsScreen(),
+                    pageBuilder: (context, state) => pollarMotionPage(
+                      context: context,
+                      key: state.pageKey,
+                      child: const ReportsScreen(),
+                    ),
                   ),
                   GoRoute(
                     path: 'data',

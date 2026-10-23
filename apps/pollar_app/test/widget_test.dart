@@ -83,6 +83,36 @@ void main() {
 
     expect(find.text('Nenhuma transação ainda'), findsOneWidget);
   });
+
+  testWidgets(
+    'animated branches preserve a transaction query after switching and resizing',
+    (tester) async {
+      tester.view.physicalSize = const Size(1200, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(app());
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Transações'));
+      await tester.pumpAndSettle();
+      final search = find.descendant(
+        of: find.byKey(const Key('transaction-search')),
+        matching: find.byType(TextFormField),
+      );
+      await tester.enterText(search, 'rascunho de busca');
+      await tester.tap(find.byTooltip('Visão geral').last);
+      await tester.pump(const Duration(milliseconds: 50));
+      await tester.tap(find.byTooltip('Transações'));
+      await tester.pumpAndSettle();
+      expect(find.text('rascunho de busca'), findsOneWidget);
+      await tester.tap(find.byTooltip('Recolher navegação'));
+      await tester.pumpAndSettle();
+      tester.view.physicalSize = const Size(390, 844);
+      await tester.pumpAndSettle();
+      expect(find.text('rascunho de busca'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
 
 class _EmptyAccountCatalog implements TransactionAccountCatalog {

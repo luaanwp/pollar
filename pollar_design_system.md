@@ -94,7 +94,7 @@ Use tabular numerals for amounts, percentages, dates in tables, and installment 
 
 Do not use font weight alone to distinguish interactive states. Never shrink financial content below 12 px logical size.
 
-Legacy `amountHero` remains unchanged; bundled Flutter weights map its 650 token to 600. The new `balanceHero`/`balanceHeroCompact` roles use 40/34 px, selected by `balanceHeroForWidth` at **600 px of available component width**, rather than window width. Reflow exact amounts when space is tight; never shrink them to retain a column or animate their digits.
+Legacy `amountHero` remains unchanged; bundled Flutter weights map its 650 token to 600. The new `balanceHero`/`balanceHeroCompact` roles use 40/34 px, selected by `balanceHeroForWidth` at **600 px of available component width**, rather than window width. Reflow exact amounts when space is tight; never shrink them to retain a column. The newer motion addendum permits visual rolling between actual previous/current balances while preserving exact current semantics, with immediate privacy/reduced-motion fallback.
 
 ## 5. Layout and spacing
 
@@ -141,7 +141,20 @@ Grid: desktop 12 columns, tablet 8, mobile 4; 16 px gutters compact and 24 px gu
 - Standard transition: 180 ms.
 - Panel/dialog transition: 240 ms.
 - Curves: emphasized decelerate for entry, accelerate for exit, standard ease for state changes.
-- Respect reduced-motion preferences. Never animate financial values in a way that delays comprehension.
+- Respect reduced-motion preferences. Financial state is never held for an animation; current semantics and textual chart evidence remain exact.
+
+### User-authorized Pollar motion extension
+
+Preserve the implemented redesign. PollarMotion uses 140/240/360/700ms roles,
+bounded stagger, pressure feedback, restrained card tilt and explicit accessible
+flip. The credit-card morph opens the existing statement; the neutral shuttle
+contains no financial snapshot. Chart animation interpolates geometry rather
+than monetary records. A saved incomplete-to-complete goal transition earns one
+finite, nonblocking visual celebration; initial load, failed persistence and
+privacy do not. This is the specific exception to the earlier blanket ban on
+digit animation and achievement effects, requested by the user. Existing
+financial rules remain binding. See `docs/pollar-motion.md` for exact scope and
+verification limits; the phase 4 visual migration is still pending.
 
 ## 9. Core components
 

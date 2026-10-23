@@ -14,6 +14,7 @@ import '../../../app/theme/pollar_theme.dart';
 import '../../../core/money/currency.dart';
 import '../../../core/money/money.dart';
 import '../../../shared/presentation/pollar_button.dart';
+import '../../../shared/presentation/pollar_motion.dart';
 import '../../../shared/presentation/pollar_card.dart';
 import '../../../shared/presentation/money_text.dart';
 import '../../../shared/presentation/pollar_form_controls.dart';
@@ -34,6 +35,24 @@ class WealthScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(wealthProvider);
+    ref.listen(wealthProvider, (previous, next) {
+      final before = previous?.asData?.value;
+      final after = next.asData?.value;
+      if (before == null || after == null) return;
+      final completed = after.goals.any(
+        (goal) =>
+            goal.active &&
+            goal.completed &&
+            before.goals.any((old) => old.id == goal.id && !old.completed),
+      );
+      if (completed && !ref.read(privacyModeProvider)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted && !ref.read(privacyModeProvider)) {
+            showPollarGoalCelebration(context);
+          }
+        });
+      }
+    });
     return data.when(
       loading: () =>
           const PollarLoadingState(message: 'Calculando patrimônio…'),
@@ -374,7 +393,9 @@ class _PriorityGoalDossier extends StatelessWidget {
                   icon: LucideIcons.target,
                   title: 'Meta prioritária',
                   trailing: StatusBadge(
-                    label: '${progress!.percent}%',
+                    label: hidden
+                        ? 'Progresso oculto'
+                        : '${progress!.percent}%',
                     icon: LucideIcons.gauge,
                     tone: PollarStatusTone.info,
                   ),
@@ -391,17 +412,9 @@ class _PriorityGoalDossier extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: PollarSpacing.x4),
-                Semantics(
-                  label: '${progress!.percent}% da meta concluída',
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(PollarRadii.pill),
-                    child: LinearProgressIndicator(
-                      value: progress!.percent / 100,
-                      minHeight: 8,
-                      backgroundColor: context.pollar.border,
-                      color: context.pollar.primary,
-                    ),
-                  ),
+                PollarGoalProgress(
+                  value: progress!.percent / 100,
+                  hidden: hidden,
                 ),
                 const SizedBox(height: PollarSpacing.x4),
                 _ExactPair(
@@ -1185,7 +1198,9 @@ Future<void> _confirmFinalState({
   if (confirmed != true) return;
   try {
     await action();
-    if (context.mounted) _feedback(context, successMessage);
+    if (context.mounted) {
+      _feedback(context, successMessage);
+    }
   } catch (_) {
     if (context.mounted) _feedback(context, failureMessage);
   }

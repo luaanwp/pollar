@@ -36,6 +36,13 @@ dividers. All overview amounts wrap and reserve privacy geometry; recent
 transactions opt into content-aware reflow, while other screens keep defaults.
 Do not add history charts, insight claims or financial calculations to the UI.
 
+The user's newer motion addendum preserves this redesign and authorizes visual
+rolling between actual balance states, credit-card-to-statement morph, bounded
+tilt/explicit flip, real chart morphing and a finite saved-goal celebration.
+See root `docs/pollar-motion.md` and `pollarMotion` tokens. Current MoneyText
+semantics remain exact; privacy immediately removes outgoing frames. Reduced
+motion cuts own effects. This supersedes the older blanket digit-animation ban.
+
 Implementation-ready design language for a **personal-finance product** (Flutter desktop + mobile), reconstructed as a web design system: CSS tokens, React primitives and two full UI-kit recreations.
 
 Pollar is the official product name. Brand personality: private, composed, dependable, intelligent, precise, contemporary. Product principles: calm clarity, financial precision, trust through restraint, progressive disclosure, accessible by default, cross-platform familiarity. Default locale **pt-BR** (BRL), and all product copy in this system is written in Portuguese.
@@ -68,7 +75,7 @@ Product copy is **Portuguese (pt-BR)**, calm, plain and specific. The register i
 - **Destructive confirmations** name the object and explain the impact: "Excluir o cartão Ouro? As 47 transações vinculadas continuarão no histórico, mas a fatura em aberto de R$ 4.123,90 deixará de ser acompanhada."
 - **Status vocabulary is fixed** (pt-BR): statements — *Aberta, Fechada, Parcialmente paga, Paga, Vencida*; sync — *Offline, Sincronizando, Conflito*; transactions — *Previsto, Pendente, Compensado, Conciliado*. Do not paraphrase these.
 - **Numbers are never softened.** No "cerca de", no rounding in totals, no abbreviating to "1,8 mil". Charts may abbreviate axis ticks but the value table stays exact.
-- **No emoji, no gamification, no praise.** "Transação salva." — not "Boa! Transação salva 🎉". No streaks, badges of achievement, or motivational nudges.
+- **No emoji or motivational copy.** “Transação salva.” remains factual. The newer user-authorized exception is a finite visual celebration after a saved goal becomes complete, without streaks, rankings or changed financial rules.
 - **Empty and offline states describe state plus next step**, e.g. "As alterações ficam salvas neste dispositivo e serão sincronizadas quando a conexão voltar."
 
 ## Visual foundations
@@ -89,7 +96,7 @@ Product copy is **Portuguese (pt-BR)**, calm, plain and specific. The register i
 
 **Transparency & blur.** Blur is never used. Transparency appears in exactly three places: the modal scrim (`rgba(19,32,29,.36)`), chart area fills (10% of the line color), and shadow alphas. No protection gradients — overlaid text always sits on an opaque capsule or surface instead.
 
-**Animation.** 100ms fast feedback, 180ms standard state change, 240ms panels/dialogs/sheets. Emphasized decelerate on entry, accelerate on exit, standard ease for state changes. Movement is small: 6–16px translate, no bounce, no spring, no scale-up entrances beyond 0.985→1 on dialogs. Financial values never animate their digits. `prefers-reduced-motion` zeroes every duration via the token file.
+**Animation.** Flutter's implemented motion extension uses `PollarMotion`: 140ms feedback, 240ms change, 360ms focal, 700ms finite goal celebration, and up to five 20ms stagger steps. Small pressure response uses easeOutBack; other transitions decelerate. Digit rolling paints only actual previous/current states and keeps exact current semantics, never arithmetic intermediate balances. Reduced motion cuts these effects; native controls remain usable. The older HTML-kit durations remain reference values for unmigrated components.
 
 **Hover / press / focus / disabled.** Hover: primary → `--primary-700`; secondary/ghost → `--surface-alt` fill with text darkening to `--text-primary`; rows and list items → `--surface-alt`. Press: same fill plus a 0.5px downward nudge — no shrink, no ripple. Focus: 2px `--info` outline at 2px offset, always visible. Selected: `--primary-soft` surface **plus** `--primary` text/icon, never color alone. Disabled: 50–60% opacity, cursor not-allowed. Weight is never used to signal an interactive state.
 

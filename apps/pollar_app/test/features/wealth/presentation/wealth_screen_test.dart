@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pollar_app/app/theme/pollar_theme.dart';
+import 'package:pollar_app/app/privacy/privacy_mode_provider.dart';
+import 'package:pollar_app/shared/presentation/pollar_motion.dart';
 import 'package:pollar_app/features/wealth/data/in_memory_wealth_repository.dart';
 import 'package:pollar_app/features/wealth/domain/wealth_goal.dart';
 import 'package:pollar_app/features/wealth/presentation/wealth_controller.dart';
@@ -130,6 +134,62 @@ void main() {
       isTrue,
     );
   });
+  for (final scenario in [
+    (fail: false, hidden: false),
+    (fail: true, hidden: false),
+    (fail: false, hidden: true),
+  ]) {
+    testWidgets(
+      'goal celebration follows persistence: fail=${scenario.fail}, hidden=${scenario.hidden}',
+      (tester) async {
+        final goals = await createWealthFixtureRepository().listGoals();
+        final repository = _GatedGoalRepository(
+          goals: goals,
+          fail: scenario.fail,
+        );
+        await tester.pumpWidget(_app(repository: repository));
+        await tester.pumpAndSettle();
+        expect(find.byType(PollarGoalCelebration), findsNothing);
+        final container = ProviderScope.containerOf(
+          tester.element(find.byType(WealthScreen)),
+        );
+        if (scenario.hidden) {
+          container.read(privacyModeProvider.notifier).toggle();
+          await tester.pump();
+        }
+        final change = container
+            .read(wealthProvider.notifier)
+            .completeGoal(goals.first);
+        await tester.pump();
+        expect(find.byType(PollarGoalCelebration), findsNothing);
+        final observed = scenario.fail
+            ? expectLater(change, throwsStateError)
+            : change;
+        repository.release.complete();
+        await observed;
+        await tester.pump();
+        await tester.pump();
+        expect(
+          find.byType(PollarGoalCelebration),
+          scenario.fail || scenario.hidden ? findsNothing : findsOneWidget,
+        );
+        await tester.pumpAndSettle();
+        expect(find.byType(PollarGoalCelebration), findsNothing);
+      },
+    );
+  }
+}
+
+class _GatedGoalRepository extends InMemoryWealthRepository {
+  _GatedGoalRepository({required super.goals, required this.fail});
+  final bool fail;
+  final release = Completer<void>();
+  @override
+  Future<void> replaceGoal(WealthGoal goal) async {
+    await release.future;
+    if (fail) throw StateError('simulated persistence failure');
+    await super.replaceGoal(goal);
+  }
 }
 
 Finder _moneySemantics(String label) => find.byWidgetPredicate(

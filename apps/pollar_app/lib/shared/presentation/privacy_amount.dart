@@ -6,6 +6,7 @@ import '../../app/theme/pollar_theme.dart';
 import '../../core/money/money.dart';
 import '../../core/money/money_formatter.dart';
 import 'money_text.dart';
+import 'pollar_rolling_amount.dart';
 
 /// A [MoneyText] that preserves its visual footprint while privacy mode hides
 /// the amount. Screen readers announce the hidden state instead of the value.
@@ -23,6 +24,7 @@ class PrivacyAmount extends StatelessWidget {
     this.allowWrap = false,
     this.reserveLayout = false,
     this.alignment = AlignmentDirectional.topStart,
+    this.animateChanges = false,
   }) : assert(maskDigits > 0);
 
   final Money money;
@@ -41,6 +43,7 @@ class PrivacyAmount extends StatelessWidget {
 
   /// Alignment within the reserved footprint; defaults preserve existing UI.
   final AlignmentGeometry alignment;
+  final bool animateChanges;
 
   @override
   Widget build(BuildContext context) {
@@ -54,27 +57,32 @@ class PrivacyAmount extends StatelessWidget {
     final mask = List.filled(maskDigits, '•').join();
     final symbol = money.currency.symbol;
     final text = symbol.isEmpty ? mask : '$symbol $mask';
-    Widget content({bool allowGroupBreaks = true}) => !hidden
-        ? MoneyText(
-            money,
-            style: style,
-            showSign: showSign,
-            colorBySign: colorBySign,
-            semantic: semantic,
-            formatter: formatter,
-            allowWrap: allowWrap,
-            allowGroupBreaks: allowGroupBreaks,
-          )
-        : Semantics(
-            label: 'Valor oculto pelo modo privacidade',
-            excludeSemantics: true,
-            child: Text(
-              text,
-              maxLines: allowWrap ? null : 1,
-              softWrap: allowWrap,
-              style: maskStyle,
-            ),
-          );
+    Widget content({bool allowGroupBreaks = true}) {
+      if (!hidden) {
+        final value = MoneyText(
+          money,
+          style: style,
+          showSign: showSign,
+          colorBySign: colorBySign,
+          semantic: semantic,
+          formatter: formatter,
+          allowWrap: allowWrap,
+          allowGroupBreaks: allowGroupBreaks,
+        );
+        return animateChanges ? PollarRollingAmount(child: value) : value;
+      }
+      return Semantics(
+        label: 'Valor oculto pelo modo privacidade',
+        excludeSemantics: true,
+        child: Text(
+          text,
+          maxLines: allowWrap ? null : 1,
+          softWrap: allowWrap,
+          style: maskStyle,
+        ),
+      );
+    }
+
     if (!reserveLayout) return content();
     return LayoutBuilder(
       builder: (context, constraints) {

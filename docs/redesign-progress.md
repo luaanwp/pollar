@@ -140,6 +140,35 @@ São renders Flutter e entradas simuladas, sem novo aceite físico Android/iOS,
 teclado/leitor de tela ou pacote APK/ZIP. As limitações de aceite da V1 não
 foram transformadas em aprovações por esta alteração visual.
 
+## Extensão de movimento — integrada ao plano existente
+
+Pedido adicional do usuário por imagens, sem descartar as fases anteriores.
+O adendo na seção 22 do plano e [pollar-motion.md](pollar-motion.md) registram
+a autorização para rolagem visual do saldo e celebração breve de meta.
+
+- Saldo confirmado da Visão geral rola entre estados reais e continua montado
+  durante recálculo. Moeda, quebra de linha, privacidade e movimento reduzido
+  têm fallback imediato; a semântica mantém somente o valor atual.
+- Cartões ativos recebem tilt limitado e botão para virar/voltar. O verso usa
+  termos existentes; o cartão se transforma na fatura real, com shuttle neutro.
+- Gráficos mensais existentes desenham/morfam coordenadas reais e permitem
+  retargeting; textos/tabelas continuam exatos. Não foi criado novo período.
+- Metas preenchem progresso e celebram uma transição persistida para concluída;
+  início da tela, erro e privacidade não disparam celebração.
+- Navegação mantém IndexedStack e pilhas, com entrada curta, listas coordenadas
+  e resposta de pressão. Busca visível agora também sobrevive ao redimensionar.
+- O catálogo de movimento é isolado, rotulado e sem autenticação/banco.
+
+Resultado: **343 testes passaram**, análise estática sem problemas, três
+goldens de movimento mobile/intermediários e um desktop com mouse; dois goldens
+de Contas atualizados pela inclusão do botão de virar. Os demais goldens do
+produto continuam iguais. Prévia local em `dist/pollar-motion-preview.gif`,
+com 32 quadros Flutter demonstrativos; não contém dados da conta do usuário.
+
+Validação é de widgets, semântica e pintura, não uma medição de FPS ou aceite
+físico de Android/iOS/leitor de tela. Não foi gerado novo APK. A fase 4 visual
+continua na sequência; este trabalho adiciona movimento e preserva o redesign.
+
 ## Sequência restante
 
 4. Contas, cartões, transações e planejamento: densidade, agrupamentos e reflow,

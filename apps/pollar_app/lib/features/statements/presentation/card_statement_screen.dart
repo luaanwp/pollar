@@ -17,6 +17,7 @@ import '../../../core/money/money.dart';
 import '../../../shared/presentation/currency_input.dart';
 import '../../../shared/presentation/pollar_banner.dart';
 import '../../../shared/presentation/pollar_button.dart';
+import '../../../shared/presentation/pollar_motion.dart';
 import '../../../shared/presentation/pollar_form_controls.dart';
 import '../../../shared/presentation/pollar_modal.dart';
 import '../../../shared/presentation/pollar_states.dart';
@@ -37,16 +38,20 @@ class CardStatementScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(cardStatementProvider(cardId));
     final privacyHidden = ref.watch(privacyModeProvider);
-    return state.when(
-      loading: () => const PollarLoadingState(message: 'Calculando fatura…'),
-      error: (error, stackTrace) => PollarErrorState(
-        title: 'Não foi possível calcular a fatura',
-        message: 'Os lançamentos continuam salvos. Tente calcular novamente.',
-        actionLabel: 'Calcular fatura novamente',
-        onRetry: () => ref.read(cardStatementProvider(cardId).notifier).retry(),
+    return PollarCardMorph(
+      tag: 'card-statement-$cardId',
+      child: state.when(
+        loading: () => const PollarLoadingState(message: 'Calculando fatura…'),
+        error: (error, stackTrace) => PollarErrorState(
+          title: 'Não foi possível calcular a fatura',
+          message: 'Os lançamentos continuam salvos. Tente calcular novamente.',
+          actionLabel: 'Calcular fatura novamente',
+          onRetry: () =>
+              ref.read(cardStatementProvider(cardId).notifier).retry(),
+        ),
+        data: (snapshot) =>
+            _StatementContent(snapshot: snapshot, privacyHidden: privacyHidden),
       ),
-      data: (snapshot) =>
-          _StatementContent(snapshot: snapshot, privacyHidden: privacyHidden),
     );
   }
 }

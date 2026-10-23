@@ -243,7 +243,7 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 - **Balance hero:** abertura financeira migrada usa `balanceHero` de 40px/600 com pelo menos 600px disponíveis no componente; abaixo disso, `balanceHeroCompact` de 34px/600. Ambos usam entrelinha 1,15 e algarismos tabulares. Selecione por `balanceHeroForWidth`, sem substituir automaticamente o papel legado.
 - **Eyebrow:** reservado a cabeçalhos de tabela e divisores de navegação, em caixa alta.
 
-**The Exact Figure Rule.** Todo valor monetário, percentual, data tabular e contagem parcelada usa algarismos tabulares; valores não são abreviados nem têm os dígitos animados.
+**The Exact Figure Rule.** Todo valor monetário, percentual, data tabular e contagem parcelada usa algarismos tabulares e conserva a exatidão. O adendo de movimento autorizado pelo usuário permite rolagem visual entre estados reais do saldo; não interpola quantias fictícias nem altera o valor semântico atual. Privacidade ou movimento reduzido interrompem o efeito imediatamente.
 
 O saldo faz reflow sem reduzir sua fonte. Em `PrivacyAmount` com `reserveLayout: true` e `allowWrap: true`, prefira quebrar após a moeda e manter o token numérico íntegro; quebras entre grupos numéricos só são liberadas quando o próprio corpo numérico excede a largura disponível. Medição e pintura usam a mesma política. Quando a quebra está habilitada, `MoneyText` conserva a permissão legada de quebra entre grupos por padrão; a política por largura exige adesão explícita do componente pai.
 
@@ -323,6 +323,8 @@ Cartões agrupam informação, não decoram a página.
 ### Development Catalogue
 
 A aba **Fundamentos** em `forms_catalog_screen.dart` usa `foundations_catalog.dart` para mostrar superfície financeira, agrupamento sem borda, padrão interativo e privacidade, com dados explicitamente demonstrativos. `tool/design_catalog.dart` inicia essa amostra isolada sem autenticação, perfil ou banco financeiro. É uma ferramenta de desenvolvimento.
+
+O adendo de movimento solicitado pelo usuário é implementado por `PollarMotion`, `PollarRollingAmount` e `PollarKineticCard`, com 140/240/360/700ms, corte por movimento reduzido e privacidade imediata. Saldo, morph cartão/fatura, verso com termos reais, gráficos e meta concluída integram os fluxos atuais sem substituir a composição. `tool/motion_catalog.dart` e `motion_catalog.dart` oferecem uma amostra isolada rotulada. Escopo e exceções às regras anteriores ficam em [`docs/pollar-motion.md`](docs/pollar-motion.md).
 
 Goldens cobrem claro/escuro, larguras 320/390/1440px e texto ampliado, incluindo 1,3× e 2×; testes de widget verificam foco/Enter, contraste e privacidade semântica. A inspeção nativa observou a interface anterior; não equivale a uma verificação física de teclado ou leitor de tela do catálogo atualizado. Capturas de referência incluem `foundations_1440_light_1x.png`, `foundations_390_dark_1x.png` e o par visível/oculto `foundations_320_light_130pct*.png` em `apps/pollar_app/test/goldens/`.
 
@@ -537,7 +539,7 @@ silêncio.
 - **Don't** aninhar cartões, transformar botões em pílulas ou elevar superfícies estáticas.
 - **Don't** misturar famílias de ícones, usar emoji como ícone ou deixar um controle apenas com ícone sem tooltip e nome acessível.
 - **Don't** esconder conteúdo essencial no layout compacto nem misturar campos específicos de cartão em contas comuns.
-- **Don't** animar dígitos financeiros, arredondar totais ou abreviar valores de interface.
+- **Don't** interpolar quantias financeiras fictícias, arredondar totais ou abreviar valores de interface. A rolagem visual autorizada do saldo usa somente os estados reais anterior/atual.
 - **Don't** substituir rótulos de estado, sinais monetários ou ícones de natureza por cor isolada.
 - **Don't** abrir detalhes em um cartão aninhado no mobile nem trocar o painel contextual de 360px por navegação que remova o ledger no desktop expandido.
 - **Don't** tratar cancelamento como exclusão: o lançamento continua no histórico e seu efeito sobre os saldos deve ser declarado antes da confirmação.

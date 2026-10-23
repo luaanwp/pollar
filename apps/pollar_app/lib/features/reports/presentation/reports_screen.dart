@@ -33,6 +33,7 @@ class ReportsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final reports = ref.watch(reportsProvider);
     return reports.when(
+      skipLoadingOnReload: true,
       loading: () => const PollarLoadingState(
         message: 'Consolidando os últimos seis meses…',
       ),
