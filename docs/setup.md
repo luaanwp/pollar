@@ -20,8 +20,11 @@ export PATH="/c/Users/luanl/orca/tools/pollar/supabase:$PATH"
 - ✅ Flutter, Dart, web — operational.
 - ✅ `flutter test`, `flutter analyze`, `dart format` — operational.
 - ✅ Windows desktop debug build runs with the provisioned toolchain.
-- ✅ Android SDK installed; a remote-backed release APK for internal testing
-  compiled on 2026-09-30. No physical Android device has been tested yet.
+- ✅ Windows release `1.0.0+3` and internal portable ZIP generated on 2026-10-23;
+  ZIP contents/checksums verified without launching the new executable.
+- ✅ Android SDK installed; remote-backed APK `1.0.0+3` compiled on 2026-10-13.
+  Android restoration, email/TOTP access and local identity protection were
+  confirmed on a physical device; hosted cross-user isolation remains deferred.
 
 Unit/widget tests and static analysis remain the primary automated checks.
 The Android APK is an internal test build signed with the debug key; device
@@ -108,10 +111,19 @@ SMTP credentials, or the database password to the client or repository.
 The user confirmed hosted email OTP, TOTP enrollment/verification, and Windows
 Hello unlock on Windows on 2026-09-28. Account and canceled-transaction sync,
 local persistence after restart, and the hosted SQL state were verified.
-Remaining checks are restoration on another device and isolation with a second
-user session. Android/iOS physical-device acceptance and production SMTP remain
-separate release tasks.
+Android restoration and local identity protection were subsequently confirmed
+on a physical device. Hosted isolation with a second user in a separate
+installation was deferred by the user on 2026-10-23. Android native unlock,
+iOS device acceptance and production email delivery review remain separate tasks.
 The current acceptance checklist is in [`v1-acceptance.md`](v1-acceptance.md).
+
+## Internal Windows package
+
+From the repository root, `./build-windows.ps1 -Remote` runs verification,
+builds a Windows release and generates a complete portable ZIP plus SHA-256
+and a file manifest under `dist/`. Extract the ZIP and double-click
+`pollar_app.exe`; no development terminal is needed. See
+[`windows-distribution.md`](windows-distribution.md) for checks and limitations.
 
 ## Repository layout
 

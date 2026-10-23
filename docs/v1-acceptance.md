@@ -6,6 +6,13 @@ sincronização; faça um backup antes de qualquer teste de restauração.
 
 ## Confirmado
 
+- Em 2026-10-23, no Android, o usuário confirmou que o fluxo avançou para o
+  autenticador e que a segunda identidade recebeu a tela “Estes dados
+  pertencem a outra conta”. Ao voltar à identidade original, `Teste sync V1`
+  (R$ 0,00) e a despesa cancelada de R$ 0,01 apareceram antes de sincronizar.
+  Isso confirma a proteção local e preservação dos dados entre essas sessões,
+  não o isolamento das RPCs remotas em instalações independentes.
+
 - O app Windows compilou e abriu com o Supabase remoto em 2026-09-28.
 - O usuário confirmou o fluxo de código por e-mail, cadastro/verificação TOTP e
   desbloqueio com Windows Hello no Windows.
@@ -41,7 +48,7 @@ sincronização; faça um backup antes de qualquer teste de restauração.
 - As quatro migrações do projeto remoto estão aplicadas; o teste pgTAP usa as
   mesmas funções e políticas, mas não substitui a checagem hospedada.
 
-## Ainda não confirmado
+## Histórico das correções
 
 ### Correção de proteção entre sessões — 2026-10-06
 
@@ -57,7 +64,8 @@ Os 270 testes Flutter passaram e `flutter analyze` não encontrou problemas.
 O teste com SQLite em arquivo confirmou que dados e vínculo sobrevivem à
 reabertura e que outra identidade é rejeitada. Esses resultados **não
 reproduzem nem explicam integralmente** o comportamento relatado no Android;
-a validação no aparelho com o APK `1.0.0+2` permanece pendente.
+a validação ainda estava pendente nessa ocasião. O bloqueio local e o retorno
+dos dados com o APK atualizado foram confirmados pelo usuário em 2026-10-23.
 
 ### Validações no aparelho/projeto hospedado
 
@@ -65,12 +73,14 @@ Em 2026-10-13, o usuário confirmou os valores da conta de teste e da despesa
 cancelada. A confirmação de e-mail, porém, não avançava e a repetição retornava
 código expirado. O APK `1.0.0+3` passa a navegar explicitamente para o
 autenticador após sucesso e não reenvia um OTP já aceito; o teste automatizado
-cobre evento de sessão ausente e armazenamento seguro atrasado. Confirmar
-essa etapa no Android antes de prosseguir com a troca protegida de conta.
+cobre evento de sessão ausente e armazenamento seguro atrasado. Essa etapa foi
+posteriormente confirmada junto da troca protegida, em 2026-10-23.
 
 Após essa correção, `flutter analyze` passou sem problemas e os 274 testes
 Flutter passaram, incluindo navegação real sem evento de sessão, armazenamento
 seguro atrasado, repetição de clique após sucesso e resposta sem sessão.
+
+## Ainda não confirmado
 
 1. Fechar e reabrir o app Android e confirmar que os registros restaurados
    continuam visíveis, com a despesa cancelada e sem pendências de sincronização.
@@ -89,8 +99,20 @@ seguro atrasado, repetição de clique após sucesso e resposta sem sessão.
    para o mesmo usuário não explicam o comportamento observado.
    O usuário voltou depois à primeira identidade e informou que os registros
    de teste só reapareceram após nova sincronização, não antes. Isso também
-   exige investigar a persistência/vinculação local entre sessões.
+   motivou a investigação da persistência/vinculação local entre sessões.
+   O reteste local de 2026-10-23 passou, mas não reproduz integralmente a
+   sequência antiga nem substitui a verificação das RPCs em outro perfil.
 
 Antes de distribuição ampla, ampliar a validação Android, testar iOS em
 dispositivo real e configurar SMTP próprio para a entrega de e-mail em
 produção. Open Finance fica fora da V1, conforme `PRODUCT.md`.
+
+## Continuidade — 2026-10-23
+
+O usuário optou por adiar o teste de isolamento remoto em instalações/perfis
+separados. Ele continua pendente, sem necessidade de apagar os dados existentes.
+O slice seguinte gerou o pacote Windows portátil para teste interno, documentado
+em `windows-distribution.md`: análise sem problemas, 274 testes Flutter e
+verificações de empacotamento aprovados. O conteúdo do ZIP foi conferido por
+SHA-256; o novo executável não foi aberto neste slice. Gerar esse pacote não
+equivale a aprovar a V1 para distribuição pública.

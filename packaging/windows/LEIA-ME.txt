@@ -1,0 +1,19 @@
+Pollar - pacote Windows para teste interno
+
+1. Extraia o ZIP inteiro para uma pasta local.
+2. Abra pollar_app.exe com dois cliques. Nao precisa de terminal nem Flutter.
+3. Mantenha o executavel, as DLLs e a pasta data juntos. Nao execute de dentro do ZIP.
+
+O package-manifest.json informa a versao, o modo de backend (local/remote),
+se as verificacoes automaticas foram executadas e o SHA-256 de cada arquivo.
+O arquivo .zip.sha256 ao lado do ZIP permite conferir a integridade do pacote.
+
+O pacote nao inclui seu banco, backups, codigos de acesso ou credenciais de sessao.
+Ele nao apaga nem migra manualmente os dados existentes no perfil Windows.
+Feche a versao anterior antes de abrir a nova; nao use duas versoes simultaneamente.
+No modo remote, use a conta que ja pertence a esse perfil do Pollar.
+Somente contas e transacoes sao sincronizadas na V1; os demais modulos sao locais.
+
+Este pacote nao e um instalador assinado nem uma publicacao oficial da V1.
+Nao ha atualizacao automatica. Nao remova os dados do aplicativo para atualizar.
+O isolamento remoto entre duas identidades ainda aguarda validacao em ambiente separado.

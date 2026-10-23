@@ -82,7 +82,8 @@ sessão não foi conferido; a observação posterior mostrou a primeira identida
 porque o usuário já havia voltado a ela.
 Uma consulta somente leitura ao Supabase para os dois e-mails retornou
 `usuarios_distintos = 2`. A hipótese de uma única identidade com dois e-mails
-foi descartada; falta reproduzir e corrigir a troca sem proteção no Android.
+foi descartada. O reteste local de 2026-10-23 passou (ver registro abaixo),
+sem reproduzir integralmente a sequência antiga nem aprovar o isolamento remoto.
 
 ## Atualização de proteção entre sessões — 2026-10-06
 
@@ -107,6 +108,13 @@ hospedada da seção 2 ainda exige uma instalação/perfil separado.
 
 ## Registro do teste atualizado
 
+Em 2026-10-23, o usuário confirmou a tela “Estes dados pertencem a outra conta”
+ao entrar com a segunda identidade. Depois de voltar à original, confirmou
+`Teste sync V1` com R$ 0,00 e a despesa de R$ 0,01 cancelada **antes de
+sincronizar**. A transição do login e a proteção local estão validadas nessa
+sequência. O teste de isolamento remoto em outro perfil/dispositivo foi adiado
+por decisão do usuário; não está aprovado por essas observações.
+
 ### Confirmação de e-mail — 2026-10-13
 
 O usuário confirmou a conta `Teste sync V1` com R$ 0,00 e a despesa cancelada,
@@ -118,10 +126,10 @@ conter uma sessão; TOTP, validade do e-mail e vínculo local continuam sendo
 exigidos pelo roteador.
 
 O fluxo foi testado com o roteador real, evento de sessão ausente e gravação
-segura atrasada. A validação dessa correção no aparelho permanece pendente:
-instalar como atualização, solicitar **um código novo** e confirmar uma vez.
-A próxima tela deve ser a do autenticador, não o livro-caixa. Não reutilizar
-os códigos das tentativas anteriores.
+segura atrasada. A validação no aparelho foi confirmada em 2026-10-23 junto
+da troca protegida. Em futuras verificações, instalar como atualização,
+solicitar **um código novo** e confirmar uma vez. A próxima tela deve ser a
+do autenticador, não o livro-caixa. Não reutilizar códigos anteriores.
 
 Anote modelo/versão do Android, resultado de cada etapa e qualquer erro. Não
 envie códigos de e-mail, TOTP, chaves de API nem capturas que os mostrem.

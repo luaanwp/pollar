@@ -11,3 +11,6 @@ assets-fonte/
 
 # Local tool caches
 *.log
+
+# Generated internal distribution packages
+/dist/
