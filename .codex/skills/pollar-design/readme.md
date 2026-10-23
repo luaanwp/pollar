@@ -43,6 +43,13 @@ See root `docs/pollar-motion.md` and `pollarMotion` tokens. Current MoneyText
 semantics remain exact; privacy immediately removes outgoing frames. Reduced
 motion cuts own effects. This supersedes the older blanket digit-animation ban.
 
+Phase 4A migrates Accounts/Credit Cards only: regular and archived accounts are
+flat rows, with opening-value labels, complete names, currency and archive/
+restore controls. Credit cards retain tilt/flip and statement morph. Width and
+text scale drive stacking; all amounts wrap and reserve privacy geometry.
+Create/archive controls opt into adaptive button height for complete large-text
+labels; other buttons retain defaults. No current balance or aggregate is added.
+
 Implementation-ready design language for a **personal-finance product** (Flutter desktop + mobile), reconstructed as a web design system: CSS tokens, React primitives and two full UI-kit recreations.
 
 Pollar is the official product name. Brand personality: private, composed, dependable, intelligent, precise, contemporary. Product principles: calm clarity, financial precision, trust through restraint, progressive disclosure, accessible by default, cross-platform familiarity. Default locale **pt-BR** (BRL), and all product copy in this system is written in Portuguese.

@@ -24,11 +24,15 @@ void main() {
     required Size size,
     required String golden,
     bool openForm = false,
+    bool dark = false,
+    double textScale = 1,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
+    tester.platformDispatcher.textScaleFactorTestValue = textScale;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -40,8 +44,24 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Contas').first);
+    await tester.tap(
+      find.byType(NavigationRail).evaluate().isNotEmpty
+          ? find
+                .descendant(
+                  of: find.byType(NavigationRail),
+                  matching: find.byTooltip('Contas'),
+                )
+                .first
+          : find.descendant(
+              of: find.byType(NavigationBar),
+              matching: find.text('Contas'),
+            ),
+    );
     await tester.pumpAndSettle();
+    if (dark) {
+      await tester.tap(find.byTooltip('Tema escuro'));
+      await tester.pumpAndSettle();
+    }
     if (openForm) {
       await tester.tap(find.text('Cadastrar conta ou cartão'));
       await tester.pumpAndSettle();
@@ -83,4 +103,54 @@ void main() {
       openForm: true,
     );
   });
+
+  for (final sample in [
+    (
+      size: const Size(320, 844),
+      scale: 1.3,
+      dark: false,
+      name: 'accounts_320_light_130pct.png',
+    ),
+    (
+      size: const Size(390, 900),
+      scale: 1.0,
+      dark: true,
+      name: 'accounts_390_dark.png',
+    ),
+    (
+      size: const Size(390, 900),
+      scale: 2.0,
+      dark: false,
+      name: 'accounts_390_light_2x.png',
+    ),
+    (
+      size: const Size(800, 1000),
+      scale: 1.0,
+      dark: false,
+      name: 'accounts_800_light.png',
+    ),
+    (
+      size: const Size(1440, 900),
+      scale: 1.0,
+      dark: true,
+      name: 'accounts_1440_dark.png',
+    ),
+    (
+      size: const Size(1440, 1000),
+      scale: 2.0,
+      dark: false,
+      name: 'accounts_1440_light_2x.png',
+    ),
+  ]) {
+    testWidgets(sample.name, (tester) async {
+      await renderAccounts(
+        tester,
+        size: sample.size,
+        golden: sample.name,
+        dark: sample.dark,
+        textScale: sample.scale,
+      );
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

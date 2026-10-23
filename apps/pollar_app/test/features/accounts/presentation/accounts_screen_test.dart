@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../../support/find_money_text.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pollar_app/app/theme/pollar_theme.dart';
@@ -27,7 +30,19 @@ void main() {
   Future<void> openAccounts(WidgetTester tester) async {
     await tester.pumpWidget(app());
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Contas').first);
+    await tester.tap(
+      find.byType(NavigationRail).evaluate().isNotEmpty
+          ? find
+                .descendant(
+                  of: find.byType(NavigationRail),
+                  matching: find.byTooltip('Contas'),
+                )
+                .first
+          : find.descendant(
+              of: find.byType(NavigationBar),
+              matching: find.text('Contas'),
+            ),
+    );
     await tester.pumpAndSettle();
   }
 
@@ -37,12 +52,12 @@ void main() {
     expect(find.text('Conta principal'), findsOneWidget);
     expect(find.text('Carteira'), findsOneWidget);
     expect(find.text('Cartão Ouro'), findsOneWidget);
-    expect(find.text(r'R$ 8.595,95'), findsOneWidget);
+    expect(findMoneyText(r'R$ 8.595,95'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Ocultar valores'));
     await tester.pump();
 
-    expect(find.text(r'R$ 8.595,95'), findsNothing);
+    expect(findMoneyText(r'R$ 8.595,95'), findsNothing);
     expect(find.textContaining('••••••'), findsWidgets);
   });
 
@@ -59,7 +74,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Reserva da casa'), findsOneWidget);
-    expect(find.text(r'R$ 150,50'), findsOneWidget);
+    expect(findMoneyText(r'R$ 150,50'), findsOneWidget);
     expect(find.text('Conta cadastrada.'), findsOneWidget);
   });
 
@@ -74,7 +89,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Teste sync V1'), findsOneWidget);
-    expect(find.text(r'R$ 0,00'), findsOneWidget);
+    expect(findMoneyText(r'R$ 0,00'), findsOneWidget);
     expect(find.text('Conta cadastrada.'), findsOneWidget);
   });
 
@@ -89,7 +104,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Conta vazia'), findsOneWidget);
-    expect(find.text(r'R$ 0,00'), findsOneWidget);
+    expect(findMoneyText(r'R$ 0,00'), findsOneWidget);
   });
 
   testWidgets('does not silently turn malformed balance into zero', (
@@ -133,7 +148,7 @@ void main() {
     await tester.drag(find.byType(ListView), const Offset(0, -600));
     await tester.pumpAndSettle();
     expect(find.text('Cartão Viagem'), findsOneWidget);
-    expect(find.text(r'−R$ 320,10'), findsOneWidget);
+    expect(findMoneyText(r'−R$ 320,10'), findsOneWidget);
     expect(find.text('Fecha dia 12 · vence dia 19'), findsOneWidget);
   });
 
@@ -205,7 +220,19 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(app(repository: _FailingMutationRepository()));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Contas').first);
+    await tester.tap(
+      find.byType(NavigationRail).evaluate().isNotEmpty
+          ? find
+                .descendant(
+                  of: find.byType(NavigationRail),
+                  matching: find.byTooltip('Contas'),
+                )
+                .first
+          : find.descendant(
+              of: find.byType(NavigationBar),
+              matching: find.text('Contas'),
+            ),
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Arquivar Conta principal'));
     await tester.pumpAndSettle();

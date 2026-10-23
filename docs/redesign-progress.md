@@ -169,10 +169,42 @@ Validação é de widgets, semântica e pintura, não uma medição de FPS ou ac
 físico de Android/iOS/leitor de tela. Não foi gerado novo APK. A fase 4 visual
 continua na sequência; este trabalho adiciona movimento e preserva o redesign.
 
+## Fase 4A — Contas e cartões
+
+Implementação da listagem, preservando formulários e regras financeiras:
+
+- Contas comuns e arquivadas passam a linhas `flat` com divisores, nomes
+  completos, tipo e moeda. Em largura/texto padrão, valores e ações ficam
+  alinhados na mesma linha; texto ampliado e espaço estreito fazem reflow.
+- Valores seguem `openingBalance`, com rótulos de saldo/dívida inicial e
+  semânticas correspondentes. Não se criou saldo corrente nem total agregado.
+- Crédito mantém flip, tilt, verso real e morph/rota de fatura. Limite e ciclo
+  empilham conforme o espaço; todos os valores reservam geometria em privacidade.
+- Header e grupos seguem a largura disponível após o rail. Apenas com 980px
+  disponíveis e escala até 1,3× há duas zonas de leitura.
+- Cadastro e confirmação de arquivamento usam altura adaptável optativa para
+  não cortar rótulos em 2×. Os demais botões preservam a configuração padrão.
+- Apenas arquivadas agora produz “Nenhuma conta ativa”, com restauração
+  disponível e sem alegar que nenhuma conta foi cadastrada.
+
+Nove testes novos cobrem acesso à fatura na primeira viewport 390×844, rail
+recolhido, cadastro em 2×, privacidade em três dimensões/escalas, restauração,
+flip e rota real, nomes/moedas e valores extensos em 320px/2×. Seis novos goldens
+ampliam a cobertura para claro/escuro, 320/390/800/1440px, 1,3× e 2×. Os dois
+goldens da listagem foram atualizados; formulário e demais telas conservam os
+seus goldens. Detector de layout antes/depois: lista vazia.
+
+Resultado final: **358 testes passaram**, com análise estática sem problemas.
+
+Revisão independente: **PASS para Contas/cartões**, sem achados materiais nos
+arquivos e quatro renders examinados. Essa revisão foi estática/visual; não
+equivale a teste físico, leitor de tela ou medição de FPS. Não há novo APK/ZIP
+nesta parte. A fase 4 ainda inclui Transações e Planejamento.
+
 ## Sequência restante
 
-4. Contas, cartões, transações e planejamento: densidade, agrupamentos e reflow,
-   mantendo todas as operações.
+4B. Transações: densidade, agrupamentos, filtros e reflow, preservando operações.
+4C. Planejamento: hierarquia e reflow de agenda/compromissos, preservando regras.
 5. Análises/patrimônio: perguntas, critérios, valores e alternativas textuais.
 6. Inteligência: fase condicional de produto, **não incluída** no redesign
    visual sem definição de dados e regras.

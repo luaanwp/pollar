@@ -184,9 +184,11 @@ O sistema usa superfícies planas, neutros levemente esverdeados e uma única vo
 - Valores financeiros exatos, algarismos tabulares e privacidade com reserva explícita de layout nos saldos que fazem reflow.
 - Iconografia Lucide de contorno arredondado, sempre com rótulo acessível quando o controle não tem texto.
 
-### Migração do redesign — fases 1 a 3
+### Migração do redesign — fases implementadas
 
 As fases implementadas de `UI_UX_REDESIGN_POLLAR.md` incluem fundamentos, navegação e Visão geral: variantes de cartão, superfície focal sólida, papéis de saldo, reserva de layout, rail recolhível e leitura financeira antes da ação no compacto. O catálogo demonstra os fundamentos; a Visão geral já os utiliza. As demais telas conservam suas regras operacionais até a migração explícita.
+
+A fase 4A migra a listagem de Contas e cartões: linhas para contas/arquivadas, crédito com motion preservado, largura real e texto ampliado. Transações e Planejamento ainda aguardam suas partes da fase 4.
 
 | Regra anterior | Regra vigente e limite |
 | --- | --- |
@@ -296,6 +298,7 @@ A geometria é suavemente arredondada e funcional: chips usam raio pequeno, camp
 Contidos e verbais, os botões priorizam a tarefa sobre a marca.
 
 - **Shape:** retângulo suavemente arredondado com alturas compacta, padrão e proeminente de 32px, 40px e 48px; no Android, qualquer variante mantém alvo mínimo de 48dp em toda largura.
+- **Long labels:** `PollarButton.adaptiveHeight` é optativo e permanece `false` por padrão. Em Contas, cadastro e confirmação de arquivamento podem crescer acima do mínimo, preservando rótulo completo, padding e alvo com texto ampliado. Outros botões conservam sua geometria até migração própria.
 - **Primary:** teal sólido, texto de alto contraste, ícone opcional de 16px ou 20px e padding horizontal associado ao tamanho.
 - **Secondary / Ghost:** canvas com borda forte ou fundo transparente; ambos recebem superfície alternativa no hover.
 - **Danger:** vermelho semântico, reservado a ações destrutivas.
@@ -452,14 +455,16 @@ O cadastro expõe regras financeiras progressivamente, sem transferir a estrutur
 - **Action:** salvar fica ao fim no desktop, ocupa a largura disponível no mobile e anuncia carregamento; erros preservam o preenchimento e explicam o que revisar.
 - **Unsaved exit:** só interrompe a saída quando houver mudanças. A confirmação distingue “Continuar preenchendo”, ação segura, de “Descartar transação”, ação destrutiva, e esclarece que os dados serão perdidos sem qualquer saldo ter sido alterado.
 
-### Account Card
+### Accounts and Credit Cards
 
-O cartão de conta torna identidade, tipo e posição financeira escaneáveis antes de expor qualquer operação.
+Esta listagem apresenta cadastro financeiro, não o saldo corrente do livro-caixa. Contas e Arquivadas são grupos `flat` com linhas e divisores; cartões de crédito mantêm contorno e interação próprios.
 
-- **Identity:** ícone de 20px dentro de bloco 40px com raio médio; contas usam menta/teal e cartões de crédito usam azul informativo suave/forte.
-- **Content:** nome e tipo primeiro; saldo ou dívida inicial em seguida. Cartões acrescentam limite e ciclo após divisor de 1px.
-- **Privacy:** ocultar um valor preserva sua pegada visual e fornece descrição acessível.
-- **Lifecycle:** arquivar e restaurar são ações rotuladas; itens arquivados usam superfície alternativa e ficam em seção separada.
+- **Identity:** nomes completos, tipo e código da moeda; ícones de 16px/20px em blocos de 24px/32px conforme densidade. Contas usam menta/teal e crédito usa azul informativo.
+- **Financial truth:** valores continuam `openingBalance`, rotulados Saldo inicial / Dívida inicial, com semântica de saldo/dívida. Limite tem semântica neutra. Não há soma de moedas, passivos ou novo total agregado.
+- **Density:** com 320px disponíveis na linha e texto padrão, identidade, valor e ação dividem a linha. Largura insuficiente ou texto ampliado empilham conteúdo, sem reduzir fonte ou truncar valores/nomes. Grupos ficam paralelos somente com 980px disponíveis e escala até 1,3×.
+- **Credit:** flip, tilt e morph para a fatura existente são preservados. Limite/ciclo empilham abaixo de 420px ou acima de 1,3×. Frente e verso mostram somente termos cadastrados; “Ver fatura” continua explícito.
+- **Privacy:** todos os valores da listagem quebram com `allowWrap` e reservam geometria com `reserveLayout`, inclusive limite e verso. Ocultação mantém contexto e remove valores acessíveis.
+- **Lifecycle:** arquivar confirma e preserva histórico; restaurar continua direto e rotulado. Arquivadas usam superfície alternativa e conservam termos de crédito. Havendo apenas arquivadas, o vazio diz “Nenhuma conta ativa” e orienta restaurar, sem alegar ausência de cadastro.
 
 ### Account Form
 

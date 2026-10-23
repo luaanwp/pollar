@@ -14,6 +14,7 @@ import '../../../shared/presentation/pollar_modal.dart';
 import '../../../shared/presentation/pollar_states.dart';
 import '../../../shared/presentation/pollar_toast.dart';
 import '../../../shared/presentation/privacy_amount.dart';
+import '../../../shared/presentation/money_text.dart';
 import '../../../shared/presentation/status_badge.dart';
 import '../domain/account.dart';
 import 'account_presentation.dart';
@@ -69,13 +70,20 @@ class _AccountsContent extends ConsumerWidget {
             if (active.isEmpty)
               EmptyState(
                 icon: LucideIcons.walletCards,
-                title: 'Nenhuma conta cadastrada',
-                message: 'Cadastre uma conta ou cartão para organizar saldos e lançamentos.',
-                action: PollarButton(
-                  label: 'Cadastrar primeira conta',
-                  leadingIcon: LucideIcons.plus,
-                  onPressed: () => _openCreate(context),
-                ),
+                title: archived.isEmpty
+                    ? 'Nenhuma conta cadastrada'
+                    : 'Nenhuma conta ativa',
+                message: archived.isEmpty
+                    ? 'Cadastre uma conta ou cartão para organizar saldos e lançamentos.'
+                    : 'Restaure uma conta arquivada abaixo ou cadastre uma nova.',
+                action: archived.isNotEmpty
+                    ? null
+                    : PollarButton(
+                        label: 'Cadastrar primeira conta',
+                        adaptiveHeight: true,
+                        leadingIcon: LucideIcons.plus,
+                        onPressed: () => _openCreate(context),
+                      ),
               )
             else
               _ActiveAccountSections(
@@ -126,11 +134,13 @@ class _AccountsContent extends ConsumerWidget {
       actions: (modalContext) => [
         PollarButton(
           label: 'Cancelar arquivamento',
+          adaptiveHeight: true,
           variant: PollarButtonVariant.secondary,
           onPressed: () => Navigator.pop(modalContext),
         ),
         PollarButton(
           label: 'Arquivar $noun',
+          adaptiveHeight: true,
           onPressed: () async {
             try {
               await ref.read(accountsProvider.notifier).archive(account.id);
@@ -187,54 +197,59 @@ class _AccountsContent extends ConsumerWidget {
 
 class _AccountsHeader extends StatelessWidget {
   const _AccountsHeader({required this.onCreate});
-
   final VoidCallback onCreate;
 
   @override
-  Widget build(BuildContext context) {
-    final compact =
-        MediaQuery.sizeOf(context).width < PollarBreakpoints.mediumMin;
-    final copy = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Contas e cartões',
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        const SizedBox(height: PollarSpacing.x2),
-        Text(
-          'Saldos iniciais, limites e ciclos financeiros em um só lugar.',
-          style: Theme.of(context).textTheme.bodyMedium
-              ?.copyWith(color: context.pollar.textSecondary),
-        ),
-      ],
-    );
-    final action = PollarButton(
-      label: 'Cadastrar conta ou cartão',
-      leadingIcon: LucideIcons.plus,
-      fullWidth: compact,
-      onPressed: onCreate,
-    );
-
-    if (compact) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final stacked =
+          constraints.maxWidth < 760 ||
+          MediaQuery.textScalerOf(context).scale(1) > 1.3;
+      final copy = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          copy,
-          const SizedBox(height: PollarSpacing.x4),
+          Semantics(
+            header: true,
+            child: Text(
+              'Contas e cartões',
+              style: Theme.of(context).textTheme.headlineLarge,
+            ),
+          ),
+          const SizedBox(height: PollarSpacing.x1),
+          Text(
+            'Valores iniciais e condições cadastradas.',
+            style: Theme.of(context).textTheme.bodyMedium
+                ?.copyWith(color: context.pollar.textSecondary),
+          ),
+        ],
+      );
+      final action = PollarButton(
+        label: 'Cadastrar conta ou cartão',
+        adaptiveHeight: true,
+        leadingIcon: LucideIcons.plus,
+        fullWidth: stacked,
+        onPressed: onCreate,
+      );
+      if (stacked) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            copy,
+            const SizedBox(height: PollarSpacing.x4),
+            action,
+          ],
+        );
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: copy),
+          const SizedBox(width: PollarSpacing.x6),
           action,
         ],
       );
-    }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: copy),
-        const SizedBox(width: PollarSpacing.x6),
-        action,
-      ],
-    );
-  }
+    },
+  );
 }
 
 class _ActiveAccountSections extends StatelessWidget {
@@ -245,7 +260,6 @@ class _ActiveAccountSections extends StatelessWidget {
     required this.onArchive,
     required this.onOpenCard,
   });
-
   final List<Account> regular;
   final List<Account> cards;
   final bool privacyHidden;
@@ -253,45 +267,47 @@ class _ActiveAccountSections extends StatelessWidget {
   final ValueChanged<Account> onOpenCard;
 
   @override
-  Widget build(BuildContext context) {
-    final regularSection = _AccountSection(
-      title: 'Contas',
-      accounts: regular,
-      privacyHidden: privacyHidden,
-      onAction: onArchive,
-    );
-    final cardSection = _AccountSection(
-      title: 'Cartões de crédito',
-      accounts: cards,
-      privacyHidden: privacyHidden,
-      onAction: onArchive,
-      onOpen: onOpenCard,
-    );
-    final sideBySide =
-        MediaQuery.sizeOf(context).width >= 1040 &&
-        regular.isNotEmpty &&
-        cards.isNotEmpty;
-
-    if (sideBySide) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final regularSection = _AccountSection(
+        title: 'Contas',
+        accounts: regular,
+        privacyHidden: privacyHidden,
+        onAction: onArchive,
+      );
+      final cardSection = _AccountSection(
+        title: 'Cartões de crédito',
+        accounts: cards,
+        privacyHidden: privacyHidden,
+        onAction: onArchive,
+        onOpen: onOpenCard,
+      );
+      final sideBySide =
+          constraints.maxWidth >= 980 &&
+          MediaQuery.textScalerOf(context).scale(1) <= 1.3 &&
+          regular.isNotEmpty &&
+          cards.isNotEmpty;
+      if (sideBySide) {
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: 5, child: regularSection),
+            const SizedBox(width: PollarSpacing.x6),
+            Expanded(flex: 6, child: cardSection),
+          ],
+        );
+      }
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(child: regularSection),
-          const SizedBox(width: PollarSpacing.x6),
-          Expanded(child: cardSection),
+          if (regular.isNotEmpty) regularSection,
+          if (regular.isNotEmpty && cards.isNotEmpty)
+            const SizedBox(height: PollarSpacing.x8),
+          if (cards.isNotEmpty) cardSection,
         ],
       );
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (regular.isNotEmpty) regularSection,
-        if (regular.isNotEmpty && cards.isNotEmpty)
-          const SizedBox(height: PollarSpacing.x8),
-        if (cards.isNotEmpty) cardSection,
-      ],
-    );
-  }
+    },
+  );
 }
 
 class _AccountSection extends StatelessWidget {
@@ -304,7 +320,6 @@ class _AccountSection extends StatelessWidget {
     this.archived = false,
     this.onOpen,
   });
-
   final String title;
   final String? description;
   final List<Account> accounts;
@@ -315,9 +330,12 @@ class _AccountSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      Text(title, style: Theme.of(context).textTheme.headlineSmall),
+      Semantics(
+        header: true,
+        child: Text(title, style: Theme.of(context).textTheme.headlineSmall),
+      ),
       if (description != null) ...[
         const SizedBox(height: PollarSpacing.x2),
         Text(
@@ -326,254 +344,413 @@ class _AccountSection extends StatelessWidget {
               ?.copyWith(color: context.pollar.textSecondary),
         ),
       ],
-      const SizedBox(height: PollarSpacing.x4),
-      LayoutBuilder(
-        builder: (context, constraints) {
-          final columns = constraints.maxWidth >= 880 ? 2 : 1;
-          final width = columns == 2
-              ? (constraints.maxWidth - PollarSpacing.x4) / 2
-              : constraints.maxWidth;
-          return Wrap(
-            spacing: PollarSpacing.x4,
-            runSpacing: PollarSpacing.x4,
+      const SizedBox(height: PollarSpacing.x3),
+      if (onOpen == null)
+        PollarCard(
+          variant: PollarCardVariant.flat,
+          padding: PollarCardPadding.none,
+          alt: archived,
+          child: Column(
             children: [
-              for (final account in accounts)
-                SizedBox(
-                  width: width,
-                  child: _AccountCard(
-                    account: account,
-                    privacyHidden: privacyHidden,
-                    archived: archived,
-                    onAction: () => onAction(account),
-                    onOpen: onOpen == null ? null : () => onOpen!(account),
-                  ),
+              for (final (index, account) in accounts.indexed) ...[
+                if (index > 0) Divider(height: 1, color: context.pollar.border),
+                _AccountRow(
+                  key: ValueKey(account.id),
+                  account: account,
+                  hidden: privacyHidden,
+                  archived: archived,
+                  onAction: () => onAction(account),
                 ),
+              ],
             ],
-          );
-        },
-      ),
+          ),
+        )
+      else
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final twoColumns =
+                constraints.maxWidth >= 1000 &&
+                MediaQuery.textScalerOf(context).scale(1) <= 1.3;
+            final width = twoColumns
+                ? (constraints.maxWidth - PollarSpacing.x4) / 2
+                : constraints.maxWidth.clamp(0.0, 640.0);
+            return Wrap(
+              spacing: PollarSpacing.x4,
+              runSpacing: PollarSpacing.x4,
+              children: [
+                for (final account in accounts)
+                  SizedBox(
+                    key: ValueKey(account.id),
+                    width: width,
+                    child: _AccountCard(
+                      account: account,
+                      hidden: privacyHidden,
+                      onArchive: () => onAction(account),
+                      onOpen: () => onOpen!(account),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
     ],
+  );
+}
+
+class _AccountIdentity extends StatelessWidget {
+  const _AccountIdentity({
+    required this.account,
+    this.actions,
+    this.compact = false,
+  });
+  final Account account;
+  final Widget? actions;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final identity = Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: compact ? 24 : 32,
+            height: compact ? 24 : 32,
+            decoration: BoxDecoration(
+              color: account.isCreditCard
+                  ? context.pollar.infoSoft
+                  : context.pollar.primarySoft,
+              borderRadius: BorderRadius.circular(PollarRadii.medium),
+            ),
+            child: Icon(
+              account.type.icon,
+              size: compact ? 16 : 20,
+              color: account.isCreditCard
+                  ? context.pollar.info
+                  : context.pollar.primary,
+            ),
+          ),
+          SizedBox(width: compact ? PollarSpacing.x2 : PollarSpacing.x3),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  account.name,
+                  style:
+                      (compact
+                              ? Theme.of(context).textTheme.bodyMedium
+                              : Theme.of(context).textTheme.bodyLarge)
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: PollarSpacing.x1),
+                Text(
+                  '${account.type.label} · ${account.currency.code}',
+                  style: Theme.of(context).textTheme.bodySmall
+                      ?.copyWith(color: context.pollar.textSecondary),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+      if (actions == null) return identity;
+      if (constraints.maxWidth < 280 ||
+          MediaQuery.textScalerOf(context).scale(1) > 1.3) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            identity,
+            const SizedBox(height: PollarSpacing.x2),
+            Align(alignment: Alignment.centerRight, child: actions!),
+          ],
+        );
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: identity),
+          const SizedBox(width: PollarSpacing.x2),
+          actions!,
+        ],
+      );
+    },
+  );
+}
+
+class _InitialAmount extends StatelessWidget {
+  const _InitialAmount({required this.account, required this.hidden});
+  final Account account;
+  final bool hidden;
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final label = Text(
+        account.isCreditCard ? 'Dívida inicial' : 'Saldo inicial',
+        style: Theme.of(context).textTheme.bodySmall
+            ?.copyWith(color: context.pollar.textSecondary),
+      );
+      final amount = PrivacyAmount(
+        account.openingBalance,
+        hidden: hidden,
+        colorBySign: account.isCreditCard,
+        allowWrap: true,
+        reserveLayout: true,
+        alignment: AlignmentDirectional.topEnd,
+        semantic: account.isCreditCard
+            ? MoneySemantic.debt
+            : MoneySemantic.balance,
+      );
+      if (constraints.maxWidth < 280 ||
+          MediaQuery.textScalerOf(context).scale(1) > 1.3) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            label,
+            const SizedBox(height: PollarSpacing.x1),
+            amount,
+          ],
+        );
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: label),
+          const SizedBox(width: PollarSpacing.x3),
+          Expanded(flex: 2, child: amount),
+        ],
+      );
+    },
+  );
+}
+
+class _AccountRow extends StatelessWidget {
+  const _AccountRow({
+    super.key,
+    required this.account,
+    required this.hidden,
+    required this.archived,
+    required this.onAction,
+  });
+  final Account account;
+  final bool hidden;
+  final bool archived;
+  final VoidCallback onAction;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(PollarSpacing.x3),
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        final action = PollarIconButton(
+          icon: archived ? LucideIcons.archiveRestore : LucideIcons.archive,
+          label: archived
+              ? 'Restaurar ${account.name}'
+              : 'Arquivar ${account.name}',
+          size: PollarControlSize.compact,
+          onPressed: onAction,
+        );
+        final dense =
+            constraints.maxWidth >= 320 &&
+            MediaQuery.textScalerOf(context).scale(1) <= 1;
+        final position = dense
+            ? Row(
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: _AccountIdentity(account: account, compact: true),
+                  ),
+                  const SizedBox(width: PollarSpacing.x3),
+                  Expanded(
+                    flex: 4,
+                    child: _InitialAmount(account: account, hidden: hidden),
+                  ),
+                  const SizedBox(width: PollarSpacing.x2),
+                  action,
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _AccountIdentity(account: account, actions: action),
+                  const SizedBox(height: PollarSpacing.x1),
+                  _InitialAmount(account: account, hidden: hidden),
+                ],
+              );
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            position,
+            if (account.creditCardTerms case final terms?) ...[
+              const SizedBox(height: PollarSpacing.x3),
+              _CreditTerms(terms: terms, hidden: hidden),
+            ],
+          ],
+        );
+      },
+    ),
+  );
+}
+
+class _CreditTerms extends StatelessWidget {
+  const _CreditTerms({required this.terms, required this.hidden});
+  final CreditCardTerms terms;
+  final bool hidden;
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final limit = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Limite',
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: context.pollar.textSecondary),
+          ),
+          const SizedBox(height: PollarSpacing.x1),
+          PrivacyAmount(
+            terms.creditLimit,
+            hidden: hidden,
+            allowWrap: true,
+            reserveLayout: true,
+            semantic: MoneySemantic.neutral,
+          ),
+        ],
+      );
+      final cycle = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Ciclo',
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: context.pollar.textSecondary),
+          ),
+          const SizedBox(height: PollarSpacing.x1),
+          Text(
+            'Fecha dia ${terms.closingDay} · vence dia ${terms.dueDay}',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ],
+      );
+      if (constraints.maxWidth < 420 ||
+          MediaQuery.textScalerOf(context).scale(1) > 1.3) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            limit,
+            const SizedBox(height: PollarSpacing.x3),
+            cycle,
+          ],
+        );
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: limit),
+          const SizedBox(width: PollarSpacing.x4),
+          Expanded(child: cycle),
+        ],
+      );
+    },
   );
 }
 
 class _AccountCard extends StatelessWidget {
   const _AccountCard({
     required this.account,
-    required this.privacyHidden,
-    required this.archived,
-    required this.onAction,
-    this.onOpen,
+    required this.hidden,
+    required this.onArchive,
+    required this.onOpen,
   });
-
   final Account account;
-  final bool privacyHidden;
-  final bool archived;
-  final VoidCallback onAction;
-  final VoidCallback? onOpen;
+  final bool hidden;
+  final VoidCallback onArchive;
+  final VoidCallback onOpen;
 
   @override
-  Widget build(BuildContext context) {
-    final colors = context.pollar;
-    final terms = account.creditCardTerms;
-    Widget front(VoidCallback? flip, FocusNode? focus) => PollarCard(
-      alt: archived,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: account.isCreditCard
-                      ? colors.infoSoft
-                      : colors.primarySoft,
-                  borderRadius: BorderRadius.circular(PollarRadii.medium),
-                ),
-                child: Icon(
-                  account.type.icon,
-                  size: 20,
-                  color: account.isCreditCard ? colors.info : colors.primary,
-                ),
-              ),
-              const SizedBox(width: PollarSpacing.x3),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      account.name,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: PollarSpacing.x1),
-                    Text(
-                      account.type.label,
-                      style: Theme.of(context).textTheme.bodySmall
-                          ?.copyWith(color: colors.textSecondary),
-                    ),
-                  ],
-                ),
-              ),
-              if (flip != null)
-                PollarIconButton(
-                  icon: LucideIcons.flipHorizontal,
-                  label: 'Virar ${account.name}',
-                  focusNode: focus,
-                  size: PollarControlSize.compact,
-                  onPressed: flip,
-                ),
-              PollarIconButton(
-                icon: archived
-                    ? LucideIcons.archiveRestore
-                    : LucideIcons.archive,
-                label: archived
-                    ? 'Restaurar ${account.name}'
-                    : 'Arquivar ${account.name}',
-                size: PollarControlSize.compact,
-                onPressed: onAction,
-              ),
-            ],
-          ),
-          const SizedBox(height: PollarSpacing.x5),
-          Text(
-            account.isCreditCard ? 'Dívida inicial' : 'Saldo inicial',
-            style: Theme.of(context).textTheme.bodySmall
-                ?.copyWith(color: colors.textMuted),
-          ),
-          const SizedBox(height: PollarSpacing.x1),
-          PrivacyAmount(
-            account.openingBalance,
-            hidden: privacyHidden,
-            colorBySign: account.isCreditCard,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          if (terms != null) ...[
-            const SizedBox(height: PollarSpacing.x4),
-            Divider(height: 1, color: colors.border),
-            const SizedBox(height: PollarSpacing.x3),
-            Row(
-              children: [
-                Expanded(
-                  child: _CardMetadata(
-                    label: 'Limite',
-                    child: PrivacyAmount(
-                      terms.creditLimit,
-                      hidden: privacyHidden,
-                      style: PollarTypography.amountStandard,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: _CardMetadata(
-                    label: 'Ciclo',
-                    child: Text(
-                      'Fecha dia ${terms.closingDay} · vence dia ${terms.dueDay}',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            if (onOpen != null) ...[
-              const SizedBox(height: PollarSpacing.x4),
-              Align(
-                alignment: Alignment.centerRight,
-                child: PollarButton(
-                  label: 'Ver fatura',
-                  trailingIcon: LucideIcons.arrowRight,
-                  variant: PollarButtonVariant.ghost,
-                  size: PollarControlSize.compact,
-                  onPressed: onOpen,
-                ),
-              ),
-            ],
-          ],
-        ],
-      ),
-    );
-    if (!account.isCreditCard || terms == null || archived) {
-      return front(null, null);
-    }
-    return PollarCardMorph(
-      tag: 'card-statement-${account.id}',
-      child: PollarKineticCard(
-        front: (flip, focus) => front(flip, focus),
-        back: (flip, focus) => PollarCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
+  Widget build(BuildContext context) => PollarCardMorph(
+    tag: 'card-statement-${account.id}',
+    child: PollarKineticCard(
+      front: (flip, focus) => PollarCard(
+        padding: PollarCardPadding.medium,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _AccountIdentity(
+              account: account,
+              actions: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: Text(
-                      'Condições do cartão',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ),
                   PollarIconButton(
                     icon: LucideIcons.flipHorizontal,
-                    label: 'Voltar à frente do cartão',
+                    label: 'Virar ${account.name}',
                     focusNode: focus,
+                    size: PollarControlSize.compact,
                     onPressed: flip,
+                  ),
+                  const SizedBox(width: PollarSpacing.x2),
+                  PollarIconButton(
+                    icon: LucideIcons.archive,
+                    label: 'Arquivar ${account.name}',
+                    size: PollarControlSize.compact,
+                    onPressed: onArchive,
                   ),
                 ],
               ),
-              const SizedBox(height: PollarSpacing.x4),
-              _CardMetadata(
-                label: 'Limite cadastrado',
-                child: PrivacyAmount(
-                  terms.creditLimit,
-                  hidden: privacyHidden,
-                  allowWrap: true,
-                  reserveLayout: true,
-                ),
+            ),
+            const SizedBox(height: PollarSpacing.x3),
+            _InitialAmount(account: account, hidden: hidden),
+            const SizedBox(height: PollarSpacing.x3),
+            Divider(height: 1, color: context.pollar.border),
+            const SizedBox(height: PollarSpacing.x3),
+            _CreditTerms(terms: account.creditCardTerms!, hidden: hidden),
+            const SizedBox(height: PollarSpacing.x3),
+            Align(
+              alignment: Alignment.centerRight,
+              child: PollarButton(
+                label: 'Ver fatura',
+                trailingIcon: LucideIcons.arrowRight,
+                variant: PollarButtonVariant.ghost,
+                size: PollarControlSize.compact,
+                onPressed: onOpen,
               ),
-              const SizedBox(height: PollarSpacing.x4),
-              Text(
-                'Fechamento no dia ${terms.closingDay}',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(height: PollarSpacing.x2),
-              Text(
-                'Vencimento no dia ${terms.dueDay}',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              if (onOpen != null) ...[
-                const SizedBox(height: PollarSpacing.x4),
-                PollarButton(
-                  label: 'Ver fatura',
-                  trailingIcon: LucideIcons.arrowRight,
-                  variant: PollarButtonVariant.ghost,
-                  onPressed: onOpen,
-                ),
-              ],
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
-}
-
-class _CardMetadata extends StatelessWidget {
-  const _CardMetadata({required this.label, required this.child});
-
-  final String label;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: Theme.of(context).textTheme.bodySmall
-            ?.copyWith(color: context.pollar.textMuted),
+      back: (flip, focus) => PollarCard(
+        padding: PollarCardPadding.medium,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Condições do cartão',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+                PollarIconButton(
+                  icon: LucideIcons.flipHorizontal,
+                  label: 'Voltar à frente do cartão',
+                  focusNode: focus,
+                  onPressed: flip,
+                ),
+              ],
+            ),
+            const SizedBox(height: PollarSpacing.x4),
+            _CreditTerms(terms: account.creditCardTerms!, hidden: hidden),
+            const SizedBox(height: PollarSpacing.x4),
+            PollarButton(
+              label: 'Ver fatura',
+              trailingIcon: LucideIcons.arrowRight,
+              variant: PollarButtonVariant.ghost,
+              onPressed: onOpen,
+            ),
+          ],
+        ),
       ),
-      const SizedBox(height: PollarSpacing.x1),
-      child,
-    ],
+    ),
   );
 }

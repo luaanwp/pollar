@@ -23,6 +23,7 @@ class PollarButton extends StatelessWidget {
     this.trailingIcon,
     this.loading = false,
     this.fullWidth = false,
+    this.adaptiveHeight = false,
   });
 
   final String label;
@@ -33,6 +34,9 @@ class PollarButton extends StatelessWidget {
   final IconData? trailingIcon;
   final bool loading;
   final bool fullWidth;
+
+  /// Opt-in for long labels at large text scales; retains the minimum target.
+  final bool adaptiveHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +86,13 @@ class PollarButton extends StatelessWidget {
           Icon(icon, size: iconSize),
           const SizedBox(width: PollarSpacing.x2),
         ],
-        Flexible(child: Text(label, maxLines: 2, textAlign: TextAlign.center)),
+        Flexible(
+          child: Text(
+            label,
+            maxLines: adaptiveHeight ? null : 2,
+            textAlign: TextAlign.center,
+          ),
+        ),
         if (!loading && trailingIcon != null) ...[
           const SizedBox(width: PollarSpacing.x2),
           Icon(trailingIcon, size: iconSize),
@@ -99,12 +109,18 @@ class PollarButton extends StatelessWidget {
         excludeSemantics: true,
         child: SizedBox(
           width: fullWidth ? double.infinity : null,
-          height: height,
+          height: adaptiveHeight ? null : height,
           child: TextButton(
             onPressed: disabled ? null : onPressed,
             style: ButtonStyle(
+              minimumSize: adaptiveHeight
+                  ? WidgetStatePropertyAll(Size(0, height))
+                  : null,
               padding: WidgetStatePropertyAll(
-                EdgeInsets.symmetric(horizontal: horizontalPadding),
+                EdgeInsets.symmetric(
+                  horizontal: horizontalPadding,
+                  vertical: adaptiveHeight ? PollarSpacing.x3 : 0,
+                ),
               ),
               elevation: const WidgetStatePropertyAll(0),
               shape: WidgetStatePropertyAll(
