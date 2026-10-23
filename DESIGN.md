@@ -255,7 +255,7 @@ O saldo faz reflow sem reduzir sua fonte. Em `PrivacyAmount` com `reserveLayout:
 
 O ritmo nasce de uma unidade de 4px e privilegia incrementos de 8px. O conteúdo geral limita-se a 1600px e colunas de leitura de dashboard a 1280px. Telas de formulário podem estreitar a coluna conforme a tarefa; o cadastro de conta/cartão usa uma coluna de até 760px.
 
-O shell é adaptativo. Abaixo de 600px, usa navegação inferior, gutter compacto de 16px e ações principais de largura total quando necessário. A partir de 600px, usa rail lateral e gutter amplo de 24px; a partir de 1024px, o rail mostra rótulos e seções relacionadas podem ocupar colunas paralelas. No Android, todo alvo interativo mede pelo menos 48dp em qualquer largura.
+O shell é adaptativo. Abaixo de 600px, usa navegação inferior, gutter compacto de 16px e ações principais de largura total quando necessário. A partir de 600px, usa rail lateral e gutter amplo de 24px; a partir de 1024px, o rail pode mostrar rótulos ou ser recolhido manualmente. Seções relacionadas podem ocupar colunas paralelas conforme a largura disponível. No Android, todo alvo interativo mede pelo menos 48dp em qualquer largura.
 
 Na listagem de contas, o primeiro viewport apresenta título, explicação, ação de cadastro e as seções de contas/cartões. As seções ficam lado a lado somente com largura mínima observada de 1040px e quando ambas têm conteúdo; em larguras menores, empilham. Dentro de cada seção, cartões podem formar duas colunas a partir de 880px disponíveis. Campos de fechamento e vencimento também passam de coluna para linha em 600px.
 
@@ -350,10 +350,13 @@ Badges são cápsulas compactas; banners, toasts e modais mantêm a mesma semân
 
 A navegação acompanha a largura sem mudar o mapa mental.
 
-- **Compact:** barra inferior sobre canvas, separada por borda superior, com ícones Lucide de 24px.
-- **Medium:** rail de 72px com ícones de 20px.
-- **Expanded:** rail de 256px com rótulos.
+- **Compact:** cinco destinos com texto e ícones Lucide de 24px, barra inferior sobre canvas, borda superior e área segura nativa.
+- **Medium:** rail de 72px com ícones de 20px, tooltips e nomes acessíveis completos.
+- **Expanded:** rail de 256px com rótulos; controle na barra superior alterna para 72px. A preferência dura a sessão, inclusive após mudar a largura. O controle não reinicia rotas, pilhas ou formulários.
+- **Short windows:** marca e destinos do rail rolam juntos; alvos não encolhem nem recebem rótulos em fonte de 9px.
 - **Selected:** indicador menta e conteúdo teal; a barra superior é canvas com borda inferior e sem elevação.
+- **Header:** contexto de destino em corpo secundário de 14px, tema e privacidade globais. Na lista compacta de Transações, a barra mantém o título de página em 18px e cresce com a escala de texto, pois essa lista não tem outro título no corpo.
+- **More:** “Entenda seus dados” reúne Relatórios e Patrimônio; “Seu aplicativo” reúne Sincronização, Dados e backup e Preferências. Linhas com divisores substituem cartões equivalentes; texto quebra naturalmente e o foco recebe contorno informativo de 2px.
 
 ### Overview Dashboard
 

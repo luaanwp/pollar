@@ -2,7 +2,7 @@
 
 Implementation-ready design language for Flutter desktop and mobile applications. This file is the canonical human-readable specification. Machine-readable values live in `pollar_design_tokens.json`.
 
-The implemented visual rules are also recorded in root `DESIGN.md`. Redesign phase 1 extends existing components explicitly; the new shell and overview compositions in `UI_UX_REDESIGN_POLLAR.md` remain later phases. This merge preserves the existing screen and financial behavior until each screen is migrated. Execution evidence and remaining validation are recorded in `docs/redesign-progress.md`.
+The implemented visual rules are also recorded in root `DESIGN.md`. Redesign phase 1 extends existing components explicitly. Phase 2 adds session-only sidebar collapse, a subordinate route context in the utility bar, and grouped More rows. Overview and subsequent page compositions in `UI_UX_REDESIGN_POLLAR.md` remain later phases. Financial behavior stays unchanged. Execution evidence and remaining validation are recorded in `docs/redesign-progress.md`.
 
 ## 1. Product principles
 
@@ -185,7 +185,9 @@ Variants: neutral, info, success, warning, danger. Every badge includes a text l
 
 ### Navigation
 
-Desktop sidebar widths: 256 expanded, 72 collapsed. Mobile bottom navigation shows no more than five destinations. The quick-add action may be visually prominent but must not obscure navigation.
+Desktop sidebar widths: 256 expanded, 72 collapsed. At widths of 1024px or more, a utility-bar control toggles the rail; the session preference survives viewport changes without replacing branch navigators. Tablet widths use 72px; short windows scroll the brand and destinations together. Mobile bottom navigation retains the same five labelled destinations and the native safe area. The quick-add action may be visually prominent but must not obscure navigation.
+
+The utility bar retains global theme/privacy controls and uses quiet 14px route context. The compact transaction list retains its 18px page heading here because it has no separate body heading; its toolbar height grows with enlarged text. More groups Reports/Wealth under “Entenda seus dados” and Sync/Data/Preferences under “Seu aplicativo”, using rows and dividers rather than equal cards. Routes are unchanged; keyboard focus on these rows has a 2px info-colored outline.
 
 ### Dialogs and sheets
 

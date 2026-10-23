@@ -8,6 +8,7 @@ import '../privacy/privacy_mode_provider.dart';
 import '../theme/pollar_theme.dart';
 import '../theme/theme_mode_provider.dart';
 import '../../shared/presentation/pollar_button.dart';
+import 'navigation_preferences.dart';
 
 /// A top-level navigation destination in the app shell.
 class AppDestination {
@@ -68,7 +69,37 @@ class AppShell extends ConsumerWidget {
     final isCompact = width < PollarBreakpoints.mediumMin;
     final index = navigationShell.currentIndex;
 
-    final appBar = _ShellAppBar(title: appDestinations[index].label);
+    final canCollapse = width >= PollarBreakpoints.expandedMin;
+    final extended = canCollapse && ref.watch(railExpandedProvider);
+    // The compact transaction list has no separate body heading.
+    final isPageHeading =
+        isCompact && GoRouterState.of(context).uri.path == '/transactions';
+    final title = appDestinations[index].label;
+    var toolbarHeight = kToolbarHeight;
+    if (isPageHeading) {
+      final painter = TextPainter(
+        text: TextSpan(
+          text: title,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        textDirection: Directionality.of(context),
+        textScaler: MediaQuery.textScalerOf(context),
+      )..layout(maxWidth: (width - 136).clamp(1, double.infinity));
+      toolbarHeight = (painter.height + 16).clamp(
+        kToolbarHeight,
+        double.infinity,
+      );
+      painter.dispose();
+    }
+    final appBar = _ShellAppBar(
+      title: title,
+      isPageHeading: isPageHeading,
+      height: toolbarHeight,
+      extended: extended,
+      onToggleRail: canCollapse
+          ? ref.read(railExpandedProvider.notifier).toggle
+          : null,
+    );
     final togglePrivacy = ref.read(privacyModeProvider.notifier).toggle;
 
     if (isCompact) {
@@ -85,7 +116,6 @@ class AppShell extends ConsumerWidget {
       );
     }
 
-    final extended = width >= PollarBreakpoints.expandedMin;
     return _PrivacyShortcuts(
       onToggle: togglePrivacy,
       child: Scaffold(
@@ -129,12 +159,22 @@ class _PrivacyShortcuts extends StatelessWidget {
 }
 
 class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  const _ShellAppBar({required this.title});
+  const _ShellAppBar({
+    required this.title,
+    required this.isPageHeading,
+    required this.height,
+    required this.extended,
+    this.onToggleRail,
+  });
 
   final String title;
+  final bool isPageHeading;
+  final double height;
+  final bool extended;
+  final VoidCallback? onToggleRail;
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(height);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -147,8 +187,33 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       shape: Border(bottom: BorderSide(color: pollar.border)),
-      titleSpacing: PollarSpacing.x6,
-      title: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+      toolbarHeight: height,
+      leadingWidth: PollarSizes.sidebarCollapsed,
+      leading: onToggleRail == null
+          ? null
+          : Center(
+              child: PollarIconButton(
+                label: extended ? 'Recolher navegação' : 'Expandir navegação',
+                icon: extended
+                    ? LucideIcons.panelLeftClose
+                    : LucideIcons.panelLeftOpen,
+                onPressed: onToggleRail,
+              ),
+            ),
+      titleSpacing: PollarSpacing.x4,
+      title: Tooltip(
+        message: title,
+        child: Text(
+          title,
+          textScaler: MediaQuery.textScalerOf(context),
+          maxLines: isPageHeading ? null : 1,
+          overflow: isPageHeading ? null : TextOverflow.ellipsis,
+          style: isPageHeading
+              ? Theme.of(context).textTheme.headlineSmall
+              : Theme.of(context).textTheme.bodyMedium
+                    ?.copyWith(color: pollar.textSecondary),
+        ),
+      ),
       actions: [
         PollarIconButton(
           label: privacyHidden ? 'Mostrar valores' : 'Ocultar valores',
@@ -185,128 +250,47 @@ class _Rail extends StatelessWidget {
       width: extended
           ? PollarSizes.sidebarExpanded
           : PollarSizes.sidebarCollapsed,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final shortRail = !extended && constraints.maxHeight < 650;
-          if (shortRail) {
-            return ColoredBox(
-              color: pollar.canvas,
-              child: Column(
-                children: [
-                  const _RailHeader(extended: false, compact: true),
-                  for (var index = 0; index < appDestinations.length; index++)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: PollarSpacing.x1),
-                      child: _ShortRailDestination(
-                        destination: appDestinations[index],
-                        selected: selectedIndex == index,
-                        onPressed: () => onSelected(index),
-                      ),
-                    ),
-                ],
-              ),
-            );
-          }
-          return NavigationRail(
-            extended: extended,
-            backgroundColor: pollar.canvas,
-            indicatorColor: pollar.primarySoft,
-            selectedIconTheme: IconThemeData(color: pollar.primary, size: 20),
-            unselectedIconTheme: IconThemeData(
-              color: pollar.textSecondary,
-              size: 20,
-            ),
-            selectedLabelTextStyle: Theme.of(context).textTheme.labelMedium
-                ?.copyWith(color: pollar.primary),
-            unselectedLabelTextStyle: Theme.of(context).textTheme.labelMedium
-                ?.copyWith(color: pollar.textSecondary),
-            selectedIndex: selectedIndex,
-            onDestinationSelected: onSelected,
-            groupAlignment: -1,
-            labelType: extended
-                ? NavigationRailLabelType.none
-                : NavigationRailLabelType.all,
-            leading: _RailHeader(extended: extended, compact: false),
-            destinations: [
-              for (final d in appDestinations)
-                NavigationRailDestination(
-                  icon: Tooltip(
-                    message: d.label,
-                    child: Icon(d.icon, size: 20),
-                  ),
-                  label: Text(d.label),
-                ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _ShortRailDestination extends StatelessWidget {
-  const _ShortRailDestination({
-    required this.destination,
-    required this.selected,
-    required this.onPressed,
-  });
-
-  final AppDestination destination;
-  final bool selected;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.pollar;
-    return Tooltip(
-      message: destination.label,
-      child: Semantics(
-        button: true,
-        selected: selected,
-        label: destination.label,
-        excludeSemantics: true,
-        child: Material(
-          color: selected ? colors.primarySoft : Colors.transparent,
-          borderRadius: BorderRadius.circular(PollarRadii.medium),
-          child: InkWell(
-            onTap: onPressed,
-            borderRadius: BorderRadius.circular(PollarRadii.medium),
-            child: SizedBox(
-              width: 64,
-              height: 52,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    destination.icon,
-                    size: 20,
-                    color: selected ? colors.primary : colors.textSecondary,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    destination.label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      fontSize: 9,
-                      color: selected ? colors.primary : colors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+      child: NavigationRail(
+        // Only the presentation is replaced; the branch navigators stay mounted.
+        key: ValueKey(extended),
+        extended: extended,
+        minWidth: PollarSizes.sidebarCollapsed,
+        minExtendedWidth: PollarSizes.sidebarExpanded,
+        scrollable: true,
+        leadingAtTop: false,
+        backgroundColor: pollar.canvas,
+        indicatorColor: pollar.primarySoft,
+        selectedIconTheme: IconThemeData(color: pollar.primary, size: 20),
+        unselectedIconTheme: IconThemeData(
+          color: pollar.textSecondary,
+          size: 20,
         ),
+        selectedLabelTextStyle: Theme.of(context).textTheme.bodyMedium
+            ?.copyWith(color: pollar.primary),
+        unselectedLabelTextStyle: Theme.of(context).textTheme.bodyMedium
+            ?.copyWith(color: pollar.textSecondary),
+        selectedIndex: selectedIndex,
+        onDestinationSelected: onSelected,
+        groupAlignment: -1,
+        labelType: NavigationRailLabelType.none,
+        leading: _RailHeader(extended: extended),
+        destinations: [
+          for (final d in appDestinations)
+            NavigationRailDestination(
+              padding: const EdgeInsets.symmetric(vertical: PollarSpacing.x1),
+              icon: Tooltip(message: d.label, child: Icon(d.icon, size: 20)),
+              label: Text(d.label),
+            ),
+        ],
       ),
     );
   }
 }
 
 class _RailHeader extends StatelessWidget {
-  const _RailHeader({required this.extended, required this.compact});
+  const _RailHeader({required this.extended});
 
   final bool extended;
-  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -325,7 +309,7 @@ class _RailHeader extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: PollarSpacing.x5,
-        vertical: compact ? PollarSpacing.x2 : PollarSpacing.x5,
+        vertical: PollarSpacing.x5,
       ),
       child: extended
           ? Row(

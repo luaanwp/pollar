@@ -17,6 +17,16 @@ The focal surface is solid in this phase. A later focal-only tonal gradient
 requires derived tokens and AA contrast in both themes; no blanket gradients.
 Use primary/secondary text on the focal surface, not muted metadata.
 
+Redesign phase 2 implements manual 256/72px rail collapse at widths ≥1024px,
+with a session preference, stable branch navigators and scrolling in short
+windows. Tablet uses 72px; compact keeps five labelled bottom destinations and
+the native safe area. The utility bar has quiet route context and global
+theme/privacy actions; compact Transactions retains its sole page heading.
+More uses grouped rows: “Entenda seus dados” and “Seu aplicativo”. The Flutter
+page gutters remain 16/24px; later web-kit measurements below are references.
+The toolbar is normally 56px and grows for the compact enlarged page heading;
+there is no additional mobile quick-add control in the implemented shell.
+
 Implementation-ready design language for a **personal-finance product** (Flutter desktop + mobile), reconstructed as a web design system: CSS tokens, React primitives and two full UI-kit recreations.
 
 Pollar is the official product name. Brand personality: private, composed, dependable, intelligent, precise, contemporary. Product principles: calm clarity, financial precision, trust through restraint, progressive disclosure, accessible by default, cross-platform familiarity. Default locale **pt-BR** (BRL), and all product copy in this system is written in Portuguese.

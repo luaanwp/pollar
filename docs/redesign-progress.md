@@ -77,10 +77,38 @@ O comando é apenas para desenvolvimento. Não substitui o executável distribu�
 nem cria um novo APK/ZIP da V1. O próximo pacote de produto será gerado após
 migração e validação das telas.
 
+## Fase 2 — shell e navegação
+
+Implementação em 2026-10-23:
+
+- Rail de 256/72px com recolhimento manual a partir de 1024px, preferência
+  durante a sessão e preservação de branch, pilha de detalhes e rascunhos.
+- Tablet mantém 72px; celular mantém os cinco destinos rotulados. Marca e
+  destinos rolam em janelas baixas, sem reduzir os alvos para caber.
+- Barra superior usa contexto secundário; tema, privacidade e Ctrl/Cmd+P
+  permanecem globais. Transações compacta preserva seu único título de página
+  e sua altura acompanha a escala do texto.
+- Mais organiza Relatórios/Patrimônio em “Entenda seus dados” e os controles
+  em “Seu aplicativo”, com linhas, divisores e foco visível de 2px.
+- Mapa de rotas, autenticação, dados, cálculos e sincronização preservados.
+
+Testes de widget exercitam rascunho, navegação entre branches, pilha de detalhe,
+recolhimento, redimensionamento 390/800/1200px, teclado, privacidade, cinco
+destinos de Mais, rolagem em janela de 320px de altura, alvos Android de 48px e
+área segura inferior simulada. Cinco novos goldens de Mais cobrem claro/escuro,
+320/390/800/1440px e texto de 2×. As referências das telas com shell são
+atualizadas apenas por mudanças na navegação/barra superior.
+
+Detector de layout antes/depois: lista vazia; não substitui a análise Flutter.
+Resultado final: **315 testes passaram**, análise estática sem problemas e
+revisão independente **PASS**, sem achados materiais nos arquivos e quatro
+renders inspecionados. Os testes de pilha/rascunho usam páginas substitutas
+para isolar o shell; não ampliam o aceite dos fluxos de autenticação/sync.
+Os renders e a área segura são simulados: não há novo aceite físico Android,
+iOS, leitor de tela ou pacote APK/ZIP nesta fase.
+
 ## Sequência restante
 
-2. Shell: recolhimento manual do rail, hierarquia do header e Mais; preservar
-   destinos, estado das branches, tema e privacidade globais.
 3. Visão geral: saldo antes da ação no mobile e hierarquia editorial; não
    alterar serviço, data source ou regras financeiras.
 4. Contas, cartões, transações e planejamento: densidade, agrupamentos e reflow,

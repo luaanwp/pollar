@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../app/theme/pollar_theme.dart';
-import '../../../shared/presentation/pollar_card.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -22,26 +21,12 @@ class MoreScreen extends StatelessWidget {
           Text('Mais', style: Theme.of(context).textTheme.headlineLarge),
           const SizedBox(height: PollarSpacing.x1),
           Text(
-            'Patrimônio, preferências e os próximos controles da conta.',
+            'Análises do livro-caixa e controles do aplicativo.',
             style: Theme.of(context).textTheme.bodyMedium
                 ?.copyWith(color: context.pollar.textSecondary),
           ),
           const SizedBox(height: PollarSpacing.x6),
-          _MoreDestination(
-            icon: LucideIcons.scale,
-            title: 'Patrimônio',
-            description: 'Metas, ativos, dívidas e patrimônio líquido.',
-            onTap: () => context.push('/more/wealth'),
-          ),
-          const SizedBox(height: PollarSpacing.x3),
-          _MoreDestination(
-            icon: LucideIcons.cloudCog,
-            title: 'Sincronização',
-            description:
-                'Conta, fila deste dispositivo e conflitos preservados.',
-            onTap: () => context.push('/more/sync'),
-          ),
-          const SizedBox(height: PollarSpacing.x3),
+          const _SectionHeading('Entenda seus dados'),
           _MoreDestination(
             icon: LucideIcons.chartNoAxesCombined,
             title: 'Relatórios',
@@ -49,7 +34,23 @@ class MoreScreen extends StatelessWidget {
                 'Comparações mensais, categorias e exportação verificável.',
             onTap: () => context.push('/more/reports'),
           ),
-          const SizedBox(height: PollarSpacing.x3),
+          const Divider(height: 1),
+          _MoreDestination(
+            icon: LucideIcons.scale,
+            title: 'Patrimônio',
+            description: 'Metas, ativos, dívidas e patrimônio líquido.',
+            onTap: () => context.push('/more/wealth'),
+          ),
+          const SizedBox(height: PollarSpacing.x8),
+          const _SectionHeading('Seu aplicativo'),
+          _MoreDestination(
+            icon: LucideIcons.cloudCog,
+            title: 'Sincronização',
+            description:
+                'Conta, fila deste dispositivo e conflitos preservados.',
+            onTap: () => context.push('/more/sync'),
+          ),
+          const Divider(height: 1),
           _MoreDestination(
             icon: LucideIcons.databaseBackup,
             title: 'Dados e backup',
@@ -57,7 +58,7 @@ class MoreScreen extends StatelessWidget {
                 'Cópia completa, verificação e restauração dos dados locais.',
             onTap: () => context.push('/more/data'),
           ),
-          const SizedBox(height: PollarSpacing.x3),
+          const Divider(height: 1),
           _MoreDestination(
             icon: LucideIcons.settings,
             title: 'Preferências',
@@ -70,7 +71,22 @@ class MoreScreen extends StatelessWidget {
   );
 }
 
-class _MoreDestination extends StatelessWidget {
+class _SectionHeading extends StatelessWidget {
+  const _SectionHeading(this.title);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: PollarSpacing.x2),
+    child: Semantics(
+      header: true,
+      child: Text(title, style: Theme.of(context).textTheme.headlineSmall),
+    ),
+  );
+}
+
+class _MoreDestination extends StatefulWidget {
   const _MoreDestination({
     required this.icon,
     required this.title,
@@ -83,42 +99,54 @@ class _MoreDestination extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => PollarCard(
-    onTap: onTap,
-    semanticLabel: '$title. $description',
-    child: Row(
-      children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: context.pollar.primarySoft,
-            borderRadius: BorderRadius.circular(PollarRadii.medium),
-          ),
-          child: Icon(icon, size: 20, color: context.pollar.primary),
+  State<_MoreDestination> createState() => _MoreDestinationState();
+}
+
+class _MoreDestinationState extends State<_MoreDestination> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: Colors.transparent,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(PollarRadii.medium),
+      side: BorderSide(
+        color: _focused ? context.pollar.info : Colors.transparent,
+        width: 2,
+      ),
+    ),
+    child: ListTile(
+      onTap: widget.onTap,
+      onFocusChange: (focused) => setState(() => _focused = focused),
+      focusColor: context.pollar.primarySoft,
+      hoverColor: context.pollar.surfaceAlt,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(PollarRadii.medium),
+      ),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: PollarSpacing.x3,
+        vertical: PollarSpacing.x3,
+      ),
+      minTileHeight: PollarSizes.androidTouchTargetMin,
+      leading: Icon(widget.icon, size: 20, color: context.pollar.textSecondary),
+      title: Text(
+        widget.title,
+        style: Theme.of(context).textTheme.bodyLarge
+            ?.copyWith(fontWeight: FontWeight.w600),
+      ),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: PollarSpacing.x1),
+        child: Text(
+          widget.description,
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: context.pollar.textSecondary),
         ),
-        const SizedBox(width: PollarSpacing.x4),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: PollarSpacing.x1),
-              Text(
-                description,
-                style: Theme.of(context).textTheme.bodySmall
-                    ?.copyWith(color: context.pollar.textSecondary),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: PollarSpacing.x3),
-        Icon(
-          LucideIcons.chevronRight,
-          size: 20,
-          color: context.pollar.textMuted,
-        ),
-      ],
+      ),
+      trailing: Icon(
+        LucideIcons.chevronRight,
+        size: 20,
+        color: context.pollar.textMuted,
+      ),
     ),
   );
 }

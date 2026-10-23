@@ -77,7 +77,7 @@ void main() {
 
     expect(find.text('Nenhuma transação ainda'), findsNothing);
 
-    await tester.tap(find.text('Transações').first);
+    await tester.tap(find.byTooltip('Transações'));
     await tester.pumpAndSettle();
 
     expect(find.text('Nenhuma transação ainda'), findsOneWidget);

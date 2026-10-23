@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pollar_app/features/overview/application/overview_data_source.dart';
 import 'package:pollar_app/features/overview/presentation/overview_controller.dart';
+import 'package:pollar_app/features/overview/presentation/overview_screen.dart';
 import 'package:pollar_app/core/money/currency.dart';
 import 'package:pollar_app/core/money/money.dart';
 import 'package:pollar_app/main.dart';
@@ -24,7 +25,12 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('Freelance — projeto Vega'),
       300,
-      scrollable: find.byType(Scrollable).first,
+      scrollable: find
+          .descendant(
+            of: find.byType(OverviewScreen),
+            matching: find.byType(Scrollable),
+          )
+          .first,
     );
     expect(find.text('Freelance — projeto Vega'), findsOneWidget);
   });
@@ -40,7 +46,15 @@ void main() {
     await tester.pumpWidget(_app(const OverviewFixtureDataSource()));
     await tester.pumpAndSettle();
 
-    await tester.drag(find.byType(Scrollable).first, const Offset(0, -1800));
+    await tester.drag(
+      find
+          .descendant(
+            of: find.byType(OverviewScreen),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+      const Offset(0, -1800),
+    );
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
@@ -60,7 +74,15 @@ void main() {
     await tester.pumpWidget(_app(const OverviewFixtureDataSource()));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
-    await tester.drag(find.byType(Scrollable).first, const Offset(0, -1800));
+    await tester.drag(
+      find
+          .descendant(
+            of: find.byType(OverviewScreen),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+      const Offset(0, -1800),
+    );
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
