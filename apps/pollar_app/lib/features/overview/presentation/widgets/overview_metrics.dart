@@ -3,10 +3,10 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../app/theme/pollar_theme.dart';
 import '../../../../core/money/money.dart';
-import '../../../../shared/presentation/pollar_card.dart';
 import '../../../../shared/presentation/money_text.dart';
 import '../../../../shared/presentation/privacy_amount.dart';
 import '../../domain/overview_snapshot.dart';
+import 'overview_monthly_flow.dart';
 
 class OverviewMetrics extends StatelessWidget {
   const OverviewMetrics({
@@ -21,36 +21,17 @@ class OverviewMetrics extends StatelessWidget {
   final bool privacyHidden;
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) {
-      final wide =
-          constraints.maxWidth >= 960 &&
-          MediaQuery.textScalerOf(context).scale(1) <= 1.3;
-      final balance = _BalancePosition(
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      _BalancePosition(
         summary: summary,
         accountCount: accountCount,
         hidden: privacyHidden,
-      );
-      final result = _MonthlyResult(summary: summary, hidden: privacyHidden);
-      if (!wide) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            balance,
-            const SizedBox(height: PollarSpacing.x6),
-            result,
-          ],
-        );
-      }
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(flex: 7, child: balance),
-          const SizedBox(width: PollarSpacing.x8),
-          Expanded(flex: 4, child: result),
-        ],
-      );
-    },
+      ),
+      const SizedBox(height: PollarSpacing.x6),
+      _MonthlyResult(summary: summary, hidden: privacyHidden),
+    ],
   );
 }
 
@@ -66,64 +47,129 @@ class _BalancePosition extends StatelessWidget {
   final bool hidden;
 
   @override
-  Widget build(BuildContext context) => PollarCard(
-    variant: PollarCardVariant.financial,
-    child: LayoutBuilder(
-      builder: (context, constraints) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Saldo confirmado',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: PollarSpacing.x2),
-          PrivacyAmount(
-            summary.confirmed,
-            key: const Key('overview-confirmed'),
-            animateChanges: true,
-            hidden: hidden,
-            style: PollarTypography.balanceHeroForWidth(constraints.maxWidth),
-            semantic: MoneySemantic.balance,
-            allowWrap: true,
-            reserveLayout: true,
-          ),
-          const SizedBox(height: PollarSpacing.x1),
-          Text(
-            '$accountCount ${accountCount == 1 ? 'posição ativa' : 'posições ativas'} · ${summary.currency.code}',
-            style: Theme.of(context).textTheme.bodySmall
-                ?.copyWith(color: context.pollar.textSecondary),
-          ),
-          const SizedBox(height: PollarSpacing.x5),
-          _AmountLine(
-            label: 'Saldo projetado',
-            amount: summary.projected,
-            hidden: hidden,
-            style: PollarTypography.tabular(
-              Theme.of(context).textTheme.headlineSmall!,
-            ),
-          ),
-          const SizedBox(height: PollarSpacing.x1),
-          Text(
-            'Inclui lançamentos previstos e pendentes',
-            style: Theme.of(context).textTheme.bodySmall
-                ?.copyWith(color: context.pollar.textSecondary),
-          ),
-          if (!summary.projectedCardDebt.isZero) ...[
-            const SizedBox(height: PollarSpacing.x4),
-            Divider(height: 1, color: context.pollar.borderStrong),
-            const SizedBox(height: PollarSpacing.x3),
-            _AmountLine(
-              label: 'Dívida projetada nos cartões',
-              amount: summary.projectedCardDebt,
-              hidden: hidden,
-              semantic: MoneySemantic.debt,
-              icon: LucideIcons.creditCard,
-            ),
-          ],
-        ],
+  Widget build(BuildContext context) {
+    final palette = context.pollar;
+    final theme = Theme.of(context);
+    final foreground = palette.financialHeroForeground;
+    final secondary = palette.financialHeroSecondary;
+    return DecoratedBox(
+      key: const Key('overview-position-field'),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(PollarRadii.large),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [palette.financialHeroStart, palette.financialHeroEnd],
+        ),
       ),
-    ),
-  );
+      // MoneyText and PrivacyAmount share the audited foreground inside this
+      // field. No global amount colors or privacy behavior are changed.
+      child: Theme(
+        data: theme.copyWith(
+          textTheme: theme.textTheme.apply(
+            bodyColor: foreground,
+            displayColor: foreground,
+          ),
+          extensions: [
+            ...theme.extensions.values.where((item) => item is! PollarColors),
+            palette.copyWith(textPrimary: foreground, textSecondary: secondary),
+          ],
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final wide =
+                constraints.maxWidth >= 880 &&
+                MediaQuery.textScalerOf(context).scale(1) <= 1.3;
+            final inset = wide ? PollarSpacing.x8 : PollarSpacing.x5;
+            final balance = LayoutBuilder(
+              builder: (context, balanceConstraints) => Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Saldo confirmado',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: PollarSpacing.x3),
+                  PrivacyAmount(
+                    summary.confirmed,
+                    key: const Key('overview-confirmed'),
+                    animateChanges: true,
+                    hidden: hidden,
+                    style: PollarTypography.positionDisplayForWidth(
+                      balanceConstraints.maxWidth,
+                    ),
+                    semantic: MoneySemantic.balance,
+                    allowWrap: true,
+                    reserveLayout: true,
+                  ),
+                  const SizedBox(height: PollarSpacing.x2),
+                  Text(
+                    '$accountCount ${accountCount == 1 ? 'posição ativa' : 'posições ativas'} · ${summary.currency.code}',
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: secondary),
+                  ),
+                ],
+              ),
+            );
+            final projection = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _AmountLine(
+                  label: 'Saldo projetado',
+                  amount: summary.projected,
+                  hidden: hidden,
+                  style: PollarTypography.tabular(
+                    Theme.of(context).textTheme.headlineMedium!,
+                  ),
+                ),
+                const SizedBox(height: PollarSpacing.x1),
+                Text(
+                  'Inclui lançamentos previstos e pendentes',
+                  style: Theme.of(context).textTheme.bodySmall
+                      ?.copyWith(color: secondary),
+                ),
+                if (!summary.projectedCardDebt.isZero) ...[
+                  const SizedBox(height: PollarSpacing.x5),
+                  _AmountLine(
+                    label: 'Dívida projetada nos cartões',
+                    amount: summary.projectedCardDebt,
+                    hidden: hidden,
+                    semantic: MoneySemantic.debt,
+                    icon: LucideIcons.creditCard,
+                  ),
+                ],
+              ],
+            );
+            return Padding(
+              padding: EdgeInsets.all(inset),
+              child: wide
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(flex: 6, child: balance),
+                        const SizedBox(width: PollarSpacing.x8),
+                        Expanded(flex: 4, child: projection),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        balance,
+                        const SizedBox(height: PollarSpacing.x5),
+                        Divider(
+                          height: 1,
+                          color: secondary.withValues(alpha: 0.4),
+                        ),
+                        const SizedBox(height: PollarSpacing.x4),
+                        projection,
+                      ],
+                    ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 }
 
 class _MonthlyResult extends StatelessWidget {
@@ -132,51 +178,62 @@ class _MonthlyResult extends StatelessWidget {
   final bool hidden;
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      Semantics(
-        header: true,
-        child: Text(
-          'Resultado projetado do mês',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-      ),
-      const SizedBox(height: PollarSpacing.x2),
-      PrivacyAmount(
-        summary.projectedMonthlyResult,
-        hidden: hidden,
-        style: PollarTypography.tabular(
-          Theme.of(context).textTheme.headlineMedium!,
-        ),
-        colorBySign: true,
-        showSign: summary.projectedMonthlyResult.isPositive,
-        semantic: MoneySemantic.neutral,
-        allowWrap: true,
-        reserveLayout: true,
-      ),
-      const SizedBox(height: PollarSpacing.x1),
-      Text(
-        'Receitas menos despesas',
-        style: Theme.of(context).textTheme.bodySmall
-            ?.copyWith(color: context.pollar.textSecondary),
-      ),
-      const SizedBox(height: PollarSpacing.x4),
-      _AmountLine(
-        label: 'Entradas',
-        amount: summary.projectedMonthlyIncome,
-        hidden: hidden,
-        semantic: MoneySemantic.income,
-        positive: true,
-      ),
-      const SizedBox(height: PollarSpacing.x2),
-      _AmountLine(
-        label: 'Saídas',
-        amount: summary.projectedMonthlyExpenses,
-        hidden: hidden,
-        semantic: MoneySemantic.expense,
-      ),
-    ],
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final wide =
+          constraints.maxWidth >= 880 &&
+          MediaQuery.textScalerOf(context).scale(1) <= 1.3;
+      final result = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            header: true,
+            child: Text(
+              'Resultado projetado do mês',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          ),
+          const SizedBox(height: PollarSpacing.x2),
+          PrivacyAmount(
+            summary.projectedMonthlyResult,
+            hidden: hidden,
+            style: PollarTypography.tabular(
+              Theme.of(context).textTheme.headlineMedium!,
+            ),
+            colorBySign: true,
+            showSign: summary.projectedMonthlyResult.isPositive,
+            semantic: MoneySemantic.neutral,
+            allowWrap: true,
+            reserveLayout: true,
+          ),
+          const SizedBox(height: PollarSpacing.x1),
+          Text(
+            'Receitas menos despesas',
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: context.pollar.textSecondary),
+          ),
+        ],
+      );
+      final flow = OverviewMonthlyFlow(summary: summary, hidden: hidden);
+      if (!wide) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            result,
+            const SizedBox(height: PollarSpacing.x4),
+            flow,
+          ],
+        );
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(flex: 4, child: result),
+          const SizedBox(width: PollarSpacing.x8),
+          Expanded(flex: 6, child: flow),
+        ],
+      );
+    },
   );
 }
 
@@ -188,7 +245,6 @@ class _AmountLine extends StatelessWidget {
     required this.hidden,
     this.style,
     this.semantic = MoneySemantic.balance,
-    this.positive = false,
     this.icon,
   });
 
@@ -197,7 +253,6 @@ class _AmountLine extends StatelessWidget {
   final bool hidden;
   final TextStyle? style;
   final MoneySemantic semantic;
-  final bool positive;
   final IconData? icon;
 
   @override
@@ -223,8 +278,6 @@ class _AmountLine extends StatelessWidget {
       style: style,
       maskDigits: 5,
       semantic: semantic,
-      showSign: positive,
-      colorBySign: positive,
       allowWrap: true,
       reserveLayout: true,
       alignment: AlignmentDirectional.topEnd,

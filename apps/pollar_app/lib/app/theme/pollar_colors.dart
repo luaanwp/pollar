@@ -41,6 +41,16 @@ class PollarColors extends ThemeExtension<PollarColors> {
   /// Supporting copy uses textSecondary, not low-contrast muted metadata.
   Color get financialSurface => primarySoft;
 
+  /// Overview-only focal field, derived from the existing brand palette.
+  /// Text contrast is verified across the entire tonal gradient in both themes.
+  bool get _darkCanvas => canvas.computeLuminance() < 0.5;
+  Color get financialHeroStart => _darkCanvas ? primarySoft : primaryHover;
+  Color get financialHeroEnd =>
+      _darkCanvas ? Color.lerp(primarySoft, primary, 0.12)! : primary;
+  Color get financialHeroForeground => _darkCanvas ? textPrimary : canvas;
+  Color get financialHeroSecondary =>
+      Color.lerp(financialHeroEnd, financialHeroForeground, 0.94)!;
+
   /// Card fill. Max two background values per screen: [canvas] + [background].
   final Color canvas;
 

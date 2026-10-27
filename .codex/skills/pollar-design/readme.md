@@ -11,11 +11,12 @@ Inter and Lucide are bundled by the Flutter app; do not add their web CDNs.
 Redesign phase 1 adds explicit `PollarCard` roles: legacy `outlined` (default),
 borderless `flat`, and one focal `financial` surface using the existing
 `primarySoft` color. Interactive cards retain a boundary and a 2px info-colored
-keyboard focus ring. Balance opening roles are 40px when component width is at
+keyboard focus ring. These balance roles remain 40px when component width is at
 least 600px and 34px otherwise; legacy amount styles remain unchanged.
-The focal surface is solid in this phase. A later focal-only tonal gradient
-requires derived tokens and AA contrast in both themes; no blanket gradients.
-Use primary/secondary text on the focal surface, not muted metadata.
+The phase-1 `financialSurface` remains solid and uses primary/secondary text,
+not muted metadata. Only the expanded Overview opening uses the derived tonal
+field and 48/40px position roles described below; other financial cards retain
+their existing treatment.
 
 Redesign phase 2 implements manual 256/72px rail collapse at widths ≥1024px,
 with a session preference, stable branch navigators and scrolling in short
@@ -27,14 +28,31 @@ page gutters remain 16/24px; later web-kit measurements below are references.
 The toolbar is normally 56px and grows for the compact enlarged page heading;
 there is no additional mobile quick-add control in the implemented shell.
 
-Redesign phase 3 migrates Overview: one solid financial surface leads with
-confirmed cash (40/34px by available width), then projected cash and separately
-labelled card debt. Monthly result supports it at 22px without an outer card.
+Redesign phase 3 and its subsequent expansion migrate Overview: one static teal
+tonal field spans the content width, leading with confirmed cash (48/40px by
+real balance-block width, threshold 600px), then projected cash and separately
+labelled card debt. `positionDisplayForWidth` selects this local role; existing
+`balanceHeroForWidth` consumers keep 40/34px. The field uses the existing-palette
+`financialHeroStart`/`End`/`Foreground`/`Secondary` roles: light primaryHover →
+primary with canvas foreground, dark primarySoft → a 12% mix toward primary
+with text-primary foreground; secondary is a 94% mix toward foreground.
+A local Theme gives MoneyText and privacy masks their audited contrast without
+changing global money colors. Monthly result follows at 22px without an outer
+card, with comparison bars for existing projected income/expense totals on the
+same scale relative to the larger total. Zero has no fill; there is no history
+series or invented financial value. Exact labelled amounts remain accessible.
 On stacked layouts the create action follows both summaries; on wide layouts
 it stays in the header. Evidence lists are flat, with 18px headings and row
 dividers. All overview amounts wrap and reserve privacy geometry; recent
 transactions opt into content-aware reflow, while other screens keep defaults.
 Do not add history charts, insight claims or financial calculations to the UI.
+
+Overview bars use 360ms focal geometry transitions. Privacy removes proportions
+immediately; reduced motion renders final fractions without a Tween. Recent
+rows use PollarReveal by transaction identity with stagger limited to five
+20ms steps; ordinary theme/privacy rebuilds do not replay arrival. The tonal
+field stays static. Local width and text scale govern reflow: field and evidence
+columns require 880px and text up to 1.3×; the header action requires 960px.
 
 The user's newer motion addendum preserves this redesign and authorizes visual
 rolling between actual balance states, credit-card-to-statement morph, bounded
@@ -98,13 +116,13 @@ Product copy is **Portuguese (pt-BR)**, calm, plain and specific. The register i
 
 ## Visual foundations
 
-**Palette.** One brand hue: a deep desaturated teal (`#087F6B`) with a pale mint tint (`#EAF8F4`) for selection. Neutrals are green-leaning greys (`#F7F9F8 → #13201D`), so the whole UI reads slightly cool and clinical. Four semantic colors only — positive `#0F7444`, negative `#C53B3B`, warning `#8B5707`, info `#2667C9` — each with a derived soft fill for badges/banners. Dark theme flips to a lighter teal (`#5ED3B8`) on near-black greens. Canvas/background remain the base; a focal financial surface may use the existing primary-soft role once per viewport.
+**Palette.** One brand hue: a deep desaturated teal (`#087F6B`) with a pale mint tint (`#EAF8F4`) for selection. Neutrals are green-leaning greys (`#F7F9F8 → #13201D`), so the whole UI reads slightly cool and clinical. Four semantic colors only — positive `#0F7444`, negative `#C53B3B`, warning `#8B5707`, info `#2667C9` — each with a derived soft fill for badges/banners. Dark theme flips to a lighter teal (`#5ED3B8`) on near-black greens. Canvas/background remain the base; allow one focal financial surface per viewport, using either the solid primary-soft role or the Overview-only derived tonal field.
 
 **Type.** Inter throughout, no second product face. Tight weights rather than sizes carry hierarchy (650/700 for display and amounts, 600 for labels, 400 body). Display and H1 get slight negative tracking (−0.015 to −0.02em); body gets none. **Tabular numerals on every figure** (`.fin-tnum`) so columns align — non-negotiable for money, dates in tables, percentages and installment counts.
 
 **Spacing & layout.** Base 4, rhythm 8; scale 0–80. 24px page gutters on desktop, 32 wide, 16 mobile. 12/8/4-column grid with 16/24px gutters. Content caps: 1600 overall, 1280 for dashboard reading columns, 360px contextual panel, 256/72px sidebar. Fixed elements: sidebar, 60px top bar, mobile bottom nav (64px) and its 56px floating quick-add — everything else scrolls.
 
-**Backgrounds.** Flat surfaces by default. No glassmorphism, textures, patterns, full-bleed imagery or hand-drawn illustration. A focal-only tonal gradient is conditionally allowed by the redesign plan after token and contrast validation; phase 1 implements the solid fallback only. Never put gradients on amounts, charts or list backgrounds.
+**Backgrounds.** Flat surfaces by default. No glassmorphism, textures, patterns, full-bleed imagery or hand-drawn illustration. The expanded Flutter Overview uses one static tonal gradient with derived roles and AA contrast checked across both themes. This local exception leaves the solid phase-1 financial surface and historical HTML kits intact. Never put gradients on amounts, charts or list backgrounds, or animate the focal gradient.
 
 **Cards.** Legacy default: canvas fill, 1px border, 14px radius, 20px padding, no shadow at rest. Explicit `flat` and `financial` information groups omit the border; interactive variants retain a boundary and gain restrained hover elevation. Never nested.
 

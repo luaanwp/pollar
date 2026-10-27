@@ -275,6 +275,25 @@ ou funcionalidades financeiras. Tokens, implementação e limites de validação
 estão em [docs/pollar-motion.md](docs/pollar-motion.md). A fase 4 continua
 pendente; esta extensão não descarta nem reinicia o plano visual.
 
+## 23. Revisão focal de impacto visual autorizada
+
+Após as fases 1–3, o adendo de movimento e as partes 4A/4B, o usuário avaliou
+que a diferença visual ainda era discreta. A prioridade foi ajustada para uma
+passagem mais expressiva pela Visão geral, seguida de cartões/fatura e
+continuidade da navegação/listas, somada ao plano existente.
+
+A abertura da Visão geral passa a uma faixa teal de largura inteira, com saldo
+48/40px e projeção/passivo em zona de apoio. Um gradiente tonal estático, derivado
+da paleta existente, é permitido somente nessa faixa, com contraste AA validado
+nos dois temas. Abaixo, entradas e saídas mensais já calculadas ganham comparação
+de barras na mesma escala, com valores exatos, remoção das proporções em
+privacidade e desenho finito respeitando movimento reduzido. Não se cria série
+histórica, insight, nova previsão ou transação para fins de apresentação.
+
+As demais fases e invariantes continuam válidas. A execução e seus limites de
+validação são registrados em `docs/redesign-progress.md`; acabamento visual
+não equivale a aceite físico ou encerramento das pendências da V1.
+
 ## Limitações da auditoria
 
 O acesso ao repositório funcionou sem autenticação neste ambiente. A análise é estática e usou goldens existentes, não execução interativa no Windows/Android/iOS. Não há evidência de métricas de uso para reordenar destinos, nem dados/engine de IA para publicar insights. O código não contém CSS ou biblioteca de charts: tema Flutter e `CustomPainter` fazem esse papel. Sincronização opcional já consta do código, embora `PRODUCT.md` a descreva como etapa posterior; a documentação de produto deve esclarecer a diferença entre capacidade implementada e estágio de lançamento. O skill local `pollar-design` aponta a `README.md`, enquanto o checkout contém `readme.md` em minúsculas; isso pode falhar em sistemas sensíveis a maiúsculas. O próprio `readme.md` tem dois tons semânticos divergentes dos tokens atuais. Alinhar o guia quando a fase visual for implementada. Validar qualquer alteração visual no aplicativo e nas capturas golden antes de declarar o redesign concluído.

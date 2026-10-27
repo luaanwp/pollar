@@ -7,6 +7,24 @@ import 'package:pollar_app/app/theme/pollar_theme.dart';
 void main() {
   for (final colors in [PollarColors.light, PollarColors.dark]) {
     test(
+      'overview hero text meets AA throughout its gradient (${colors.canvas})',
+      () {
+        for (var step = 0; step <= 20; step++) {
+          final background = Color.lerp(
+            colors.financialHeroStart,
+            colors.financialHeroEnd,
+            step / 20,
+          )!;
+          for (final text in [
+            colors.financialHeroForeground,
+            colors.financialHeroSecondary,
+          ]) {
+            expect(_contrast(text, background), greaterThanOrEqualTo(4.5));
+          }
+        }
+      },
+    );
+    test(
       'financial solid surface keeps primary, secondary and financial colors readable (${colors.canvas})',
       () {
         expect(colors.financialSurface, colors.primarySoft);

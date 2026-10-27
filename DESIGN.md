@@ -86,6 +86,18 @@ typography:
     fontWeight: 600
     lineHeight: 1.15
     fontFeature: "tnum"
+  position-display:
+    fontFamily: "Inter"
+    fontSize: "48px"
+    fontWeight: 600
+    lineHeight: 1.15
+    fontFeature: "tnum"
+  position-display-compact:
+    fontFamily: "Inter"
+    fontSize: "40px"
+    fontWeight: 600
+    lineHeight: 1.15
+    fontFeature: "tnum"
   eyebrow:
     fontFamily: "Inter"
     fontSize: "11px"
@@ -186,16 +198,16 @@ O sistema usa superfícies planas, neutros levemente esverdeados e uma única vo
 
 ### Migração do redesign — fases implementadas
 
-As fases implementadas de `UI_UX_REDESIGN_POLLAR.md` incluem fundamentos, navegação e Visão geral: variantes de cartão, superfície focal sólida, papéis de saldo, reserva de layout, rail recolhível e leitura financeira antes da ação no compacto. O catálogo demonstra os fundamentos; a Visão geral já os utiliza. As demais telas conservam suas regras operacionais até a migração explícita.
+As fases implementadas de `UI_UX_REDESIGN_POLLAR.md` incluem fundamentos, navegação e Visão geral: variantes de cartão, papéis de saldo, reserva de layout, rail recolhível e leitura financeira antes da ação no compacto. A ampliação da Visão geral usa uma faixa tonal teal estática em toda a largura de conteúdo e saldo de 48/40px; o catálogo de fundamentos e os cartões financeiros das demais telas conservam a superfície sólida e os papéis anteriores até migração explícita.
 
 A fase 4A migra a listagem de Contas e cartões: linhas para contas/arquivadas, crédito com motion preservado, largura real e texto ampliado. A fase 4B migra Transações com controles adaptáveis, linhas completas e detalhe conforme a largura disponível. Planejamento continua na fase 4C.
 
 | Regra anterior | Regra vigente e limite |
 | --- | --- |
 | Todo cartão tem borda de 1px | `outlined` continua padrão; `flat` e `financial` informativos omitem a borda. Qualquer cartão interativo conserva limite visível e foco informativo de 2px. |
-| Teal restrito a pequenos sinais | Uma superfície financeira focal por viewport pode usar `financialSurface`, alias de `primarySoft`, sem nova cor. |
-| Proibição incondicional de gradientes | Gradiente tonal focal é uma possibilidade futura condicionada a tokens derivados e contraste AA nos dois temas. A implementação atual usa somente o fallback sólido. |
-| Um único papel de saldo destacado | `amountHero` legado conserva 34/30px nas composições existentes; `balanceHero`/`balanceHeroCompact` acrescentam 40/34px por largura disponível do componente. |
+| Teal restrito a pequenos sinais | Uma superfície financeira focal por viewport: `financialSurface`, alias sólido de `primarySoft`, ou a faixa tonal exclusiva da abertura da Visão geral, derivada da mesma paleta. |
+| Proibição incondicional de gradientes | A abertura da Visão geral usa gradiente tonal estático com papéis derivados por tema e contraste AA verificado ao longo da faixa. O restante conserva suas superfícies vigentes. |
+| Um único papel de saldo destacado | `amountHero` conserva 34/30px e `balanceHero`/`balanceHeroCompact` conservam 40/34px nos consumidores existentes. Somente a abertura da Visão geral usa `positionDisplay`/`positionDisplayCompact` de 48/40px por largura real do bloco de saldo. |
 
 O registro de execução e seus limites de validação ficam em [`docs/redesign-progress.md`](docs/redesign-progress.md). Nenhuma regra de cálculo, identidade, sincronização ou privacidade financeira foi substituída por esta extensão visual.
 
@@ -207,7 +219,7 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 
 - **Teal de confiança:** ações primárias, seleção de navegação e pequenos sinais de marca.
 - **Teal de resposta:** estado hover de ações primárias.
-- **Menta de seleção:** fundo de seleção e foco tonal, acompanhado por texto ou ícone teal nesses estados. O mesmo token sustenta a superfície financeira focal sólida.
+- **Menta de seleção:** fundo de seleção e foco tonal, acompanhado por texto ou ícone teal nesses estados. O mesmo token sustenta `financialSurface`, a superfície financeira sólida preservada, e participa da derivação da faixa da Visão geral no tema escuro.
 
 ### Secondary
 
@@ -222,7 +234,7 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 - **Borda estrutural e borda forte:** separação padrão e reforço interativo.
 - **Texto primário, secundário e atenuado:** conteúdo, explicação e metadados, respectivamente.
 
-**The One Voice Rule.** O teal é a única cor de marca. Uma superfície financeira focal por viewport pode usar `financialSurface`; não repetir esse preenchimento em listas, relatórios ou todos os cartões. `financialSurface` é alias de `primarySoft` em cada tema, sem novo hex. Use texto primário ou secundário e cores semânticas financeiras com contraste AA validado; texto atenuado não é usado nessa superfície.
+**The One Voice Rule.** O teal é a única cor de marca. Use no máximo uma superfície financeira focal por viewport, sem repetir esse preenchimento em listas, relatórios ou todos os cartões. `financialSurface` continua alias sólido de `primarySoft`, com texto primário/secundário e cores financeiras de contraste AA validado, sem texto atenuado. Somente a abertura da Visão geral usa `financialHeroStart`/`financialHeroEnd`: no claro, `primaryHover` → `primary`; no escuro, `primarySoft` → mistura de `primarySoft` com `primary` a 12%. `financialHeroForeground` usa canvas no claro e texto primário no escuro; `financialHeroSecondary` mistura o final com esse primeiro plano a 94%. Esses papéis derivados mantêm a paleta existente e o contraste ao longo da faixa.
 
 **The Paired Meaning Rule.** Estado nunca depende apenas de cor; combine tom com texto e, quando houver símbolo reconhecível, com ícone.
 
@@ -242,7 +254,8 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 - **Body:** texto corrente; a variação grande usa 16px e legendas usam 12px/500.
 - **Label:** botões e rótulos de campos.
 - **Amount:** dinheiro em linhas e cartões usa 16px/600. `amountHero` legado permanece 34px/600 e conserva a redução compacta de 30px onde já aplicada.
-- **Balance hero:** abertura financeira migrada usa `balanceHero` de 40px/600 com pelo menos 600px disponíveis no componente; abaixo disso, `balanceHeroCompact` de 34px/600. Ambos usam entrelinha 1,15 e algarismos tabulares. Selecione por `balanceHeroForWidth`, sem substituir automaticamente o papel legado.
+- **Balance hero:** os consumidores existentes conservam `balanceHero` de 40px/600 com pelo menos 600px disponíveis no componente e `balanceHeroCompact` de 34px/600 abaixo disso, selecionados por `balanceHeroForWidth`.
+- **Position display:** somente o saldo confirmado na abertura da Visão geral usa `positionDisplayForWidth`: 48px/600 com pelo menos 600px reais no bloco de saldo, ou 40px/600 abaixo disso. Os papéis de saldo mantêm entrelinha 1,15 e algarismos tabulares; não substitua automaticamente os consumidores legados.
 - **Eyebrow:** reservado a cabeçalhos de tabela e divisores de navegação, em caixa alta.
 
 **The Exact Figure Rule.** Todo valor monetário, percentual, data tabular e contagem parcelada usa algarismos tabulares e conserva a exatidão. O adendo de movimento autorizado pelo usuário permite rolagem visual entre estados reais do saldo; não interpola quantias fictícias nem altera o valor semântico atual. Privacidade ou movimento reduzido interrompem o efeito imediatamente.
@@ -263,7 +276,7 @@ Na listagem de contas, o primeiro viewport apresenta título, explicação, aç�
 
 Em transações, busca e filtros precedem sempre o histórico. Abaixo de 600px, os lançamentos são agrupados por dia em uma única coluna e os detalhes abrem em modal raiz, preservando o contexto escurecido da lista. Entre 600px e 1023px, o ledger permanece em uma coluna e também delega os detalhes ao modal. A partir de 1024px, a seleção mantém o ledger visível e abre ao lado um painel contextual fixo de 360px; o painel nunca comprime a coluna a ponto de ocultar valor ou estado.
 
-Na visão geral, a ordem operacional é invariável: cabeçalho com contexto e ação, par de saldos confirmado/projetado, resultado projetado do mês, posições por conta e transações recentes. Com 880px ou mais disponíveis, posições e transações dividem a linha em proporção 4:6; abaixo disso, empilham nessa mesma ordem. O resumo usa composição assimétrica 7:3 a partir de 760px, mantendo os saldos como leitura dominante; em espaço menor, seus cartões empilham. O cabeçalho também empilha no compacto, com seletor de moeda e ação ocupando a largura disponível.
+Na visão geral, o cabeçalho precede a faixa de largura inteira com saldos confirmado/projetado e passivo separado; resultado projetado do mês e barras de entradas/saídas vêm abaixo. A faixa divide saldo e projeção em 6:4 com pelo menos 880px disponíveis e texto até 1,3×; fora disso, empilha com divisor. Sua margem interna é 32px no amplo e 20px no empilhado. Resultado e comparação mensal também separam-se horizontalmente somente a partir de 880px e até 1,3×; as duas barras empilham abaixo de 320px locais ou acima de 1,3×. Posições e transações dividem a linha em 4:6 com pelo menos 880px e até 1,3×, empilhando nessa ordem fora desse limite. A ação Nova transação fica no cabeçalho com pelo menos 960px e até 1,3×; caso contrário, vem após os dois resumos, antes das listas. O seletor de moeda permanece explícito quando necessário.
 
 Na fatura de cartão, o desktop apresenta resumo e parcelas futuras antes das compras: com pelo menos 820px disponíveis e escala tipográfica de até 1,3×, resumo e futuro dividem a primeira linha, seguidos pelo ledger de compras em largura total. No mobile, a ordem é resumo, compras e parcelas futuras. Acima de 1,3×, a composição paralela e os pares internos fazem reflow para blocos verticais, sem reduzir tipografia, truncar valores ou ocultar parcelas.
 
@@ -281,7 +294,7 @@ Texto ampliado provoca reflow por conteúdo, não redução tipográfica nem rec
 
 ## Elevation & Depth
 
-Superfícies são planas em repouso. Fundo, canvas, mudança tonal e bordas estruturais criam profundidade suficiente. Elevação 1 aparece apenas no hover de cartões interativos; menus, toasts e diálogos usam as elevações nativas 2 e 3. Não há blur, textura, sombra colorida ou sombra interna. A superfície financeira atual é sólida. O plano admite futuramente um gradiente tonal somente no cartão financeiro focal ou abertura mobile, após registrar tokens derivados por tema e validar contraste AA; sem esses requisitos, permanece o fallback sólido. Essa possibilidade não autoriza gradientes em números, gráficos, listas ou fundo da tela.
+Superfícies são planas em repouso. Fundo, canvas, mudança tonal e bordas estruturais criam profundidade suficiente. Elevação 1 aparece apenas no hover de cartões interativos; menus, toasts e diálogos usam as elevações nativas 2 e 3. Não há blur, textura, sombra colorida ou sombra interna. `financialSurface` continua sólido. A faixa da Visão geral usa gradiente tonal estático, do canto superior esquerdo ao inferior direito, com papéis derivados por tema e contraste AA verificado. Essa exceção local não autoriza gradientes em números, gráficos, listas ou fundo da tela, nem gradientes animados.
 
 **The Flat-by-Default Rule.** Uma superfície em repouso não recebe sombra; elevação comunica camada real ou resposta interativa.
 
@@ -367,16 +380,17 @@ A navegação acompanha a largura sem mudar o mapa mental.
 
 A visão geral funciona como fechamento de caixa imediato: distingue dinheiro disponível, compromissos futuros e resultado do período antes de apresentar sua composição.
 
-- **Summary pair:** uma única superfície `financial` sólida reúne confirmado, projetado e dívida projetada explicitamente separada do caixa. Confirmado usa `balanceHeroForWidth` (40/34px por largura do componente); projetado tem escala de apoio e explica previstos/pendentes.
-- **Monthly result:** grupo sem moldura com título de seção, valor de 22px e entradas/saídas; confirma que o resultado é projetado e representa receitas menos despesas do mês, sem competir tipograficamente com o saldo.
+- **Summary pair:** uma única faixa tonal teal estática, com raio grande e largura inteira de conteúdo, reúne confirmado, projetado e dívida projetada explicitamente separada do caixa. Confirmado usa `positionDisplayForWidth` (48/40px pela largura real do bloco de saldo); projetado tem escala de apoio e explica previstos/pendentes. Um `Theme` local aplica `financialHeroForeground` e `financialHeroSecondary` ao texto, ao `MoneyText` e à máscara de privacidade sem alterar as cores monetárias globais. Essa abertura substitui somente a composição anterior da Visão geral; o cartão `financial` sólido permanece disponível nas demais telas.
+- **Monthly result:** grupo sem moldura abaixo da faixa, com título de seção, valor de 22px e comparação de entradas/saídas projetadas já existentes. As barras usam a mesma escala relativa ao maior total; zero tem preenchimento zero. Não há série histórica nem valores financeiros intermediários. Rótulos, ícones e quantias exatas sustentam a leitura acessível; as barras são excluídas da semântica.
+- **Motion:** as barras transitam por 360ms (`PollarMotion.focal`, `easeOutCubic`). Privacidade remove as proporções imediatamente e mantém apenas os trilhos; movimento reduzido pinta a proporção final sem `Tween`. Transações recentes usam `PollarReveal` por identidade do lançamento, com stagger limitado a cinco passos de 20ms; reconstruções ordinárias de tema ou privacidade não reiniciam a chegada. A faixa tonal permanece estática.
 - **Reading/action order:** no compacto e em largura insuficiente, posição → mês → Nova transação → contas → transações recentes. No amplo, a ação fica no cabeçalho. Cabeçalho e grade usam largura disponível e texto ampliado, sem esconder o seletor de moeda.
 - **Evidence:** listas usam `flat`, títulos de 18px e divisores. Contas preservam nomes completos e valores com largura limitada; transações recentes optam pelo `TransactionTile.reflowContent`, mantendo linhas densas quando descrição, metadados e valor cabem e empilhando quando necessário. Outras instâncias mantêm o padrão até sua fase.
 - **Financial semantics:** contas ativas compõem os saldos de caixa; cartões são passivos e sua dívida projetada aparece separadamente. Contas arquivadas não entram nas posições ativas, e transações canceladas podem permanecer no histórico recente sem afetar os totais.
 - **Multiple currencies:** totais de moedas diferentes nunca são somados. Quando houver mais de uma moeda, um seletor explícito filtra resumo, posições e transações como uma unidade; o código da moeda permanece visível no contexto do saldo.
-- **Privacy:** o controle global oculta todos os valores da superfície de uma vez. `reserveLayout` e `allowWrap` mantêm pegada e valor exato mesmo em texto ampliado; alinhamento reservado pode ser ao fim nas linhas. Nomes, explicações, quantidade de posições, moeda e estados continuam legíveis. O original não entra na semântica oculta.
+- **Privacy:** o controle global oculta todos os valores da superfície e remove imediatamente as proporções das barras mensais. `reserveLayout` e `allowWrap` mantêm pegada e valor exato mesmo em texto ampliado; alinhamento reservado pode ser ao fim nas linhas. Nomes, explicações, quantidade de posições, moeda e estados continuam legíveis. O original não entra na semântica oculta.
 - **Responsive behavior:** o resumo assimétrico e as duas colunas inferiores existem apenas quando largura e escala tipográfica permitem; o reflow vertical preserva a sequência operacional e mantém valores alinhados ao fim.
 - **States:** carregamento informa que a posição está sendo calculada; erro recuperável afirma que os dados permanecem salvos e oferece recalcular; ausência de contas apresenta uma única chamada para cadastrar a primeira conta; ausência apenas de transações preserva o resumo e explica que o saldo inicial já compõe a posição. Vazio e estados compartilhados rolam quando a altura disponível não comporta o conteúdo.
-- **No synthetic history:** não introduza gráficos, tendências, comparações históricas, orçamentos ou troca de período sem dados reais e sem a fatia de produto correspondente.
+- **No synthetic history:** a comparação de entradas/saídas usa somente os totais mensais projetados existentes; não introduza séries históricas, tendências, orçamentos ou troca de período sem dados reais e sem a fatia de produto correspondente.
 
 **The Currency Isolation Rule.** Cada moeda constitui uma visão financeira completa e independente; nenhum total, posição ou lançamento de outra moeda atravessa a seleção ativa.
 
@@ -542,7 +556,7 @@ silêncio.
 ### Don't:
 
 - **Don't** repetir a superfície teal focal em vários blocos do viewport ou depender apenas de cor para significado.
-- **Don't** adicionar gradientes sem os tokens e a validação exigidos para a exceção focal futura; a fase 1 usa superfície sólida. Vidro, blur, textura, padrões, sombras coloridas, sombras internas e imagens de fundo continuam fora do sistema.
+- **Don't** estender o gradiente tonal estático da abertura da Visão geral a outros componentes, animá-lo ou substituir o `financialSurface` sólido global. Vidro, blur, textura, padrões, sombras coloridas, sombras internas e imagens de fundo continuam fora do sistema.
 - **Don't** aninhar cartões, transformar botões em pílulas ou elevar superfícies estáticas.
 - **Don't** misturar famílias de ícones, usar emoji como ícone ou deixar um controle apenas com ícone sem tooltip e nome acessível.
 - **Don't** esconder conteúdo essencial no layout compacto nem misturar campos específicos de cartão em contas comuns.

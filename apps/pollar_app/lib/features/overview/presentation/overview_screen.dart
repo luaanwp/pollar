@@ -1,8 +1,8 @@
 // THESIS: A posição financeira nasce do mesmo livro-caixa que a explica; recusa métricas demonstrativas e gráficos sem histórico.
-// OWN-WORLD: Uma superfície focal de saldo; evidências planas, valores exatos e privacidade estável.
+// OWN-WORLD: Faixa tonal teal de largura inteira, saldo 48/40px; comparação mensal e evidências planas.
 // STORY: A pessoa distingue dinheiro confirmado do projetado, entende o resultado mensal e encontra os lançamentos que moveram as contas.
-// FIRST VIEWPORT: Saldo e contexto mensal antecedem a ação no compacto; contas e movimentos explicam a posição.
-// FORM: Extensão “fechamento de caixa imediato”, sem concept seed por herdar uma superfície e um sistema precisamente definidos.
+// FIRST VIEWPORT: Confirmado e projeção compartilham uma faixa; resultado e duas barras reais explicam o mês antes da ação no compacto.
+// FORM: Ampliação da abertura existente e do plano visual já autorizado; preserva marca, conteúdo e sistema nativo.
 // FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 
 import 'package:flutter/material.dart';
@@ -115,6 +115,7 @@ class _OverviewContentState extends ConsumerState<_OverviewContent> {
                   const SizedBox(height: PollarSpacing.x5),
                   PollarButton(
                     label: 'Nova transação',
+                    adaptiveHeight: true,
                     leadingIcon: LucideIcons.plus,
                     fullWidth: true,
                     onPressed: () => context.go('/transactions/new'),
@@ -195,6 +196,7 @@ class _OverviewHeader extends StatelessWidget {
     );
     final action = PollarButton(
       label: 'Nova transação',
+      adaptiveHeight: true,
       leadingIcon: LucideIcons.plus,
       onPressed: onNewTransaction,
       fullWidth: compact,
@@ -279,6 +281,7 @@ class _EmptyOverview extends StatelessWidget {
               const SizedBox(height: PollarSpacing.x4),
               PollarButton(
                 label: 'Cadastrar conta',
+                adaptiveHeight: true,
                 leadingIcon: LucideIcons.plus,
                 onPressed: onCreateAccount,
               ),

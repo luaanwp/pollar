@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../app/theme/pollar_theme.dart';
 import '../../../../shared/presentation/pollar_button.dart';
 import '../../../../shared/presentation/pollar_card.dart';
+import '../../../../shared/presentation/pollar_motion.dart';
 import '../../../../shared/presentation/transaction_tile.dart';
 import '../../domain/overview_snapshot.dart';
 import '../overview_presentation.dart';
@@ -95,19 +96,25 @@ class OverviewRecentTransactions extends StatelessWidget {
           else
             for (final (index, transaction) in transactions.indexed) ...[
               if (index > 0) Divider(height: 1, color: pollar.border),
-              TransactionTile(
-                reflowContent: true,
-                title: transaction.description,
-                category: transaction.category,
-                account: transaction.accountLabel,
-                date: _shortDate(transaction.occurredAt),
-                amount: transaction.displayAmount,
-                kind: transaction.type.overviewKind,
-                status: transaction.status.overviewLabel,
-                statusTone: transaction.status.overviewTone,
-                statusIcon: transaction.status.overviewIcon,
-                privacyHidden: privacyHidden,
-                onTap: onOpenTransactions,
+              PollarReveal(
+                key: ValueKey(transaction.id),
+                identity: transaction.id,
+                index: index,
+                onArrival: true,
+                child: TransactionTile(
+                  reflowContent: true,
+                  title: transaction.description,
+                  category: transaction.category,
+                  account: transaction.accountLabel,
+                  date: _shortDate(transaction.occurredAt),
+                  amount: transaction.displayAmount,
+                  kind: transaction.type.overviewKind,
+                  status: transaction.status.overviewLabel,
+                  statusTone: transaction.status.overviewTone,
+                  statusIcon: transaction.status.overviewIcon,
+                  privacyHidden: privacyHidden,
+                  onTap: onOpenTransactions,
+                ),
               ),
             ],
         ],

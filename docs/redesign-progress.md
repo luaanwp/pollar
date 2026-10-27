@@ -245,7 +245,56 @@ Resultado final: **375 testes passaram**, com análise estática sem problemas.
 Validação de widgets e pintura não equivale a teste físico de Android/iOS,
 leitor de tela ou medição de FPS. Não foi gerado novo APK/ZIP nesta parte.
 
+## Revisão visual focal — Visão geral
+
+O usuário considerou o impacto visual das fases anteriores discreto e autorizou
+antecipar uma revisão mais expressiva do dashboard. Esta parte amplia o plano
+existente, sem descartar as fases concluídas ou as próximas telas.
+
+- Uma faixa tonal teal ocupa toda a largura útil da abertura, com saldo
+  confirmado em 48/40px por largura disponível do próprio bloco. Projeção e
+  dívida de cartão compartilham a faixa, à direita em espaço suficiente e
+  abaixo com divisor no compacto/texto ampliado. Continuam valores distintos.
+- O gradiente é estático e exclusivo dessa abertura. Seus stops derivam de
+  cores existentes, incluindo mistura de 12% no tema escuro. Foreground e
+  texto de apoio passam contraste AA em 21 amostras de cada tema. O tema local
+  também aplica essas cores à máscara e ao dinheiro, sem mudar outros módulos.
+- O resultado mensal passa a uma faixa de apoio abaixo da posição. Duas barras
+  comparam as entradas e saídas projetadas já calculadas, na mesma escala
+  relativa ao maior valor; números e rótulos exatos ficam sempre disponíveis.
+  Não há histórico fictício, nova projeção ou soma entre moedas.
+- As barras desenham em 360ms, sem animar os números; valores zero produzem
+  barras vazias. Privacidade remove imediatamente as proporções, inclusive
+  durante a animação. Movimento reduzido apresenta o estado final sem tween.
+- Transações recentes recebem entrada coordenada por identidade, com o limite
+  de stagger já existente. O saldo conserva a rolagem entre valores reais e o
+  mesmo estado durante recálculo. Ações da abertura usam altura adaptável.
+
+Nove goldens da Visão geral foram atualizados, cobrindo claro/escuro, privacidade,
+320/390/800/1200/1440/1920px e texto 1,3×/2×. Cinco testes novos cobrem contraste
+no gradiente, proporções reais, interrupção por privacidade, movimento reduzido
+e ausência de barras artificiais sem atividade. Os testes existentes continuam
+verificando exatidão, separação de moedas, estados, rotas, reflow e geometria.
+Detector após as duas inspeções visuais: lista vazia.
+
+Resultado: **380 testes passaram**, análise estática sem problemas e build
+Windows Release remoto concluído. O executável atualizado foi aberto e manteve
+janela ativa. Revisão independente final: **ship**, sem achados materiais abertos;
+o achado de documentação divergente foi resolvido nos guias e no brief. O perfil
+de revisão foi substituído por agente fresco com a referência degradada, sem
+herdar o histórico de implementação. A documentação recebeu atualização pontual
+e preservou o front matter; não foi criado novo sidecar.
+
+As capturas usam dados de teste. Antes/depois locais para conferência ficam em
+`dist/redesign-overview/desktop-before.png`, `desktop-after.png`,
+`mobile-before.png` e `mobile-after.png`; não contêm dados financeiros do usuário.
+Validação física de desempenho, Android/iOS e leitor de tela continua separada.
+
 ## Sequência restante
+
+Antes de retomar as telas pendentes, a prioridade visual autorizada inclui
+reforçar a apresentação/interação de cartões e faturas e revisar a continuidade
+da navegação e das listas. O movimento existente é a base dessas passagens.
 
 4C. Planejamento: hierarquia e reflow de agenda/compromissos, preservando regras.
 5. Análises/patrimônio: perguntas, critérios, valores e alternativas textuais.

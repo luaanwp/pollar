@@ -2,7 +2,7 @@
 
 Implementation-ready design language for Flutter desktop and mobile applications. This file is the canonical human-readable specification. Machine-readable values live in `pollar_design_tokens.json`.
 
-The implemented visual rules are also recorded in root `DESIGN.md`. Redesign phase 1 extends existing components explicitly. Phase 2 adds session-only sidebar collapse, a subordinate route context in the utility bar, and grouped More rows. Phase 3 migrates Overview to a focal confirmed balance, supporting monthly result and flat evidence lists, with the action after the summaries on stacked layouts. Phase 4A migrates Accounts and Credit Cards to flat account rows and motion-preserving credit cards. Phase 4B migrates Transactions with adaptive search/type controls, complete rows and detail presentation based on available width; Planning remains phase 4C. Financial behavior stays unchanged. Execution evidence and remaining validation are recorded in `docs/redesign-progress.md`.
+The implemented visual rules are also recorded in root `DESIGN.md`. Redesign phase 1 extends existing components explicitly. Phase 2 adds session-only sidebar collapse, a subordinate route context in the utility bar, and grouped More rows. Phase 3 migrates Overview to a focal confirmed balance, supporting monthly result and flat evidence lists, with the action after the summaries on stacked layouts. Its subsequent visual expansion uses a full-content-width static teal tonal field, a 48/40px confirmed balance and comparison bars for existing projected monthly totals. Phase 4A migrates Accounts and Credit Cards to flat account rows and motion-preserving credit cards. Phase 4B migrates Transactions with adaptive search/type controls, complete rows and detail presentation based on available width; Planning remains phase 4C. Financial behavior stays unchanged. Execution evidence and remaining validation are recorded in `docs/redesign-progress.md`.
 
 The migrated transaction ledger combines search and type, exposes the filtered count and a single clear action. Type chips require 960px of local width and text scale up to 1.3; narrower layouts use a labeled native selector with content-driven item height. Large text, local width below 600px or height below 500px scroll controls with the day-grouped flat list while preserving search focus. Complete descriptions, metadata and exact amounts reflow. A 360px detail panel requires 1020px after rail/gutters (640px ledger + 20px gap); otherwise details use the root modal. Both observe privacy live and reserve amount geometry. Cancellation preserves history and confirmation; expense filters still include card purchases, transfer filters include statement payments. Existing reveal motion and reduced-motion behavior remain.
 
@@ -66,7 +66,7 @@ Product name: **Pollar**. Use an abstract ledger/flow mark rather than currency 
 ### Color rules
 
 - `financialSurface` aliases the existing `primarySoft` role in each theme; it introduces no new hex value. Allow one focal financial surface per viewport. Use primary/secondary text and the AA-checked financial semantic colors on it; do not use muted metadata text there.
-- Phase 1 uses a solid focal surface. The redesign conditionally allows a future tonal gradient only on the focal financial card or mobile opening, after derived tokens for both themes and AA contrast validation. Use the solid fallback otherwise; gradients do not belong on amounts, charts, lists or page backgrounds.
+- The Overview opening alone uses a static top-left-to-bottom-right tonal gradient, with existing-palette roles `financialHeroStart`, `financialHeroEnd`, `financialHeroForeground` and `financialHeroSecondary`. Light uses `primaryHover` → `primary`, with canvas foreground; dark uses `primarySoft` → a 12% mix toward `primary`, with text-primary foreground. Secondary text is a 94% mix from the end toward foreground. A local Theme supplies these audited foregrounds to MoneyText and privacy masks without changing global money colors. `financialSurface` and financial cards elsewhere remain solid; gradients do not belong on amounts, charts, lists or page backgrounds and the focal gradient does not animate.
 - Never communicate status by color alone. Pair it with an icon and text.
 - Expenses may be red in summaries, but normal transaction rows should favor neutral text plus a minus sign to avoid visual alarm fatigue.
 - Income uses a plus sign and positive semantic color.
@@ -92,11 +92,12 @@ Use tabular numerals for amounts, percentages, dates in tables, and installment 
 | Caption | 12 | 12 | 400/500 | 1.40 |
 | Amount hero | 34 | 30 | 650 | 1.15 |
 | Balance hero (explicit redesign role) | 40 | 34 | 600 | 1.15 |
+| Position display (Overview opening only) | 48 | 40 | 600 | 1.15 |
 | Amount standard | 16 | 16 | 600 | 1.30 |
 
 Do not use font weight alone to distinguish interactive states. Never shrink financial content below 12 px logical size.
 
-Legacy `amountHero` remains unchanged; bundled Flutter weights map its 650 token to 600. The new `balanceHero`/`balanceHeroCompact` roles use 40/34 px, selected by `balanceHeroForWidth` at **600 px of available component width**, rather than window width. Reflow exact amounts when space is tight; never shrink them to retain a column. The newer motion addendum permits visual rolling between actual previous/current balances while preserving exact current semantics, with immediate privacy/reduced-motion fallback.
+Legacy `amountHero` remains unchanged; bundled Flutter weights map its 650 token to 600. Existing consumers retain `balanceHero`/`balanceHeroCompact` at 40/34 px, selected by `balanceHeroForWidth` at **600 px of available component width**. Only the expanded Overview confirmed balance uses `positionDisplay`/`positionDisplayCompact` at 48/40 px, selected by `positionDisplayForWidth` at **600 px of real balance-block width**, rather than window or outer-field width. Reflow exact amounts when space is tight; never shrink them to retain a column. The newer motion addendum permits visual rolling between actual previous/current balances while preserving exact current semantics, with immediate privacy/reduced-motion fallback.
 
 ## 5. Layout and spacing
 
@@ -246,11 +247,15 @@ Top app bar + scrollable content + bottom navigation + quick-add action. Details
 
 ### Dashboard hierarchy
 
-1. Confirmed cash balance in one solid financial surface (40/34px by component width), projected cash and separately labelled projected card debt.
-2. Projected monthly result (22px), income and expenses, without an equally weighted outline.
+1. Confirmed cash balance in one full-content-width static teal tonal field (48/40px by real balance-block width), projected cash and separately labelled projected card debt. The solid `financial` card and 40/34px balance roles remain unchanged for other consumers.
+2. Projected monthly result (22px) below the field, income and expenses, without an equally weighted outline. Comparison bars use the existing projected monthly income and expense totals on one scale relative to the larger total; zero renders no fill. Exact labelled amounts and icons remain the accessible evidence, and bars are excluded from semantics.
 3. Account positions and recent movements as flat groups with dividers; two columns only when width and text scale allow.
 
-Stacked layouts place Nova transação after the two summaries; wide layouts keep it in the header. Exact monetary values wrap without shrinking and reserve visible/hidden geometry. Account names and primary movement descriptions remain complete. TransactionTile content-aware reflow is opt-in for Overview; other screens retain their defaults until migrated. States and first-account setup scroll when height is insufficient. Cash is never labelled net worth, currencies remain separate, and no history chart, budget or insight is invented for this page.
+The tonal field uses a 6:4 balance/projection split at 880px of available width and text scale up to 1.3×; otherwise it stacks. Insets are 32px wide and 20px stacked. Monthly result/comparison and lower evidence columns also require 880px and text up to 1.3×; comparison lanes stack below 320px locally or above 1.3× text. Nova transação remains in the header only at 960px and text up to 1.3×; otherwise it follows both summaries. Exact monetary values wrap without shrinking and reserve visible/hidden geometry. Account names and primary movement descriptions remain complete. TransactionTile content-aware reflow is opt-in for Overview; other screens retain their defaults until migrated. States and first-account setup scroll when height is insufficient. Cash is never labelled net worth, currencies remain separate, and no history chart, budget or insight is invented for this page.
+
+Monthly bars animate geometry over 360ms with `PollarMotion.focal` and `easeOutCubic`; no synthetic financial values or historical series are introduced. Privacy removes all proportions immediately, leaving neutral tracks. Reduced motion renders the final fractions without a Tween. Recent transactions use `PollarReveal` keyed by transaction identity, with stagger bounded to five 20ms steps; ordinary theme/privacy rebuilds do not replay arrival.
+
+The expanded Overview has focused widget coverage for proportions, zero totals, privacy, reduced motion, exact amounts and reflow. Contrast checks sample 21 positions along the tonal field per theme. Flutter goldens cover compact/wide layouts, both themes, privacy and enlarged text. The final validation reports 380 passing tests, clean analysis and a completed Windows Release build. These checks and an opened executable do not establish physical-device, assistive-technology or FPS acceptance.
 
 ### Accounts listing
 
@@ -298,7 +303,7 @@ The development-only **Fundamentos** tab in `foundations_catalog.dart` demonstra
 
 Widget tests cover legacy defaults, focus/Enter, AA contrast on the solid focal surface and hidden semantics. Light/dark goldens exercise 320/390/1440 px and text scales including 1.3×/2×, with visible/hidden comparisons at 320 px/1.3×. The updated catalog has not been claimed physically verified with keyboard or a screen reader; the observed native baseline and automated checks have distinct scopes.
 
-Phase 1 supersedes the universal card-border rule, teal limited to small accents, and unconditional gradient prohibition with the bounded roles above. The 34/30 px legacy hero is preserved alongside the new opt-in 40/34 px balance roles. All financial, platform, accessibility and screen-pattern requirements remain in force.
+Phase 1 supersedes the universal card-border rule, teal limited to small accents, and unconditional gradient prohibition with the bounded roles above. The 34/30 px legacy hero and opt-in 40/34 px balance roles remain; the later Overview expansion adds a local 48/40 px role without changing those consumers. All financial, platform, accessibility and screen-pattern requirements remain in force.
 
 ## 14. Claude Code implementation prompt
 

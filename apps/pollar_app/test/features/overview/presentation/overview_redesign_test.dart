@@ -11,6 +11,9 @@ import 'package:pollar_app/core/money/money.dart';
 import 'package:pollar_app/features/overview/application/overview_data_source.dart';
 import 'package:pollar_app/features/overview/presentation/overview_controller.dart';
 import 'package:pollar_app/features/overview/presentation/overview_screen.dart';
+import 'package:pollar_app/features/overview/presentation/widgets/overview_monthly_flow.dart';
+import 'package:pollar_app/features/overview/domain/overview_snapshot.dart';
+import 'package:pollar_app/app/theme/pollar_theme.dart';
 import 'package:pollar_app/main.dart';
 import 'package:pollar_app/shared/presentation/money_text.dart';
 import 'package:pollar_app/shared/presentation/privacy_amount.dart';
@@ -54,6 +57,132 @@ void main() {
     of: find.byType(OverviewScreen),
     matching: find.byType(Scrollable),
   );
+
+  OverviewCurrencySummary flowSummary(int income, int expense) =>
+      OverviewCurrencySummary(
+        currency: Currency.brl,
+        confirmed: Money.zero(Currency.brl),
+        projected: Money.zero(Currency.brl),
+        projectedMonthlyIncome: Money(
+          minorUnits: income,
+          currency: Currency.brl,
+        ),
+        projectedMonthlyExpenses: Money(
+          minorUnits: expense,
+          currency: Currency.brl,
+        ),
+        confirmedCardDebt: Money.zero(Currency.brl),
+        projectedCardDebt: Money.zero(Currency.brl),
+      );
+
+  testWidgets(
+    'monthly comparison animates real ratios and privacy removes them immediately',
+    (tester) async {
+      var hidden = false;
+      late StateSetter update;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: PollarTheme.light(),
+          home: Scaffold(
+            body: StatefulBuilder(
+              builder: (context, setState) {
+                update = setState;
+                return OverviewMonthlyFlow(
+                  summary: flowSummary(10000, 2500),
+                  hidden: hidden,
+                );
+              },
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 90));
+      Finder fill(String label) =>
+          find.byKey(ValueKey('overview-flow-fill-$label'));
+      final growing = tester
+          .widget<FractionallySizedBox>(fill('Entradas'))
+          .widthFactor!;
+      expect(growing, greaterThan(0));
+      expect(growing, lessThan(1));
+      update(() => hidden = true);
+      await tester.pump();
+      expect(fill('Entradas'), findsNothing);
+      expect(fill('Saídas'), findsNothing);
+      expect(find.byKey(const Key('overview-flow-hidden')), findsNWidgets(2));
+      expect(find.byType(MoneyText), findsNothing);
+      update(() => hidden = false);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<FractionallySizedBox>(fill('Entradas')).widthFactor,
+        1,
+      );
+      expect(
+        tester.widget<FractionallySizedBox>(fill('Saídas')).widthFactor,
+        0.25,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('reduced motion shows the final comparison immediately', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: PollarTheme.dark(),
+        home: MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: Scaffold(
+            body: OverviewMonthlyFlow(
+              summary: flowSummary(2500, 10000),
+              hidden: false,
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(
+      tester
+          .widget<FractionallySizedBox>(
+            find.byKey(const ValueKey('overview-flow-fill-Entradas')),
+          )
+          .widthFactor,
+      0.25,
+    );
+    expect(
+      tester
+          .widget<FractionallySizedBox>(
+            find.byKey(const ValueKey('overview-flow-fill-Saídas')),
+          )
+          .widthFactor,
+      1,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(OverviewMonthlyFlow),
+        matching: find.byType(TweenAnimationBuilder<double>),
+      ),
+      findsNothing,
+    );
+  });
+
+  testWidgets('zero monthly activity draws no artificial bars', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: PollarTheme.light(),
+        home: Scaffold(
+          body: OverviewMonthlyFlow(summary: flowSummary(0, 0), hidden: false),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    for (final bar in tester.widgetList<FractionallySizedBox>(
+      find.byType(FractionallySizedBox),
+    )) {
+      expect(bar.widthFactor, 0);
+    }
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'mobile reads confirmed, projected and month before the create action',

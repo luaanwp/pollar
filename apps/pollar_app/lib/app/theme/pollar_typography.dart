@@ -48,6 +48,25 @@ abstract final class PollarTypography {
   static TextStyle balanceHeroForWidth(double availableWidth) =>
       availableWidth >= 600 ? balanceHero : balanceHeroCompact;
 
+  /// The expanded Overview opening; legacy balance roles remain unchanged.
+  static const TextStyle positionDisplay = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 48,
+    height: 1.15,
+    fontWeight: FontWeight.w600,
+    fontFeatures: _tnum,
+  );
+  static const TextStyle positionDisplayCompact = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 40,
+    height: 1.15,
+    fontWeight: FontWeight.w600,
+    fontFeatures: _tnum,
+  );
+
+  static TextStyle positionDisplayForWidth(double availableWidth) =>
+      availableWidth >= 600 ? positionDisplay : positionDisplayCompact;
+
   /// Inline amount in rows/cards. Token `amountStandard` 16/600.
   static const TextStyle amountStandard = TextStyle(
     fontFamily: fontFamily,
