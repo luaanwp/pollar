@@ -8,6 +8,7 @@ import '../../../app/theme/pollar_theme.dart';
 import '../../../shared/presentation/empty_state.dart';
 import '../../../shared/presentation/pollar_button.dart';
 import '../../../shared/presentation/pollar_card.dart';
+import '../../../shared/presentation/pollar_credit_surface.dart';
 import '../../../shared/presentation/pollar_kinetic_card.dart';
 import '../../../shared/presentation/pollar_motion.dart';
 import '../../../shared/presentation/pollar_modal.dart';
@@ -670,87 +671,194 @@ class _AccountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => PollarCardMorph(
     tag: 'card-statement-${account.id}',
+    creditIdentity: true,
     child: PollarKineticCard(
       front: (flip, focus) => PollarCard(
-        padding: PollarCardPadding.medium,
+        padding: PollarCardPadding.none,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _AccountIdentity(
-              account: account,
-              actions: Row(
-                mainAxisSize: MainAxisSize.min,
+            PollarCreditSurface(
+              borderRadius: BorderRadius.zero,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  PollarIconButton(
-                    icon: LucideIcons.flipHorizontal,
-                    label: 'Virar ${account.name}',
-                    focusNode: focus,
-                    size: PollarControlSize.compact,
-                    onPressed: flip,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(LucideIcons.creditCard, size: 24),
+                      const SizedBox(width: PollarSpacing.x3),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              account.name,
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: context.pollar.creditForeground,
+                                  ),
+                            ),
+                            const SizedBox(height: PollarSpacing.x1),
+                            Text(
+                              '${account.type.label} · ${account.currency.code}',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: context.pollar.creditSecondary,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: PollarSpacing.x2),
+                      PollarIconButton(
+                        icon: LucideIcons.archive,
+                        label: 'Arquivar ${account.name}',
+                        size: PollarControlSize.compact,
+                        onPressed: onArchive,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: PollarSpacing.x2),
-                  PollarIconButton(
-                    icon: LucideIcons.archive,
-                    label: 'Arquivar ${account.name}',
-                    size: PollarControlSize.compact,
-                    onPressed: onArchive,
+                  const SizedBox(height: PollarSpacing.x4),
+                  Text(
+                    'Limite',
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: context.pollar.creditSecondary),
                   ),
+                  const SizedBox(height: PollarSpacing.x1),
+                  PrivacyAmount(
+                    account.creditCardTerms!.creditLimit,
+                    hidden: hidden,
+                    allowWrap: true,
+                    reserveLayout: true,
+                    semantic: MoneySemantic.neutral,
+                    style: PollarTypography.balanceHeroCompact,
+                  ),
+                  const SizedBox(height: PollarSpacing.x3),
+                  _InitialAmount(account: account, hidden: hidden),
                 ],
               ),
             ),
-            const SizedBox(height: PollarSpacing.x3),
-            _InitialAmount(account: account, hidden: hidden),
-            const SizedBox(height: PollarSpacing.x3),
-            Divider(height: 1, color: context.pollar.border),
-            const SizedBox(height: PollarSpacing.x3),
-            _CreditTerms(terms: account.creditCardTerms!, hidden: hidden),
-            const SizedBox(height: PollarSpacing.x3),
-            Align(
-              alignment: Alignment.centerRight,
-              child: PollarButton(
-                label: 'Ver fatura',
-                trailingIcon: LucideIcons.arrowRight,
-                variant: PollarButtonVariant.ghost,
-                size: PollarControlSize.compact,
-                onPressed: onOpen,
+            Padding(
+              padding: const EdgeInsets.all(PollarSpacing.x3),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Fecha dia ${account.creditCardTerms!.closingDay} · vence dia ${account.creditCardTerms!.dueDay}',
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: context.pollar.textSecondary),
+                  ),
+                  const SizedBox(height: PollarSpacing.x3),
+                  _CreditActions(
+                    flip: flip,
+                    focus: focus,
+                    onOpen: onOpen,
+                    flipLabel: 'Virar cartão',
+                    tooltip: 'Virar ${account.name}',
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
       back: (flip, focus) => PollarCard(
-        padding: PollarCardPadding.medium,
+        padding: PollarCardPadding.none,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
+            PollarCreditSurface(
+              borderRadius: BorderRadius.zero,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
                     'Condições do cartão',
-                    style: Theme.of(context).textTheme.headlineSmall,
+                    style: Theme.of(context).textTheme.headlineSmall
+                        ?.copyWith(color: context.pollar.creditForeground),
                   ),
-                ),
-                PollarIconButton(
-                  icon: LucideIcons.flipHorizontal,
-                  label: 'Voltar à frente do cartão',
-                  focusNode: focus,
-                  onPressed: flip,
-                ),
-              ],
+                  const SizedBox(height: PollarSpacing.x3),
+                  _InitialAmount(account: account, hidden: hidden),
+                ],
+              ),
             ),
-            const SizedBox(height: PollarSpacing.x4),
-            _CreditTerms(terms: account.creditCardTerms!, hidden: hidden),
-            const SizedBox(height: PollarSpacing.x4),
-            PollarButton(
-              label: 'Ver fatura',
-              trailingIcon: LucideIcons.arrowRight,
-              variant: PollarButtonVariant.ghost,
-              onPressed: onOpen,
+            Padding(
+              padding: const EdgeInsets.all(PollarSpacing.x3),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _CreditTerms(terms: account.creditCardTerms!, hidden: hidden),
+                  const SizedBox(height: PollarSpacing.x4),
+                  _CreditActions(
+                    flip: flip,
+                    focus: focus,
+                    onOpen: onOpen,
+                    flipLabel: 'Voltar à frente',
+                    tooltip: 'Voltar à frente do cartão',
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
     ),
+  );
+}
+
+class _CreditActions extends StatelessWidget {
+  const _CreditActions({
+    required this.flip,
+    required this.focus,
+    required this.onOpen,
+    required this.flipLabel,
+    required this.tooltip,
+  });
+  final VoidCallback flip;
+  final FocusNode focus;
+  final VoidCallback onOpen;
+  final String flipLabel;
+  final String tooltip;
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final open = PollarButton(
+        label: 'Ver fatura',
+        trailingIcon: LucideIcons.arrowRight,
+        adaptiveHeight: true,
+        onPressed: onOpen,
+      );
+      final turn = Tooltip(
+        message: tooltip,
+        child: PollarButton(
+          label: flipLabel,
+          leadingIcon: LucideIcons.flipHorizontal,
+          focusNode: focus,
+          variant: PollarButtonVariant.secondary,
+          adaptiveHeight: true,
+          onPressed: flip,
+        ),
+      );
+      if (constraints.maxWidth < 300 ||
+          MediaQuery.textScalerOf(context).scale(1) > 1.3) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            open,
+            const SizedBox(height: PollarSpacing.x2),
+            turn,
+          ],
+        );
+      }
+      return Row(
+        children: [
+          Expanded(child: open),
+          const SizedBox(width: PollarSpacing.x2),
+          Expanded(child: turn),
+        ],
+      );
+    },
   );
 }

@@ -185,7 +185,7 @@ components:
 
 Pollar é uma interface de operação financeira privada, composta e precisa. A linguagem visual reduz ruído para que contas, cartões, saldos e estados possam ser reconhecidos e operados com segurança; configuração de uma conta permanece separada de seus lançamentos.
 
-O sistema usa superfícies planas, neutros levemente esverdeados e uma única voz de marca em teal. Hierarquia vem de tipografia, espaçamento, alinhamento e bordas onde delimitam estrutura ou interação. Interações mantêm a familiaridade nativa do Flutter/Material 3, enquanto componentes Pollar fixam cor, forma e densidade.
+O sistema usa superfícies planas, neutros levemente esverdeados e uma única voz de marca em teal. A identidade de crédito tem uma exceção delimitada: azul sólido nos cartões ativos e na faixa de saldo da fatura, derivado dos papéis informativos existentes. Hierarquia vem de tipografia, espaçamento, alinhamento e bordas onde delimitam estrutura ou interação. Interações mantêm a familiaridade nativa do Flutter/Material 3, enquanto componentes Pollar fixam cor, forma e densidade.
 
 **Key Characteristics:**
 
@@ -201,6 +201,8 @@ O sistema usa superfícies planas, neutros levemente esverdeados e uma única vo
 As fases implementadas de `UI_UX_REDESIGN_POLLAR.md` incluem fundamentos, navegação e Visão geral: variantes de cartão, papéis de saldo, reserva de layout, rail recolhível e leitura financeira antes da ação no compacto. A ampliação da Visão geral usa uma faixa tonal teal estática em toda a largura de conteúdo e saldo de 48/40px; o catálogo de fundamentos e os cartões financeiros das demais telas conservam a superfície sólida e os papéis anteriores até migração explícita.
 
 A fase 4A migra a listagem de Contas e cartões: linhas para contas/arquivadas, crédito com motion preservado, largura real e texto ampliado. A fase 4B migra Transações com controles adaptáveis, linhas completas e detalhe conforme a largura disponível. Planejamento continua na fase 4C.
+
+O refinamento de crédito aplica `creditSurface` sólido às duas faces do cartão ativo e ao saldo devido da fatura. Limite cadastrado e saldo da fatura usam 34px; a abertura teal da Visão geral permanece em 48/40px. Contas comuns e arquivadas conservam suas linhas. Compras e parcelas futuras usam grupos `flat`, sem alterar ciclos, agrupamentos ou totais financeiros.
 
 | Regra anterior | Regra vigente e limite |
 | --- | --- |
@@ -224,6 +226,7 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 ### Secondary
 
 - **Azul informativo:** foco de campos, informação e identificação visual de cartões de crédito.
+- **Identidade sólida de crédito:** `creditSurface` usa `info` no claro e `infoSoft` no escuro; `creditForeground` usa canvas e texto primário, respectivamente. `creditSecondary` mistura a superfície com esse primeiro plano a 96%; `creditHover` usa mistura a 8%. São papéis derivados, sem nova cor de marca nem gradiente.
 - **Verde positivo, vermelho de risco e âmbar de atenção:** semântica financeira e de sistema. Cada tom possui uma superfície suave correspondente.
 
 ### Neutral
@@ -237,6 +240,8 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 **The One Voice Rule.** O teal é a única cor de marca. Use no máximo uma superfície financeira focal por viewport, sem repetir esse preenchimento em listas, relatórios ou todos os cartões. `financialSurface` continua alias sólido de `primarySoft`, com texto primário/secundário e cores financeiras de contraste AA validado, sem texto atenuado. Somente a abertura da Visão geral usa `financialHeroStart`/`financialHeroEnd`: no claro, `primaryHover` → `primary`; no escuro, `primarySoft` → mistura de `primarySoft` com `primary` a 12%. `financialHeroForeground` usa canvas no claro e texto primário no escuro; `financialHeroSecondary` mistura o final com esse primeiro plano a 94%. Esses papéis derivados mantêm a paleta existente e o contraste ao longo da faixa.
 
 **The Paired Meaning Rule.** Estado nunca depende apenas de cor; combine tom com texto e, quando houver símbolo reconhecível, com ícone.
+
+**The Credit Identity Rule.** A superfície azul identifica o cartão e sua obrigação, não um estado financeiro. `PollarCreditSurface` fornece um `Theme` local para dinheiro, máscara, ícones e foco com contraste nos dois temas; fora dessa superfície, as cores monetárias e de estado continuam as vigentes. Essa exceção permite distinguir cartões ativos na listagem e o saldo devido na fatura sem multiplicar a superfície focal teal ou alterar o catálogo de fundamentos.
 
 ## Typography
 
@@ -255,6 +260,7 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 - **Label:** botões e rótulos de campos.
 - **Amount:** dinheiro em linhas e cartões usa 16px/600. `amountHero` legado permanece 34px/600 e conserva a redução compacta de 30px onde já aplicada.
 - **Balance hero:** os consumidores existentes conservam `balanceHero` de 40px/600 com pelo menos 600px disponíveis no componente e `balanceHeroCompact` de 34px/600 abaixo disso, selecionados por `balanceHeroForWidth`.
+- **Credit amount:** limite cadastrado na frente do cartão e saldo devido da fatura usam explicitamente `balanceHeroCompact` de 34px/600, com quebra e reserva de privacidade; não adotam o papel 48/40px da Visão geral.
 - **Position display:** somente o saldo confirmado na abertura da Visão geral usa `positionDisplayForWidth`: 48px/600 com pelo menos 600px reais no bloco de saldo, ou 40px/600 abaixo disso. Os papéis de saldo mantêm entrelinha 1,15 e algarismos tabulares; não substitua automaticamente os consumidores legados.
 - **Eyebrow:** reservado a cabeçalhos de tabela e divisores de navegação, em caixa alta.
 
@@ -272,13 +278,15 @@ O ritmo nasce de uma unidade de 4px e privilegia incrementos de 8px. O conteúdo
 
 O shell é adaptativo. Abaixo de 600px, usa navegação inferior, gutter compacto de 16px e ações principais de largura total quando necessário. A partir de 600px, usa rail lateral e gutter amplo de 24px; a partir de 1024px, o rail pode mostrar rótulos ou ser recolhido manualmente. Seções relacionadas podem ocupar colunas paralelas conforme a largura disponível. No Android, todo alvo interativo mede pelo menos 48dp em qualquer largura.
 
-Na listagem de contas, o primeiro viewport apresenta título, explicação, ação de cadastro e as seções de contas/cartões. As seções ficam lado a lado somente com largura mínima observada de 1040px e quando ambas têm conteúdo; em larguras menores, empilham. Dentro de cada seção, cartões podem formar duas colunas a partir de 880px disponíveis. Campos de fechamento e vencimento também passam de coluna para linha em 600px.
+Na listagem de contas, o primeiro viewport apresenta título, explicação, ação de cadastro e as seções de contas/cartões. As seções ficam lado a lado com pelo menos 980px locais, texto até 1,3× e conteúdo em ambas; fora disso, empilham. Cartões ativos formam duas colunas somente com pelo menos 1000px na seção e texto até 1,3×; uma coluna limita cada cartão a 640px. No rodapé de cada face, ciclo precede “Ver fatura” e “Virar cartão” / “Voltar à frente”; ações textuais empilham abaixo de 300px locais ou acima de 1,3×. Campos de fechamento e vencimento do formulário continuam passando de coluna para linha em 600px.
 
 Em transações, busca e filtros precedem sempre o histórico. Abaixo de 600px, os lançamentos são agrupados por dia em uma única coluna e os detalhes abrem em modal raiz, preservando o contexto escurecido da lista. Entre 600px e 1023px, o ledger permanece em uma coluna e também delega os detalhes ao modal. A partir de 1024px, a seleção mantém o ledger visível e abre ao lado um painel contextual fixo de 360px; o painel nunca comprime a coluna a ponto de ocultar valor ou estado.
 
 Na visão geral, o cabeçalho precede a faixa de largura inteira com saldos confirmado/projetado e passivo separado; resultado projetado do mês e barras de entradas/saídas vêm abaixo. A faixa divide saldo e projeção em 6:4 com pelo menos 880px disponíveis e texto até 1,3×; fora disso, empilha com divisor. Sua margem interna é 32px no amplo e 20px no empilhado. Resultado e comparação mensal também separam-se horizontalmente somente a partir de 880px e até 1,3×; as duas barras empilham abaixo de 320px locais ou acima de 1,3×. Posições e transações dividem a linha em 4:6 com pelo menos 880px e até 1,3×, empilhando nessa ordem fora desse limite. A ação Nova transação fica no cabeçalho com pelo menos 960px e até 1,3×; caso contrário, vem após os dois resumos, antes das listas. O seletor de moeda permanece explícito quando necessário.
 
 Na fatura de cartão, o desktop apresenta resumo e parcelas futuras antes das compras: com pelo menos 820px disponíveis e escala tipográfica de até 1,3×, resumo e futuro dividem a primeira linha, seguidos pelo ledger de compras em largura total. No mobile, a ordem é resumo, compras e parcelas futuras. Acima de 1,3×, a composição paralela e os pares internos fazem reflow para blocos verticais, sem reduzir tipografia, truncar valores ou ocultar parcelas.
+
+O cabeçalho da fatura coloca “Adicionar compra” abaixo da identidade com menos de 700px locais ou texto acima de 1,3×. Essa ação, as ações de pagamento e as ações textuais de cada face optam por altura adaptável. Total, Pago e Limite disponível empilham também quando a largura local não comporta seus tokens numéricos inteiros e máscaras medidos. Valores do resumo, subtotais diários, compras e parcelas futuras têm largura delimitada, quebra e reserva de geometria; descrições e total comprometido permanecem integrais.
 
 No planejamento, o mês é lido como uma sequência estável de faixas: cabeçalho com navegação de período e moeda, posição planejada, orçamentos por categoria, agenda, assinaturas, lembretes locais e gerenciamento. Orçamentos e agenda dividem a linha somente com pelo menos 860px disponíveis e escala tipográfica de até 1,3×; abaixo disso, empilham nessa ordem, seguidos pelas demais faixas. Cabeçalhos, métricas, ocorrências, lembretes e controles de ciclo de vida também fazem reflow acima de 1,3×, sem esconder valores, estados ou ações.
 
@@ -312,6 +320,7 @@ Contidos e verbais, os botões priorizam a tarefa sobre a marca.
 
 - **Shape:** retângulo suavemente arredondado com alturas compacta, padrão e proeminente de 32px, 40px e 48px; no Android, qualquer variante mantém alvo mínimo de 48dp em toda largura.
 - **Long labels:** `PollarButton.adaptiveHeight` é optativo e permanece `false` por padrão. Em Contas, cadastro e confirmação de arquivamento podem crescer acima do mínimo, preservando rótulo completo, padding e alvo com texto ampliado. Outros botões conservam sua geometria até migração própria.
+- **Face focus:** `PollarButton.focusNode` é optativo. O flip usa os nós já mantidos por `PollarKineticCard` para devolver foco à ação da face visível; a face oculta permanece fora de foco, toque e semântica.
 - **Primary:** teal sólido, texto de alto contraste, ícone opcional de 16px ou 20px e padding horizontal associado ao tamanho.
 - **Secondary / Ghost:** canvas com borda forte ou fundo transparente; ambos recebem superfície alternativa no hover.
 - **Danger:** vermelho semântico, reservado a ações destrutivas.
@@ -430,10 +439,11 @@ Patrimônio é um dossiê verificável, não um número isolado: reúne balanço
 
 A fatura reconcilia o saldo em aberto com as compras que o formaram e com os compromissos que permanecem nos meses seguintes.
 
-- **Summary:** período e status antecedem o saldo em aberto; total, valor pago, vencimento, limite disponível e percentual utilizado permanecem explícitos e verificáveis. O saldo em aberto e a data de vencimento lideram a hierarquia.
-- **Payment:** pagamento integral ou parcial sai de uma conta ativa elegível na mesma moeda e é registrado como transferência para o passivo do cartão, nunca como nova despesa. A confirmação declara esse efeito, mantém conta e valor editáveis e exibe validação visível para valor ausente, não positivo ou superior ao saldo em aberto.
-- **Purchases:** compras são agrupadas por data, com subtotal diário, descrição, categoria, valor assinado e posição da parcela quando aplicável.
-- **Future installments:** toda parcela futura é apresentada com descrição, competência, posição completa e valor, seguida pelo total comprometido; listas não recebem limite arbitrário nem corte silencioso.
+- **Summary:** período e status ficam fora da faixa azul sólida. “Saldo da fatura” mostra `outstanding` em 34px e o vencimento na faixa; total, valor pago, limite disponível e percentual utilizado permanecem explícitos abaixo. Havendo pagamento pendente, “Pagamento pendente” e “Disponível para pagar” aparecem separadamente, sem tratar o pendente como pago nem reduzir visualmente a obrigação ainda devida.
+- **Payment:** pagamento integral ou parcial sai de uma conta ativa elegível na mesma moeda e é registrado como transferência para o passivo do cartão, nunca como nova despesa. A confirmação declara esse efeito, mantém conta e valor editáveis e exibe validação visível para valor ausente, não positivo ou superior a `availableToPay`, preservando a regra existente de pagamentos pendentes.
+- **Purchases:** grupo `flat`, com compras agrupadas por data, subtotal diário, descrição completa, categoria, valor assinado e posição da parcela quando aplicável. Valores quebram dentro da largura disponível e reservam geometria em privacidade.
+- **Future installments:** grupo `flat`; toda parcela futura é apresentada com descrição completa, competência, posição completa e valor, seguida pelo total comprometido integral. Valores fazem reflow e reservam geometria; listas não recebem limite arbitrário nem corte silencioso.
+- **Utilization motion:** somente a geometria de limite utilizado transita por 360ms com `PollarMotion.focal`. Privacidade remove o preenchimento imediatamente, conserva um trilho neutro de tamanho fixo, sem comprimento derivado de dados, e anuncia “Limite utilizado oculto”; movimento reduzido mostra a proporção final estática. Não se interpolam valores financeiros.
 - **Responsive behavior:** no desktop, resumo e parcelas futuras formam a abertura e as compras vêm depois; no mobile, a sequência é resumo, compras e parcelas futuras. Escala tipográfica acima de 1,3× força reflow vertical de colunas, métricas e pares de parcela/valor, preservando todo o conteúdo.
 - **Purchase entry:** “Adicionar compra” abre o formulário de transação com o cartão da fatura já pré-selecionado, mantendo o contexto sem impedir revisão.
 
@@ -478,7 +488,8 @@ Esta listagem apresenta cadastro financeiro, não o saldo corrente do livro-caix
 - **Identity:** nomes completos, tipo e código da moeda; ícones de 16px/20px em blocos de 24px/32px conforme densidade. Contas usam menta/teal e crédito usa azul informativo.
 - **Financial truth:** valores continuam `openingBalance`, rotulados Saldo inicial / Dívida inicial, com semântica de saldo/dívida. Limite tem semântica neutra. Não há soma de moedas, passivos ou novo total agregado.
 - **Density:** com 320px disponíveis na linha e texto padrão, identidade, valor e ação dividem a linha. Largura insuficiente ou texto ampliado empilham conteúdo, sem reduzir fonte ou truncar valores/nomes. Grupos ficam paralelos somente com 980px disponíveis e escala até 1,3×.
-- **Credit:** flip, tilt e morph para a fatura existente são preservados. Limite/ciclo empilham abaixo de 420px ou acima de 1,3×. Frente e verso mostram somente termos cadastrados; “Ver fatura” continua explícito.
+- **Credit:** frente com faixa azul sólida mostra nome completo, tipo/moeda, arquivamento, limite cadastrado de 34px e dívida inicial. Rodapé conserva ciclo e ações textuais, empilhadas abaixo de 300px locais ou acima de 1,3×. Verso mostra “Condições do cartão”, dívida inicial, limite e ciclo reais; sem instituição, número, PAN ou CVV inventados. Tilt e flip permanecem; foco retorna ao botão da face visível.
+- **Statement morph:** cartão e rota real da fatura optam por `PollarCardMorph.creditIdentity: true`. O shuttle usa somente superfície azul e ícone de primeiro plano, sem cópia de valores ou semântica financeira. Movimento reduzido remove o `Hero`. O padrão menta da biblioteca e da amostra de movimento permanece disponível.
 - **Privacy:** todos os valores da listagem quebram com `allowWrap` e reservam geometria com `reserveLayout`, inclusive limite e verso. Ocultação mantém contexto e remove valores acessíveis.
 - **Lifecycle:** arquivar confirma e preserva histórico; restaurar continua direto e rotulado. Arquivadas usam superfície alternativa e conservam termos de crédito. Havendo apenas arquivadas, o vazio diz “Nenhuma conta ativa” e orienta restaurar, sem alegar ausência de cadastro.
 

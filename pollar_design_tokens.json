@@ -22,7 +22,8 @@
       "success": { "value": "#0F7444" },
       "danger": { "value": "#C53B3B" },
       "warning": { "value": "#8B5707" },
-      "info": { "value": "#2667C9" }
+      "info": { "value": "#2667C9" },
+      "infoSoft": { "value": "#EAF0FB" }
     },
     "dark": {
       "primary": { "value": "#5ED3B8" },
@@ -39,13 +40,21 @@
       "success": { "value": "#55CF91" },
       "danger": { "value": "#FF8585" },
       "warning": { "value": "#F3B85D" },
-      "info": { "value": "#80AEFF" }
+      "info": { "value": "#80AEFF" },
+      "infoSoft": { "value": "#16233A" }
     },
     "chart": {
       "categorical": ["#087F6B", "#2667C9", "#8B5707", "#7C55C7", "#C44E82", "#438A9E", "#7A7950", "#C53B3B"]
     }
   },
   "surface": {
+    "credit": {
+      "light": { "fill": "{color.light.info}", "foreground": "{color.light.canvas}" },
+      "dark": { "fill": "{color.dark.infoSoft}", "foreground": "{color.dark.textPrimary}" },
+      "secondary": "mix(fill, foreground, 96%)",
+      "hover": "mix(fill, foreground, 8%)",
+      "description": "Solid credit-card and statement identity. infoSoft uses the existing semantic soft blue in DESIGN.md and PollarColors. No card number, invented bank branding or gradient."
+    },
     "overviewHero": {
       "light": {
         "start": "{color.light.primaryHover}",

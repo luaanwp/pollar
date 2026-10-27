@@ -51,6 +51,13 @@ class PollarColors extends ThemeExtension<PollarColors> {
   Color get financialHeroSecondary =>
       Color.lerp(financialHeroEnd, financialHeroForeground, 0.94)!;
 
+  /// Credit identity is solid blue, separate from the Overview's teal field.
+  Color get creditSurface => _darkCanvas ? infoSoft : info;
+  Color get creditForeground => _darkCanvas ? textPrimary : canvas;
+  Color get creditSecondary =>
+      Color.lerp(creditSurface, creditForeground, 0.96)!;
+  Color get creditHover => Color.lerp(creditSurface, creditForeground, 0.08)!;
+
   /// Card fill. Max two background values per screen: [canvas] + [background].
   final Color canvas;
 

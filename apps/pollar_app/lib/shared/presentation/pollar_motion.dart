@@ -210,9 +210,15 @@ Page<T> pollarMotionPage<T>({
 
 /// A neutral shuttle avoids copying a financial value into a retained flight.
 class PollarCardMorph extends StatelessWidget {
-  const PollarCardMorph({super.key, required this.tag, required this.child});
+  const PollarCardMorph({
+    super.key,
+    required this.tag,
+    required this.child,
+    this.creditIdentity = false,
+  });
   final String tag;
   final Widget child;
+  final bool creditIdentity;
   @override
   Widget build(BuildContext context) {
     if (PollarMotion.reduced(context)) return child;
@@ -223,7 +229,9 @@ class PollarCardMorph extends StatelessWidget {
             child: AnimatedBuilder(
               animation: animation,
               builder: (context, _) => Material(
-                color: context.pollar.financialSurface,
+                color: creditIdentity
+                    ? context.pollar.creditSurface
+                    : context.pollar.financialSurface,
                 borderRadius: BorderRadius.circular(
                   PollarRadii.large * (1 - animation.value),
                 ),
@@ -232,7 +240,9 @@ class PollarCardMorph extends StatelessWidget {
                   child: Icon(
                     LucideIcons.creditCard,
                     size: 24,
-                    color: context.pollar.primary,
+                    color: creditIdentity
+                        ? context.pollar.creditForeground
+                        : context.pollar.primary,
                   ),
                 ),
               ),

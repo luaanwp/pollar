@@ -68,6 +68,41 @@ text scale drive stacking; all amounts wrap and reserve privacy geometry.
 Create/archive controls opt into adaptive button height for complete large-text
 labels; other buttons retain defaults. No current balance or aggregate is added.
 
+The implemented credit refinement gives active card faces and the statement's
+outstanding band a solid-blue identity. `creditSurface` uses existing light
+`info` / dark `infoSoft`; foreground is light canvas / dark text-primary.
+Secondary mixes toward foreground by 96%, hover by 8%. `PollarCreditSurface`
+provides a local Theme for MoneyText, privacy masks, icons and focus; global
+money semantics/colors remain intact. This is a credit identity exception to the
+focal-teal rule: keep the Overview's 48/40px teal field, solid mint foundations,
+ordinary account rows and archived rows as established. No gradient, fake bank
+branding, card number, PAN or CVV belongs on these credit faces.
+
+Front: full name/type/currency, archive control, registered limit at 34px and
+initial debt. Footer: actual cycle and textual “Ver fatura” / “Virar cartão”;
+actions stack under 300px locally or above 1.3× text. Back: real conditions,
+initial debt, limit and cycle, plus “Voltar à frente”. Face actions use adaptive
+height and the existing flip FocusNodes through optional `PollarButton.focusNode`;
+focus restores to the visible face. Both real-route morph endpoints opt into
+`creditIdentity: true`, painting only blue and a foreground icon during flight,
+without retained financial values. The library/motion catalog default remains
+mint. Reduced motion removes Hero and keeps the flip available directly.
+
+The statement keeps status/cycle outside the solid-blue band, which leads with
+`outstanding` at 34px and due date. Pending payment and available-to-pay labels
+remain separate from paid and outstanding; payment rules are unchanged.
+“Adicionar compra” stacks under 700px locally or above 1.3× text. This action and
+payment controls grow with text. Summary, purchase, daily-subtotal and future
+amounts wrap within bounded width and reserve privacy geometry; names and the
+committed total remain complete. Total/paid/available-limit metrics stack when
+their measured full numeric tokens and masks do not fit locally, as well as
+above 1.3× text. Purchases and future installments use flat
+groups, keeping all existing cycles, groups and totals. Summary/future share a
+row only at 820px locally and text up to 1.3×; otherwise order is summary,
+purchases, future. Utilization animates geometry for 360ms, removes fill
+immediately in privacy (fixed neutral track and hidden semantics), and is static with reduced
+motion. Do not synthesize monetary intermediate states.
+
 Phase 4B migrates Transactions: search and type combine, result count and clear
 action explain the current scope. Type chips require 960px of local width and
 text up to 1.3×; otherwise use a labeled native selector with content-driven

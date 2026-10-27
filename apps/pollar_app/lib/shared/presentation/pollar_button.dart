@@ -24,6 +24,7 @@ class PollarButton extends StatelessWidget {
     this.loading = false,
     this.fullWidth = false,
     this.adaptiveHeight = false,
+    this.focusNode,
   });
 
   final String label;
@@ -37,6 +38,7 @@ class PollarButton extends StatelessWidget {
 
   /// Opt-in for long labels at large text scales; retains the minimum target.
   final bool adaptiveHeight;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +113,7 @@ class PollarButton extends StatelessWidget {
           width: fullWidth ? double.infinity : null,
           height: adaptiveHeight ? null : height,
           child: TextButton(
+            focusNode: focusNode,
             onPressed: disabled ? null : onPressed,
             style: ButtonStyle(
               minimumSize: adaptiveHeight

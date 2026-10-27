@@ -1,5 +1,5 @@
 // THESIS: a fatura reconciles what is owed with the purchases and future installments that explain it, refusing a generic metric dashboard.
-// OWN-WORLD: flat canvas cards, one-pixel green-grey borders, restrained teal actions, blue card identity, exact tabular figures and Lucide outlines.
+// OWN-WORLD: a solid blue credit identity connects card and statement; exact amounts, flat evidence groups and teal payment actions.
 // STORY: identify the cycle and status, verify total/paid/outstanding, inspect dated purchases and future commitments, then record a payment safely.
 // FIRST VIEWPORT: operational header above an asymmetric summary-and-future pair; the outstanding balance and due date lead, payment sits inside the summary.
 // FORM: canonical Pollar statement hierarchy inherited from the shipped desktop/mobile UI kits; established-world extension, no new-world seed.
@@ -40,6 +40,7 @@ class CardStatementScreen extends ConsumerWidget {
     final privacyHidden = ref.watch(privacyModeProvider);
     return PollarCardMorph(
       tag: 'card-statement-$cardId',
+      creditIdentity: true,
       child: state.when(
         loading: () => const PollarLoadingState(message: 'Calculando fatura…'),
         error: (error, stackTrace) => PollarErrorState(
@@ -194,12 +195,14 @@ class _StatementContent extends ConsumerWidget {
       actions: (modalContext) => [
         PollarButton(
           label: 'Voltar à fatura',
+          adaptiveHeight: true,
           variant: PollarButtonVariant.secondary,
           onPressed: () => Navigator.pop(modalContext, false),
         ),
         PollarButton(
           key: const Key('confirm-statement-payment'),
           label: 'Confirmar pagamento',
+          adaptiveHeight: true,
           onPressed: () {
             if (!(formKey.currentState?.validate() ?? false)) return;
             Navigator.pop(modalContext, true);
@@ -240,64 +243,68 @@ class _StatementHeader extends StatelessWidget {
   const _StatementHeader({required this.snapshot});
   final CardStatementSnapshot snapshot;
   @override
-  Widget build(BuildContext context) {
-    final compact =
-        MediaQuery.sizeOf(context).width < PollarBreakpoints.mediumMin;
-    final title = Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        PollarIconButton(
-          icon: LucideIcons.arrowLeft,
-          label: 'Voltar para contas',
-          outlined: true,
-          onPressed: () => context.go('/accounts'),
-        ),
-        const SizedBox(width: PollarSpacing.x4),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                snapshot.cardName,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: PollarSpacing.x2),
-              Text(
-                'Fatura de ${DateFormat('MMMM', 'pt_BR').format(snapshot.statement.dueDate)} · fecha dia ${snapshot.statement.closingDate.day}',
-                style: Theme.of(context).textTheme.bodyMedium
-                    ?.copyWith(color: context.pollar.textSecondary),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-    final action = PollarButton(
-      label: 'Adicionar compra',
-      leadingIcon: LucideIcons.plus,
-      variant: PollarButtonVariant.secondary,
-      fullWidth: compact,
-      onPressed: () => context.push(
-        '/transactions/new?cardId=${Uri.encodeComponent(snapshot.cardId)}',
-      ),
-    );
-    if (compact) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final compact =
+          constraints.maxWidth < 700 ||
+          MediaQuery.textScalerOf(context).scale(1) > 1.3;
+      final title = Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          title,
-          const SizedBox(height: PollarSpacing.x4),
+          PollarIconButton(
+            icon: LucideIcons.arrowLeft,
+            label: 'Voltar para contas',
+            outlined: true,
+            onPressed: () => context.go('/accounts'),
+          ),
+          const SizedBox(width: PollarSpacing.x4),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  snapshot.cardName,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                const SizedBox(height: PollarSpacing.x2),
+                Text(
+                  'Fatura de ${DateFormat('MMMM', 'pt_BR').format(snapshot.statement.dueDate)} · fecha dia ${snapshot.statement.closingDate.day}',
+                  style: Theme.of(context).textTheme.bodyMedium
+                      ?.copyWith(color: context.pollar.textSecondary),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+      final action = PollarButton(
+        label: 'Adicionar compra',
+        adaptiveHeight: true,
+        leadingIcon: LucideIcons.plus,
+        variant: PollarButtonVariant.secondary,
+        fullWidth: compact,
+        onPressed: () => context.push(
+          '/transactions/new?cardId=${Uri.encodeComponent(snapshot.cardId)}',
+        ),
+      );
+      if (compact) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            title,
+            const SizedBox(height: PollarSpacing.x4),
+            action,
+          ],
+        );
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: title),
+          const SizedBox(width: PollarSpacing.x6),
           action,
         ],
       );
-    }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: title),
-        const SizedBox(width: PollarSpacing.x6),
-        action,
-      ],
-    );
-  }
+    },
+  );
 }

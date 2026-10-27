@@ -13,6 +13,8 @@ import 'package:pollar_app/features/accounts/presentation/accounts_screen.dart';
 import 'package:pollar_app/main.dart';
 import 'package:pollar_app/shared/presentation/money_text.dart';
 import 'package:pollar_app/shared/presentation/privacy_amount.dart';
+import 'package:pollar_app/shared/presentation/pollar_button.dart';
+import 'package:pollar_app/app/privacy/privacy_mode_provider.dart';
 
 void main() {
   setUpAll(() async {
@@ -58,6 +60,45 @@ void main() {
     of: find.byType(AccountsScreen),
     matching: find.byType(Scrollable),
   );
+
+  testWidgets('visible card flip works by keyboard and preserves face focus', (
+    tester,
+  ) async {
+    await mount(tester);
+    final turn = find.byWidgetPredicate(
+      (widget) => widget is PollarButton && widget.label == 'Virar cartão',
+    );
+    await tester.ensureVisible(turn);
+    tester.widget<PollarButton>(turn).focusNode!.requestFocus();
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.text('Condições do cartão'), findsOneWidget);
+    final back = find.byWidgetPredicate(
+      (widget) => widget is PollarButton && widget.label == 'Voltar à frente',
+    );
+    expect(tester.widget<PollarButton>(back).focusNode!.hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(tester.widget<PollarButton>(turn).focusNode!.hasFocus, isTrue);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('privacy removes credit values during an active flip', (
+    tester,
+  ) async {
+    final container = await mount(tester);
+    final turn = find.byTooltip('Virar Cartão Ouro');
+    await tester.ensureVisible(turn);
+    await tester.tap(turn);
+    await tester.pump(const Duration(milliseconds: 70));
+    container.read(privacyModeProvider.notifier).set(true);
+    await tester.pump();
+    expect(find.byType(MoneyText, skipOffstage: false), findsNothing);
+    await tester.pumpAndSettle();
+    expect(find.text('Condições do cartão'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'compact rows keep statement action visible in the first viewport',

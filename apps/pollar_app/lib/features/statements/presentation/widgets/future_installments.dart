@@ -28,6 +28,7 @@ class FutureInstallmentsCard extends StatelessWidget {
               .skip(1)
               .fold(items.first.amount, (sum, item) => sum + item.amount);
     return PollarCard(
+      variant: PollarCardVariant.flat,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -47,11 +48,7 @@ class FutureInstallmentsCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    item.description,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  Text(item.description),
                   Text(
                     DateFormat('MMM y', 'pt_BR').format(item.date),
                     style: Theme.of(context).textTheme.bodySmall
@@ -77,6 +74,9 @@ class FutureInstallmentsCard extends StatelessWidget {
                             item.amount,
                             hidden: privacyHidden,
                             semantic: MoneySemantic.debt,
+                            allowWrap: true,
+                            reserveLayout: true,
+                            alignment: AlignmentDirectional.topEnd,
                           ),
                         ),
                       ],
@@ -89,11 +89,16 @@ class FutureInstallmentsCard extends StatelessWidget {
                           icon: LucideIcons.layers3,
                           compact: true,
                         ),
-                        const Spacer(),
-                        PrivacyAmount(
-                          item.amount,
-                          hidden: privacyHidden,
-                          semantic: MoneySemantic.debt,
+                        const SizedBox(width: PollarSpacing.x3),
+                        Expanded(
+                          child: PrivacyAmount(
+                            item.amount,
+                            hidden: privacyHidden,
+                            semantic: MoneySemantic.debt,
+                            allowWrap: true,
+                            reserveLayout: true,
+                            alignment: AlignmentDirectional.topEnd,
+                          ),
                         ),
                       ],
                     ),
@@ -121,6 +126,9 @@ class FutureInstallmentsCard extends StatelessWidget {
                       total,
                       hidden: privacyHidden,
                       semantic: MoneySemantic.debt,
+                      allowWrap: true,
+                      reserveLayout: true,
+                      alignment: AlignmentDirectional.topEnd,
                     ),
                   ),
                 ],
@@ -136,10 +144,15 @@ class FutureInstallmentsCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: PollarSpacing.x3),
-                  PrivacyAmount(
-                    total,
-                    hidden: privacyHidden,
-                    semantic: MoneySemantic.debt,
+                  Flexible(
+                    child: PrivacyAmount(
+                      total,
+                      hidden: privacyHidden,
+                      semantic: MoneySemantic.debt,
+                      allowWrap: true,
+                      reserveLayout: true,
+                      alignment: AlignmentDirectional.topEnd,
+                    ),
                   ),
                 ],
               ),

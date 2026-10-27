@@ -67,6 +67,7 @@ Product name: **Pollar**. Use an abstract ledger/flow mark rather than currency 
 
 - `financialSurface` aliases the existing `primarySoft` role in each theme; it introduces no new hex value. Allow one focal financial surface per viewport. Use primary/secondary text and the AA-checked financial semantic colors on it; do not use muted metadata text there.
 - The Overview opening alone uses a static top-left-to-bottom-right tonal gradient, with existing-palette roles `financialHeroStart`, `financialHeroEnd`, `financialHeroForeground` and `financialHeroSecondary`. Light uses `primaryHover` → `primary`, with canvas foreground; dark uses `primarySoft` → a 12% mix toward `primary`, with text-primary foreground. Secondary text is a 94% mix from the end toward foreground. A local Theme supplies these audited foregrounds to MoneyText and privacy masks without changing global money colors. `financialSurface` and financial cards elsewhere remain solid; gradients do not belong on amounts, charts, lists or page backgrounds and the focal gradient does not animate.
+- Credit has a bounded solid-blue identity on active card faces and the statement's outstanding-balance band: `creditSurface` aliases light `info` and dark `infoSoft`; `creditForeground` uses light canvas and dark text-primary. `creditSecondary` mixes toward foreground by 96%, and `creditHover` by 8%. `PollarCreditSurface` supplies a local Theme for MoneyText, privacy masks, icons and focus. These derived roles reuse the existing palette and do not change global money colors. This identity exception does not replace the Overview's teal 48/40px field, the mint foundation specimen, ordinary account rows or archived rows. Credit surfaces remain solid, without gradients or invented bank branding/card numbers.
 - Never communicate status by color alone. Pair it with an icon and text.
 - Expenses may be red in summaries, but normal transaction rows should favor neutral text plus a minus sign to avoid visual alarm fatigue.
 - Income uses a plus sign and positive semantic color.
@@ -150,14 +151,20 @@ Grid: desktop 12 columns, tablet 8, mobile 4; 16 px gutters compact and 24 px gu
 
 Preserve the implemented redesign. PollarMotion uses 140/240/360/700ms roles,
 bounded stagger, pressure feedback, restrained card tilt and explicit accessible
-flip. The credit-card morph opens the existing statement; the neutral shuttle
-contains no financial snapshot. Chart animation interpolates geometry rather
+flip. The credit-card morph opens the existing statement; both endpoints opt into
+`creditIdentity: true`, so its neutral shuttle contains only solid blue and a
+foreground icon, with no financial snapshot. The library/catalog default stays
+mint; reduced motion removes Hero. Flip reuses the face focus nodes through the
+optional `PollarButton.focusNode`, restoring the visible face's action. Statement
+utilization animates geometry over 360ms; privacy removes fill immediately and
+reduced motion renders the final fraction statically. Chart animation interpolates geometry rather
 than monetary records. A saved incomplete-to-complete goal transition earns one
 finite, nonblocking visual celebration; initial load, failed persistence and
 privacy do not. This is the specific exception to the earlier blanket ban on
 digit animation and achievement effects, requested by the user. Existing
 financial rules remain binding. See `docs/pollar-motion.md` for exact scope and
-verification limits; the phase 4 visual migration is still pending.
+verification limits; this records the implemented credit/statement refinement,
+without claiming completion of the remaining redesign phases.
 
 ## 9. Core components
 
@@ -261,20 +268,50 @@ The expanded Overview has focused widget coverage for proportions, zero totals, 
 
 Accounts listing continues to show registered opening balances, never current
 ledger balances. Account and archived groups use flat rows with full names,
-type, currency, exact value and labelled archive/restore actions. Credit cards
-retain tilt/flip and the real statement morph; limits and billing cycle reflow.
-No aggregate is added. Layout follows available width and text scale; monetary
-values wrap and reserve privacy geometry. The create/archive controls opt into
-`PollarButton.adaptiveHeight`, preserving complete labels and minimum targets at
-large text. Other buttons retain their default sizing.
+type, currency, exact value and labelled archive/restore actions. Active credit
+cards retain their boundary, tilt/flip and real statement morph. Their front has
+solid-blue identity, full name/type/currency, archive control, registered credit
+limit (34px) and initial debt. The footer shows billing cycle and textual
+“Ver fatura” / “Virar cartão” actions; actions stack below 300px locally or above
+1.3× text. The back shows real conditions, initial debt, limit and cycle, with
+“Voltar à frente”. No aggregate, current balance, bank branding or card number is
+invented. Accounts/cards share columns at 980px locally and text up to 1.3×;
+credit cards use two columns at 1000px within their section, otherwise each is
+at most 640px wide. All monetary values wrap and reserve privacy geometry.
+Create/archive and face controls opt into `PollarButton.adaptiveHeight`, keeping
+complete labels and minimum targets. Archived credit remains a restorable row
+with its real terms; no new card face is applied to archived data.
 
 ### Credit-card statement hierarchy
 
-1. Card identity, statement period, status.
-2. Total, amount paid, outstanding, due date.
-3. Pay/partial-payment actions.
-4. Purchases grouped by date.
-5. Future installments and statement history.
+1. Card identity, statement period and status; period/status stay outside the blue band.
+2. Outstanding (`outstanding`, 34px) and due date on the solid-blue credit band. Pending payments and `availableToPay`, when applicable, have separate explicit labels; pending never reads as paid.
+3. Total, amount paid, available limit and utilization, followed by eligible full/partial-payment actions. Payment remains a same-currency transfer, with the existing `availableToPay` ceiling.
+4. Purchases grouped by date in a flat group, preserving daily subtotals, full descriptions, category, signed amount and installment position.
+5. All future installments in a flat group, with full descriptions, month, installment position, exact value and complete committed total. No arbitrary list limit is introduced.
+
+At 820px locally and text up to 1.3×, summary and future installments share the
+opening row and purchases follow; otherwise order is summary, purchases, future.
+“Adicionar compra” stacks below identity at local width under 700px or text above
+1.3×. It and payment controls use adaptive height. Every summary, purchase,
+subtotal and future amount has bounded width, wrapping and visible/hidden layout
+reservation; enlarged text stacks metrics and pairs without shrinking figures.
+Total, paid and available-limit metrics also stack when local width cannot fit
+their measured full numeric tokens and privacy masks, including at 1.3× text.
+Utilization transitions geometry for 360ms (`PollarMotion.focal`); hidden mode
+immediately keeps only a fixed neutral track and hidden semantics, including during a
+transition, while reduced motion renders the final proportion statically.
+
+Focused widget coverage includes two-theme credit contrast, keyboard flip/focus
+restoration, privacy during flip, real-route neutral Hero flight and reduced
+motion, summary privacy geometry at three widths, pending payments, enlarged
+text and extreme values. Reference goldens in `apps/pollar_app/test/goldens/`
+include `accounts_390x900.png`, `accounts_credit_back_390.png`,
+`accounts_credit_back_1440_dark.png`, `statement_1200x900.png`,
+`statement_pending_390x844.png`, `statement_privacy_1200_dark.png`,
+`statement_390_2x.png` and `statement_320_130pct.png`. Final suite, analysis and
+build status belongs in `docs/redesign-progress.md`; these renders and simulated
+inputs do not establish hardware, assistive-technology or FPS acceptance.
 
 ## 12. Accessibility checklist
 

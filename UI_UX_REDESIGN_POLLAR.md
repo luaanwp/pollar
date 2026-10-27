@@ -294,6 +294,14 @@ As demais fases e invariantes continuam válidas. A execução e seus limites de
 validação são registrados em `docs/redesign-progress.md`; acabamento visual
 não equivale a aceite físico ou encerramento das pendências da V1.
 
+A passagem de cartões/faturas compartilha o azul informativo existente em uma
+superfície sólida: limite cadastrado e dívida inicial distintos no cartão,
+saldo devido e vencimento na fatura, ações textuais de virar/abrir e morph
+neutro sem valores. As métricas reconciliam com largura medida, preservando
+pendentes separados de Pago. Privacidade remove o preenchimento proporcional
+do limite e mantém somente trilho neutro fixo. Não há marca, número bancário
+fictício ou gradiente de crédito.
+
 ## Limitações da auditoria
 
 O acesso ao repositório funcionou sem autenticação neste ambiente. A análise é estática e usou goldens existentes, não execução interativa no Windows/Android/iOS. Não há evidência de métricas de uso para reordenar destinos, nem dados/engine de IA para publicar insights. O código não contém CSS ou biblioteca de charts: tema Flutter e `CustomPainter` fazem esse papel. Sincronização opcional já consta do código, embora `PRODUCT.md` a descreva como etapa posterior; a documentação de produto deve esclarecer a diferença entre capacidade implementada e estágio de lançamento. O skill local `pollar-design` aponta a `README.md`, enquanto o checkout contém `readme.md` em minúsculas; isso pode falhar em sistemas sensíveis a maiúsculas. O próprio `readme.md` tem dois tons semânticos divergentes dos tokens atuais. Alinhar o guia quando a fase visual for implementada. Validar qualquer alteração visual no aplicativo e nas capturas golden antes de declarar o redesign concluído.

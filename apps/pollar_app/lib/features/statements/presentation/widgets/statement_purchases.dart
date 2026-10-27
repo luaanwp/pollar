@@ -21,6 +21,7 @@ class StatementPurchases extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PollarCard(
+    variant: PollarCardVariant.flat,
     padding: PollarCardPadding.none,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -104,11 +105,16 @@ class _DayHeader extends StatelessWidget {
             style: Theme.of(context).textTheme.labelMedium,
           ),
         ),
-        PrivacyAmount(
-          group.total,
-          hidden: hidden,
-          style: Theme.of(context).textTheme.labelMedium,
-          semantic: MoneySemantic.expense,
+        Flexible(
+          child: PrivacyAmount(
+            group.total,
+            hidden: hidden,
+            style: Theme.of(context).textTheme.labelMedium,
+            semantic: MoneySemantic.expense,
+            allowWrap: true,
+            reserveLayout: true,
+            alignment: AlignmentDirectional.topEnd,
+          ),
         ),
       ],
     ),
@@ -144,8 +150,6 @@ class _PurchaseRow extends StatelessWidget {
             children: [
               Text(
                 item.description,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: PollarSpacing.x1),
@@ -176,6 +180,9 @@ class _PurchaseRow extends StatelessWidget {
       -item.amount,
       hidden: hidden,
       semantic: MoneySemantic.expense,
+      allowWrap: true,
+      reserveLayout: true,
+      alignment: AlignmentDirectional.topEnd,
     );
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -195,7 +202,7 @@ class _PurchaseRow extends StatelessWidget {
               children: [
                 Expanded(child: identity),
                 const SizedBox(width: PollarSpacing.x3),
-                amount,
+                Flexible(child: amount),
               ],
             ),
     );

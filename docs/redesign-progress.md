@@ -290,11 +290,61 @@ As capturas usam dados de teste. Antes/depois locais para conferência ficam em
 `mobile-before.png` e `mobile-after.png`; não contêm dados financeiros do usuário.
 Validação física de desempenho, Android/iOS e leitor de tela continua separada.
 
+## Revisão visual focal — Cartões e faturas
+
+A segunda passagem de impacto visual reforça a identidade de crédito sem
+substituir o dashboard ou as linhas de contas comuns/arquivadas:
+
+- Frente azul sólida com nome, tipo, moeda, limite cadastrado em 34px e dívida
+  inicial separada. Ciclo, “Ver fatura” e “Virar cartão” ficam explícitos no
+  rodapé. O verso preserva somente as condições reais; ações empilham conforme
+  a largura local e o texto ampliado, sem proporção física fixa de cartão.
+- `PollarCreditSurface` compartilha a identidade com a fatura. Claro usa o azul
+  informativo existente e escuro usa seu tom suave; foreground e texto de apoio
+  são derivados e auditados. Não há bandeira, número bancário fictício ou novo
+  gradiente. O tema local cuida de dinheiro, máscara, ícones e foco.
+- Tilt e flip existentes permanecem. O botão textual de virar usa o foco da
+  face correspondente; teclado restaura o foco na face visível. O morph optativo
+  de crédito leva somente azul e ícone, sem valores retidos no voo. Consumidores
+  legados do morph conservam seu padrão; movimento reduzido corta a transição.
+- Saldo devido e vencimento lideram a fatura na mesma superfície azul. Estado
+  e período ficam fora dela; Total, Pago e Limite disponível reconciliam abaixo.
+  Pendentes continuam separados de Pago e reservados contra novo pagamento.
+- Métricas medem os três valores e suas máscaras contra a largura local antes
+  de escolher colunas. Se não couberem inteiros, ou com texto acima de 1,3×,
+  empilham. O revisor encontrou quebra do número em 320px/1,3×; a correção e uma
+  regressão específica confirmam o valor íntegro e a geometria de privacidade.
+- Utilização do limite desenha sua geometria em 360ms. Privacidade interrompe
+  o preenchimento imediatamente, mantendo somente um trilho fixo sem proporção
+  e semântica de valor oculto. Movimento reduzido mostra o estado final sem tween.
+- Compras e parcelas futuras ficam em grupos `flat`, com descrições completas e
+  valores limitados à largura disponível, com quebra e reserva de geometria.
+  Totais, agrupamentos, operações e regras de pagamento não foram alterados.
+
+Resultado final: **403 testes passaram**, com análise estática sem problemas e
+build Windows Release remoto concluído.
+
+Dez goldens novos ampliam a cobertura de verso, privacidade, temas e texto
+ampliado de contas e faturas; as capturas existentes afetadas foram atualizadas.
+Testes novos verificam contraste, flip por teclado, privacidade durante flip,
+voo neutro entre rotas reais, redução de movimento, reserva de geometria em
+quatro dimensões/escalas, interrupção do desenho, pendentes e valores extensos.
+
+Duas inspeções visuais e detector final sem achados. Revisão independente final:
+**ship**, com reflow e persistência resolvidos e sem regressões observadas no
+escopo da revisão. Perfil alternativo executado em agente fresco, sem herdar
+o histórico de implementação. Documentação atualizada pontualmente, preservando
+o front matter e sem criar sidecar novo. Isso não equivale a aceite físico,
+leitor de tela ou medição de FPS.
+
+Prévia local com dados de teste: `dist/redesign-credit/accounts-before.png`,
+`accounts-after.png`, `statement-before.png` e `statement-after.png`.
+
 ## Sequência restante
 
-Antes de retomar as telas pendentes, a prioridade visual autorizada inclui
-reforçar a apresentação/interação de cartões e faturas e revisar a continuidade
-da navegação e das listas. O movimento existente é a base dessas passagens.
+Antes de retomar as telas pendentes, a próxima prioridade visual autorizada é
+revisar a continuidade da navegação e das listas. Dashboard e cartões/faturas
+já receberam suas passagens de impacto; o movimento existente continua a base.
 
 4C. Planejamento: hierarquia e reflow de agenda/compromissos, preservando regras.
 5. Análises/patrimônio: perguntas, critérios, valores e alternativas textuais.

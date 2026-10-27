@@ -24,8 +24,9 @@ repintura. O código usa o Flutter instalado, sem nova dependência de runtime.
 | Referência | Aplicação no Pollar |
 | --- | --- |
 | Animated Balance | Confirmado da Visão geral opta por `PrivacyAmount.animateChanges`. Dígitos do mesmo comprimento rolam individualmente entre caracteres anterior/atual; mudança de comprimento usa troca vertical do texto. Se houver quebra de linha, o valor exato aparece diretamente. Não é um contador aritmético. |
-| Shared Element Morph | Cartão de crédito se transforma no espaço da fatura existente ao abrir/voltar. O shuttle intermediário contém somente superfície e ícone, sem cópia de saldos que possa sobreviver à privacidade. |
-| Interactive 3D Cards | Cartões ativos inclinam com mouse/toque, sem capturar a rolagem. Um botão explícito vira a face; o verso mostra limite e ciclo já cadastrados. A face oculta não recebe foco, toque ou semântica; o foco acompanha o botão visível. |
+| Shared Element Morph | Cartão de crédito se transforma no espaço da fatura existente ao abrir/voltar. Os dois extremos optam por `creditIdentity: true`: o shuttle intermediário contém somente azul sólido e ícone de primeiro plano, sem cópia de saldos que possa sobreviver à privacidade. O padrão menta da biblioteca e do catálogo permanece; movimento reduzido remove o `Hero`. |
+| Interactive 3D Cards | Cartões ativos inclinam com mouse/toque, sem capturar a rolagem. Ações textuais explícitas viram a face; o verso mostra dívida inicial, limite e ciclo já cadastrados. A face oculta não recebe foco, toque ou semântica; os `FocusNode` existentes passam pelo `PollarButton.focusNode` optativo e restauram o foco à ação visível. |
+| Limite utilizado da fatura | O preenchimento anima somente geometria por 360ms (`PollarMotion.focal`). Privacidade remove imediatamente a proporção, inclusive durante a transição, preserva trilho neutro de tamanho fixo e anuncia limite oculto. Movimento reduzido pinta a proporção final sem `Tween`. Valores e percentual semântico permanecem atuais, sem quantias intermediárias. |
 | Chart Morphing | Gráficos reais de fluxo mensal e saldo desenham a entrada e interpolam coordenadas entre séries/moedas. Uma troca durante o efeito parte da geometria corrente. Valores textuais e semânticos continuam exatos e atuais. |
 | Goal Celebration | Progresso da meta prioritária preenche suavemente. Uma meta que passa de incompleta para concluída após atualização bem-sucedida dispara um único acento radial finito, sem bloquear a tela. Não dispara ao abrir dados existentes, em falha de gravação ou em privacidade. |
 
@@ -42,6 +43,13 @@ carregamento e erro mantêm seus estados existentes. Não se modifica fonte,
 serviço, regra financeira, armazenamento, identidade ou sincronização.
 
 ## Privacidade e acessibilidade
+
+A identidade de crédito usa azul sólido derivado dos papéis existentes:
+`creditSurface` é `info` no claro e `infoSoft` no escuro; o primeiro plano é
+canvas / texto primário. `PollarCreditSurface` fornece `Theme` local para dinheiro,
+máscara, ícones e foco. O limite cadastrado na frente e o saldo devido na fatura
+usam 34px. O morph conserva essa identidade sem copiar valores; não introduz
+gradiente ou marca bancária, nem substitui a abertura teal 48/40px da Visão geral.
 
 - Somente o `MoneyText` atual fornece semântica do saldo. Quadros anteriores são
   pintura transitória, sem nós acessíveis ou registros financeiros sintéticos.
@@ -72,7 +80,19 @@ teclado, atualização real do provedor financeiro, busca entre branches e meta
 com persistência pendente/falha/sucesso. Isso não mede FPS em aparelho físico
 nem equivale a um aceite de leitor de tela ou gesto iOS em hardware.
 
+O refinamento de crédito acrescenta cobertura de contraste em dois temas,
+flip por teclado com restauração do foco, privacidade durante o flip, shuttle
+neutro na rota real e remoção do `Hero` em movimento reduzido. A fatura cobre
+reserva de geometria em três larguras, texto ampliado, pendências e valores
+extremos, além de ocultação no meio da animação de limite e saída estática
+reduzida. Capturas atuais incluem os versos `accounts_credit_back_390.png` e
+`accounts_credit_back_1440_dark.png`, além de `statement_pending_390x844.png`,
+`statement_privacy_1200_dark.png`, `statement_390_2x.png` e
+`statement_320_130pct.png`, em `apps/pollar_app/test/goldens/`. O resultado final
+de suíte, análise e build fica em `docs/redesign-progress.md`.
+
 Contas comuns ainda não têm uma tela própria de detalhe; o morph usa a fatura
 real do cartão. Não foram inventados verso com PAN/CVV, investimentos, séries,
 seletor de período de Relatórios ou novos destinos. O refinamento visual da
-fase 4 e o polimento transversal continuam na sequência do plano.
+fase 4 registra agora esta etapa de cartões/faturas; as demais etapas e o
+polimento transversal seguem seu registro no plano.

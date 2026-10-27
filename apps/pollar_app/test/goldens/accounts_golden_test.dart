@@ -26,6 +26,8 @@ void main() {
     bool openForm = false,
     bool dark = false,
     double textScale = 1,
+    bool flipCard = false,
+    bool privacyHidden = false,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
@@ -66,6 +68,17 @@ void main() {
       await tester.tap(find.text('Cadastrar conta ou cartão'));
       await tester.pumpAndSettle();
     }
+    if (privacyHidden) {
+      await tester.tap(find.byTooltip('Ocultar valores'));
+      await tester.pumpAndSettle();
+    }
+    if (flipCard) {
+      final turn = find.byTooltip('Virar Cartão Ouro');
+      await tester.ensureVisible(turn);
+      await tester.pumpAndSettle();
+      await tester.tap(turn);
+      await tester.pumpAndSettle();
+    }
 
     await expectLater(find.byType(MaterialApp), matchesGoldenFile(golden));
   }
@@ -77,6 +90,35 @@ void main() {
       golden: 'accounts_390x900.png',
     );
   });
+
+  testWidgets(
+    'credit reverse compact',
+    (tester) => renderAccounts(
+      tester,
+      size: const Size(390, 900),
+      golden: 'accounts_credit_back_390.png',
+      flipCard: true,
+    ),
+  );
+  testWidgets(
+    'credit reverse dark desktop',
+    (tester) => renderAccounts(
+      tester,
+      size: const Size(1440, 900),
+      golden: 'accounts_credit_back_1440_dark.png',
+      flipCard: true,
+      dark: true,
+    ),
+  );
+  testWidgets(
+    'credit privacy compact',
+    (tester) => renderAccounts(
+      tester,
+      size: const Size(390, 900),
+      golden: 'accounts_credit_privacy_390.png',
+      privacyHidden: true,
+    ),
+  );
 
   testWidgets('accounts wide 1440x900', (tester) async {
     await renderAccounts(

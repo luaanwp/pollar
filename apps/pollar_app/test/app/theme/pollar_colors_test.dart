@@ -7,6 +7,23 @@ import 'package:pollar_app/app/theme/pollar_theme.dart';
 void main() {
   for (final colors in [PollarColors.light, PollarColors.dark]) {
     test(
+      'credit identity text and focused controls keep contrast (${colors.canvas})',
+      () {
+        expect(
+          _contrast(colors.creditForeground, colors.creditSurface),
+          greaterThanOrEqualTo(4.5),
+        );
+        expect(
+          _contrast(colors.creditSecondary, colors.creditSurface),
+          greaterThanOrEqualTo(4.5),
+        );
+        expect(
+          _contrast(colors.creditForeground, colors.creditHover),
+          greaterThanOrEqualTo(3),
+        );
+      },
+    );
+    test(
       'overview hero text meets AA throughout its gradient (${colors.canvas})',
       () {
         for (var step = 0; step <= 20; step++) {

@@ -7,6 +7,7 @@ import 'package:pollar_app/features/statements/presentation/card_statement_scree
 import 'package:pollar_app/features/statements/presentation/statement_controller.dart';
 
 import '../../../support/statement_fixture.dart';
+import '../../../support/find_money_text.dart';
 
 void main() {
   testWidgets('shows reconciled statement and installment evidence', (
@@ -16,7 +17,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Cartão Ouro'), findsOneWidget);
-    expect(find.text(r'R$ 555,63'), findsWidgets);
+    expect(findMoneyText(r'R$ 555,63'), findsWidgets);
     await tester.scrollUntilVisible(
       find.text('Mercado do bairro'),
       300,
@@ -77,7 +78,7 @@ void main() {
 
     expect(find.text('Pagamento pendente'), findsOneWidget);
     expect(find.text('Pagar fatura'), findsNothing);
-    expect(find.text(r'R$ 555,63'), findsWidgets);
+    expect(findMoneyText(r'R$ 555,63'), findsWidgets);
   });
 }
 
