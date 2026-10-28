@@ -189,15 +189,27 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'data',
-                    builder: (context, state) => const DataManagementScreen(),
+                    pageBuilder: (context, state) => pollarMotionPage(
+                      context: context,
+                      key: state.pageKey,
+                      child: const DataManagementScreen(),
+                    ),
                   ),
                   GoRoute(
                     path: 'sync',
-                    builder: (context, state) => const SyncScreen(),
+                    pageBuilder: (context, state) => pollarMotionPage(
+                      context: context,
+                      key: state.pageKey,
+                      child: const SyncScreen(),
+                    ),
                   ),
                   GoRoute(
                     path: 'settings',
-                    builder: (context, state) => const SettingsScreen(),
+                    pageBuilder: (context, state) => pollarMotionPage(
+                      context: context,
+                      key: state.pageKey,
+                      child: const SettingsScreen(),
+                    ),
                   ),
                 ],
               ),

@@ -384,6 +384,15 @@ A navegação acompanha a largura sem mudar o mapa mental.
 - **Selected:** indicador menta e conteúdo teal; a barra superior é canvas com borda inferior e sem elevação.
 - **Header:** contexto de destino em corpo secundário de 14px, tema e privacidade globais. Na lista compacta de Transações, a barra mantém o título de página em 18px e cresce com a escala de texto, pois essa lista não tem outro título no corpo.
 - **More:** “Entenda seus dados” reúne Relatórios e Patrimônio; “Seu aplicativo” reúne Sincronização, Dados e backup e Preferências. Linhas com divisores substituem cartões equivalentes; texto quebra naturalmente e o foco recebe contorno informativo de 2px.
+- **Branch arrival:** `PollarBranchStack` desloca horizontalmente somente o destino atual por até 24dp (`PollarMotion.branchTravel`), em 240ms com `easeOutCubic`. A ordem dos destinos determina o lado de entrada, invertido em RTL. O conteúdo mantém opacidade integral e recorte no shell; não há cópia da tela anterior. O `IndexedStack` e os navegadores permanecem montados; branches inativas ficam fora de pintura, foco, semântica e tickers. Movimento reduzido ou navegação acessível encerram a entrada imediatamente, inclusive durante o efeito.
+- **Native navigation:** o indicador da barra inferior usa a animação nativa de 240ms, ou duração zero com movimento reduzido; o rail conserva seu comportamento nativo. Subrotas usam `pollarMotionPage`, incluindo Dados e backup, Sincronização e Preferências em Mais. iOS/macOS conservam `MaterialPage` para o retorno nativo; as demais plataformas usam a transição existente. Mapa de rotas e autenticação permanecem iguais.
+- **More arrival:** as cinco linhas usam `PollarReveal` por identidade, com índices de 0 a 4; reconstruções de tema ou privacidade não repetem a entrada.
+
+### Transaction Ledger Motion
+
+A entrada acompanha a identidade do lançamento. O estado de Transações guarda somente os IDs das linhas já construídas, sem dados financeiros, widgets anteriores ou quadros retidos. Filtrar, retornar à branch ou alternar a largura não reinicia a entrada de uma identidade já construída durante a vida desse estado. Novas identidades construídas podem entrar com `PollarReveal` e stagger limitado.
+
+No desktop, chaves por ID e `findItemIndexCallback` mantêm o estado de reveal quando o filtro muda os índices; a lista tem `PageStorageKey`. Grupos compactos usam chaves de data. O painel contextual usa `PollarReveal` com `selected.id`; troca seu conteúdo e aplica privacidade imediatamente, sem manter uma cópia de saída. Esse padrão oferece entrada e preservação de estado; não define animação contínua de reordenação ou saída.
 
 ### Overview Dashboard
 

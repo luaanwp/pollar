@@ -14,6 +14,7 @@ abstract final class PollarMotion {
   static const focal = Duration(milliseconds: 360);
   static const celebration = Duration(milliseconds: 700);
   static const curve = Curves.easeOutCubic;
+  static const branchTravel = PollarSpacing.x6;
 
   static bool reduced(BuildContext context) =>
       MediaQuery.disableAnimationsOf(context) ||
@@ -145,7 +146,7 @@ class _PollarRevealState extends State<PollarReveal>
 }
 
 /// IndexedStack remains mounted across branch selection: forms keep their state.
-class PollarBranchStack extends StatelessWidget {
+class PollarBranchStack extends StatefulWidget {
   const PollarBranchStack({
     super.key,
     required this.index,
@@ -154,17 +155,86 @@ class PollarBranchStack extends StatelessWidget {
   final int index;
   final List<Widget> children;
   @override
-  Widget build(BuildContext context) => PollarReveal(
-    identity: index,
-    child: IndexedStack(
-      index: index,
-      children: [
-        for (var i = 0; i < children.length; i++)
-          Offstage(
-            offstage: i != index,
-            child: TickerMode(enabled: i == index, child: children[i]),
+  State<PollarBranchStack> createState() => _PollarBranchStackState();
+}
+
+class _PollarBranchStackState extends State<PollarBranchStack>
+    with SingleTickerProviderStateMixin {
+  late final _arrival = AnimationController(
+    vsync: this,
+    duration: PollarMotion.change,
+    value: 1,
+  );
+  var _direction = 1;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (PollarMotion.reduced(context)) {
+      _arrival.stop();
+      _arrival.value = 1;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant PollarBranchStack oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.index == widget.index) return;
+    _direction = widget.index > oldWidget.index ? 1 : -1;
+    if (PollarMotion.reduced(context)) {
+      _arrival.stop();
+      _arrival.value = 1;
+    } else {
+      _arrival.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _arrival.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => ClipRect(
+    child: AnimatedBuilder(
+      animation: _arrival,
+      child: IndexedStack(
+        index: widget.index,
+        children: [
+          for (var i = 0; i < widget.children.length; i++)
+            Offstage(
+              key: ValueKey('pollar-branch-$i'),
+              offstage: i != widget.index,
+              child: ExcludeFocus(
+                excluding: i != widget.index,
+                child: ExcludeSemantics(
+                  excluding: i != widget.index,
+                  child: TickerMode(
+                    enabled: i == widget.index,
+                    child: widget.children[i],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+      builder: (context, child) {
+        final t = PollarMotion.reduced(context)
+            ? 1.0
+            : PollarMotion.curve.transform(_arrival.value);
+        final readingDirection = Directionality.of(context) == TextDirection.rtl
+            ? -1
+            : 1;
+        return Transform.translate(
+          key: const Key('pollar-branch-position'),
+          offset: Offset(
+            (1 - t) * PollarMotion.branchTravel * _direction * readingDirection,
+            0,
           ),
-      ],
+          child: child,
+        );
+      },
     ),
   );
 }

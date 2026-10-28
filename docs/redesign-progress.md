@@ -340,11 +340,55 @@ leitor de tela ou medição de FPS.
 Prévia local com dados de teste: `dist/redesign-credit/accounts-before.png`,
 `accounts-after.png`, `statement-before.png` e `statement-after.png`.
 
+## Revisão de continuidade — Navegação e listas
+
+Esta passagem conclui a prioridade de movimento entre dashboard, cartões e
+destinos operacionais, sem alterar a composição estática das telas:
+
+- A aba atual entra horizontalmente pela ordem do destino, com 24dp em 240ms
+  e `easeOutCubic`; RTL inverte o sentido. O conteúdo mantém opacidade integral
+  e fica limitado ao viewport, sem exibir cópia da tela anterior.
+- `IndexedStack` e navegadores continuam montados. Abas inativas não recebem
+  foco, semântica ou tickers; rascunhos, seleção e subpilhas permanecem. Movimento
+  reduzido ou navegação acessível interrompem a entrada no meio sem recriar filhos.
+- A barra inferior nativa usa 240ms, ou zero em movimento reduzido. Rail, cinco
+  destinos, atalhos, recolhimento e comportamento de tocar a aba ativa permanecem.
+- Dados/backup, sincronização e preferências passam pelo mesmo `pollarMotionPage`
+  já utilizado nos outros detalhes. iOS/macOS conservam `MaterialPage` para a
+  navegação do sistema; a fábrica reduzida retorna durações zero. Não se alteram
+  mapa de rotas, autenticação, identificação local ou regras de sincronização.
+- Linhas de Mais entram com o stagger limitado já existente e não repetem a
+  entrada por tema/privacidade. O ledger lembra somente IDs já construídos;
+  itens conhecidos não reanimam ao voltar de um filtro ou de outra composição.
+- No desktop, `findItemIndexCallback` mantém o estado das linhas sobreviventes
+  quando mudam de índice. Chaves por dia estabilizam os grupos compactos, e uma
+  chave de PageStorage identifica a rolagem do ledger. Isso não implementa saída
+  animada ou interpolação contínua da posição das linhas.
+- O painel revela a seleção atual com o efeito existente, sem reter o filho
+  anterior. Privacidade durante a entrada remove os valores imediatamente.
+
+Foram acrescentados sete testes de branch, quatro de rotas/fábrica nativa,
+três de ledger e quatro goldens de movimento. Cobrem direção/RTL, trocas rápidas,
+rascunhos e identidade de estado, isolamento de foco/semântica, redução no meio
+do efeito, atualizações comuns, rotas reais e retorno, estado após filtro,
+ausência de replay e privacidade na seleção. Capturas de 320/390/1440px incluem
+dois temas, texto 2× e movimento reduzido; o instante de 40ms é contado após a
+montagem do destino pelo redirecionamento assíncrono.
+
+Resultado: **421 testes passaram** e análise estática sem problemas. A seguir,
+as quatro capturas temporizadas foram confirmadas em execução focada, sem mudar
+código de produção. Duas inspeções visuais e detector final sem achados.
+Build Windows Release remoto concluído e executável aberto com janela ativa.
+Revisão independente final: **ship**, sem achados materiais. O perfil alternativo
+foi executado em agente fresco; documentação atualizada pontualmente, com front
+matter preservado e sem criar sidecar novo.
+Essas checagens não são medição de FPS, sessão de leitor de tela ou validação
+de gesto de retorno em hardware Android/iOS.
+
 ## Sequência restante
 
-Antes de retomar as telas pendentes, a próxima prioridade visual autorizada é
-revisar a continuidade da navegação e das listas. Dashboard e cartões/faturas
-já receberam suas passagens de impacto; o movimento existente continua a base.
+Dashboard, cartões/faturas e continuidade de navegação/listas receberam as
+passagens priorizadas. A sequência retoma agora as telas pendentes do plano.
 
 4C. Planejamento: hierarquia e reflow de agenda/compromissos, preservando regras.
 5. Análises/patrimônio: perguntas, critérios, valores e alternativas textuais.

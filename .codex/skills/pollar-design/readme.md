@@ -28,6 +28,19 @@ page gutters remain 16/24px; later web-kit measurements below are references.
 The toolbar is normally 56px and grows for the compact enlarged page heading;
 there is no additional mobile quick-add control in the implemented shell.
 
+Navigation motion uses `PollarBranchStack`: the current destination arrives
+horizontally from its destination-order side, reversed in RTL, up to 24dp
+(`PollarMotion.branchTravel`, JSON `branchTravelDp`) over 240ms with
+`easeOutCubic`. Keep full opacity, shell clipping and the mounted IndexedStack/
+branch navigators. Inactive branches are offstage, excluded from focus and
+semantics, and have tickers disabled. Do not retain an outgoing screen or
+snapshot. Reduced motion/accessibility navigation ends arrival immediately,
+including mid-transition, without remounting. The bottom indicator uses native
+240ms/zero-duration animation; rail behavior stays native. More rows use
+`PollarReveal` at indices 0–4 without theme/privacy replay. Data, Sync and
+Preferences use the existing `pollarMotionPage`: MaterialPage on iOS/macOS for
+native back behavior, custom transition elsewhere. Route/auth behavior stays.
+
 Redesign phase 3 and its subsequent expansion migrate Overview: one static teal
 tonal field spans the content width, leading with confirmed cash (48/40px by
 real balance-block width, threshold 600px), then projected cash and separately
@@ -113,6 +126,15 @@ short windows and narrow containers scroll controls with the list without
 losing search focus. Privacy remains reactive in an open modal and reserves
 amount geometry. Despesas includes card purchases; Transferências includes
 statement payments. Canceling preserves history. Planning remains phase 4C.
+
+Transaction arrival remembers only IDs of rows already built in the current
+screen State, never financial data, outgoing widgets or frames. Filter/return/
+resize does not replay those identities. Desktop ID keys plus
+`findItemIndexCallback` preserve reveal state when filters change row indices;
+keep the ledger `PageStorageKey` and compact day-group date keys. This is entry
+and state preservation, without continuous reordering/exit animation. Detail
+uses `PollarReveal` by `selected.id`, immediately updating its child and privacy
+state without an outgoing copy or `AnimatedSwitcher`.
 
 Implementation-ready design language for a **personal-finance product** (Flutter desktop + mobile), reconstructed as a web design system: CSS tokens, React primitives and two full UI-kit recreations.
 

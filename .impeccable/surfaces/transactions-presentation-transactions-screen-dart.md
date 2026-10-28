@@ -38,6 +38,30 @@ Expense filters include card purchases and transfer filters include statement
 payments. Canceling retains history. Existing reveal motion and reduced-motion
 support stay in place; no new financial calculation is introduced.
 
+## Implemented arrival and state
+
+The screen State keeps only IDs of rows already built, never financial data,
+outgoing row widgets or retained frames. A newly built identity can enter with
+bounded `PollarReveal`; filtering, returning to the branch and changing layout
+do not replay an identity already built during that State's lifetime. Desktop
+ID keys and an ID-to-index `findItemIndexCallback` preserve reveal state when
+filtering changes indices. The desktop ledger has a `PageStorageKey`; compact
+day headings and groups have date keys. Entry plus state preservation does not
+promise continuous reorder or exit animation.
+
+The contextual panel reveals by `selected.id`, immediately replacing its child
+and applying privacy. There is no AnimatedSwitcher, outgoing detail copy or
+financial snapshot. Theme/privacy rebuilds do not replay unchanged identities;
+reduced motion, accessible navigation and inactive-branch tickers cut effects.
+
+## Verification boundary
+
+Widget coverage checks first arrival, filtering/index changes, branch return,
+responsive layout, immediate detail updates and privacy. Navigation goldens
+include compact/wide, dark theme, reduced motion and 2× text. These checks do
+not measure hardware FPS, physical back gestures or assistive-technology
+acceptance. Suite/build results belong in `docs/redesign-progress.md`.
+
 ## Unresolved decisions
 
 Bulk selection, split transactions, attachments and recurring entries belong to

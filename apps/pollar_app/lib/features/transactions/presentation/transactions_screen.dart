@@ -64,9 +64,13 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
   final _searchController = TextEditingController();
   final _controlsKey = GlobalKey(debugLabel: 'transaction-controls');
   final _searchKey = GlobalKey(debugLabel: 'transaction-search-field');
+  // Remember identities, never financial snapshots or outgoing row widgets.
+  final _seenRows = <String>{};
   var _filter = _TransactionFilter.all;
   var _query = '';
   String? _selectedId;
+
+  bool _arrives(String id) => _seenRows.add(id);
 
   @override
   void dispose() {
@@ -183,6 +187,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                     empty
                   else
                     _CompactLedger(
+                      arrives: _arrives,
                       items: filtered,
                       accounts: data.accounts,
                       privacyHidden: privacyHidden,
@@ -208,6 +213,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                             children: [
                               Expanded(
                                 child: _DesktopLedger(
+                                  arrives: _arrives,
                                   items: filtered,
                                   accounts: data.accounts,
                                   privacyHidden: privacyHidden,
@@ -225,16 +231,22 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                 const SizedBox(width: PollarSpacing.x5),
                                 SizedBox(
                                   width: PollarSizes.contextPanel,
-                                  child: _TransactionDetail(
-                                    transaction: selected,
-                                    accounts: data.accounts,
-                                    privacyHidden: privacyHidden,
-                                    onClose: () =>
-                                        setState(() => _selectedId = null),
-                                    onCancel: selected.isCanceled
-                                        ? null
-                                        : () =>
-                                              _confirmCancel(context, selected),
+                                  child: PollarReveal(
+                                    identity: selected.id,
+                                    onArrival: true,
+                                    child: _TransactionDetail(
+                                      transaction: selected,
+                                      accounts: data.accounts,
+                                      privacyHidden: privacyHidden,
+                                      onClose: () =>
+                                          setState(() => _selectedId = null),
+                                      onCancel: selected.isCanceled
+                                          ? null
+                                          : () => _confirmCancel(
+                                              context,
+                                              selected,
+                                            ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -555,6 +567,7 @@ class _FilterBar extends StatelessWidget {
 
 class _CompactLedger extends StatelessWidget {
   const _CompactLedger({
+    required this.arrives,
     required this.items,
     required this.accounts,
     required this.privacyHidden,
@@ -563,6 +576,7 @@ class _CompactLedger extends StatelessWidget {
   });
 
   final List<FinancialTransaction> items;
+  final bool Function(String id) arrives;
   final List<TransactionAccountReference> accounts;
   final bool privacyHidden;
   final ValueChanged<FinancialTransaction> onSelected;
@@ -581,6 +595,7 @@ class _CompactLedger extends StatelessWidget {
       children: [
         for (final entry in groups.entries) ...[
           Padding(
+            key: ValueKey('transaction-day-${entry.key}'),
             padding: const EdgeInsets.only(
               top: PollarSpacing.x3,
               bottom: PollarSpacing.x2,
@@ -591,6 +606,7 @@ class _CompactLedger extends StatelessWidget {
             ),
           ),
           PollarCard(
+            key: ValueKey(entry.key),
             variant: PollarCardVariant.flat,
             padding: PollarCardPadding.none,
             child: Column(
@@ -602,7 +618,7 @@ class _CompactLedger extends StatelessWidget {
                     key: ValueKey(item.id),
                     identity: item.id,
                     index: index,
-                    onArrival: true,
+                    onArrival: arrives(item.id),
                     child: _TransactionRow(
                       transaction: item,
                       accounts: accounts,
@@ -622,6 +638,7 @@ class _CompactLedger extends StatelessWidget {
 
 class _DesktopLedger extends StatelessWidget {
   const _DesktopLedger({
+    required this.arrives,
     required this.items,
     required this.accounts,
     required this.privacyHidden,
@@ -630,69 +647,77 @@ class _DesktopLedger extends StatelessWidget {
   });
 
   final List<FinancialTransaction> items;
+  final bool Function(String id) arrives;
   final List<TransactionAccountReference> accounts;
   final bool privacyHidden;
   final String? selectedId;
   final ValueChanged<FinancialTransaction> onSelected;
 
   @override
-  Widget build(BuildContext context) => PollarCard(
-    padding: PollarCardPadding.none,
-    child: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: PollarSpacing.x4,
-            vertical: PollarSpacing.x3,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'LANÇAMENTO',
+  Widget build(BuildContext context) {
+    final positions = <Key, int>{
+      for (final (index, item) in items.indexed) ValueKey(item.id): index,
+    };
+    return PollarCard(
+      padding: PollarCardPadding.none,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: PollarSpacing.x4,
+              vertical: PollarSpacing.x3,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'LANÇAMENTO',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: context.pollar.textMuted,
+                      letterSpacing: 0.6,
+                    ),
+                  ),
+                ),
+                Text(
+                  'VALOR E ESTADO',
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: context.pollar.textMuted,
                     letterSpacing: 0.6,
                   ),
                 ),
-              ),
-              Text(
-                'VALOR E ESTADO',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: context.pollar.textMuted,
-                  letterSpacing: 0.6,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Divider(height: 1, color: context.pollar.border),
-        Expanded(
-          child: ListView.separated(
-            itemCount: items.length,
-            separatorBuilder: (_, _) =>
-                Divider(height: 1, color: context.pollar.border),
-            itemBuilder: (context, index) {
-              final item = items[index];
-              return PollarReveal(
-                key: ValueKey(item.id),
-                identity: item.id,
-                index: index,
-                onArrival: true,
-                child: _TransactionRow(
-                  transaction: item,
-                  accounts: accounts,
-                  privacyHidden: privacyHidden,
-                  selected: selectedId == item.id,
-                  onTap: () => onSelected(item),
-                ),
-              );
-            },
+          Divider(height: 1, color: context.pollar.border),
+          Expanded(
+            child: ListView.separated(
+              key: const PageStorageKey('transaction-ledger-desktop'),
+              findItemIndexCallback: (key) => positions[key],
+              itemCount: items.length,
+              separatorBuilder: (_, _) =>
+                  Divider(height: 1, color: context.pollar.border),
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return PollarReveal(
+                  key: ValueKey(item.id),
+                  identity: item.id,
+                  index: index,
+                  onArrival: arrives(item.id),
+                  child: _TransactionRow(
+                    transaction: item,
+                    accounts: accounts,
+                    privacyHidden: privacyHidden,
+                    selected: selectedId == item.id,
+                    onTap: () => onSelected(item),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
 
 class _TransactionRow extends StatelessWidget {

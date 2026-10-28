@@ -8,6 +8,7 @@ import '../privacy/privacy_mode_provider.dart';
 import '../theme/pollar_theme.dart';
 import '../theme/theme_mode_provider.dart';
 import '../../shared/presentation/pollar_button.dart';
+import '../../shared/presentation/pollar_motion.dart';
 import 'navigation_preferences.dart';
 
 /// A top-level navigation destination in the app shell.
@@ -345,6 +346,9 @@ class _BottomNav extends StatelessWidget {
         border: Border(top: BorderSide(color: pollar.border)),
       ),
       child: NavigationBar(
+        animationDuration: PollarMotion.reduced(context)
+            ? Duration.zero
+            : PollarMotion.change,
         backgroundColor: pollar.canvas,
         indicatorColor: pollar.primarySoft,
         labelTextStyle: WidgetStateProperty.resolveWith(

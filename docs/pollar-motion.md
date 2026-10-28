@@ -30,17 +30,50 @@ repintura. O código usa o Flutter instalado, sem nova dependência de runtime.
 | Chart Morphing | Gráficos reais de fluxo mensal e saldo desenham a entrada e interpolam coordenadas entre séries/moedas. Uma troca durante o efeito parte da geometria corrente. Valores textuais e semânticos continuam exatos e atuais. |
 | Goal Celebration | Progresso da meta prioritária preenche suavemente. Uma meta que passa de incompleta para concluída após atualização bem-sucedida dispara um único acento radial finito, sem bloquear a tela. Não dispara ao abrir dados existentes, em falha de gravação ou em privacidade. |
 
-Navegação entre as cinco branches preserva o IndexedStack, seus navegadores,
-buscas e formulários. Algumas subrotas recebem transição curta; Apple conserva
-a página Material que fornece o gesto nativo de retorno. Botões rotulados têm
-resposta de pressão e as listas de Transações ganham entrada coordenada.
-A busca agora tem controller no estado da tela para preservar também o texto
-visível ao alternar entre desktop e celular.
+Botões rotulados têm resposta de pressão. A busca de Transações tem controller
+no estado da tela para preservar também o texto visível ao alternar entre
+desktop e celular.
 
 Recarregamentos da Visão geral e de Relatórios conservam os dados já exibidos
 durante o cálculo, permitindo animar a chegada dos novos resultados. Primeiro
 carregamento e erro mantêm seus estados existentes. Não se modifica fonte,
 serviço, regra financeira, armazenamento, identidade ou sincronização.
+
+## Navegação e listas
+
+`PollarBranchStack` preserva o `IndexedStack`, os navegadores de cada branch,
+buscas e formulários. Somente o destino atual entra horizontalmente, com
+deslocamento de até 24dp (`PollarMotion.branchTravel`, `branchTravelDp` no JSON),
+240ms e `easeOutCubic`. A ordem dos destinos determina o lado de entrada; RTL
+inverte esse lado. O shell recorta o movimento, com opacidade integral e sem
+tela anterior duplicada ou snapshot. Branches inativas ficam em `Offstage`,
+`ExcludeFocus`, `ExcludeSemantics` e `TickerMode` desabilitado. Movimento
+reduzido ou navegação acessível encerram o efeito imediatamente, inclusive no
+meio da entrada, sem remontar o conteúdo.
+
+O indicador da barra inferior usa animação nativa de 240ms, ou zero com
+movimento reduzido; o rail conserva seu comportamento nativo. Todas as subrotas
+de Mais, incluindo Dados e backup, Sincronização e Preferências, usam o
+`pollarMotionPage` existente. iOS/macOS conservam `MaterialPage` para o retorno
+nativo. Nas demais plataformas, a página customizada usa entrada de 240ms e
+retorno de 140ms, com fade e deslocamento de 0,025 da largura; movimento
+reduzido remove o efeito. Mapa de rotas e autenticação permanecem iguais.
+As cinco linhas de Mais usam `PollarReveal` por identidade, com índices de 0 a
+4; reconstruções ordinárias de tema ou privacidade não repetem a entrada.
+
+Transações guarda no `State` somente os IDs das linhas já construídas. Uma
+identidade construída pela primeira vez pode entrar com `PollarReveal` e
+stagger limitado; filtrar, retornar à branch e alternar entre desktop e compacto
+não reanimam IDs já construídos durante a vida desse estado. O conjunto não
+retém dados financeiros, widgets de saída ou quadros. No desktop, chaves por
+ID e `findItemIndexCallback`, com mapa de IDs para índices, preservam o estado
+do reveal quando o filtro muda a posição. A lista possui `PageStorageKey`;
+cabeçalhos e grupos compactos têm chaves de data. O padrão implementa entrada
+e preservação de estado, sem animação contínua de reordenação ou saída.
+
+O painel contextual usa `PollarReveal` com `identity: selected.id`. O filho e
+a privacidade refletem imediatamente a seleção e configuração atuais, sem
+`AnimatedSwitcher`, detalhe anterior retido ou cópia financeira de saída.
 
 ## Privacidade e acessibilidade
 
@@ -79,6 +112,14 @@ Testes verificam interrupções, semântica exata, privacidade, moeda, foco de
 teclado, atualização real do provedor financeiro, busca entre branches e meta
 com persistência pendente/falha/sucesso. Isso não mede FPS em aparelho físico
 nem equivale a um aceite de leitor de tela ou gesto iOS em hardware.
+
+O slice de navegação/listas acrescenta testes de branch, integração das rotas
+reais e ledger: direção/RTL, interrupção por movimento reduzido ou navegação
+acessível, retenção de estado, filtros, índices e detalhe com privacidade
+imediata. `test/goldens/navigation_motion_golden_test.dart` registra os quadros
+`navigation_390_light_frame40.png`, `navigation_1440_dark_frame40.png`,
+`navigation_390_dark_reduced.png` e `navigation_320_dark_2x_frame40.png`.
+Resultados de suíte, análise e build ficam em `docs/redesign-progress.md`.
 
 O refinamento de crédito acrescenta cobertura de contraste em dois temas,
 flip por teclado com restauração do foco, privacidade durante o flip, shuttle

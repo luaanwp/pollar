@@ -109,6 +109,7 @@
     "feedbackMs": 140,
     "changeMs": 240,
     "focalMs": 360,
+    "branchTravelDp": 24,
     "celebrationMs": 700,
     "staggerStepMs": 20,
     "staggerMaxIndex": 5,

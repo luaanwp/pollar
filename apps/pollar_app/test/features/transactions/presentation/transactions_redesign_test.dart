@@ -15,6 +15,7 @@ import 'package:pollar_app/main.dart';
 import 'package:pollar_app/shared/presentation/money_text.dart';
 import 'package:pollar_app/shared/presentation/privacy_amount.dart';
 import 'package:pollar_app/shared/presentation/transaction_tile.dart';
+import 'package:pollar_app/shared/presentation/pollar_motion.dart';
 
 void main() {
   final today = DateTime(2026, 10, 23);
@@ -176,6 +177,77 @@ void main() {
     expect(tester.widget<TextFormField>(search()).controller!.text, isEmpty);
     expect(find.text('Despesa cancelada'), findsOneWidget);
   });
+
+  testWidgets(
+    'desktop filtering preserves surviving row state at a new index',
+    (tester) async {
+      await mount(tester, size: const Size(1440, 900));
+      final row = find.byKey(const ValueKey('expense'));
+      final before = tester.state(row);
+      await type(tester, 'expense', 'Despesas');
+      expect(tester.state(row), same(before));
+      await type(tester, 'all', 'Todas');
+      expect(tester.state(row), same(before));
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('returning filtered rows do not replay their arrival', (
+    tester,
+  ) async {
+    await mount(tester, size: const Size(1440, 900));
+    await type(tester, 'expense', 'Despesas');
+    expect(find.text('Salário'), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('filter-all')));
+    await tester.pump();
+    final row = find.byKey(const ValueKey('income'));
+    final transform = find
+        .descendant(of: row, matching: find.byType(Transform))
+        .first;
+    expect(tester.widget<Transform>(transform).transform.getTranslation().y, 0);
+    await tester.pumpAndSettle();
+    expect(find.text('Salário'), findsOneWidget);
+  });
+
+  testWidgets(
+    'a changing detail reveals only the current selection and respects privacy immediately',
+    (tester) async {
+      final container = await mount(
+        tester,
+        size: const Size(1440, 900),
+        items: [
+          movement('a', 'Primeira', TransactionType.expense, minor: 12345),
+          movement('b', 'Segunda', TransactionType.cardPurchase, minor: 67890),
+        ],
+      );
+      await tester.tap(find.text('Primeira'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 60));
+      await tester.tap(find.text('Segunda'));
+      await tester.pump();
+      final panel = find.ancestor(
+        of: find.text('Detalhes da transação'),
+        matching: find.byType(PollarReveal),
+      );
+      expect(
+        find.descendant(of: panel, matching: find.text('Primeira')),
+        findsNothing,
+      );
+      expect(
+        find.descendant(of: panel, matching: find.text('Segunda')),
+        findsOneWidget,
+      );
+      final amount = tester.widget<MoneyText>(
+        find.descendant(of: panel, matching: find.byType(MoneyText)),
+      );
+      expect(amount.money.minorUnits.abs(), 67890);
+      container.read(privacyModeProvider.notifier).set(true);
+      await tester.pump();
+      expect(find.byType(MoneyText), findsNothing);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets(
     'available width selects modal or panel and excludes filtered details',

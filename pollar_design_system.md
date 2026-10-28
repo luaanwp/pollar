@@ -166,6 +166,22 @@ financial rules remain binding. See `docs/pollar-motion.md` for exact scope and
 verification limits; this records the implemented credit/statement refinement,
 without claiming completion of the remaining redesign phases.
 
+Branch arrival uses `PollarBranchStack`: only the current destination moves up
+to 24dp (`PollarMotion.branchTravel`, JSON `branchTravelDp`) over 240ms with
+`easeOutCubic`, according to destination order and reversed in RTL. The shell
+clips the movement and keeps full opacity. Its IndexedStack and branch
+navigators stay mounted; inactive branches are offstage and excluded from focus,
+semantics and tickers. No outgoing screen or financial snapshot is retained.
+Reduced motion or accessible navigation ends an active arrival immediately
+without remounting the branch. The bottom indicator keeps its native animation
+at 240ms or zero; the rail keeps native behavior.
+
+The five More rows use identity-based `PollarReveal`, with indices 0–4 and no
+replay on ordinary theme/privacy rebuilds. Data, Sync and Preferences now use
+the same `pollarMotionPage` as the existing More subroutes: MaterialPage on
+iOS/macOS for native back behavior, existing custom transition elsewhere.
+Route paths and authentication behavior remain unchanged.
+
 ## 9. Core components
 
 ### Buttons
@@ -201,6 +217,16 @@ Desktop tables support sorting, filtering, column selection, row selection, keyb
 Mobile converts table rows into structured list items; do not add horizontal scrolling for primary transaction experiences.
 
 Transaction row anatomy: icon/category, payee/title, category/account metadata, date/status, amount, and optional installment label. Preserve a consistent alignment column for amounts.
+
+The Flutter transaction ledger remembers only IDs of rows already built during
+the screen state's lifetime. Filtering, branch return and responsive layout
+changes do not replay arrival for those IDs; newly built identities can reveal.
+Desktop ID keys and `findItemIndexCallback` preserve reveal state as filtering
+changes indices, with a `PageStorageKey` for the ledger. Compact day groups have
+date keys. This is entry motion with state preservation, without continuous
+reordering or exit animation. The contextual panel reveals by `selected.id`
+while immediately presenting the current child and privacy state; it retains
+no outgoing detail copy or financial frames.
 
 ### Status badges
 
@@ -262,7 +288,7 @@ The tonal field uses a 6:4 balance/projection split at 880px of available width 
 
 Monthly bars animate geometry over 360ms with `PollarMotion.focal` and `easeOutCubic`; no synthetic financial values or historical series are introduced. Privacy removes all proportions immediately, leaving neutral tracks. Reduced motion renders the final fractions without a Tween. Recent transactions use `PollarReveal` keyed by transaction identity, with stagger bounded to five 20ms steps; ordinary theme/privacy rebuilds do not replay arrival.
 
-The expanded Overview has focused widget coverage for proportions, zero totals, privacy, reduced motion, exact amounts and reflow. Contrast checks sample 21 positions along the tonal field per theme. Flutter goldens cover compact/wide layouts, both themes, privacy and enlarged text. The final validation reports 380 passing tests, clean analysis and a completed Windows Release build. These checks and an opened executable do not establish physical-device, assistive-technology or FPS acceptance.
+The expanded Overview has focused widget coverage for proportions, zero totals, privacy, reduced motion, exact amounts and reflow. Contrast checks sample 21 positions along the tonal field per theme. Flutter goldens cover compact/wide layouts, both themes, privacy and enlarged text. Suite, analysis and build evidence is recorded in `docs/redesign-progress.md`. These checks and an opened executable do not establish physical-device, assistive-technology or FPS acceptance.
 
 ### Accounts listing
 
