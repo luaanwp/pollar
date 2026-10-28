@@ -234,7 +234,7 @@ Todos os caminhos são relativos à raiz real do repositório. Esta é uma previ
 1. **Foundations:** `pollar_design_tokens.json` → `pollar_colors.dart`/`pollar_typography.dart`/`pollar_theme.dart`; criar papéis de saldo e `PollarCard` sem borda, com legado como default. Definir amostra clara/escura no catálogo, contraste e fallback sólido. Atualizar regras conflitantes em `DESIGN.md` e no guia local. **Critério:** catálogo e componentes antigos mantêm aparência/semântica, novos papéis têm tokens documentados; fundamentos estáticos, com animação optativa posterior conforme o adendo de movimento.
 2. **Shell/navegação:** `app_shell.dart` com controle de rail 72/256, título sem duplicação e bottom nav preservada; não alterar mapa de rotas na primeira iteração. **Critério:** cinco destinos, subrotas e estado de cada branch continuam acessíveis por toque/teclado; privacidade/tema seguem globais.
 3. **Visão geral:** `overview_screen.dart` + `widgets/overview_*.dart`; saldo acima de CTA no mobile, resumo menos encaixotado e listas com hierarquia diferente. Não tocar cálculo de `overview_service.dart`/data source. **Critério:** confirmado, projetado, resultado, passivo e moeda reconciliam; primeira viewport mobile apresenta saldo e começo do contexto mensal.
-4. **Contas, cartões, transações:** migrar linhas e agrupamentos, manter operações e confirmação; testar ledger, sheet e painel.
+4. **Contas, cartões, transações e planejamento:** migrar linhas e agrupamentos, manter operações e confirmação; testar ledger, sheet e painel. No planejamento, compactar a posição mensal e antecipar agenda/orçamentos, preservando os quatro totais e as regras de recorrência.
 5. **Análises:** apenas gráficos com dados e critério real; tabela e máscara correspondentes.
 6. **Inteligência:** fase de produto **condicional**, fora do redesign puramente visual. Primeiro especificar fonte, cálculo determinístico, persistência de dispensa e estados; só então um insight útil. Não incluir frases de exemplo na UI sem dados.
 7. **Mobile:** lapidar composição e alcance; esta fase complementa a validação mobile feita em todas as anteriores, não a adia.
@@ -309,6 +309,16 @@ repetem a entrada ao retornar de filtros. Trata-se de continuidade e entrada,
 sem nova animação de saída ou interpolação contínua de reordenação. Rotas,
 regras financeiras e composição estática permanecem; movimento reduzido e
 privacidade continuam imediatos.
+
+O slice 4C aplica essa continuidade ao Planejamento: uma faixa sólida destaca
+o disponível no orçamento e reduz os três valores de apoio; agenda vem antes
+dos limites no compacto e compartilha a largura quando o container comporta.
+Seções planas, nomes completos e valores com quebra substituem as caixas
+repetidas. O progresso do orçamento usa geometria finita, com percentual,
+estado relativo e proporção removidos imediatamente em privacidade. Mês,
+moeda, recorrências, formulários e confirmações mantêm suas regras. Evidências
+e limites de validação estão em `docs/redesign-progress.md`; a próxima fase
+é Análises/patrimônio.
 
 ## Limitações da auditoria
 

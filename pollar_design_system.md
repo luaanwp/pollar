@@ -2,7 +2,7 @@
 
 Implementation-ready design language for Flutter desktop and mobile applications. This file is the canonical human-readable specification. Machine-readable values live in `pollar_design_tokens.json`.
 
-The implemented visual rules are also recorded in root `DESIGN.md`. Redesign phase 1 extends existing components explicitly. Phase 2 adds session-only sidebar collapse, a subordinate route context in the utility bar, and grouped More rows. Phase 3 migrates Overview to a focal confirmed balance, supporting monthly result and flat evidence lists, with the action after the summaries on stacked layouts. Its subsequent visual expansion uses a full-content-width static teal tonal field, a 48/40px confirmed balance and comparison bars for existing projected monthly totals. Phase 4A migrates Accounts and Credit Cards to flat account rows and motion-preserving credit cards. Phase 4B migrates Transactions with adaptive search/type controls, complete rows and detail presentation based on available width; Planning remains phase 4C. Financial behavior stays unchanged. Execution evidence and remaining validation are recorded in `docs/redesign-progress.md`.
+The implemented visual rules are also recorded in root `DESIGN.md`. Redesign phase 1 extends existing components explicitly. Phase 2 adds session-only sidebar collapse, a subordinate route context in the utility bar, and grouped More rows. Phase 3 migrates Overview to a focal confirmed balance, supporting monthly result and flat evidence lists, with the action after the summaries on stacked layouts. Its subsequent visual expansion uses a full-content-width static teal tonal field, a 48/40px confirmed balance and comparison bars for existing projected monthly totals. Phase 4A migrates Accounts and Credit Cards to flat account rows and motion-preserving credit cards. Phase 4B migrates Transactions with adaptive search/type controls, complete rows and detail presentation based on available width. Phase 4C migrates Planning to one solid financial band followed by agenda-first operational groups, complete figures and local-width reflow. Financial behavior stays unchanged. Execution evidence and remaining validation are recorded in `docs/redesign-progress.md`.
 
 The migrated transaction ledger combines search and type, exposes the filtered count and a single clear action. Type chips require 960px of local width and text scale up to 1.3; narrower layouts use a labeled native selector with content-driven item height. Large text, local width below 600px or height below 500px scroll controls with the day-grouped flat list while preserving search focus. Complete descriptions, metadata and exact amounts reflow. A 360px detail panel requires 1020px after rail/gutters (640px ledger + 20px gap); otherwise details use the root modal. Both observe privacy live and reserve amount geometry. Cancellation preserves history and confirmation; expense filters still include card purchases, transfer filters include statement payments. Existing reveal motion and reduced-motion behavior remain.
 
@@ -338,6 +338,48 @@ include `accounts_390x900.png`, `accounts_credit_back_390.png`,
 `statement_390_2x.png` and `statement_320_130pct.png`. Final suite, analysis and
 build status belongs in `docs/redesign-progress.md`; these renders and simulated
 inputs do not establish hardware, assistive-technology or FPS acceptance.
+
+### Planning bands
+
+Month and currency lead into one solid `financialSurface` band. “Disponível no
+orçamento” keeps the legacy 34px `amountHero`; Total orçado, Gasto registrado and
+Compromissos de saída use 16px. These are the four existing figures, with no new
+financial calculation. The band is horizontal only at 820px of local width and
+text up to 1.3×. Otherwise available leads; the first two supporting figures
+share a row only at 280px locally and text up to 1.3×. Actions follow the band
+and use adaptive height.
+
+Agenda precedes category budgets on stacked layouts. They share a 3:2 row only
+at 960px of available content width and text up to 1.3×. Subscriptions, local
+reminders and plan management follow. Operational sections use Semantics
+containers, whitespace and row dividers, without outer cards or borders.
+Agenda rows preserve full dates, names, kinds and signed amounts. Amounts move
+under identity below 520px locally or above 1.3× text; the date column is 48px
+normally and 64px above 1.3×. All monetary figures wrap within bounded width and
+reserve visible/hidden geometry, including subscription totals.
+
+Budget rows explicitly pair “Gasto registrado” and “Limite”, stacking below
+280px locally or above 1.3× text. Visible percentages and the exact current
+status remain textual evidence. `_BudgetUsage` animates only geometry for
+360ms with `PollarMotion.focal` and `easeOutCubic`; privacy immediately discards
+the transition and relative state, leaving a zero-fill track, “—”, neutral
+“Uso oculto” badge and hidden-use semantics. Reduced motion renders the final
+fraction statically. Available alone opts into actual-state digit rolling;
+no financial intermediate values are generated.
+
+Section headers stack below 280px locally, below 480px when a trailing amount
+exists, or above 1.3× text. Reminders stack below 600px and management below
+560px, also above 1.3× text. Section, management and confirmation buttons use
+adaptive height. Month/currency selection, recoverable pause and forms retain
+their existing behavior; projections remain separate from posted transactions.
+
+Reference captures in `apps/pollar_app/test/goldens/` include
+`planning_390x844.png`, `planning_1200x900.png`, `planning_1200_dark.png`,
+`planning_390_private.png`, `planning_390_budgets_private_dark.png`,
+`planning_640_long_130.png`, `planning_320_long_budgets_200.png` and
+`planning_390_empty.png`. These cover compact/wide, both themes, privacy,
+empty states, long values and enlarged text. Final suite, analysis, build and
+runtime evidence belongs in `docs/redesign-progress.md`.
 
 ## 12. Accessibility checklist
 

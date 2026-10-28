@@ -27,6 +27,7 @@ repintura. O código usa o Flutter instalado, sem nova dependência de runtime.
 | Shared Element Morph | Cartão de crédito se transforma no espaço da fatura existente ao abrir/voltar. Os dois extremos optam por `creditIdentity: true`: o shuttle intermediário contém somente azul sólido e ícone de primeiro plano, sem cópia de saldos que possa sobreviver à privacidade. O padrão menta da biblioteca e do catálogo permanece; movimento reduzido remove o `Hero`. |
 | Interactive 3D Cards | Cartões ativos inclinam com mouse/toque, sem capturar a rolagem. Ações textuais explícitas viram a face; o verso mostra dívida inicial, limite e ciclo já cadastrados. A face oculta não recebe foco, toque ou semântica; os `FocusNode` existentes passam pelo `PollarButton.focusNode` optativo e restauram o foco à ação visível. |
 | Limite utilizado da fatura | O preenchimento anima somente geometria por 360ms (`PollarMotion.focal`). Privacidade remove imediatamente a proporção, inclusive durante a transição, preserva trilho neutro de tamanho fixo e anuncia limite oculto. Movimento reduzido pinta a proporção final sem `Tween`. Valores e percentual semântico permanecem atuais, sem quantias intermediárias. |
+| Planejamento: disponível e uso do orçamento | “Disponível no orçamento” opta por `PrivacyAmount.animateChanges`, com os estados reais anterior/atual e semântica exata atual. `_BudgetUsage` anima somente a geometria por 360ms (`PollarMotion.focal`, `easeOutCubic`); percentual e estado textuais permanecem atuais. Privacidade descarta imediatamente a animação e a proporção, conserva trilho com preenchimento zero, substitui percentual por “—” e estado relativo por “Uso oculto” neutro, com semântica de uso oculto. Movimento reduzido usa a geometria final estática. |
 | Chart Morphing | Gráficos reais de fluxo mensal e saldo desenham a entrada e interpolam coordenadas entre séries/moedas. Uma troca durante o efeito parte da geometria corrente. Valores textuais e semânticos continuam exatos e atuais. |
 | Goal Celebration | Progresso da meta prioritária preenche suavemente. Uma meta que passa de incompleta para concluída após atualização bem-sucedida dispara um único acento radial finito, sem bloquear a tela. Não dispara ao abrir dados existentes, em falha de gravação ou em privacidade. |
 
@@ -95,6 +96,20 @@ gradiente ou marca bancária, nem substitui a abertura teal 48/40px da Visão ge
 - Trocas de moeda não rolam dígitos de uma moeda para outra.
 
 ## Amostra isolada e limites
+
+O slice 4C de Planejamento conserva sua única faixa `financialSurface` sólida
+e os papéis de 34px para disponível e 16px para apoios; não anima a superfície.
+Os quatro valores da posição e as regras de mês, moeda, pausa e formulários
+permanecem os existentes. Todos os valores monetários usam largura limitada,
+quebra e reserva de geometria entre valor e máscara. O disponível adota os
+fallbacks já implementados para privacidade, quebra e movimento reduzido;
+nenhuma quantia intermediária é calculada.
+
+Testes focados de Planejamento cobrem privacidade durante a transição de uso,
+saída estática reduzida e leitura exata, além do reflow e dos fluxos existentes.
+Capturas `planning_*` em `apps/pollar_app/test/goldens/` incluem 320/390/640/1200,
+claro/escuro, privacidade, valores longos e texto ampliado. Resultados finais de
+suíte, análise, build e runtime ficam em `docs/redesign-progress.md`.
 
 `tool/motion_catalog.dart` abre uma amostra explicitamente demonstrativa, sem
 perfil, autenticação ou banco. A partir de `apps/pollar_app`:

@@ -385,12 +385,48 @@ matter preservado e sem criar sidecar novo.
 Essas checagens não são medição de FPS, sessão de leitor de tela ou validação
 de gesto de retorno em hardware Android/iOS.
 
+## Fase 4C — Planejamento
+
+A posição planejada passa a uma única faixa sólida `financialSurface`:
+disponível no orçamento em 34px e total orçado, gasto registrado e compromissos
+de saída em 16px. Os quatro valores e suas regras continuam iguais; o disponível
+não é apresentado como saldo bancário. As ações de criação seguem essa leitura.
+
+A agenda agora antecede os orçamentos no compacto e divide a largura com eles
+na proporção 3:2 somente com pelo menos 960px locais e texto até 1,3×. As demais
+seções usam faixas sem caixas repetidas, separadas por ritmo e divisores. Datas,
+tipos, nomes e quantias permanecem completos. A composição considera a largura
+real do container, inclusive com a rail aberta, e empilha controles e valores
+em texto ampliado. Botões de ação crescem conforme o conteúdo.
+
+O uso do orçamento desenha somente sua geometria em 360ms. O modo privacidade
+descarta esse tween, o percentual e o estado relativo ao limite imediatamente,
+deixando trilho neutro e “Uso oculto”, sem proporção na semântica. Movimento
+reduzido/navegação acessível mostram a fração final. Os valores usam quebra
+limitada pela largura e reserva de geometria; o disponível pode rolar entre
+estados reais pelo componente compartilhado. Não há novos cálculos, regras de
+recorrência, movimentos automáticos nem notificações do sistema.
+
+Dez testes funcionais e seis goldens novos cobrem agenda na primeira viewport,
+composição por largura local, privacidade no meio do efeito, movimento reduzido,
+nomes/quantias extensos, texto 1,3×/2×, moeda, período e estado vazio. A suíte
+completa terminou com **437 testes passando**, análise estática sem problemas.
+As capturas existentes dos fluxos de formulário, gestão e confirmação também
+foram atualizadas; suas operações e persistência não foram modificadas. Build
+Windows Release com a configuração remota concluído e executável aberto, com
+janela respondendo após o lançamento separado do terminal.
+
+Duas inspeções visuais e detector final sem achados. Revisão independente:
+**ship**, sem defeitos materiais; perfil alternativo em agente fresco. Isso
+não equivale a validação física Android/iOS, leitor de tela ou medição de FPS.
+
 ## Sequência restante
 
 Dashboard, cartões/faturas e continuidade de navegação/listas receberam as
 passagens priorizadas. A sequência retoma agora as telas pendentes do plano.
 
-4C. Planejamento: hierarquia e reflow de agenda/compromissos, preservando regras.
+O slice 4C de Planejamento também está concluído. A próxima etapa é Análises.
+
 5. Análises/patrimônio: perguntas, critérios, valores e alternativas textuais.
 6. Inteligência: fase condicional de produto, **não incluída** no redesign
    visual sem definição de dados e regras.

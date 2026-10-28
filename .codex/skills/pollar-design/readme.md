@@ -125,7 +125,7 @@ the root modal, with a bounded scrolling viewport on desktop. Large text,
 short windows and narrow containers scroll controls with the list without
 losing search focus. Privacy remains reactive in an open modal and reserves
 amount geometry. Despesas includes card purchases; Transferências includes
-statement payments. Canceling preserves history. Planning remains phase 4C.
+statement payments. Canceling preserves history.
 
 Transaction arrival remembers only IDs of rows already built in the current
 screen State, never financial data, outgoing widgets or frames. Filter/return/
@@ -135,6 +135,34 @@ keep the ledger `PageStorageKey` and compact day-group date keys. This is entry
 and state preservation, without continuous reordering/exit animation. Detail
 uses `PollarReveal` by `selected.id`, immediately updating its child and privacy
 state without an outgoing copy or `AnimatedSwitcher`.
+
+Phase 4C migrates Planning inside the existing world. One solid
+`financialSurface` band leads with “Disponível no orçamento” at legacy
+`amountHero` 34px; Total orçado, Gasto registrado and Compromissos de saída use
+16px. Keep these four existing figures, without new financial calculations or
+the Overview's gradient/48px role. Position goes horizontal at 820px locally
+and text up to 1.3×; otherwise available leads and the first two supports pair
+only at 280px locally and text up to 1.3×. Adaptive-height actions follow it.
+
+Agenda precedes compact category budgets. Their desktop 3:2 row requires 960px
+of available content width and text up to 1.3×. Subscriptions, local reminders
+and management follow as Semantics groups with whitespace/dividers, without
+outer cards or borders. Agenda keeps full dates, names, kinds and signed
+amounts; values move under identity below 520px locally or above 1.3× text.
+Date width is 48px normally, 64px above 1.3×. All amounts wrap in bounded width
+and reserve privacy geometry. Available alone opts into real-state rolling.
+
+Budgets label “Gasto registrado” and “Limite”, stacking below 280px locally or
+above 1.3×. Keep exact current percentages and status labels. `_BudgetUsage`
+animates geometry for 360ms with the existing `easeOutCubic`; privacy immediately
+replaces the proportion and relative status with a zero-fill track, “—”, neutral
+“Uso oculto” and hidden-use semantics. Reduced motion is static. Section headers
+stack below 280px, below 480px with a trailing amount, or above 1.3× text;
+reminders below 600px and management below 560px also reflow with large text.
+Section, management and confirmation buttons use adaptive height. Forms,
+pause/resume, month and currency rules stay unchanged. Reference `planning_*`
+goldens cover 320/390/640/1200 widths, both themes, privacy, long values and
+large text; final validation/runtime evidence lives in `docs/redesign-progress.md`.
 
 Implementation-ready design language for a **personal-finance product** (Flutter desktop + mobile), reconstructed as a web design system: CSS tokens, React primitives and two full UI-kit recreations.
 

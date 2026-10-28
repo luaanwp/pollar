@@ -7,6 +7,7 @@ import 'package:pollar_app/features/planning/presentation/planning_controller.da
 import 'package:pollar_app/features/planning/presentation/planning_screen.dart';
 import 'package:pollar_app/features/planning/data/in_memory_planning_repository.dart';
 import 'package:pollar_app/features/planning/domain/budget.dart';
+import 'package:pollar_app/shared/presentation/money_text.dart';
 
 import '../../../support/planning_fixture.dart';
 
@@ -16,7 +17,17 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Planejamento de Setembro 2026'), findsOneWidget);
-    expect(find.text('R\$ 1.000,00'), findsWidgets);
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is MoneyText && widget.money.minorUnits == 100000,
+      ),
+      findsWidgets,
+    );
+    await tester.scrollUntilVisible(
+      find.text('Orçamentos por categoria'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('74%'), findsOneWidget);
     expect(find.text('90%'), findsOneWidget);
     expect(find.text('Aluguel'), findsWidgets);

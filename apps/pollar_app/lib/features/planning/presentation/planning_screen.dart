@@ -1,7 +1,7 @@
 // THESIS: O mês é uma sequência de faixas reconciliadas; recusa separar orçamento, agenda e lembretes em destinos sem contexto comum.
 // OWN-WORLD: Canvas planos, bordas finas, teal só em ações, estados por texto e ícone e valores exatos em algarismos tabulares.
 // STORY: A pessoa lê a capacidade do mês, confere limites por categoria, percorre vencimentos e cadastra uma nova regra ou orçamento.
-// FIRST VIEWPORT: Cabeçalho mensal e posição planejada lideram; orçamento e agenda começam logo abaixo, com assinaturas e lembretes na continuidade.
+// FIRST VIEWPORT: Mês e disponível no orçamento lideram uma faixa compacta; agenda vem primeiro no celular e divide a largura com limites no desktop.
 // FORM: “Faixas de planejamento”, sexta estrutura da lista orientada pelo seed 1f953018.
 // FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 
@@ -19,6 +19,7 @@ import '../../../shared/presentation/pollar_button.dart';
 import '../../../shared/presentation/pollar_card.dart';
 import '../../../shared/presentation/pollar_form_controls.dart';
 import '../../../shared/presentation/pollar_modal.dart';
+import '../../../shared/presentation/pollar_motion.dart';
 import '../../../shared/presentation/pollar_states.dart';
 import '../../../shared/presentation/pollar_toast.dart';
 import '../../../shared/presentation/privacy_amount.dart';
@@ -79,17 +80,20 @@ class _PlanningContent extends ConsumerWidget {
               onCurrencyChanged: ref
                   .read(planningProvider.notifier)
                   .selectCurrency,
+            ),
+            const SizedBox(height: PollarSpacing.x5),
+            _PositionBand(snapshot: snapshot, privacyHidden: privacyHidden),
+            const SizedBox(height: PollarSpacing.x4),
+            _PlanningActions(
               onNewBudget: () => _newBudget(context, ref),
               onNewRule: state.accounts.isEmpty
                   ? null
                   : () => _newRule(context, ref),
             ),
-            const SizedBox(height: PollarSpacing.x5),
-            _PositionBand(snapshot: snapshot, privacyHidden: privacyHidden),
-            const SizedBox(height: PollarSpacing.x4),
+            const SizedBox(height: PollarSpacing.x6),
             LayoutBuilder(
               builder: (context, constraints) {
-                final sideBySide = constraints.maxWidth >= 860 && !reflow;
+                final sideBySide = constraints.maxWidth >= 960 && !reflow;
                 final budgets = _BudgetBand(
                   snapshot: snapshot,
                   privacyHidden: privacyHidden,
@@ -105,30 +109,30 @@ class _PlanningContent extends ConsumerWidget {
                 if (!sideBySide) {
                   return Column(
                     children: [
-                      budgets,
-                      const SizedBox(height: PollarSpacing.x4),
                       agenda,
+                      const SizedBox(height: PollarSpacing.x6),
+                      budgets,
                     ],
                   );
                 }
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(child: budgets),
-                    const SizedBox(width: PollarSpacing.x4),
-                    Expanded(child: agenda),
+                    Expanded(flex: 3, child: agenda),
+                    const SizedBox(width: PollarSpacing.x6),
+                    Expanded(flex: 2, child: budgets),
                   ],
                 );
               },
             ),
-            const SizedBox(height: PollarSpacing.x4),
+            const SizedBox(height: PollarSpacing.x6),
             _SubscriptionBand(
               subscriptions: snapshot.subscriptions,
               privacyHidden: privacyHidden,
             ),
-            const SizedBox(height: PollarSpacing.x4),
+            const SizedBox(height: PollarSpacing.x6),
             _ReminderBand(reminders: snapshot.reminders),
-            const SizedBox(height: PollarSpacing.x4),
+            const SizedBox(height: PollarSpacing.x6),
             _PlanManagementBand(
               budgets: state.budgets
                   .where(
@@ -271,11 +275,13 @@ class _PlanningContent extends ConsumerWidget {
         actions: (modalContext) => [
           PollarButton(
             label: 'Cancelar',
+            adaptiveHeight: true,
             variant: PollarButtonVariant.ghost,
             onPressed: () => Navigator.of(modalContext).pop(false),
           ),
           PollarButton(
             label: action,
+            adaptiveHeight: true,
             onPressed: () => Navigator.of(modalContext).pop(true),
           ),
         ],
@@ -290,8 +296,6 @@ class _PlanningHeader extends StatelessWidget {
     required this.onPrevious,
     required this.onNext,
     required this.onCurrencyChanged,
-    required this.onNewBudget,
-    required this.onNewRule,
   });
 
   final PlanningState state;
@@ -299,8 +303,6 @@ class _PlanningHeader extends StatelessWidget {
   final VoidCallback onPrevious;
   final VoidCallback onNext;
   final ValueChanged<Currency> onCurrencyChanged;
-  final VoidCallback onNewBudget;
-  final VoidCallback? onNewRule;
 
   @override
   Widget build(BuildContext context) {
@@ -312,12 +314,6 @@ class _PlanningHeader extends StatelessWidget {
         Text(
           'Planejamento de $title',
           style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        const SizedBox(height: PollarSpacing.x1),
-        Text(
-          'Limites, compromissos e lembretes calculados a partir dos seus dados.',
-          style: Theme.of(context).textTheme.bodyMedium
-              ?.copyWith(color: context.pollar.textSecondary),
         ),
       ],
     );
@@ -339,23 +335,6 @@ class _PlanningHeader extends StatelessWidget {
         ),
       ],
     );
-    final actions = Wrap(
-      spacing: PollarSpacing.x2,
-      runSpacing: PollarSpacing.x2,
-      children: [
-        PollarButton(
-          label: 'Novo orçamento',
-          leadingIcon: LucideIcons.plus,
-          variant: PollarButtonVariant.secondary,
-          onPressed: onNewBudget,
-        ),
-        PollarButton(
-          label: 'Novo compromisso',
-          leadingIcon: LucideIcons.repeat2,
-          onPressed: onNewRule,
-        ),
-      ],
-    );
     final currency = state.currencies.length > 1
         ? SizedBox(
             width: compact ? double.infinity : 132,
@@ -372,7 +351,7 @@ class _PlanningHeader extends StatelessWidget {
             ),
           )
         : const SizedBox.shrink();
-    if (compact) {
+    if (compact || MediaQuery.textScalerOf(context).scale(1) > 1.3) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -381,12 +360,10 @@ class _PlanningHeader extends StatelessWidget {
           Row(
             children: [
               period,
-              const Spacer(),
+              const SizedBox(width: PollarSpacing.x4),
               if (state.currencies.length > 1) Expanded(child: currency),
             ],
           ),
-          const SizedBox(height: PollarSpacing.x3),
-          actions,
         ],
       );
     }
@@ -399,11 +376,40 @@ class _PlanningHeader extends StatelessWidget {
             period,
           ],
         ),
-        const SizedBox(height: PollarSpacing.x3),
-        Row(children: [currency, const Spacer(), actions]),
+        if (state.currencies.length > 1) ...[
+          const SizedBox(height: PollarSpacing.x3),
+          Align(alignment: AlignmentDirectional.centerStart, child: currency),
+        ],
       ],
     );
   }
+}
+
+class _PlanningActions extends StatelessWidget {
+  const _PlanningActions({required this.onNewBudget, required this.onNewRule});
+  final VoidCallback onNewBudget;
+  final VoidCallback? onNewRule;
+
+  @override
+  Widget build(BuildContext context) => Wrap(
+    spacing: PollarSpacing.x2,
+    runSpacing: PollarSpacing.x2,
+    children: [
+      PollarButton(
+        label: 'Novo compromisso',
+        leadingIcon: LucideIcons.repeat2,
+        adaptiveHeight: true,
+        onPressed: onNewRule,
+      ),
+      PollarButton(
+        label: 'Novo orçamento',
+        leadingIcon: LucideIcons.plus,
+        variant: PollarButtonVariant.secondary,
+        adaptiveHeight: true,
+        onPressed: onNewBudget,
+      ),
+    ],
+  );
 }
 
 class _PositionBand extends StatelessWidget {
@@ -415,64 +421,90 @@ class _PositionBand extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final remaining = snapshot.totalBudgeted - snapshot.totalSpent;
-    final reflow = MediaQuery.textScalerOf(context).scale(1) > 1.3;
-    final heading = Text(
-      'Posição planejada',
-      style: Theme.of(context).textTheme.headlineSmall,
-    );
-    final status = StatusBadge(
-      label: '${snapshot.occurrences.length} compromissos',
-      icon: LucideIcons.calendarClock,
-      tone: PollarStatusTone.info,
-    );
     return PollarCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (reflow)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                heading,
-                const SizedBox(height: PollarSpacing.x2),
-                status,
-              ],
-            )
-          else
-            Row(
-              children: [
-                Expanded(child: heading),
-                status,
-              ],
+      variant: PollarCardVariant.financial,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final wide =
+              constraints.maxWidth >= 820 &&
+              MediaQuery.textScalerOf(context).scale(1) <= 1.3;
+          final available = _Metric(
+            label: 'Disponível no orçamento',
+            value: remaining,
+            hidden: privacyHidden,
+            focal: true,
+          );
+          final supporting = [
+            _Metric(
+              label: 'Total orçado',
+              value: snapshot.totalBudgeted,
+              hidden: privacyHidden,
             ),
-          const SizedBox(height: PollarSpacing.x4),
-          Wrap(
-            spacing: PollarSpacing.x8,
-            runSpacing: PollarSpacing.x4,
+            _Metric(
+              label: 'Gasto registrado',
+              value: snapshot.totalSpent,
+              hidden: privacyHidden,
+            ),
+            _Metric(
+              label: 'Compromissos de saída',
+              value: snapshot.recurringExpenses,
+              hidden: privacyHidden,
+            ),
+          ];
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _Metric(
-                label: 'Total orçado',
-                value: snapshot.totalBudgeted,
-                hidden: privacyHidden,
+              Text(
+                'Posição planejada',
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-              _Metric(
-                label: 'Gasto registrado',
-                value: snapshot.totalSpent,
-                hidden: privacyHidden,
-              ),
-              _Metric(
-                label: 'Disponível no orçamento',
-                value: remaining,
-                hidden: privacyHidden,
-              ),
-              _Metric(
-                label: 'Compromissos de saída',
-                value: snapshot.recurringExpenses,
-                hidden: privacyHidden,
-              ),
+              const SizedBox(height: PollarSpacing.x3),
+              if (wide)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(flex: 2, child: available),
+                    for (final metric in supporting) ...[
+                      const SizedBox(width: PollarSpacing.x4),
+                      Expanded(child: metric),
+                    ],
+                  ],
+                )
+              else ...[
+                available,
+                const SizedBox(height: PollarSpacing.x4),
+                LayoutBuilder(
+                  builder: (context, inner) {
+                    final pair =
+                        inner.maxWidth >= 280 &&
+                        MediaQuery.textScalerOf(context).scale(1) <= 1.3;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (pair)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(child: supporting[0]),
+                              const SizedBox(width: PollarSpacing.x3),
+                              Expanded(child: supporting[1]),
+                            ],
+                          )
+                        else ...[
+                          supporting[0],
+                          const SizedBox(height: PollarSpacing.x3),
+                          supporting[1],
+                        ],
+                        const SizedBox(height: PollarSpacing.x3),
+                        supporting[2],
+                      ],
+                    );
+                  },
+                ),
+              ],
             ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -483,35 +515,36 @@ class _Metric extends StatelessWidget {
     required this.label,
     required this.value,
     required this.hidden,
+    this.focal = false,
   });
 
   final String label;
   final Money value;
   final bool hidden;
+  final bool focal;
 
   @override
-  Widget build(BuildContext context) => ConstrainedBox(
-    constraints: BoxConstraints(
-      minWidth: MediaQuery.textScalerOf(context).scale(1) > 1.3 ? 260 : 170,
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall
-              ?.copyWith(color: context.pollar.textSecondary),
-        ),
-        const SizedBox(height: PollarSpacing.x1),
-        PrivacyAmount(
-          value,
-          hidden: hidden,
-          style: PollarTypography.amountHero,
-          semantic: MoneySemantic.neutral,
-          allowWrap: MediaQuery.textScalerOf(context).scale(1) > 1.3,
-        ),
-      ],
-    ),
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: Theme.of(context).textTheme.bodySmall
+            ?.copyWith(color: context.pollar.textSecondary),
+      ),
+      const SizedBox(height: PollarSpacing.x1),
+      PrivacyAmount(
+        value,
+        hidden: hidden,
+        style: focal
+            ? PollarTypography.amountHero
+            : PollarTypography.amountStandard,
+        semantic: MoneySemantic.neutral,
+        allowWrap: true,
+        reserveLayout: true,
+        animateChanges: focal,
+      ),
+    ],
   );
 }
 
@@ -527,7 +560,8 @@ class _BudgetBand extends StatelessWidget {
   final VoidCallback onCreate;
 
   @override
-  Widget build(BuildContext context) => PollarCard(
+  Widget build(BuildContext context) => Semantics(
+    container: true,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -570,64 +604,50 @@ class _BudgetRow extends StatelessWidget {
         : progress.alerting
         ? context.pollar.warning
         : context.pollar.primary;
-    final reflow = MediaQuery.textScalerOf(context).scale(1) > 1.3;
     return Semantics(
-      label:
-          '${progress.budget.category}, ${progress.percent} por cento utilizado',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (reflow) ...[
-            Text(
-              progress.budget.category,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: PollarSpacing.x2),
-            PrivacyAmount(
-              progress.spent,
-              hidden: hidden,
-              semantic: MoneySemantic.expense,
-            ),
-            const SizedBox(height: PollarSpacing.x1),
-            PrivacyAmount(
-              progress.budget.limit,
-              hidden: hidden,
-              semantic: MoneySemantic.neutral,
-            ),
-          ] else
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    progress.budget.category,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ),
-                PrivacyAmount(
-                  progress.spent,
-                  hidden: hidden,
-                  semantic: MoneySemantic.expense,
-                ),
-                Text(' / ', style: TextStyle(color: context.pollar.textMuted)),
-                PrivacyAmount(
-                  progress.budget.limit,
-                  hidden: hidden,
-                  semantic: MoneySemantic.neutral,
-                ),
-              ],
-            ),
-          const SizedBox(height: PollarSpacing.x2),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(PollarRadii.small),
-            child: LinearProgressIndicator(
-              minHeight: 8,
-              value: (progress.percent / 100).clamp(0, 1),
-              color: color,
-              backgroundColor: context.pollar.surfaceAlt,
-              semanticsLabel: 'Uso do orçamento',
-              semanticsValue: '${progress.percent}%',
-            ),
+          Text(
+            progress.budget.category,
+            style: Theme.of(context).textTheme.titleSmall,
           ),
+          const SizedBox(height: PollarSpacing.x2),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final spent = _Metric(
+                label: 'Gasto registrado',
+                value: progress.spent,
+                hidden: hidden,
+              );
+              final limit = _Metric(
+                label: 'Limite',
+                value: progress.budget.limit,
+                hidden: hidden,
+              );
+              if (constraints.maxWidth < 280 ||
+                  MediaQuery.textScalerOf(context).scale(1) > 1.3) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    spent,
+                    const SizedBox(height: PollarSpacing.x2),
+                    limit,
+                  ],
+                );
+              }
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: spent),
+                  const SizedBox(width: PollarSpacing.x3),
+                  Expanded(child: limit),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: PollarSpacing.x2),
+          _BudgetUsage(value: progress.percent, hidden: hidden, color: color),
           const SizedBox(height: PollarSpacing.x2),
           Wrap(
             alignment: WrapAlignment.spaceBetween,
@@ -635,15 +655,21 @@ class _BudgetRow extends StatelessWidget {
             runSpacing: PollarSpacing.x2,
             children: [
               StatusBadge(
-                label: progress.exceeded
+                label: hidden
+                    ? 'Uso oculto'
+                    : progress.exceeded
                     ? 'Limite excedido'
                     : progress.alerting
                     ? 'Próximo do limite'
                     : 'Dentro do limite',
-                icon: progress.exceeded || progress.alerting
+                icon: hidden
+                    ? LucideIcons.eyeOff
+                    : progress.exceeded || progress.alerting
                     ? LucideIcons.triangleAlert
                     : LucideIcons.circleCheck,
-                tone: progress.exceeded
+                tone: hidden
+                    ? PollarStatusTone.neutral
+                    : progress.exceeded
                     ? PollarStatusTone.danger
                     : progress.alerting
                     ? PollarStatusTone.warning
@@ -651,7 +677,7 @@ class _BudgetRow extends StatelessWidget {
                 compact: true,
               ),
               Text(
-                '${progress.percent}%',
+                hidden ? '—' : '${progress.percent}%',
                 style: PollarTypography.tabular(
                   Theme.of(context).textTheme.labelMedium!,
                 ),
@@ -660,6 +686,52 @@ class _BudgetRow extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Only geometry interpolates. Privacy discards the tween and its proportion.
+class _BudgetUsage extends StatelessWidget {
+  const _BudgetUsage({
+    required this.value,
+    required this.hidden,
+    required this.color,
+  });
+  final int value;
+  final bool hidden;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget track(double fraction) => ClipRRect(
+      borderRadius: BorderRadius.circular(PollarRadii.small),
+      child: LinearProgressIndicator(
+        minHeight: 8,
+        value: fraction,
+        color: color,
+        backgroundColor: context.pollar.border,
+      ),
+    );
+    if (hidden) {
+      return Semantics(
+        label: 'Uso do orçamento oculto pelo modo privacidade',
+        excludeSemantics: true,
+        child: track(0),
+      );
+    }
+    final fraction = (value / 100).clamp(0.0, 1.0);
+    return Semantics(
+      label: 'Uso do orçamento',
+      value: '$value%',
+      excludeSemantics: true,
+      child: PollarMotion.reduced(context)
+          ? track(fraction)
+          : TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: fraction),
+              duration: PollarMotion.focal,
+              curve: PollarMotion.curve,
+              builder: (context, value, _) => track(value),
+            ),
     );
   }
 }
@@ -676,7 +748,8 @@ class _AgendaBand extends StatelessWidget {
   final VoidCallback? onCreate;
 
   @override
-  Widget build(BuildContext context) => PollarCard(
+  Widget build(BuildContext context) => Semantics(
+    container: true,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -684,6 +757,11 @@ class _AgendaBand extends StatelessWidget {
           title: 'Agenda do mês',
           action: 'Adicionar',
           onAction: onCreate,
+        ),
+        Text(
+          '${occurrences.length} compromissos',
+          style: Theme.of(context).textTheme.bodySmall
+              ?.copyWith(color: context.pollar.textSecondary),
         ),
         const SizedBox(height: PollarSpacing.x4),
         if (occurrences.isEmpty)
@@ -716,69 +794,83 @@ class _OccurrenceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final income = occurrence.rule.kind == RecurringKind.income;
-    final reflow = MediaQuery.textScalerOf(context).scale(1) > 1.3;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: 44,
-          padding: const EdgeInsets.symmetric(vertical: PollarSpacing.x2),
-          decoration: BoxDecoration(
-            color: context.pollar.surfaceAlt,
-            borderRadius: BorderRadius.circular(PollarRadii.medium),
-          ),
-          child: Column(
-            children: [
-              Text(
-                '${occurrence.dueDate.day}',
-                style: PollarTypography.tabular(
-                  Theme.of(context).textTheme.titleMedium!,
-                ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.3;
+        final reflow = constraints.maxWidth < 520 || largeText;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: largeText ? 64 : 48,
+              padding: const EdgeInsets.symmetric(vertical: PollarSpacing.x2),
+              decoration: BoxDecoration(
+                color: context.pollar.surfaceAlt,
+                borderRadius: BorderRadius.circular(PollarRadii.medium),
               ),
-              Text(
-                DateFormat('MMM', 'pt_BR').format(occurrence.dueDate),
-                style: Theme.of(context).textTheme.bodySmall
-                    ?.copyWith(color: context.pollar.textSecondary),
+              child: Column(
+                children: [
+                  Text(
+                    '${occurrence.dueDate.day}',
+                    style: PollarTypography.tabular(
+                      Theme.of(context).textTheme.titleMedium!,
+                    ),
+                  ),
+                  Text(
+                    DateFormat('MMM', 'pt_BR').format(occurrence.dueDate),
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: context.pollar.textSecondary),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        const SizedBox(width: PollarSpacing.x3),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                occurrence.rule.description,
-                style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(width: PollarSpacing.x3),
+            Expanded(
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    occurrence.rule.description,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  Text(
+                    _kindLabel(occurrence.rule.kind),
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: context.pollar.textSecondary),
+                  ),
+                  if (reflow) ...[
+                    const SizedBox(height: PollarSpacing.x2),
+                    PrivacyAmount(
+                      income ? occurrence.rule.amount : -occurrence.rule.amount,
+                      hidden: hidden,
+                      showSign: true,
+                      colorBySign: true,
+                      allowWrap: true,
+                      reserveLayout: true,
+                    ),
+                  ],
+                ],
               ),
-              Text(
-                _kindLabel(occurrence.rule.kind),
-                style: Theme.of(context).textTheme.bodySmall
-                    ?.copyWith(color: context.pollar.textSecondary),
-              ),
-              if (reflow) ...[
-                const SizedBox(height: PollarSpacing.x2),
-                PrivacyAmount(
+            ),
+            if (!reflow) ...[
+              const SizedBox(width: PollarSpacing.x2),
+              Expanded(
+                flex: 2,
+                child: PrivacyAmount(
                   income ? occurrence.rule.amount : -occurrence.rule.amount,
                   hidden: hidden,
                   showSign: true,
                   colorBySign: true,
+                  allowWrap: true,
+                  reserveLayout: true,
+                  alignment: AlignmentDirectional.topEnd,
                 ),
-              ],
+              ),
             ],
-          ),
-        ),
-        if (!reflow) ...[
-          const SizedBox(width: PollarSpacing.x2),
-          PrivacyAmount(
-            income ? occurrence.rule.amount : -occurrence.rule.amount,
-            hidden: hidden,
-            showSign: true,
-            colorBySign: true,
-          ),
-        ],
-      ],
+          ],
+        );
+      },
     );
   }
 }
@@ -798,7 +890,8 @@ class _SubscriptionBand extends StatelessWidget {
       null,
       (sum, item) => sum == null ? item.rule.amount : sum + item.rule.amount,
     );
-    return PollarCard(
+    return Semantics(
+      container: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -810,6 +903,8 @@ class _SubscriptionBand extends StatelessWidget {
                     total,
                     hidden: privacyHidden,
                     semantic: MoneySemantic.expense,
+                    allowWrap: true,
+                    reserveLayout: true,
                   ),
           ),
           const SizedBox(height: PollarSpacing.x4),
@@ -820,49 +915,14 @@ class _SubscriptionBand extends StatelessWidget {
               message: 'Assinaturas ficam separadas para revelar o compromisso mensal contínuo.',
             )
           else
-            Wrap(
-              spacing: PollarSpacing.x3,
-              runSpacing: PollarSpacing.x3,
-              children: [
-                for (final item in subscriptions)
-                  Container(
-                    constraints: const BoxConstraints(minWidth: 210),
-                    padding: const EdgeInsets.all(PollarSpacing.x3),
-                    decoration: BoxDecoration(
-                      color: context.pollar.surfaceAlt,
-                      borderRadius: BorderRadius.circular(PollarRadii.medium),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              LucideIcons.repeat2,
-                              size: 18,
-                              color: context.pollar.primary,
-                            ),
-                            const SizedBox(width: PollarSpacing.x2),
-                            Expanded(
-                              child: Text(
-                                item.rule.description,
-                                style: Theme.of(context).textTheme.labelLarge,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: PollarSpacing.x2),
-                        PrivacyAmount(
-                          item.rule.amount,
-                          hidden: privacyHidden,
-                          semantic: MoneySemantic.expense,
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
+            for (var index = 0; index < subscriptions.length; index++) ...[
+              _OccurrenceRow(
+                occurrence: subscriptions[index],
+                hidden: privacyHidden,
+              ),
+              if (index != subscriptions.length - 1)
+                Divider(height: PollarSpacing.x5),
+            ],
         ],
       ),
     );
@@ -876,72 +936,80 @@ class _ReminderBand extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reflow = MediaQuery.textScalerOf(context).scale(1) > 1.3;
-    return PollarCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const _SectionHeader(title: 'Lembretes locais'),
-          const SizedBox(height: PollarSpacing.x2),
-          Text(
-            'As datas aparecem neste dispositivo. Nenhuma movimentação é criada sem sua confirmação.',
-            style: Theme.of(context).textTheme.bodyMedium
-                ?.copyWith(color: context.pollar.textSecondary),
-          ),
-          const SizedBox(height: PollarSpacing.x4),
-          if (reminders.isEmpty)
-            const _InlineEmpty(
-              icon: LucideIcons.bell,
-              title: 'Nenhuma data exige atenção',
-              message:
-                  'Os lembretes aparecem aqui ao entrar no prazo configurado.',
-            )
-          else
-            for (var index = 0; index < reminders.length; index++) ...[
-              Flex(
-                direction: reflow ? Axis.vertical : Axis.horizontal,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    reminders[index].overdue
-                        ? LucideIcons.circleAlert
-                        : LucideIcons.bellRing,
-                    size: 20,
-                    color: reminders[index].overdue
-                        ? context.pollar.danger
-                        : context.pollar.warning,
-                  ),
-                  SizedBox(
-                    width: reflow ? 0 : PollarSpacing.x3,
-                    height: reflow ? PollarSpacing.x2 : 0,
-                  ),
-                  if (reflow)
-                    Text(reminders[index].occurrence.rule.description)
-                  else
-                    Expanded(
-                      child: Text(reminders[index].occurrence.rule.description),
-                    ),
-                  if (reflow) const SizedBox(height: PollarSpacing.x2),
-                  StatusBadge(
-                    label: reminders[index].overdue
-                        ? 'Data passou há ${-reminders[index].daysUntilDue} dia(s)'
-                        : reminders[index].daysUntilDue == 0
-                        ? 'Data prevista hoje'
-                        : 'Em ${reminders[index].daysUntilDue} dia(s)',
-                    icon: reminders[index].overdue
-                        ? LucideIcons.circleAlert
-                        : LucideIcons.clock,
-                    tone: reminders[index].overdue
-                        ? PollarStatusTone.danger
-                        : PollarStatusTone.warning,
-                  ),
-                ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final reflow =
+            constraints.maxWidth < 600 ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.3;
+        return Semantics(
+          container: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const _SectionHeader(title: 'Lembretes locais'),
+              const SizedBox(height: PollarSpacing.x2),
+              Text(
+                'As datas aparecem neste dispositivo. Nenhuma movimentação é criada sem sua confirmação.',
+                style: Theme.of(context).textTheme.bodyMedium
+                    ?.copyWith(color: context.pollar.textSecondary),
               ),
-              if (index != reminders.length - 1)
-                Divider(height: PollarSpacing.x5),
+              const SizedBox(height: PollarSpacing.x4),
+              if (reminders.isEmpty)
+                const _InlineEmpty(
+                  icon: LucideIcons.bell,
+                  title: 'Nenhuma data exige atenção',
+                  message: 'Os lembretes aparecem aqui ao entrar no prazo configurado.',
+                )
+              else
+                for (var index = 0; index < reminders.length; index++) ...[
+                  Flex(
+                    direction: reflow ? Axis.vertical : Axis.horizontal,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        reminders[index].overdue
+                            ? LucideIcons.circleAlert
+                            : LucideIcons.bellRing,
+                        size: 20,
+                        color: reminders[index].overdue
+                            ? context.pollar.danger
+                            : context.pollar.warning,
+                      ),
+                      SizedBox(
+                        width: reflow ? 0 : PollarSpacing.x3,
+                        height: reflow ? PollarSpacing.x2 : 0,
+                      ),
+                      if (reflow)
+                        Text(reminders[index].occurrence.rule.description)
+                      else
+                        Expanded(
+                          child: Text(
+                            reminders[index].occurrence.rule.description,
+                          ),
+                        ),
+                      if (reflow) const SizedBox(height: PollarSpacing.x2),
+                      StatusBadge(
+                        label: reminders[index].overdue
+                            ? 'Data passou há ${-reminders[index].daysUntilDue} dia(s)'
+                            : reminders[index].daysUntilDue == 0
+                            ? 'Data prevista hoje'
+                            : 'Em ${reminders[index].daysUntilDue} dia(s)',
+                        icon: reminders[index].overdue
+                            ? LucideIcons.circleAlert
+                            : LucideIcons.clock,
+                        tone: reminders[index].overdue
+                            ? PollarStatusTone.danger
+                            : PollarStatusTone.warning,
+                      ),
+                    ],
+                  ),
+                  if (index != reminders.length - 1)
+                    Divider(height: PollarSpacing.x5),
+                ],
             ],
-        ],
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -961,37 +1029,49 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reflow = MediaQuery.textScalerOf(context).scale(1) > 1.3;
-    final titleWidget = Text(
-      title,
-      style: Theme.of(context).textTheme.headlineSmall,
-    );
-    final actionWidget = action == null
-        ? null
-        : PollarButton(
-            label: action!,
-            variant: PollarButtonVariant.ghost,
-            size: PollarControlSize.compact,
-            onPressed: onAction,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final reflow =
+            constraints.maxWidth < 280 ||
+            (trailing != null && constraints.maxWidth < 480) ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.3;
+        final titleWidget = Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium,
+        );
+        final actionWidget = action == null || onAction == null
+            ? null
+            : PollarButton(
+                label: action!,
+                variant: PollarButtonVariant.ghost,
+                size: PollarControlSize.compact,
+                adaptiveHeight: true,
+                onPressed: onAction,
+              );
+        if (reflow) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              titleWidget,
+              if (trailing != null || actionWidget != null)
+                const SizedBox(height: PollarSpacing.x2),
+              ?trailing,
+              if (actionWidget != null)
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: actionWidget,
+                ),
+            ],
           );
-    if (reflow) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          titleWidget,
-          if (trailing != null || actionWidget != null)
-            const SizedBox(height: PollarSpacing.x2),
-          ?trailing,
-          ?actionWidget,
-        ],
-      );
-    }
-    return Row(
-      children: [
-        Expanded(child: titleWidget),
-        ?trailing,
-        ?actionWidget,
-      ],
+        }
+        return Row(
+          children: [
+            Expanded(child: titleWidget),
+            if (trailing != null) Expanded(child: trailing!),
+            ?actionWidget,
+          ],
+        );
+      },
     );
   }
 }
@@ -1031,7 +1111,8 @@ class _PlanManagementBand extends StatelessWidget {
           onChanged: (active) => onRuleChanged(rule, active),
         ),
     ];
-    return PollarCard(
+    return Semantics(
+      container: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -1078,59 +1159,68 @@ class _ManagementRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reflow = MediaQuery.textScalerOf(context).scale(1) > 1.3;
-    final identity = Row(
-      children: [
-        Icon(icon, size: 20, color: context.pollar.textSecondary),
-        const SizedBox(width: PollarSpacing.x3),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: Theme.of(context).textTheme.titleSmall),
-              Text(
-                description,
-                style: Theme.of(context).textTheme.bodySmall
-                    ?.copyWith(color: context.pollar.textSecondary),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final reflow =
+            constraints.maxWidth < 560 ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.3;
+        final identity = Row(
+          children: [
+            Icon(icon, size: 20, color: context.pollar.textSecondary),
+            const SizedBox(width: PollarSpacing.x3),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: Theme.of(context).textTheme.titleSmall),
+                  Text(
+                    description,
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: context.pollar.textSecondary),
+                  ),
+                ],
               ),
+            ),
+          ],
+        );
+        final controls = Wrap(
+          spacing: PollarSpacing.x2,
+          runSpacing: PollarSpacing.x2,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            StatusBadge(
+              label: active ? 'Ativo' : 'Pausado',
+              icon: active ? LucideIcons.circleCheck : LucideIcons.pause,
+              tone: active
+                  ? PollarStatusTone.success
+                  : PollarStatusTone.neutral,
+            ),
+            PollarButton(
+              label: active ? 'Pausar' : 'Retomar',
+              variant: PollarButtonVariant.ghost,
+              size: PollarControlSize.compact,
+              adaptiveHeight: true,
+              onPressed: () => onChanged(!active),
+            ),
+          ],
+        );
+        if (reflow) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              identity,
+              const SizedBox(height: PollarSpacing.x2),
+              controls,
             ],
-          ),
-        ),
-      ],
-    );
-    final controls = Wrap(
-      spacing: PollarSpacing.x2,
-      runSpacing: PollarSpacing.x2,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        StatusBadge(
-          label: active ? 'Ativo' : 'Pausado',
-          icon: active ? LucideIcons.circleCheck : LucideIcons.pause,
-          tone: active ? PollarStatusTone.success : PollarStatusTone.neutral,
-        ),
-        PollarButton(
-          label: active ? 'Pausar' : 'Retomar',
-          variant: PollarButtonVariant.ghost,
-          size: PollarControlSize.compact,
-          onPressed: () => onChanged(!active),
-        ),
-      ],
-    );
-    if (reflow) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          identity,
-          const SizedBox(height: PollarSpacing.x2),
-          controls,
-        ],
-      );
-    }
-    return Row(
-      children: [
-        Expanded(child: identity),
-        controls,
-      ],
+          );
+        }
+        return Row(
+          children: [
+            Expanded(child: identity),
+            controls,
+          ],
+        );
+      },
     );
   }
 }
