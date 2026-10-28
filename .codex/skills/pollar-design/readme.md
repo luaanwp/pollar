@@ -164,6 +164,48 @@ pause/resume, month and currency rules stay unchanged. Reference `planning_*`
 goldens cover 320/390/640/1200 widths, both themes, privacy, long values and
 large text; final validation/runtime evidence lives in `docs/redesign-progress.md`.
 
+Phase 5 migrates Analytics/Wealth within the pinned world. Each screen has one
+solid `financialSurface` band: result/net worth at legacy `amountHero` 34px,
+supports at 16px. Keep the foundation catalog, other card consumers, tokens and
+the Overview's separate gradient/48–40px treatment. Result and net worth opt
+into `PrivacyAmount.animateChanges`/`PollarRollingAmount` between actual states,
+with existing privacy, wrapping and reduced-motion fallbacks.
+
+Reports keeps period/currency first. Below 760px of local viewport width or
+above 1.3× text, summary precedes Exportar CSV; wide export stays in the header.
+Summary becomes horizontal at 720px locally and text up to 1.3×. Native
+`ExpansionTile` always shows “Base confirmada” / “Compensados e conciliados”,
+expanding the full accounting policy. Expansion and Lucide chevron use 240ms
+(`PollarMotion.change`, `easeOutCubic`); reduced motion disables both via
+`AnimationStyle.noAnimation` and zero-duration rotation. Flow/balance share 6:4
+only at 880px of content width and text up to 1.3×; sections are flat Semantics
+groups. Keep exact income/expense rows and all six monthly balance figures
+visible. `_MetricPair` stacks below 520px locally or above 1.3×. Categories keep
+full names above money/percentage. Bounded money wraps/reserves geometry;
+privacy removes proportions, percentages and series. Result copy remains generic
+including zero and reveals no polarity. Basis, CSV/SHA-256, six months, currency,
+charts and domain calculations retain their existing behavior.
+
+Wealth places balance before actions when stacked, then the priority goal.
+Two-column opening/composition needs 960px useful width (local viewport minus
+48px) and text up to 1.3×; wide actions follow the opening pair. Priority goal
+and asset/debt/other-goal/management registers are flat semantic groups. Show
+header Moeda only for multiple currencies. `_WealthValueRow` stacks below 600px
+locally or above 1.3×; management below 760px locally or with large text. Keep
+bounded, wrapping, reserved money and adaptive-height screen/confirmation buttons,
+without `IntrinsicHeight`. Mixed net worth has no “Confirmado” badge: footer
+explains confirmed account balances versus latest manual valuations. Register
+goal percentages, including completed goals, become “Progresso oculto”; annual
+debt rate becomes “taxa oculta”. Preserve dates, operational states, priority
+progress, saved-goal celebration and existing lifecycle/form behavior. Do not add
+Rive, financial calculations or valuation history.
+
+Phase 5 closes Analytics/Wealth migration; the next redesign focus is Mobile
+(phase 7). Intelligence (phase 6) is conditional and outside this slice. Reference
+`reports_*`/`wealth_*` goldens cover compact/wide, both themes, privacy, empty
+states, long values and enlarged text. Final validation/runtime evidence belongs
+in `docs/redesign-progress.md`.
+
 Implementation-ready design language for a **personal-finance product** (Flutter desktop + mobile), reconstructed as a web design system: CSS tokens, React primitives and two full UI-kit recreations.
 
 Pollar is the official product name. Brand personality: private, composed, dependable, intelligent, precise, contemporary. Product principles: calm clarity, financial precision, trust through restraint, progressive disclosure, accessible by default, cross-platform familiarity. Default locale **pt-BR** (BRL), and all product copy in this system is written in Portuguese.

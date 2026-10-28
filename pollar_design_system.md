@@ -381,6 +381,66 @@ Reference captures in `apps/pollar_app/test/goldens/` include
 empty states, long values and enlarged text. Final suite, analysis, build and
 runtime evidence belongs in `docs/redesign-progress.md`.
 
+### Reports evidence bands — phase 5
+
+Period/currency lead into one solid `financialSurface` band: “Resultado do
+período” at legacy `amountHero` 34px, income/expense supports at 16px. Summary
+precedes Exportar CSV below 760px of local viewport width or above 1.3× text;
+otherwise export stays in the header. Summary is horizontal only at 720px
+locally and text up to 1.3×. Export uses adaptive button height.
+
+Native `ExpansionTile` keeps “Base confirmada” and “Compensados e conciliados”
+visible while expanding the full accounting policy. Expansion and Lucide
+chevron use 240ms (`PollarMotion.change`, `easeOutCubic`); reduced motion uses
+`AnimationStyle.noAnimation` and zero-duration rotation.
+
+Flow, balance and category sections are flat Semantics groups without outer
+cards. Flow/balance share a 6:4 row only at 880px of content width and text up
+to 1.3×; otherwise flow leads. Exact income/expense rows and all six monthly
+account balances accompany their existing charts. `_MetricPair` stacks below
+520px locally or above 1.3× text. Category names remain complete on their own
+line before money/percentage. Money wraps within bounded width and reserves
+visible/hidden geometry. Privacy removes values, percentages, proportions and
+series while preserving period, currency, basis and category identity. Result
+copy is generic even for zero, without revealing polarity.
+
+Result alone opts into `PrivacyAmount.animateChanges`/`PollarRollingAmount`,
+using actual previous/current states with existing privacy, wrapping and reduced
+motion fallbacks. Chart morphing stays geometric. Six-month scope, currencies,
+accounting basis, CSV/SHA-256 export and domain calculations stay unchanged.
+
+### Wealth balance and registers — phase 5
+
+One solid `financialSurface` band leads with net worth at legacy `amountHero`
+34px and asset/liability supports at 16px. Header shows Moeda only for multiple
+currencies. Balance and priority goal share a row only at 960px useful width
+(local viewport minus 48px) and text up to 1.3×; composition uses the same
+condition. Stacked order is balance, actions, priority goal; wide actions follow
+the opening pair. Priority goal and asset/debt/goal/management registers use
+flat Semantics groups, whitespace and dividers.
+
+`_WealthValueRow` stacks below 600px locally or above 1.3× text. Management
+reflows below 760px locally or with enlarged text; no `IntrinsicHeight` is
+needed. Screen and confirmation buttons use adaptive height. Every monetary
+figure wraps within bounded width and reserves privacy geometry. The mixed net
+worth total has no “Confirmado” badge; its footer explains confirmed accounts
+and the latest manually entered asset/debt valuations.
+
+Privacy hides register goal percentages, including completed goals, behind
+“Progresso oculto”; annual debt rate becomes “taxa oculta”. Dates and operational
+states remain legible. Net worth alone opts into actual-state rolling through
+`PrivacyAmount.animateChanges`/`PollarRollingAmount`; existing priority progress
+and successful saved-goal celebration remain. No Rive, new financial calculation,
+new valuation history or change to lifecycle/form behavior is introduced.
+
+Phase 5 closes Analytics/Wealth migration within the pinned world. The next
+redesign focus is Mobile (phase 7); Intelligence (phase 6) remains conditional
+and outside this slice. The foundation catalog and other card consumers retain
+their existing treatment. Reference `reports_*`/`wealth_*` goldens in
+`apps/pollar_app/test/goldens/` cover compact/wide, both themes, privacy, empty
+states, long content and enlarged text. Final suite, analysis, build and runtime
+evidence belongs in `docs/redesign-progress.md`.
+
 ## 12. Accessibility checklist
 
 - WCAG AA contrast in both themes.

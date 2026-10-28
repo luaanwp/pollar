@@ -1,7 +1,7 @@
 // THESIS: patrimônio é um dossiê rastreável; recusa números isolados sem composição.
 // OWN-WORLD: superfícies planas, teal restrito, linhas finas e valores tabulares exatos.
 // STORY: entender o patrimônio líquido, conferir sua origem e agir sobre a meta prioritária.
-// FIRST VIEWPORT: cabeçalho e ações, balanço líquido à esquerda e meta prioritária à direita; no compacto, balanço antes da meta.
+// FIRST VIEWPORT: balanço líquido sólido antes das ações no compacto; meta e composição planas explicam a posição com dados reais.
 // FORM: dossiê de metas, quinta estrutura sorteada pela seed bfca2793.
 // FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 import 'package:flutter/material.dart';
@@ -75,224 +75,250 @@ class _WealthContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final snapshot = state.snapshot;
     final hidden = ref.watch(privacyModeProvider);
-    final wide =
-        MediaQuery.sizeOf(context).width >= 860 &&
-        MediaQuery.textScalerOf(context).scale(1) <= 1.3;
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: PollarSizes.dashboardMax),
-        child: ListView(
-          padding: EdgeInsets.all(
-            MediaQuery.sizeOf(context).width < PollarBreakpoints.mediumMin
-                ? PollarSpacing.x4
-                : PollarSpacing.x6,
-          ),
-          children: [
-            _Header(state: state),
-            const SizedBox(height: PollarSpacing.x6),
-            if (wide)
-              IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: _BalanceDossier(
-                        snapshot: snapshot,
-                        hidden: hidden,
-                      ),
-                    ),
-                    const SizedBox(width: PollarSpacing.x4),
-                    Expanded(
-                      child: _PriorityGoalDossier(
-                        progress: snapshot.priorityGoal,
-                        hidden: hidden,
-                        onEdit: snapshot.priorityGoal == null
-                            ? null
-                            : () => _editGoal(
-                                context,
-                                ref,
-                                snapshot.priorityGoal!.goal,
-                              ),
-                        onComplete:
-                            snapshot.priorityGoal == null ||
-                                snapshot.priorityGoal!.goal.completed
-                            ? null
-                            : () => _completeGoal(
-                                context,
-                                ref,
-                                snapshot.priorityGoal!.goal,
-                              ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            else ...[
-              _BalanceDossier(snapshot: snapshot, hidden: hidden),
-              const SizedBox(height: PollarSpacing.x4),
-              _PriorityGoalDossier(
-                progress: snapshot.priorityGoal,
-                hidden: hidden,
-                onEdit: snapshot.priorityGoal == null
-                    ? null
-                    : () =>
-                          _editGoal(context, ref, snapshot.priorityGoal!.goal),
-                onComplete:
-                    snapshot.priorityGoal == null ||
-                        snapshot.priorityGoal!.goal.completed
-                    ? null
-                    : () => _completeGoal(
-                        context,
-                        ref,
-                        snapshot.priorityGoal!.goal,
-                      ),
-              ),
-            ],
-            const SizedBox(height: PollarSpacing.x6),
-            Text(
-              'Composição do patrimônio',
-              style: Theme.of(context).textTheme.headlineSmall,
+    return LayoutBuilder(
+      builder: (context, viewport) {
+        final wide =
+            viewport.maxWidth - PollarSpacing.x6 * 2 >= 960 &&
+            MediaQuery.textScalerOf(context).scale(1) <= 1.3;
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: PollarSizes.dashboardMax,
             ),
-            const SizedBox(height: PollarSpacing.x3),
-            if (wide)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _AssetRegister(snapshot: snapshot, hidden: hidden),
-                  ),
-                  const SizedBox(width: PollarSpacing.x4),
-                  Expanded(
-                    child: _DebtRegister(snapshot: snapshot, hidden: hidden),
+            child: ListView(
+              padding: EdgeInsets.all(
+                MediaQuery.sizeOf(context).width < PollarBreakpoints.mediumMin
+                    ? PollarSpacing.x4
+                    : PollarSpacing.x6,
+              ),
+              children: [
+                _Header(state: state),
+                const SizedBox(height: PollarSpacing.x6),
+                if (wide)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: _BalanceDossier(
+                          snapshot: snapshot,
+                          hidden: hidden,
+                        ),
+                      ),
+                      const SizedBox(width: PollarSpacing.x4),
+                      Expanded(
+                        child: _PriorityGoalDossier(
+                          progress: snapshot.priorityGoal,
+                          hidden: hidden,
+                          onEdit: snapshot.priorityGoal == null
+                              ? null
+                              : () => _editGoal(
+                                  context,
+                                  ref,
+                                  snapshot.priorityGoal!.goal,
+                                ),
+                          onComplete:
+                              snapshot.priorityGoal == null ||
+                                  snapshot.priorityGoal!.goal.completed
+                              ? null
+                              : () => _completeGoal(
+                                  context,
+                                  ref,
+                                  snapshot.priorityGoal!.goal,
+                                ),
+                        ),
+                      ),
+                    ],
+                  )
+                else ...[
+                  _BalanceDossier(snapshot: snapshot, hidden: hidden),
+                  const SizedBox(height: PollarSpacing.x4),
+                  _Header(state: state, actionsOnly: true),
+                  const SizedBox(height: PollarSpacing.x6),
+                  _PriorityGoalDossier(
+                    progress: snapshot.priorityGoal,
+                    hidden: hidden,
+                    onEdit: snapshot.priorityGoal == null
+                        ? null
+                        : () => _editGoal(
+                            context,
+                            ref,
+                            snapshot.priorityGoal!.goal,
+                          ),
+                    onComplete:
+                        snapshot.priorityGoal == null ||
+                            snapshot.priorityGoal!.goal.completed
+                        ? null
+                        : () => _completeGoal(
+                            context,
+                            ref,
+                            snapshot.priorityGoal!.goal,
+                          ),
                   ),
                 ],
-              )
-            else ...[
-              _AssetRegister(snapshot: snapshot, hidden: hidden),
-              const SizedBox(height: PollarSpacing.x4),
-              _DebtRegister(snapshot: snapshot, hidden: hidden),
-            ],
-            const SizedBox(height: PollarSpacing.x6),
-            _GoalsRegister(snapshot: snapshot, hidden: hidden),
-            const SizedBox(height: PollarSpacing.x6),
-            _Management(state: state),
-          ],
-        ),
-      ),
+                if (wide) ...[
+                  const SizedBox(height: PollarSpacing.x4),
+                  _Header(state: state, actionsOnly: true),
+                ],
+                const SizedBox(height: PollarSpacing.x6),
+                Text(
+                  'Composição do patrimônio',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: PollarSpacing.x3),
+                if (wide)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: _AssetRegister(
+                          snapshot: snapshot,
+                          hidden: hidden,
+                        ),
+                      ),
+                      const SizedBox(width: PollarSpacing.x4),
+                      Expanded(
+                        child: _DebtRegister(
+                          snapshot: snapshot,
+                          hidden: hidden,
+                        ),
+                      ),
+                    ],
+                  )
+                else ...[
+                  _AssetRegister(snapshot: snapshot, hidden: hidden),
+                  const SizedBox(height: PollarSpacing.x4),
+                  _DebtRegister(snapshot: snapshot, hidden: hidden),
+                ],
+                const SizedBox(height: PollarSpacing.x6),
+                _GoalsRegister(snapshot: snapshot, hidden: hidden),
+                const SizedBox(height: PollarSpacing.x6),
+                _Management(state: state),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
 class _Header extends ConsumerWidget {
-  const _Header({required this.state});
+  const _Header({required this.state, this.actionsOnly = false});
   final WealthState state;
+  final bool actionsOnly;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = Theme.of(context).textTheme;
-    final reflow =
-        MediaQuery.sizeOf(context).width < 760 ||
-        MediaQuery.textScalerOf(context).scale(1) > 1.3;
-    final selector = SizedBox(
-      width: reflow ? double.infinity : 150,
-      child: PollarSelect<Currency>(
-        label: 'Moeda',
-        initialValue: state.snapshot.currency,
-        options: [
-          for (final currency in state.currencies)
-            PollarSelectOption(value: currency, label: currency.code),
-        ],
-        onChanged: (value) {
-          if (value != null) {
-            ref.read(wealthProvider.notifier).selectCurrency(value);
-          }
-        },
-      ),
-    );
-    final actions = Wrap(
-      spacing: PollarSpacing.x2,
-      runSpacing: PollarSpacing.x2,
-      children: [
-        PollarButton(
-          label: 'Nova meta',
-          leadingIcon: LucideIcons.target,
-          variant: PollarButtonVariant.secondary,
-          onPressed: () => showGoalForm(
-            context: context,
-            currency: state.snapshot.currency,
-            now: ref.read(wealthClockProvider)(),
-            onSave: ref.read(wealthProvider.notifier).createGoal,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final reflow =
+            constraints.maxWidth < 760 ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.3;
+        final selector = SizedBox(
+          width: reflow ? double.infinity : 150,
+          child: PollarSelect<Currency>(
+            label: 'Moeda',
+            initialValue: state.snapshot.currency,
+            options: [
+              for (final currency in state.currencies)
+                PollarSelectOption(value: currency, label: currency.code),
+            ],
+            onChanged: (value) {
+              if (value != null) {
+                ref.read(wealthProvider.notifier).selectCurrency(value);
+              }
+            },
           ),
-        ),
-        PollarButton(
-          label: 'Novo ativo',
-          leadingIcon: LucideIcons.landmark,
-          variant: PollarButtonVariant.secondary,
-          onPressed: () => showAssetForm(
-            context: context,
-            currency: state.snapshot.currency,
-            now: ref.read(wealthClockProvider)(),
-            onSave: ref.read(wealthProvider.notifier).createAsset,
-          ),
-        ),
-        PollarButton(
-          label: 'Nova dívida',
-          leadingIcon: LucideIcons.receiptText,
-          onPressed: () => showDebtForm(
-            context: context,
-            currency: state.snapshot.currency,
-            now: ref.read(wealthClockProvider)(),
-            onSave: ref.read(wealthProvider.notifier).createDebt,
-          ),
-        ),
-      ],
-    );
-    if (reflow) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text('Patrimônio', style: text.headlineLarge),
-          const SizedBox(height: PollarSpacing.x1),
-          Text(
-            'Posições confirmadas, bens avaliados e obrigações na mesma moeda.',
-            style: text.bodyMedium?.copyWith(
-              color: context.pollar.textSecondary,
-            ),
-          ),
-          const SizedBox(height: PollarSpacing.x4),
-          selector,
-          const SizedBox(height: PollarSpacing.x3),
-          actions,
-        ],
-      );
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        );
+        final actions = Wrap(
+          spacing: PollarSpacing.x2,
+          runSpacing: PollarSpacing.x2,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Patrimônio', style: text.headlineLarge),
-                  const SizedBox(height: PollarSpacing.x1),
-                  Text(
-                    'Posições confirmadas, bens avaliados e obrigações na mesma moeda.',
-                    style: text.bodyMedium?.copyWith(
-                      color: context.pollar.textSecondary,
-                    ),
-                  ),
-                ],
+            PollarButton(
+              label: 'Nova meta',
+              adaptiveHeight: true,
+              leadingIcon: LucideIcons.target,
+              variant: PollarButtonVariant.secondary,
+              onPressed: () => showGoalForm(
+                context: context,
+                currency: state.snapshot.currency,
+                now: ref.read(wealthClockProvider)(),
+                onSave: ref.read(wealthProvider.notifier).createGoal,
               ),
             ),
-            selector,
+            PollarButton(
+              label: 'Novo ativo',
+              adaptiveHeight: true,
+              leadingIcon: LucideIcons.landmark,
+              variant: PollarButtonVariant.secondary,
+              onPressed: () => showAssetForm(
+                context: context,
+                currency: state.snapshot.currency,
+                now: ref.read(wealthClockProvider)(),
+                onSave: ref.read(wealthProvider.notifier).createAsset,
+              ),
+            ),
+            PollarButton(
+              label: 'Nova dívida',
+              adaptiveHeight: true,
+              leadingIcon: LucideIcons.receiptText,
+              onPressed: () => showDebtForm(
+                context: context,
+                currency: state.snapshot.currency,
+                now: ref.read(wealthClockProvider)(),
+                onSave: ref.read(wealthProvider.notifier).createDebt,
+              ),
+            ),
           ],
-        ),
-        const SizedBox(height: PollarSpacing.x4),
-        actions,
-      ],
+        );
+        if (actionsOnly) return actions;
+        if (reflow) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('Patrimônio', style: text.headlineLarge),
+              const SizedBox(height: PollarSpacing.x1),
+              Text(
+                'Posições confirmadas, bens avaliados e obrigações na mesma moeda.',
+                style: text.bodyMedium?.copyWith(
+                  color: context.pollar.textSecondary,
+                ),
+              ),
+              if (state.currencies.length > 1) ...[
+                const SizedBox(height: PollarSpacing.x4),
+                selector,
+              ],
+            ],
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Patrimônio', style: text.headlineLarge),
+                      const SizedBox(height: PollarSpacing.x1),
+                      Text(
+                        'Posições confirmadas, bens avaliados e obrigações na mesma moeda.',
+                        style: text.bodyMedium?.copyWith(
+                          color: context.pollar.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (state.currencies.length > 1) selector,
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -306,33 +332,29 @@ class _BalanceDossier extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     return PollarCard(
+      variant: PollarCardVariant.financial,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _CardHeading(
-            icon: LucideIcons.scale,
-            title: 'Balanço líquido',
-            trailing: const StatusBadge(
-              label: 'Confirmado',
-              icon: LucideIcons.circleCheck,
-              tone: PollarStatusTone.success,
-            ),
+          Row(
+            children: [
+              Icon(LucideIcons.scale, size: 20, color: context.pollar.primary),
+              const SizedBox(width: PollarSpacing.x2),
+              Expanded(
+                child: Text('Patrimônio líquido', style: text.titleMedium),
+              ),
+            ],
           ),
           const SizedBox(height: PollarSpacing.x5),
-          Text(
-            'Patrimônio líquido',
-            style: text.bodySmall?.copyWith(
-              color: context.pollar.textSecondary,
-            ),
-          ),
-          const SizedBox(height: PollarSpacing.x1),
           PrivacyAmount(
             snapshot.netWorth,
             hidden: hidden,
             allowWrap: true,
+            reserveLayout: true,
+            animateChanges: true,
             colorBySign: true,
             semantic: MoneySemantic.balance,
-            style: text.displaySmall,
+            style: PollarTypography.amountHero,
           ),
           const SizedBox(height: PollarSpacing.x5),
           _ExactPair(
@@ -378,8 +400,8 @@ class _PriorityGoalDossier extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    return PollarCard(
-      alt: true,
+    return Semantics(
+      container: true,
       child: progress == null
           ? const _InlineEmpty(
               icon: LucideIcons.target,
@@ -401,7 +423,7 @@ class _PriorityGoalDossier extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: PollarSpacing.x5),
-                Text(progress!.goal.name, style: text.headlineSmall),
+                Text(progress!.goal.name, style: text.titleMedium),
                 if (progress!.goal.deadline case final deadline?) ...[
                   const SizedBox(height: PollarSpacing.x1),
                   Text(
@@ -453,6 +475,7 @@ class _PriorityGoalDossier extends StatelessWidget {
                       leadingIcon: LucideIcons.pencil,
                       variant: PollarButtonVariant.secondary,
                       size: PollarControlSize.compact,
+                      adaptiveHeight: true,
                       onPressed: onEdit,
                     ),
                     if (onComplete != null)
@@ -460,6 +483,7 @@ class _PriorityGoalDossier extends StatelessWidget {
                         label: 'Concluir meta',
                         leadingIcon: LucideIcons.circleCheck,
                         size: PollarControlSize.compact,
+                        adaptiveHeight: true,
                         onPressed: onComplete,
                       ),
                   ],
@@ -537,7 +561,7 @@ class _DebtRegister extends StatelessWidget {
         _RegisterRow(
           icon: LucideIcons.receiptText,
           title: debt.name,
-          subtitle: _debtSubtitle(debt),
+          subtitle: _debtSubtitle(debt, hidden: hidden),
           amount: debt.outstandingAmount,
           hidden: hidden,
           danger: true,
@@ -575,13 +599,20 @@ class _RegisterCard extends StatelessWidget {
   final Widget empty;
 
   @override
-  Widget build(BuildContext context) => PollarCard(
+  Widget build(BuildContext context) => Semantics(
+    container: true,
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _CardHeading(
           title: title,
-          trailing: PrivacyAmount(total, hidden: hidden, semantic: semantic),
+          trailing: PrivacyAmount(
+            total,
+            hidden: hidden,
+            semantic: semantic,
+            allowWrap: true,
+            reserveLayout: true,
+          ),
         ),
         const SizedBox(height: PollarSpacing.x3),
         if (rows.isEmpty)
@@ -602,13 +633,14 @@ class _GoalsRegister extends StatelessWidget {
   final bool hidden;
 
   @override
-  Widget build(BuildContext context) => PollarCard(
+  Widget build(BuildContext context) => Semantics(
+    container: true,
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           'Metas acompanhadas',
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: PollarSpacing.x1),
         Text(
@@ -642,9 +674,6 @@ class _GoalRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reflow =
-        MediaQuery.sizeOf(context).width < PollarBreakpoints.mediumMin ||
-        MediaQuery.textScalerOf(context).scale(1) > 1.3;
     final identity = Row(
       children: [
         Icon(LucideIcons.target, size: 20, color: context.pollar.primary),
@@ -658,7 +687,9 @@ class _GoalRow extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               Text(
-                progress.goal.completed
+                hidden
+                    ? 'Progresso oculto'
+                    : progress.goal.completed
                     ? 'Alvo alcançado'
                     : '${progress.percent}% reservado',
                 style: Theme.of(context).textTheme.bodySmall
@@ -669,41 +700,30 @@ class _GoalRow extends StatelessWidget {
         ),
       ],
     );
-    final value = Row(
-      mainAxisSize: MainAxisSize.min,
+    final value = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (progress.goal.priority) ...[
-          const StatusBadge(
-            label: 'Prioritária',
-            icon: LucideIcons.star,
-            tone: PollarStatusTone.info,
+          const Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: StatusBadge(
+              label: 'Prioritária',
+              icon: LucideIcons.star,
+              tone: PollarStatusTone.info,
+            ),
           ),
-          const SizedBox(width: PollarSpacing.x2),
+          const SizedBox(height: PollarSpacing.x2),
         ],
-        Flexible(
-          child: PrivacyAmount(
-            progress.goal.target,
-            hidden: hidden,
-            semantic: MoneySemantic.neutral,
-          ),
+        PrivacyAmount(
+          progress.goal.target,
+          hidden: hidden,
+          semantic: MoneySemantic.neutral,
+          allowWrap: true,
+          reserveLayout: true,
         ),
       ],
     );
-    return reflow
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              identity,
-              const SizedBox(height: PollarSpacing.x2),
-              value,
-            ],
-          )
-        : Row(
-            children: [
-              Expanded(child: identity),
-              value,
-            ],
-          );
+    return _WealthValueRow(identity: identity, value: value);
   }
 }
 
@@ -723,6 +743,7 @@ class _Management extends ConsumerWidget {
           actions: [
             PollarButton(
               label: 'Atualizar',
+              adaptiveHeight: true,
               variant: PollarButtonVariant.ghost,
               size: PollarControlSize.compact,
               onPressed: () => _editGoal(context, ref, item),
@@ -730,6 +751,7 @@ class _Management extends ConsumerWidget {
             if (item.active && !item.completed)
               PollarButton(
                 label: 'Concluir',
+                adaptiveHeight: true,
                 variant: PollarButtonVariant.ghost,
                 size: PollarControlSize.compact,
                 onPressed: () => _completeGoal(context, ref, item),
@@ -752,6 +774,7 @@ class _Management extends ConsumerWidget {
           actions: [
             PollarButton(
               label: 'Atualizar',
+              adaptiveHeight: true,
               variant: PollarButtonVariant.ghost,
               size: PollarControlSize.compact,
               onPressed: () => _editAsset(context, ref, item),
@@ -775,6 +798,7 @@ class _Management extends ConsumerWidget {
           actions: [
             PollarButton(
               label: 'Atualizar',
+              adaptiveHeight: true,
               variant: PollarButtonVariant.ghost,
               size: PollarControlSize.compact,
               onPressed: () => _editDebt(context, ref, item),
@@ -782,6 +806,7 @@ class _Management extends ConsumerWidget {
             if (item.active && !item.settled)
               PollarButton(
                 label: 'Liquidar',
+                adaptiveHeight: true,
                 variant: PollarButtonVariant.ghost,
                 size: PollarControlSize.compact,
                 onPressed: () => _settleDebt(context, ref, item),
@@ -796,13 +821,14 @@ class _Management extends ConsumerWidget {
           ),
         ),
     ];
-    return PollarCard(
+    return Semantics(
+      container: true,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             'Gerenciar registros',
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: PollarSpacing.x1),
           Text(
@@ -836,7 +862,6 @@ class _CardHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reflow = MediaQuery.textScalerOf(context).scale(1) > 1.3;
     final titleWidget = Row(
       children: [
         if (icon case final icon?) ...[
@@ -844,25 +869,16 @@ class _CardHeading extends StatelessWidget {
           const SizedBox(width: PollarSpacing.x2),
         ],
         Expanded(
-          child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+          child: Text(title, style: Theme.of(context).textTheme.titleMedium),
         ),
       ],
     );
-    return reflow
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              titleWidget,
-              const SizedBox(height: PollarSpacing.x2),
-              Align(alignment: Alignment.centerRight, child: trailing),
-            ],
-          )
-        : Row(
-            children: [
-              Expanded(child: titleWidget),
-              trailing,
-            ],
-          );
+    return _WealthValueRow(
+      identity: titleWidget,
+      value: trailing is StatusBadge
+          ? Align(alignment: AlignmentDirectional.centerStart, child: trailing)
+          : trailing,
+    );
   }
 }
 
@@ -884,7 +900,6 @@ class _ExactPair extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reflow = MediaQuery.textScalerOf(context).scale(1) > 1.3;
     final labelWidget = Row(
       children: [
         Icon(icon, size: 18, color: tone),
@@ -896,22 +911,10 @@ class _ExactPair extends StatelessWidget {
       amount,
       hidden: hidden,
       semantic: semantic,
+      allowWrap: true,
+      reserveLayout: true,
     );
-    return reflow
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              labelWidget,
-              const SizedBox(height: PollarSpacing.x1),
-              Align(alignment: Alignment.centerRight, child: amountWidget),
-            ],
-          )
-        : Row(
-            children: [
-              Expanded(child: labelWidget),
-              amountWidget,
-            ],
-          );
+    return _WealthValueRow(identity: labelWidget, value: amountWidget);
   }
 }
 
@@ -933,7 +936,6 @@ class _RegisterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reflow = MediaQuery.textScalerOf(context).scale(1) > 1.3;
     final identity = Row(
       children: [
         Icon(icon, size: 20, color: context.pollar.textSecondary),
@@ -956,27 +958,48 @@ class _RegisterRow extends StatelessWidget {
     final value = PrivacyAmount(
       amount,
       hidden: hidden,
+      allowWrap: true,
+      reserveLayout: true,
       semantic: danger ? MoneySemantic.debt : MoneySemantic.balance,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
         color: danger ? context.pollar.danger : context.pollar.textPrimary,
       ),
     );
-    return reflow
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              identity,
-              const SizedBox(height: PollarSpacing.x2),
-              Align(alignment: Alignment.centerRight, child: value),
-            ],
-          )
-        : Row(
-            children: [
-              Expanded(child: identity),
-              value,
-            ],
-          );
+    return _WealthValueRow(identity: identity, value: value);
   }
+}
+
+/// Bounded monetary columns yield to identity before text must be abbreviated.
+class _WealthValueRow extends StatelessWidget {
+  const _WealthValueRow({required this.identity, required this.value});
+  final Widget identity;
+  final Widget value;
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final stacked =
+          constraints.maxWidth < 600 ||
+          MediaQuery.textScalerOf(context).scale(1) > 1.3;
+      if (stacked) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            identity,
+            const SizedBox(height: PollarSpacing.x2),
+            value,
+          ],
+        );
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(flex: 3, child: identity),
+          const SizedBox(width: PollarSpacing.x3),
+          Expanded(flex: 2, child: value),
+        ],
+      );
+    },
+  );
 }
 
 class _ManagementRow extends StatelessWidget {
@@ -997,62 +1020,69 @@ class _ManagementRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reflow =
-        MediaQuery.sizeOf(context).width < PollarBreakpoints.mediumMin ||
-        MediaQuery.textScalerOf(context).scale(1) > 1.3;
-    final identity = Row(
-      children: [
-        Icon(icon, size: 20, color: context.pollar.textSecondary),
-        const SizedBox(width: PollarSpacing.x3),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: Theme.of(context).textTheme.titleSmall),
-              Text(
-                description,
-                style: Theme.of(context).textTheme.bodySmall
-                    ?.copyWith(color: context.pollar.textSecondary),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final reflow =
+            constraints.maxWidth < 760 ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.3;
+        final identity = Row(
+          children: [
+            Icon(icon, size: 20, color: context.pollar.textSecondary),
+            const SizedBox(width: PollarSpacing.x3),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: Theme.of(context).textTheme.titleSmall),
+                  Text(
+                    description,
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: context.pollar.textSecondary),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+        final controls = Wrap(
+          spacing: PollarSpacing.x2,
+          runSpacing: PollarSpacing.x2,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            StatusBadge(
+              label: active ? 'Ativo' : 'Pausado',
+              icon: active ? LucideIcons.circleCheck : LucideIcons.pause,
+              tone: active
+                  ? PollarStatusTone.success
+                  : PollarStatusTone.neutral,
+            ),
+            PollarButton(
+              label: active ? 'Pausar' : 'Retomar',
+              adaptiveHeight: true,
+              variant: PollarButtonVariant.ghost,
+              size: PollarControlSize.compact,
+              onPressed: () => onChanged(!active),
+            ),
+            ...actions,
+          ],
+        );
+        return reflow
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  identity,
+                  const SizedBox(height: PollarSpacing.x2),
+                  controls,
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(child: identity),
+                  controls,
+                ],
+              );
+      },
     );
-    final controls = Wrap(
-      spacing: PollarSpacing.x2,
-      runSpacing: PollarSpacing.x2,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        StatusBadge(
-          label: active ? 'Ativo' : 'Pausado',
-          icon: active ? LucideIcons.circleCheck : LucideIcons.pause,
-          tone: active ? PollarStatusTone.success : PollarStatusTone.neutral,
-        ),
-        PollarButton(
-          label: active ? 'Pausar' : 'Retomar',
-          variant: PollarButtonVariant.ghost,
-          size: PollarControlSize.compact,
-          onPressed: () => onChanged(!active),
-        ),
-        ...actions,
-      ],
-    );
-    return reflow
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              identity,
-              const SizedBox(height: PollarSpacing.x2),
-              controls,
-            ],
-          )
-        : Row(
-            children: [
-              Expanded(child: identity),
-              controls,
-            ],
-          );
   }
 }
 
@@ -1186,11 +1216,13 @@ Future<void> _confirmFinalState({
     actions: (modalContext) => [
       PollarButton(
         label: 'Cancelar',
+        adaptiveHeight: true,
         variant: PollarButtonVariant.ghost,
         onPressed: () => Navigator.of(modalContext).pop(false),
       ),
       PollarButton(
         label: confirmLabel,
+        adaptiveHeight: true,
         onPressed: () => Navigator.of(modalContext).pop(true),
       ),
     ],
@@ -1235,11 +1267,13 @@ Future<void> _confirmLifecycle(
     actions: (modalContext) => [
       PollarButton(
         label: 'Manter $kind',
+        adaptiveHeight: true,
         variant: PollarButtonVariant.ghost,
         onPressed: () => Navigator.of(modalContext).pop(false),
       ),
       PollarButton(
         label: 'Pausar $kind',
+        adaptiveHeight: true,
         onPressed: () => Navigator.of(modalContext).pop(true),
       ),
     ],
@@ -1275,7 +1309,7 @@ String _assetKindLabel(WealthAssetKind kind) => switch (kind) {
   WealthAssetKind.other => 'Outro ativo',
 };
 
-String _debtSubtitle(WealthDebt debt) {
+String _debtSubtitle(WealthDebt debt, {required bool hidden}) {
   final interest = NumberFormat(
     '0.##',
     'pt_BR',
@@ -1284,7 +1318,8 @@ String _debtSubtitle(WealthDebt debt) {
       ? ''
       : ' · até ${DateFormat('MM/yyyy').format(debt.dueDate!)}';
   final updated = DateFormat('dd/MM/yyyy').format(debt.updatedAt);
-  return '${_debtKindLabel(debt.kind)} · $interest% a.a.$due · atualizado em $updated';
+  final rate = hidden ? 'taxa oculta' : '$interest% a.a.';
+  return '${_debtKindLabel(debt.kind)} · $rate$due · atualizado em $updated';
 }
 
 String _debtKindLabel(WealthDebtKind kind) => switch (kind) {

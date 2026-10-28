@@ -320,6 +320,17 @@ moeda, recorrências, formulários e confirmações mantêm suas regras. Evidên
 e limites de validação estão em `docs/redesign-progress.md`; a próxima fase
 é Análises/patrimônio.
 
+A fase 5 aplica uma faixa sólida ao resultado dos relatórios e à posição
+patrimonial, com evidências planas abaixo. Período/moeda continuam explícitos,
+o critério confirmado é expansível e cada gráfico mantém uma alternativa
+textual exata; os seis saldos mensais passam a ter tabela visível completa.
+No compacto, o patrimônio antecede as ações de criação e as linhas se adaptam
+à largura local. Privacidade também oculta percentuais de metas e taxas de
+dívidas. A animação existente de gráficos, progresso e celebração salva é
+preservada; não se cria série de avaliação patrimonial nem se altera a base
+do CSV ou qualquer cálculo financeiro. A próxima etapa visual é o refinamento
+mobile (fase 7); Inteligência continua condicional e fora deste escopo.
+
 ## Limitações da auditoria
 
 O acesso ao repositório funcionou sem autenticação neste ambiente. A análise é estática e usou goldens existentes, não execução interativa no Windows/Android/iOS. Não há evidência de métricas de uso para reordenar destinos, nem dados/engine de IA para publicar insights. O código não contém CSS ou biblioteca de charts: tema Flutter e `CustomPainter` fazem esse papel. Sincronização opcional já consta do código, embora `PRODUCT.md` a descreva como etapa posterior; a documentação de produto deve esclarecer a diferença entre capacidade implementada e estágio de lançamento. O skill local `pollar-design` aponta a `README.md`, enquanto o checkout contém `readme.md` em minúsculas; isso pode falhar em sistemas sensíveis a maiúsculas. O próprio `readme.md` tem dois tons semânticos divergentes dos tokens atuais. Alinhar o guia quando a fase visual for implementada. Validar qualquer alteração visual no aplicativo e nas capturas golden antes de declarar o redesign concluído.

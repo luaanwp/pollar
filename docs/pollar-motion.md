@@ -40,6 +40,38 @@ durante o cálculo, permitindo animar a chegada dos novos resultados. Primeiro
 carregamento e erro mantêm seus estados existentes. Não se modifica fonte,
 serviço, regra financeira, armazenamento, identidade ou sincronização.
 
+## Análises e patrimônio — fase 5
+
+Relatórios e Patrimônio mantêm uma faixa `financialSurface` sólida por tela,
+com resultado/patrimônio líquido de 34px e apoios de 16px; a superfície não
+anima. Somente esses totais optam por `PrivacyAmount.animateChanges` e
+`PollarRollingAmount`, entre os estados reais anterior e atual. Mantêm a
+semântica exata atual e os fallbacks existentes para privacidade, quebra,
+moeda e movimento reduzido, sem quantias financeiras intermediárias. Todos os
+valores monetários usam largura limitada, quebra e reserva de geometria.
+
+O critério contábil de Relatórios usa `ExpansionTile` nativo. “Base confirmada”
+e “Compensados e conciliados” ficam sempre visíveis; a política completa é
+expansível. Expansão e rotação do chevron Lucide usam 240ms
+(`PollarMotion.change`) e `easeOutCubic`. Movimento reduzido aplica
+`AnimationStyle.noAnimation` à expansão e duração zero à rotação. Os gráficos
+preservam o morph geométrico existente e as tabelas de valores exatos, incluindo
+os seis saldos mensais; privacidade remove imediatamente séries, proporções
+e percentuais.
+
+Patrimônio conserva o progresso e a celebração da meta prioritária após
+atualização bem-sucedida, sem disparo inicial ou em privacidade. O registro de
+metas também oculta percentuais de metas concluídas como “Progresso oculto”;
+a taxa anual da dívida vira “taxa oculta”. Datas e estados operacionais
+permanecem legíveis. A composição plana, o reflow local e as ações com altura
+adaptável não adicionam Rive, cálculos financeiros ou histórico patrimonial.
+
+Capturas `reports_*` e `wealth_*` em `apps/pollar_app/test/goldens/` documentam
+compacto/amplo, claro/escuro, privacidade, vazio, conteúdo longo e texto
+ampliado. Resultados finais de suíte, análise, build e runtime ficam em
+`docs/redesign-progress.md`. O fechamento visual da fase 5 encaminha o redesign
+para Mobile (fase 7); Inteligência (fase 6) segue condicional e fora deste slice.
+
 ## Navegação e listas
 
 `PollarBranchStack` preserva o `IndexedStack`, os navegadores de cada branch,

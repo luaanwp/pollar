@@ -1,7 +1,7 @@
 // THESIS: O relatório é uma trilha de evidências do livro-caixa; recusa gráficos decorativos e métricas sem reconciliação.
-// OWN-WORLD: Superfícies planas contornadas, teal restrito, semântica financeira e figuras tabulares exatas do Pollar.
+// OWN-WORLD: Uma faixa financeira sólida, evidências planas, teal restrito e figuras tabulares exatas do Pollar.
 // STORY: A pessoa compara seis meses, confere o saldo líquido, identifica categorias e exporta a mesma base com verificação.
-// FIRST VIEWPORT: Contexto e exportação antecedem um resumo assimétrico; fluxo e saldo formam a segunda leitura verificável.
+// FIRST VIEWPORT: Período e moeda antecedem o resultado; critério expansível e exportação apoiam gráficos e tabelas exatas.
 // FORM: Extensão operacional do livro-caixa sereno, herdando o sistema estabelecido sem concept seed.
 // FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 
@@ -17,6 +17,7 @@ import '../../../core/money/money.dart';
 import '../../../shared/presentation/pollar_button.dart';
 import '../../../shared/presentation/pollar_card.dart';
 import '../../../shared/presentation/pollar_form_controls.dart';
+import '../../../shared/presentation/pollar_motion.dart';
 import '../../../shared/presentation/pollar_states.dart';
 import '../../../shared/presentation/pollar_toast.dart';
 import '../../../shared/presentation/money_text.dart';
@@ -63,8 +64,6 @@ class _ReportsContentState extends ConsumerState<_ReportsContent> {
 
   @override
   Widget build(BuildContext context) {
-    final compact =
-        MediaQuery.sizeOf(context).width < PollarBreakpoints.mediumMin;
     final privacyHidden = ref.watch(privacyModeProvider);
     final snapshot = widget.snapshot;
     final report =
@@ -77,66 +76,92 @@ class _ReportsContentState extends ConsumerState<_ReportsContent> {
     if (report == null) return const _EmptyReports();
     final period = _periodLabel(report);
 
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: PollarSizes.dashboardMax),
-        child: ListView(
-          padding: EdgeInsets.all(
-            compact ? PollarSpacing.x4 : PollarSpacing.x6,
+    return LayoutBuilder(
+      builder: (context, viewport) {
+        final compact =
+            viewport.maxWidth < 760 ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.3;
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: PollarSizes.dashboardMax,
+            ),
+            child: ListView(
+              padding: EdgeInsets.all(
+                compact ? PollarSpacing.x4 : PollarSpacing.x6,
+              ),
+              children: [
+                _ReportHeader(
+                  compact: compact,
+                  period: period,
+                  reports: snapshot.reports,
+                  selectedCurrency: report.currency,
+                  exporting: _exporting,
+                  onCurrencyChanged: (value) =>
+                      setState(() => _selectedCurrency = value),
+                  onExport: () => _export(report),
+                ),
+                const SizedBox(height: PollarSpacing.x5),
+                _ReportSummary(report: report, privacyHidden: privacyHidden),
+                const SizedBox(height: PollarSpacing.x4),
+                if (compact) ...[
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: PollarButton(
+                      label: 'Exportar CSV',
+                      leadingIcon: LucideIcons.download,
+                      variant: PollarButtonVariant.secondary,
+                      adaptiveHeight: true,
+                      loading: _exporting,
+                      onPressed: _exporting ? null : () => _export(report),
+                    ),
+                  ),
+                  const SizedBox(height: PollarSpacing.x3),
+                ],
+                _ReportBasis(period: period),
+                const SizedBox(height: PollarSpacing.x6),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final textScale = MediaQuery.textScalerOf(context).scale(1);
+                    final sideBySide =
+                        constraints.maxWidth >= 880 && textScale <= 1.3;
+                    final flow = _MonthlyFlow(
+                      report: report,
+                      privacyHidden: privacyHidden,
+                    );
+                    final balance = _BalanceHistory(
+                      report: report,
+                      privacyHidden: privacyHidden,
+                    );
+                    if (!sideBySide) {
+                      return Column(
+                        children: [
+                          flow,
+                          const SizedBox(height: PollarSpacing.x6),
+                          balance,
+                        ],
+                      );
+                    }
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(flex: 6, child: flow),
+                        const SizedBox(width: PollarSpacing.x6),
+                        Expanded(flex: 4, child: balance),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: PollarSpacing.x6),
+                _CategoryComposition(
+                  report: report,
+                  privacyHidden: privacyHidden,
+                ),
+              ],
+            ),
           ),
-          children: [
-            _ReportHeader(
-              compact: compact,
-              period: period,
-              reports: snapshot.reports,
-              selectedCurrency: report.currency,
-              exporting: _exporting,
-              onCurrencyChanged: (value) =>
-                  setState(() => _selectedCurrency = value),
-              onExport: () => _export(report),
-            ),
-            const SizedBox(height: PollarSpacing.x5),
-            _ReportBasis(period: period),
-            const SizedBox(height: PollarSpacing.x4),
-            _ReportSummary(report: report, privacyHidden: privacyHidden),
-            const SizedBox(height: PollarSpacing.x4),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final textScale = MediaQuery.textScalerOf(context).scale(1);
-                final sideBySide =
-                    constraints.maxWidth >= 880 && textScale <= 1.3;
-                final flow = _MonthlyFlow(
-                  report: report,
-                  privacyHidden: privacyHidden,
-                );
-                final balance = _BalanceHistory(
-                  report: report,
-                  privacyHidden: privacyHidden,
-                );
-                if (!sideBySide) {
-                  return Column(
-                    children: [
-                      flow,
-                      const SizedBox(height: PollarSpacing.x4),
-                      balance,
-                    ],
-                  );
-                }
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(flex: 6, child: flow),
-                    const SizedBox(width: PollarSpacing.x4),
-                    Expanded(flex: 4, child: balance),
-                  ],
-                );
-              },
-            ),
-            const SizedBox(height: PollarSpacing.x4),
-            _CategoryComposition(report: report, privacyHidden: privacyHidden),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -190,7 +215,7 @@ class _ReportHeader extends StatelessWidget {
         Text('Relatórios', style: Theme.of(context).textTheme.headlineLarge),
         const SizedBox(height: PollarSpacing.x1),
         Text(
-          'Comparações mensais e composição do período $period.',
+          period,
           style: Theme.of(context).textTheme.bodyMedium
               ?.copyWith(color: context.pollar.textSecondary),
         ),
@@ -221,6 +246,7 @@ class _ReportHeader extends StatelessWidget {
       leadingIcon: LucideIcons.download,
       variant: PollarButtonVariant.secondary,
       loading: exporting,
+      adaptiveHeight: true,
       fullWidth: compact,
       onPressed: exporting ? null : onExport,
     );
@@ -233,8 +259,6 @@ class _ReportHeader extends StatelessWidget {
             const SizedBox(height: PollarSpacing.x4),
             currency,
           ],
-          const SizedBox(height: PollarSpacing.x4),
-          export,
         ],
       );
     }
@@ -253,33 +277,58 @@ class _ReportHeader extends StatelessWidget {
   }
 }
 
-class _ReportBasis extends StatelessWidget {
+class _ReportBasis extends StatefulWidget {
   const _ReportBasis({required this.period});
 
   final String period;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(PollarSpacing.x4),
-    decoration: BoxDecoration(
-      color: context.pollar.infoSoft,
-      borderRadius: BorderRadius.circular(PollarRadii.medium),
-      border: Border.all(color: context.pollar.border),
-    ),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(LucideIcons.badgeCheck, size: 20, color: context.pollar.info),
-        const SizedBox(width: PollarSpacing.x3),
-        Expanded(
-          child: Text(
-            'Base confirmada · $period. Inclui apenas lançamentos compensados e conciliados. Transferências e pagamentos de fatura não contam como receita ou despesa.',
-            style: Theme.of(context).textTheme.bodySmall
-                ?.copyWith(color: context.pollar.textPrimary),
+  State<_ReportBasis> createState() => _ReportBasisState();
+}
+
+class _ReportBasisState extends State<_ReportBasis> {
+  var _expanded = false;
+
+  @override
+  Widget build(BuildContext context) => ExpansionTile(
+    key: const ValueKey('report-basis'),
+    expansionAnimationStyle: PollarMotion.reduced(context)
+        ? AnimationStyle.noAnimation
+        : const AnimationStyle(
+            duration: PollarMotion.change,
+            curve: PollarMotion.curve,
           ),
-        ),
-      ],
+    tilePadding: EdgeInsets.zero,
+    childrenPadding: const EdgeInsets.only(bottom: PollarSpacing.x4),
+    onExpansionChanged: (value) => setState(() => _expanded = value),
+    trailing: AnimatedRotation(
+      turns: _expanded ? .5 : 0,
+      duration: PollarMotion.reduced(context)
+          ? Duration.zero
+          : PollarMotion.change,
+      curve: PollarMotion.curve,
+      child: Icon(
+        LucideIcons.chevronDown,
+        size: 20,
+        color: context.pollar.textSecondary,
+      ),
     ),
+    title: Text(
+      'Base confirmada',
+      style: Theme.of(context).textTheme.titleSmall,
+    ),
+    subtitle: Text(
+      'Compensados e conciliados',
+      style: Theme.of(context).textTheme.bodySmall,
+    ),
+    expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Text(
+        'Base confirmada · ${widget.period}. Inclui apenas lançamentos compensados e conciliados. Transferências e pagamentos de fatura não contam como receita ou despesa.',
+        style: Theme.of(context).textTheme.bodySmall
+            ?.copyWith(color: context.pollar.textPrimary),
+      ),
+    ],
   );
 }
 
@@ -291,6 +340,7 @@ class _ReportSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PollarCard(
+    variant: PollarCardVariant.financial,
     child: LayoutBuilder(
       builder: (context, constraints) {
         final stacked =
@@ -316,17 +366,13 @@ class _ReportSummary extends StatelessWidget {
             ],
           );
         }
-        return IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(flex: 6, child: result),
-              const SizedBox(width: PollarSpacing.x5),
-              VerticalDivider(width: 1, color: context.pollar.border),
-              const SizedBox(width: PollarSpacing.x5),
-              Expanded(flex: 4, child: components),
-            ],
-          ),
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: 6, child: result),
+            const SizedBox(width: PollarSpacing.x5),
+            Expanded(flex: 4, child: components),
+          ],
         );
       },
     ),
@@ -359,12 +405,12 @@ class _SummaryResult extends StatelessWidget {
             ? MoneySemantic.expense
             : MoneySemantic.income,
         allowWrap: true,
+        reserveLayout: true,
+        animateChanges: true,
       ),
       const SizedBox(height: PollarSpacing.x2),
       Text(
-        report.netResult.isNegative
-            ? 'As saídas confirmadas superaram as entradas no período.'
-            : 'Entradas menos saídas confirmadas no período.',
+        'Entradas menos saídas confirmadas no período.',
         style: Theme.of(context).textTheme.bodySmall
             ?.copyWith(color: context.pollar.textSecondary),
       ),
@@ -418,36 +464,43 @@ class _MetricPair extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stacked = MediaQuery.textScalerOf(context).scale(1) > 1.3;
-    final labelWidget = Text(
-      label,
-      style: Theme.of(context).textTheme.bodySmall
-          ?.copyWith(color: context.pollar.textSecondary),
-    );
-    final value = PrivacyAmount(
-      amount,
-      hidden: hidden,
-      style: PollarTypography.amountStandard,
-      semantic: semantic,
-      colorBySign: colorBySign,
-      allowWrap: true,
-    );
-    if (stacked) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          labelWidget,
-          const SizedBox(height: PollarSpacing.x1),
-          value,
-        ],
-      );
-    }
-    return Row(
-      children: [
-        Expanded(child: labelWidget),
-        const SizedBox(width: PollarSpacing.x3),
-        value,
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final stacked =
+            constraints.maxWidth < 520 ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.3;
+        final labelWidget = Text(
+          label,
+          style: Theme.of(context).textTheme.bodySmall
+              ?.copyWith(color: context.pollar.textSecondary),
+        );
+        final value = PrivacyAmount(
+          amount,
+          hidden: hidden,
+          style: PollarTypography.amountStandard,
+          semantic: semantic,
+          colorBySign: colorBySign,
+          allowWrap: true,
+          reserveLayout: true,
+        );
+        if (stacked) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              labelWidget,
+              const SizedBox(height: PollarSpacing.x1),
+              value,
+            ],
+          );
+        }
+        return Row(
+          children: [
+            Expanded(child: labelWidget),
+            const SizedBox(width: PollarSpacing.x3),
+            Expanded(child: value),
+          ],
+        );
+      },
     );
   }
 }
@@ -459,17 +512,15 @@ class _MonthlyFlow extends StatelessWidget {
   final bool privacyHidden;
 
   @override
-  Widget build(BuildContext context) => PollarCard(
+  Widget build(BuildContext context) => Semantics(
+    container: true,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'Fluxo mês a mês',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
+        Text('Fluxo mês a mês', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: PollarSpacing.x1),
         Text(
-          'Entradas e saídas confirmadas, sem movimentações internas.',
+          'Quanto entrou e saiu em cada mês? Sem movimentações internas.',
           style: Theme.of(context).textTheme.bodySmall
               ?.copyWith(color: context.pollar.textSecondary),
         ),
@@ -525,44 +576,63 @@ class _MonthValueRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scaled = MediaQuery.textScalerOf(context).scale(1) > 1.3;
-    final values = Wrap(
-      spacing: PollarSpacing.x4,
-      runSpacing: PollarSpacing.x2,
-      alignment: WrapAlignment.end,
-      children: [
-        _CompactAmount(
-          label: 'Entradas',
-          amount: month.income,
-          hidden: privacyHidden,
-          semantic: MoneySemantic.income,
-        ),
-        _CompactAmount(
-          label: 'Saídas',
-          amount: month.expenses,
-          hidden: privacyHidden,
-          semantic: MoneySemantic.expense,
-        ),
-      ],
-    );
-    if (scaled) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(label, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: PollarSpacing.x2),
-          values,
-        ],
-      );
-    }
-    return Row(
-      children: [
-        SizedBox(
-          width: 78,
-          child: Text(label, style: Theme.of(context).textTheme.titleMedium),
-        ),
-        Expanded(child: values),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final scaled = MediaQuery.textScalerOf(context).scale(1) > 1.3;
+        final amounts = <Widget>[
+          _CompactAmount(
+            label: 'Entradas',
+            amount: month.income,
+            hidden: privacyHidden,
+            semantic: MoneySemantic.income,
+          ),
+          _CompactAmount(
+            label: 'Saídas',
+            amount: month.expenses,
+            hidden: privacyHidden,
+            semantic: MoneySemantic.expense,
+          ),
+        ];
+        final values = scaled
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  amounts[0],
+                  const SizedBox(height: PollarSpacing.x2),
+                  amounts[1],
+                ],
+              )
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: amounts[0]),
+                  const SizedBox(width: PollarSpacing.x3),
+                  Expanded(child: amounts[1]),
+                ],
+              );
+        if (scaled || constraints.maxWidth < 520) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(label, style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: PollarSpacing.x2),
+              values,
+            ],
+          );
+        }
+        return Row(
+          children: [
+            SizedBox(
+              width: 78 * MediaQuery.textScalerOf(context).scale(1),
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            Expanded(child: values),
+          ],
+        );
+      },
     );
   }
 }
@@ -582,7 +652,7 @@ class _CompactAmount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.end,
+    crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
         label,
@@ -595,6 +665,8 @@ class _CompactAmount extends StatelessWidget {
         semantic: semantic,
         style: Theme.of(context).textTheme.bodyMedium
             ?.copyWith(fontWeight: FontWeight.w600),
+        allowWrap: true,
+        reserveLayout: true,
       ),
     ],
   );
@@ -608,18 +680,18 @@ class _BalanceHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final last = report.months.last;
-    return PollarCard(
+    return Semantics(
+      container: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             'Saldo líquido das contas',
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: PollarSpacing.x1),
           Text(
-            'Saldos iniciais e lançamentos confirmados das contas ativas.',
+            'Como variou a posição das contas ativas? Saldos iniciais e lançamentos confirmados.',
             style: Theme.of(context).textTheme.bodySmall
                 ?.copyWith(color: context.pollar.textSecondary),
           ),
@@ -629,20 +701,19 @@ class _BalanceHistory extends StatelessWidget {
             privacyHidden: privacyHidden,
           ),
           const SizedBox(height: PollarSpacing.x5),
-          Text(
-            'Último fechamento · ${DateFormat('MMM yyyy', 'pt_BR').format(last.month)}',
-            style: Theme.of(context).textTheme.bodySmall
-                ?.copyWith(color: context.pollar.textSecondary),
-          ),
-          const SizedBox(height: PollarSpacing.x1),
-          PrivacyAmount(
-            last.accountNetBalance,
-            hidden: privacyHidden,
-            style: PollarTypography.amountStandard,
-            semantic: MoneySemantic.balance,
-            colorBySign: true,
-            allowWrap: true,
-          ),
+          for (var index = 0; index < report.months.length; index++) ...[
+            if (index > 0) Divider(height: PollarSpacing.x4),
+            _MetricPair(
+              label: DateFormat(
+                'MMM yyyy',
+                'pt_BR',
+              ).format(report.months[index].month),
+              amount: report.months[index].accountNetBalance,
+              hidden: privacyHidden,
+              semantic: MoneySemantic.balance,
+              colorBySign: true,
+            ),
+          ],
           const SizedBox(height: PollarSpacing.x3),
           Text(
             'Este histórico não inclui avaliações manuais de ativos e dívidas. Elas permanecem no dossiê de patrimônio até existir histórico de avaliação.',
@@ -665,17 +736,18 @@ class _CategoryComposition extends StatelessWidget {
   final bool privacyHidden;
 
   @override
-  Widget build(BuildContext context) => PollarCard(
+  Widget build(BuildContext context) => Semantics(
+    container: true,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           'Composição das saídas',
-          style: Theme.of(context).textTheme.headlineSmall,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: PollarSpacing.x1),
         Text(
-          'Categorias ordenadas pelo valor confirmado no período.',
+          'Onde se concentram as saídas? Categorias pelo valor confirmado no período.',
           style: Theme.of(context).textTheme.bodySmall
               ?.copyWith(color: context.pollar.textSecondary),
         ),
@@ -712,59 +784,35 @@ class _CategoryRow extends StatelessWidget {
     final percent = total.isZero
         ? 0
         : (category.amount.minorUnits * 100 / total.minorUnits).round();
-    final reflow =
-        MediaQuery.textScalerOf(context).scale(1) > 1.3 ||
-        MediaQuery.sizeOf(context).width < 360;
     final amount = PrivacyAmount(
       category.amount,
       hidden: privacyHidden,
       semantic: MoneySemantic.expense,
       style: PollarTypography.amountStandard,
       allowWrap: true,
+      reserveLayout: true,
     );
-    final percentage = SizedBox(
-      width: 52,
-      child: Text(
-        privacyHidden ? '••%' : '$percent%',
-        textAlign: TextAlign.end,
-        style: PollarTypography.tabular(Theme.of(context).textTheme.bodySmall!)
-            .copyWith(color: context.pollar.textSecondary),
-      ),
+    final percentage = Text(
+      privacyHidden ? '••%' : '$percent%',
+      textAlign: TextAlign.end,
+      style: PollarTypography.tabular(Theme.of(context).textTheme.bodySmall!)
+          .copyWith(color: context.pollar.textSecondary),
     );
-    final heading = reflow
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                category.name,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: PollarSpacing.x2),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: amount),
-                  const SizedBox(width: PollarSpacing.x3),
-                  percentage,
-                ],
-              ),
-            ],
-          )
-        : Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  category.name,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-              const SizedBox(width: PollarSpacing.x3),
-              amount,
-              const SizedBox(width: PollarSpacing.x3),
-              percentage,
-            ],
-          );
+    final heading = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(category.name, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: PollarSpacing.x2),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: amount),
+            const SizedBox(width: PollarSpacing.x3),
+            percentage,
+          ],
+        ),
+      ],
+    );
     return Semantics(
       label: privacyHidden
           ? '${category.name}, percentual oculto pelo modo privacidade'

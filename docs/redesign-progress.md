@@ -420,14 +420,58 @@ Duas inspeções visuais e detector final sem achados. Revisão independente:
 **ship**, sem defeitos materiais; perfil alternativo em agente fresco. Isso
 não equivale a validação física Android/iOS, leitor de tela ou medição de FPS.
 
+## Fase 5 — Análises e patrimônio
+
+Relatórios e Patrimônio adotam uma única faixa sólida `financialSurface` por
+tela, conservando o teal, Inter, Lucide e as quantias exatas. Resultado do
+período e patrimônio líquido usam 34px; listas operacionais perdem as caixas
+repetidas e mantêm rótulos, divisores e valores completos com quebra limitada
+pela largura e reserva de geometria em privacidade. A rolagem de valores opta
+somente por estados reais no componente compartilhado existente.
+
+Nos relatórios, período e moeda antecedem o resultado; no compacto a exportação
+vem depois dele. “Base confirmada” mantém o critério principal visível e abre
+a explicação completa em um `ExpansionTile` nativo, com chevron Lucide e duração
+240ms ou zero em movimento reduzido. Cada gráfico explicita a pergunta que
+responde e mantém as animações geométricas anteriores. Os seis saldos mensais
+agora também aparecem em uma tabela visível e exata, assim como entradas e
+saídas. O histórico de contas permanece distinto das avaliações patrimoniais
+manuais. Período, critérios, compras de cartão, exclusão de transferências e
+pagamentos de fatura, CSV e verificação SHA-256 conservam suas regras.
+
+No patrimônio, o balanço vem antes das ações de cadastro no compacto. A meta
+prioritária, ativos, dívidas e gerenciamento usam grupos planos. A composição
+em duas colunas exige 960px úteis e texto até 1,3×; as linhas monetárias passam
+a considerar a largura local e empilham abaixo de 600px ou acima de 1,3×.
+Botões de ação crescem conforme o texto. Não há série histórica de avaliação,
+cotação automática ou alteração do saldo bancário ao reservar/concluir metas.
+
+A privacidade agora também remove os percentuais do registro de metas e a
+taxa anual das dívidas, inclusive da semântica. Datas e estados operacionais
+continuam acessíveis. O texto do resultado explica o cálculo sem revelar sua
+polaridade quando a quantia está oculta. Gráficos e progresso mantêm os
+fallbacks de privacidade e movimento reduzido já implementados.
+
+Dezessete testes funcionais novos verificam leitura inicial, seis pontos de
+saldo na tabela, moeda e exportação coerentes, bloqueio de exportação duplicada,
+privacidade durante movimento, largura local, estados vazios e registros
+extensos a 320/640/1024px com texto 1×/1,3×/2×. Dez goldens novos complementam
+as capturas anteriores: temas, critério expandido, valores longos, privacidade,
+metas e estado vazio. Os formulários e casos de uso permanecem intactos.
+
+A suíte completa terminou com **464 testes passando** e análise estática sem
+problemas. O build Windows Release com a configuração remota foi concluído;
+o executável foi reaberto separado do terminal, com janela respondendo.
+Duas inspeções visuais e detector final sem achados. Revisão
+independente final: **ship**, sem defeitos materiais, executada em agente fresco
+com perfil alternativo. As capturas e os testes de widgets não estabelecem
+validação física Android/iOS, leitor de tela ou medição de FPS.
+
 ## Sequência restante
 
-Dashboard, cartões/faturas e continuidade de navegação/listas receberam as
-passagens priorizadas. A sequência retoma agora as telas pendentes do plano.
+As passagens visuais das fases 1–5 estão implementadas, incluindo Planejamento
+e Análises/patrimônio. A próxima etapa visual é o refinamento mobile (fase 7).
 
-O slice 4C de Planejamento também está concluído. A próxima etapa é Análises.
-
-5. Análises/patrimônio: perguntas, critérios, valores e alternativas textuais.
 6. Inteligência: fase condicional de produto, **não incluída** no redesign
    visual sem definição de dados e regras.
 7. Refinamento mobile, complementando a validação feita em cada fase.
