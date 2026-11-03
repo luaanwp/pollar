@@ -1,17 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pollar_app/app/theme/pollar_theme.dart';
-import 'package:pollar_app/features/wealth/data/in_memory_wealth_repository.dart';
-import 'package:pollar_app/features/wealth/domain/wealth_goal.dart';
-import 'package:pollar_app/features/wealth/presentation/wealth_controller.dart';
-import 'package:pollar_app/features/wealth/presentation/wealth_screen.dart';
 
-import '../support/wealth_fixture.dart';
+import '../support/wealth_golden_fixture.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +21,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(_fixtureApp());
+    await tester.pumpWidget(wealthGoldenApp());
     await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile(golden));
   }
@@ -50,7 +41,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(_fixtureApp(dark: true));
+    await tester.pumpWidget(wealthGoldenApp(dark: true));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Nova meta'));
     await tester.pumpAndSettle();
@@ -67,7 +58,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-    await tester.pumpWidget(_fixtureApp());
+    await tester.pumpWidget(wealthGoldenApp());
     await tester.pumpAndSettle();
     await expectLater(
       find.byType(MaterialApp),
@@ -75,35 +66,12 @@ void main() {
     );
   });
 
-  testWidgets('wealth goal saving compact', (tester) async {
-    final repository = _PendingWealthRepository();
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(_fixtureApp(repository: repository));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Nova meta'));
-    await tester.pumpAndSettle();
-    final fields = find.byType(TextFormField);
-    await tester.enterText(fields.at(0), 'Casa própria');
-    await tester.enterText(fields.at(1), '100.000,00');
-    await tester.tap(find.text('Salvar meta'));
-    await tester.pump();
-    await expectLater(
-      find.byType(MaterialApp),
-      matchesGoldenFile('wealth_goal_saving_390x844.png'),
-    );
-    repository.complete();
-    await tester.pumpAndSettle();
-  });
-
   testWidgets('wealth management wide', (tester) async {
     tester.view.physicalSize = const Size(1200, 900);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(_fixtureApp());
+    await tester.pumpWidget(wealthGoldenApp());
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Gerenciar registros'),
@@ -121,7 +89,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(_fixtureApp());
+    await tester.pumpWidget(wealthGoldenApp());
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Gerenciar registros'),
@@ -143,40 +111,4 @@ void main() {
       matchesGoldenFile('wealth_pause_confirmation_390x844.png'),
     );
   });
-}
-
-Widget _fixtureApp({bool dark = false, InMemoryWealthRepository? repository}) =>
-    ProviderScope(
-      overrides: [
-        wealthRepositoryProvider.overrideWithValue(
-          repository ?? createWealthFixtureRepository(),
-        ),
-        wealthLedgerSourceProvider.overrideWithValue(
-          const WealthFixtureLedgerSource(),
-        ),
-        wealthClockProvider.overrideWithValue(() => wealthFixtureNow),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: PollarTheme.light(),
-        darkTheme: PollarTheme.dark(),
-        themeMode: dark ? ThemeMode.dark : ThemeMode.light,
-        locale: const Locale('pt', 'BR'),
-        supportedLocales: const [Locale('pt', 'BR')],
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        home: const Scaffold(body: WealthScreen()),
-      ),
-    );
-
-class _PendingWealthRepository extends InMemoryWealthRepository {
-  final _write = Completer<void>();
-
-  @override
-  Future<void> addGoal(WealthGoal goal) => _write.future;
-
-  void complete() => _write.complete();
 }

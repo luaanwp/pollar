@@ -122,7 +122,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(_fixtureApp(repository: repository));
+    await tester.pumpWidget(_fixtureApp(repository: repository, reduced: true));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Novo orçamento'));
     await tester.pumpAndSettle();
@@ -130,7 +130,7 @@ void main() {
     await tester.enterText(fields.at(0), 'Saúde');
     await tester.enterText(fields.at(1), '250,00');
     await tester.tap(find.text('Salvar orçamento'));
-    await tester.pump();
+    await tester.pumpAndSettle();
     await expectLater(
       find.byType(MaterialApp),
       matchesGoldenFile('planning_budget_saving_390x844.png'),
@@ -180,6 +180,7 @@ void main() {
 
 Widget _fixtureApp({
   bool dark = false,
+  bool reduced = false,
   InMemoryPlanningRepository? repository,
 }) => ProviderScope(
   overrides: [
@@ -193,6 +194,10 @@ Widget _fixtureApp({
   ],
   child: MaterialApp(
     debugShowCheckedModeBanner: false,
+    builder: (context, child) => MediaQuery(
+      data: MediaQuery.of(context).copyWith(disableAnimations: reduced),
+      child: child!,
+    ),
     theme: PollarTheme.light(),
     darkTheme: PollarTheme.dark(),
     themeMode: dark ? ThemeMode.dark : ThemeMode.light,

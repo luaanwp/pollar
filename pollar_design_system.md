@@ -190,6 +190,16 @@ Variants: primary, secondary, tertiary/ghost, danger, icon-only. Heights: 32 com
 
 Primary is reserved for the single main action in a region. Destructive actions require explicit labels; do not use an unlabeled trash icon as the final confirmation.
 
+### Control accessibility — phase 8
+
+- `PollarButton` names only its visual content in Semantics; native `TextButton` retains role, tap, focus and state. Exclude only visual descendants.
+- Busy announces “label, carregando” in a live region and blocks activation; all four variants retain active colors and text contrast of at least 4.5:1.
+- Keyboard focus uses `PollarFocusOutline`: an external 2px `info` stroke with a 2px gap, without changing layout, touch target or Tab order. Contrast is at least 3:1 on canvas/background/financialSurface in both themes.
+- `PollarIconButton.selected` defaults to null for an ordinary action; supplying a bool opts into native selection semantics. Tooltip supplies the name; disabled icon alpha is multiplied by 0.55.
+- Disabled ghost backgrounds multiply existing alpha by 0.55, preserving transparency.
+- Button/state spinners use a static loader icon when `PollarMotion.reduced` applies. Sheet/error titles expose headers; retry actions allow adaptive height.
+- Preserve the existing palette, fonts, tokens and financial behavior. Validation evidence and physical acceptance limits live in [redesign-progress](docs/redesign-progress.md).
+
 ### Inputs
 
 States: default, hover, focus, filled, disabled, read-only, error, success. Labels remain visible above the input; placeholders are examples, never replacements for labels. Errors state what happened and how to fix it.

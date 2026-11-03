@@ -3,6 +3,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/theme/pollar_theme.dart';
 import 'pollar_button.dart';
+import 'pollar_motion.dart';
 
 /// Centered loading state with calm, specific copy.
 class PollarLoadingState extends StatelessWidget {
@@ -15,7 +16,7 @@ class PollarLoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PollarStateLayout(
-    visual: MediaQuery.disableAnimationsOf(context)
+    visual: PollarMotion.reduced(context)
         ? Icon(LucideIcons.loaderCircle, size: 24, color: context.pollar.info)
         : SizedBox.square(
             dimension: 24,
@@ -55,6 +56,7 @@ class PollarErrorState extends StatelessWidget {
     message: message,
     action: PollarButton(
       label: actionLabel,
+      adaptiveHeight: true,
       variant: PollarButtonVariant.secondary,
       onPressed: onRetry,
     ),
@@ -91,10 +93,13 @@ class _PollarStateLayout extends StatelessWidget {
             children: [
               visual,
               const SizedBox(height: PollarSpacing.x4),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineSmall,
+              Semantics(
+                header: true,
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
               ),
               if (message case final message?) ...[
                 const SizedBox(height: PollarSpacing.x2),

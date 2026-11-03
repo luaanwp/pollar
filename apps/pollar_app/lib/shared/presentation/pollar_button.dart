@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/theme/pollar_theme.dart';
 import 'pollar_motion.dart';
+import 'pollar_focus_outline.dart';
 
 enum PollarButtonVariant { primary, secondary, ghost, danger }
 
@@ -73,7 +74,7 @@ class PollarButton extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (loading) ...[
-          if (MediaQuery.disableAnimationsOf(context))
+          if (PollarMotion.reduced(context))
             Icon(LucideIcons.loaderCircle, size: iconSize)
           else
             SizedBox.square(
@@ -102,13 +103,10 @@ class PollarButton extends StatelessWidget {
       ],
     );
 
-    return PollarPressMotion(
+    return PollarFocusOutline(
       enabled: !disabled,
-      child: Semantics(
-        label: loading ? '$label, carregando' : label,
-        button: true,
+      child: PollarPressMotion(
         enabled: !disabled,
-        excludeSemantics: true,
         child: SizedBox(
           width: fullWidth ? double.infinity : null,
           height: adaptiveHeight ? null : height,
@@ -136,7 +134,9 @@ class PollarButton extends StatelessWidget {
               ),
               foregroundColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.disabled)) {
-                  return foreground.withValues(alpha: 0.55);
+                  return loading
+                      ? foreground
+                      : foreground.withValues(alpha: 0.55);
                 }
                 if (states.contains(WidgetState.hovered) &&
                     variant != PollarButtonVariant.primary &&
@@ -147,7 +147,9 @@ class PollarButton extends StatelessWidget {
               }),
               backgroundColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.disabled)) {
-                  return background.withValues(alpha: 0.55);
+                  return loading
+                      ? background
+                      : background.withValues(alpha: background.a * 0.55);
                 }
                 if (states.contains(WidgetState.hovered)) {
                   if (variant == PollarButtonVariant.primary) {
@@ -161,13 +163,15 @@ class PollarButton extends StatelessWidget {
                 return background;
               }),
               side: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.focused)) {
-                  return BorderSide(color: colors.info, width: 2);
-                }
                 return BorderSide(color: _border(colors));
               }),
             ),
-            child: content,
+            child: Semantics(
+              label: loading ? '$label, carregando' : label,
+              liveRegion: loading,
+              excludeSemantics: true,
+              child: content,
+            ),
           ),
         ),
       ),
@@ -206,7 +210,7 @@ class PollarIconButton extends StatelessWidget {
     required this.onPressed,
     this.size = PollarControlSize.standard,
     this.outlined = false,
-    this.selected = false,
+    this.selected,
     this.focusNode,
   });
 
@@ -215,7 +219,9 @@ class PollarIconButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final PollarControlSize size;
   final bool outlined;
-  final bool selected;
+
+  /// Null is an ordinary action; a bool opts into native toggle semantics.
+  final bool? selected;
   final FocusNode? focusNode;
 
   @override
@@ -237,39 +243,44 @@ class PollarIconButton extends StatelessWidget {
         ? math.max(requested, compactMinimum)
         : requested;
 
-    return IconButton(
-      focusNode: focusNode,
-      tooltip: label,
-      onPressed: onPressed,
-      isSelected: selected,
-      selectedIcon: Icon(
-        icon,
-        size: size == PollarControlSize.compact ? 16 : 20,
-      ),
-      icon: Icon(icon, size: size == PollarControlSize.compact ? 16 : 20),
-      style: ButtonStyle(
-        fixedSize: WidgetStatePropertyAll(Size.square(box)),
-        minimumSize: WidgetStatePropertyAll(Size.square(box)),
-        padding: const WidgetStatePropertyAll(EdgeInsets.zero),
-        foregroundColor: WidgetStateProperty.resolveWith(
-          (states) => selected ? colors.primary : colors.textSecondary,
+    return PollarFocusOutline(
+      enabled: onPressed != null,
+      child: IconButton(
+        focusNode: focusNode,
+        tooltip: label,
+        onPressed: onPressed,
+        isSelected: selected,
+        selectedIcon: Icon(
+          icon,
+          size: size == PollarControlSize.compact ? 16 : 20,
         ),
-        backgroundColor: WidgetStateProperty.resolveWith((states) {
-          if (selected) return colors.primarySoft;
-          if (states.contains(WidgetState.hovered)) return colors.surfaceAlt;
-          return outlined ? colors.canvas : Colors.transparent;
-        }),
-        side: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.focused)) {
-            return BorderSide(color: colors.info, width: 2);
-          }
-          return BorderSide(
-            color: outlined ? colors.borderStrong : Colors.transparent,
-          );
-        }),
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(PollarRadii.medium),
+        icon: Icon(icon, size: size == PollarControlSize.compact ? 16 : 20),
+        style: ButtonStyle(
+          fixedSize: WidgetStatePropertyAll(Size.square(box)),
+          minimumSize: WidgetStatePropertyAll(Size.square(box)),
+          padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+          foregroundColor: WidgetStateProperty.resolveWith((states) {
+            final color = selected == true
+                ? colors.primary
+                : colors.textSecondary;
+            return states.contains(WidgetState.disabled)
+                ? color.withValues(alpha: color.a * 0.55)
+                : color;
+          }),
+          backgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (selected == true) return colors.primarySoft;
+            if (states.contains(WidgetState.hovered)) return colors.surfaceAlt;
+            return outlined ? colors.canvas : Colors.transparent;
+          }),
+          side: WidgetStateProperty.resolveWith((states) {
+            return BorderSide(
+              color: outlined ? colors.borderStrong : Colors.transparent,
+            );
+          }),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(PollarRadii.medium),
+            ),
           ),
         ),
       ),

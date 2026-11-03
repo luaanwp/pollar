@@ -514,14 +514,65 @@ reaberto separado do terminal e a janela permaneceu respondendo. O APK é
 O pacote foi inspecionado com aapt; não foi instalado ou exercitado fisicamente
 no Android nesta etapa. Binários locais permanecem fora do Git.
 
+## Fase 8 — Polimento e acessibilidade transversal
+
+Um teste de regressão reproduziu a ausência de `SemanticsAction.tap` em botões
+rotulados: a exclusão semântica envolvia o controle nativo inteiro. A exclusão
+agora se limita ao conteúdo visual, com nome acessível único; ativação, papel,
+estado e foco ficam com `TextButton`. Os quatro estilos foram verificados por
+ativação semântica com chamada única. Ações indisponíveis ou em carregamento
+continuam sem ativação, e carregamento anuncia o estado como live region.
+
+`PollarFocusOutline` pinta o foco de teclado em `info`, com traço de 2px e vão
+de 2px fora do controle. O alvo e o layout não mudam, e o invólucro não acrescenta
+paradas de Tab nem nós semânticos. Contraste não textual ≥3:1 foi testado contra
+canvas, fundo e superfície financeira nos dois temas. Tab/Enter/Espaço e retorno
+de foco após confirmação continuam nativos.
+
+Botões de ícone comuns deixam de expor seleção falsa; `selected` opcional ativa
+os estados selecionado/não selecionado somente quando o chamador os fornece.
+Os nomes continuam nos tooltips nativos. O botão ghost desabilitado conserva
+transparência, e carregamento mantém o contraste do estilo ativo, com ativação
+bloqueada. Indicadores de botão e tela usam a mesma redução de movimento para
+disableAnimations, accessibleNavigation e TickerMode.
+
+Títulos de folhas e estados de recuperação recebem papel de cabeçalho. A ação
+de recuperação cresce com texto ampliado e permanece alcançável por rolagem.
+Vinte e cinco testes novos cobrem os contratos acima; seis goldens novos mostram
+foco e estados em 320/390/720/1200px, claro/escuro e texto 2×. Isso verifica a
+árvore semântica e os eventos do Flutter, sem alegar execução física de TalkBack,
+VoiceOver, Narrador, gestos ou desempenho.
+
+As capturas de gravação pendente usam movimento reduzido e aguardam o estado
+estável. A captura de meta foi isolada em arquivo de teste próprio, reutilizando
+a mesma fixture de aplicação, após reproduzir diferenças de pixels no texto da
+data conforme a ordem dos testes. O cenário, o golden aprovado e a comparação
+exata foram preservados; a causa interna dessa interferência não foi comprovada.
+
+Validação final: **522 testes aprovados**, incluindo os testes funcionais e
+goldens, e `flutter analyze --no-pub` sem problemas. Os dois arquivos de goldens
+de patrimônio também passaram juntos, preservando a captura original do
+formulário escuro e a comparação exata do estado de gravação.
+
+Revisão independente com perfil alternativo: **ship**, sem achados materiais
+de fidelidade visual. Duas rodadas visuais e uma execução do detector encerraram
+a inspeção de design desta etapa. Nenhuma regra financeira foi alterada.
+
+Builds release Windows e Android concluídos. O executável atualizado foi reaberto
+com janela responsiva. APK inspecionado: pacote `com.pollar.pollar_app`, versão
+`1.0.0`, código `5`, em `dist/pollar-redesign-v1.0.0-5.apk`, com `.sha256` ao lado.
+SHA-256: `2BC4DB51DDBF55D2CD3BA3687A27A053555A7F89C9C9375BA9CE160D1496C133`.
+O novo APK não foi instalado ou exercitado fisicamente nesta etapa. Binários
+locais permanecem fora do Git.
+
 ## Sequência restante
 
-As passagens visuais das fases 1–5 e o refinamento mobile da fase 7 estão
-implementados. A próxima etapa visual é o polimento/acessibilidade (fase 8).
+As fases visuais 1–5, o refinamento mobile da fase 7 e o polimento/acessibilidade
+da fase 8 estão implementados. O próximo passo é o aceite visual e de interação
+do pacote atualizado no aparelho, incluindo tecnologia assistiva e desempenho.
 
 6. Inteligência: fase condicional de produto, **não incluída** no redesign
    visual sem definição de dados e regras.
-8. Polimento e acessibilidade transversal.
 
-Esta fase não declara o redesign completo nem transforma as pendências de
-aceite da V1 em resultados aprovados.
+O fechamento da implementação visual não transforma as pendências de aceite
+da V1 em resultados aprovados nem declara a publicação da versão.

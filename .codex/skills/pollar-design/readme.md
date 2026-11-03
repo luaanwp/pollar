@@ -219,6 +219,17 @@ Pollar is the official product name. Brand personality: private, composed, depen
 - Compact shell body protects lateral areas, leaving bottom protection to the five-destination native bar; wide body includes the bottom safe area. Both omit top protection already handled by the app bar.
 - Preserve names, callbacks, actions and dismissibility; reduced motion disables native sheet/dialog animation. The next redesign step is phase 8; conditional phase 6 is outside this slice.
 
+### Control accessibility — phase 8
+
+- Keep native `TextButton` role, tap, focus and enabled state; `PollarButton` supplies the name while excluding only visual content semantics.
+- Busy names “label, carregando” in a live region and disables activation; primary/secondary/ghost/danger retain active colors with text contrast ≥4.5:1.
+- Use `PollarFocusOutline` for keyboard-only focus: external 2px `info` stroke, 2px gap, no layout/target change or additional Tab stop. Contrast ≥3:1 on canvas/background/financialSurface in both themes.
+- Its `FocusableActionDetector` omits focus semantics and its wrapper node skips traversal; native descendants own activation and focus.
+- `PollarIconButton.selected` is nullable: null means action; bool opts into native selection. Tooltip owns the name; disabled icon alpha multiplies by 0.55.
+- Disabled ghost preserves transparency by multiplying existing background alpha. Busy remains visually distinct from unavailable actions.
+- Button/state loading falls back to a static icon through `PollarMotion.reduced`; sheet/error titles are semantic headers and retry allows adaptive height.
+- Visual implementation covers phases 1–5, 7 and 8; conditional Intelligence (6) stays outside the redesign. Evidence and physical acceptance limits: [redesign-progress](../../../../docs/redesign-progress.md).
+
 ## Sources
 
 Everything here derives from two files the user supplied — there was **no codebase, no Figma file, no screenshots and no decks**:

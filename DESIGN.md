@@ -324,8 +324,18 @@ Contidos e verbais, os botões priorizam a tarefa sobre a marca.
 - **Primary:** teal sólido, texto de alto contraste, ícone opcional de 16px ou 20px e padding horizontal associado ao tamanho.
 - **Secondary / Ghost:** canvas com borda forte ou fundo transparente; ambos recebem superfície alternativa no hover.
 - **Danger:** vermelho semântico, reservado a ações destrutivas.
-- **Hover / Focus / Disabled:** primário escurece no tema claro; foco usa traço informativo de 2px; desabilitado reduz a opacidade para 55%. Não há ripple.
+- **Hover / Focus / Disabled:** primário escurece no tema claro; foco usa traço informativo de 2px; desabilitado sem carregamento reduz a opacidade para 55%, multiplicando o alpha existente do fundo. Não há ripple.
 - **Icon button:** controle quadrado, tooltip e nome semântico obrigatórios; seleção combina fundo menta com ícone teal.
+
+### Control Accessibility — phase 8
+
+- **Native action:** `PollarButton` nomeia e exclui apenas o conteúdo visual da semântica; `TextButton` conserva papel, ativação, foco e estado nativos.
+- **Busy:** anuncia “rótulo, carregando” em live region e bloqueia ativação; primary/secondary/ghost/danger conservam cores ativas e texto com contraste AA (4,5:1).
+- **Keyboard focus:** `PollarFocusOutline` pinta traço `info` de 2px com vão externo de 2px somente no foco de teclado, sem alterar alvo, layout ou acrescentar parada de Tab. O contraste é pelo menos 3:1 sobre canvas, background e financialSurface nos dois temas.
+- **Icon action:** `selected: null` é ação comum; somente um bool fornecido expõe seleção nativa. Tooltip fornece o nome; ícone desabilitado multiplica seu alpha por 55%.
+- **Transparency:** ghost desabilitado multiplica o alpha do fundo existente; transparente continua transparente.
+- **Feedback:** spinners de botão/estado viram ícone estático com `PollarMotion.reduced`; títulos de sheet/erro são cabeçalhos semânticos e a nova tentativa permite altura adaptável.
+- **Evidence:** revisão e limites de validação ficam em [redesign-progress](docs/redesign-progress.md); aceite físico de acessibilidade e desempenho permanece separado.
 
 ### Cards / Containers
 

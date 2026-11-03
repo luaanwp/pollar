@@ -224,9 +224,14 @@ class _PollarBottomSheet extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              title,
-                              style: Theme.of(context).textTheme.headlineSmall,
+                            Semantics(
+                              header: true,
+                              child: Text(
+                                title,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall,
+                              ),
                             ),
                             const SizedBox(height: PollarSpacing.x2),
                             Text(

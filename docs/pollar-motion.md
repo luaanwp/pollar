@@ -81,6 +81,15 @@ para Mobile (fase 7); Inteligência (fase 6) segue condicional e fora deste slic
 - Cobertura funcional verifica teclado, scroll, áreas seguras, edição e movimento reduzido. Os nove goldens `mobile_*` usam IME explicitamente simulado; três capturas 2× de Relatórios/Transações refletem os rótulos externos.
 - Essa evidência automatizada não mede FPS nem valida leitor de tela ou gestos em hardware. Resultados finais de suíte, análise, build e runtime ficam em `docs/redesign-progress.md`; segue a fase 8, com fase 6 condicional fora deste slice.
 
+## Polimento e acessibilidade — fase 8
+
+- Spinners de `PollarButton` e `PollarLoadingState` consultam `PollarMotion.reduced`: `disableAnimations`, navegação acessível ou `TickerMode` inativo mostram ícone estático.
+- Carregamento mantém rótulo e anuncia estado em live region; o botão bloqueia ativação e conserva as cores ativas legíveis nas quatro variantes.
+- `PollarFocusOutline` só pinta no foco de teclado: traço `info` de 2px e vão externo de 2px, sem animar, alterar layout/alvo ou inserir parada de Tab.
+- O controle nativo conserva papel, tap, foco e estado; somente o conteúdo visual tem semântica excluída. Ícones comuns usam `selected: null`, com seleção nativa apenas quando há bool explícito.
+- Títulos de sheet/erro são cabeçalhos semânticos; a nova tentativa permite altura adaptável. O fallback não altera dados, cálculos ou navegação.
+- Capturas `polish_*` registram os estados; validação final e limites de runtime ficam em [redesign-progress](redesign-progress.md). Aceite físico de AT, gestos e FPS permanece separado.
+
 ## Navegação e listas
 
 `PollarBranchStack` preserva o `IndexedStack`, os navegadores de cada branch,

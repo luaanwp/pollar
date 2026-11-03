@@ -340,6 +340,14 @@ das telas, os cinco destinos e as regras financeiras continuam os existentes.
 As evidências usam insets/IME simulados; aceite físico permanece separado. O
 próximo passo visual é polimento e acessibilidade transversal (fase 8).
 
+A fase 8 fecha os componentes compartilhados: ativação semântica nativa dos
+botões, foco externo com contraste, seleção de ícones somente quando explícita,
+carregamento legível e estático quando necessário, cabeçalhos semânticos e ação
+de recuperação que cresce com texto. Os testes exercitam a árvore semântica,
+teclado e estados do Flutter. A implementação das fases visuais não substitui
+o aceite em hardware, tecnologias assistivas ou medição de desempenho; a fase
+condicional de Inteligência permanece fora deste redesign.
+
 ## Limitações da auditoria
 
 O acesso ao repositório funcionou sem autenticação neste ambiente. A análise é estática e usou goldens existentes, não execução interativa no Windows/Android/iOS. Não há evidência de métricas de uso para reordenar destinos, nem dados/engine de IA para publicar insights. O código não contém CSS ou biblioteca de charts: tema Flutter e `CustomPainter` fazem esse papel. Sincronização opcional já consta do código, embora `PRODUCT.md` a descreva como etapa posterior; a documentação de produto deve esclarecer a diferença entre capacidade implementada e estágio de lançamento. O skill local `pollar-design` aponta a `README.md`, enquanto o checkout contém `readme.md` em minúsculas; isso pode falhar em sistemas sensíveis a maiúsculas. O próprio `readme.md` tem dois tons semânticos divergentes dos tokens atuais. Alinhar o guia quando a fase visual for implementada. Validar qualquer alteração visual no aplicativo e nas capturas golden antes de declarar o redesign concluído.
