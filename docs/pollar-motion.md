@@ -112,6 +112,16 @@ reduzido remove o efeito. Mapa de rotas e autenticação permanecem iguais.
 As cinco linhas de Mais usam `PollarReveal` por identidade, com índices de 0 a
 4; reconstruções ordinárias de tema ou privacidade não repetem a entrada.
 
+**Superfície opaca de rota.** `pollarMotionPage` preenche toda a área disponível
+com `background`, inclusive gutters de telas sem Scaffold próprio, tanto no
+`MaterialPage` de iOS/macOS quanto na página customizada. Na customizada, um
+fundo estático fica fora do fade/deslocamento: títulos e ações anteriores não
+transparecem durante push/pop. Permanecem 240/140ms, deslocamento de 0,025 e o
+corte por movimento reduzido. O teste `test/app/routing/route_surface_test.dart`
+verifica pixels de fundo em claro/escuro; goldens `route_account_push_*` e
+`route_account_pop_*` registram quadros das rotas reais. Resultados finais ficam
+em `docs/redesign-progress.md`.
+
 Transações guarda no `State` somente os IDs das linhas já construídas. Uma
 identidade construída pela primeira vez pode entrar com `PollarReveal` e
 stagger limitado; filtrar, retornar à branch e alternar entre desktop e compacto

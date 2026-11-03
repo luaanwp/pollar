@@ -10,6 +10,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../app/theme/pollar_theme.dart';
 import '../../../shared/presentation/pollar_banner.dart';
 import '../../../shared/presentation/pollar_button.dart';
+import '../../../shared/presentation/pollar_brand.dart';
 import '../../../shared/presentation/pollar_card.dart';
 import '../../../shared/presentation/status_badge.dart';
 import '../application/auth_gateway.dart';
@@ -145,7 +146,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Pollar', style: Theme.of(context).textTheme.headlineMedium),
+        const PollarBrand(),
         const SizedBox(height: PollarSpacing.x8),
         Text(
           'Seu livro-caixa começa com você',
@@ -236,6 +237,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             onPressed: _loading ? null : _submit,
             loading: _loading,
             fullWidth: true,
+            adaptiveHeight: true,
           ),
           if (_codeSent) ...[
             const SizedBox(height: PollarSpacing.x2),
@@ -251,6 +253,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       _message = null;
                     }),
               fullWidth: true,
+              adaptiveHeight: true,
             ),
           ],
         ],
@@ -258,28 +261,38 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     );
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 980),
-            child: ListView(
-              padding: EdgeInsets.all(
-                wide ? PollarSpacing.x8 : PollarSpacing.x4,
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 980),
+                  child: Padding(
+                    padding: EdgeInsets.all(
+                      wide ? PollarSpacing.x8 : PollarSpacing.x4,
+                    ),
+                    child: wide
+                        ? Row(
+                            key: const Key('auth-content'),
+                            children: [
+                              Expanded(child: introduction),
+                              const SizedBox(width: PollarSpacing.x10),
+                              SizedBox(width: 430, child: form),
+                            ],
+                          )
+                        : Column(
+                            key: const Key('auth-content'),
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              introduction,
+                              const SizedBox(height: PollarSpacing.x6),
+                              form,
+                            ],
+                          ),
+                  ),
+                ),
               ),
-              children: [
-                if (wide)
-                  Row(
-                    children: [
-                      Expanded(child: introduction),
-                      const SizedBox(width: PollarSpacing.x10),
-                      SizedBox(width: 430, child: form),
-                    ],
-                  )
-                else ...[
-                  introduction,
-                  const SizedBox(height: PollarSpacing.x6),
-                  form,
-                ],
-              ],
             ),
           ),
         ),

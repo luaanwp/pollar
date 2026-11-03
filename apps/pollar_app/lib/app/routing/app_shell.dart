@@ -9,6 +9,7 @@ import '../theme/pollar_theme.dart';
 import '../theme/theme_mode_provider.dart';
 import '../../shared/presentation/pollar_button.dart';
 import '../../shared/presentation/pollar_motion.dart';
+import '../../shared/presentation/pollar_brand.dart';
 import 'navigation_preferences.dart';
 
 /// A top-level navigation destination in the app shell.
@@ -298,39 +299,14 @@ class _RailHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pollar = context.pollar;
-    // Placeholder ledger/flow mark (a rounded square), per the design system —
-    // not a logo. The wordmark shows only when the rail is extended.
-    final mark = Container(
-      width: 28,
-      height: 28,
-      decoration: BoxDecoration(
-        color: pollar.primary,
-        borderRadius: BorderRadius.circular(PollarRadii.small),
-      ),
-    );
-
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: PollarSpacing.x5,
         vertical: PollarSpacing.x5,
       ),
       child: extended
-          ? Row(
-              children: [
-                mark,
-                const SizedBox(width: PollarSpacing.x3),
-                Expanded(
-                  child: Text(
-                    'Pollar',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
-              ],
-            )
-          : mark,
+          ? const PollarBrand()
+          : Semantics(label: 'Pollar', child: const PollarBrandMark()),
     );
   }
 }

@@ -251,6 +251,8 @@ A paleta combina teal profundo com cinzas frios de viés verde; o tema escuro pr
 
 **Character:** Uma única família contemporânea sustenta a interface inteira. A diferença entre conteúdo e ação vem sobretudo de peso, não de saltos dramáticos de tamanho.
 
+A assinatura Pollar usa Inter SemiBold (600), mais leve que os títulos de página. Nos arquivos de marca, as letras são contornos da Inter distribuída com o app; na interface, `PollarBrand` usa a mesma família e peso.
+
 ### Hierarchy
 
 - **Display:** totais de maior destaque e momentos raros de primeiro nível.
@@ -319,7 +321,7 @@ A geometria é suavemente arredondada e funcional: chips usam raio pequeno, camp
 Contidos e verbais, os botões priorizam a tarefa sobre a marca.
 
 - **Shape:** retângulo suavemente arredondado com alturas compacta, padrão e proeminente de 32px, 40px e 48px; no Android, qualquer variante mantém alvo mínimo de 48dp em toda largura.
-- **Long labels:** `PollarButton.adaptiveHeight` é optativo e permanece `false` por padrão. Em Contas, cadastro e confirmação de arquivamento podem crescer acima do mínimo, preservando rótulo completo, padding e alvo com texto ampliado. Outros botões conservam sua geometria até migração própria.
+- **Long labels:** `PollarButton.adaptiveHeight` é optativo e permanece `false` por padrão. Em Contas, cadastro e confirmação de arquivamento podem crescer acima do mínimo; as ações da tela de entrada também optam por essa altura adaptável, preservando rótulo completo, padding e alvo com texto ampliado. Outros botões conservam sua geometria até migração própria.
 - **Face focus:** `PollarButton.focusNode` é optativo. O flip usa os nós já mantidos por `PollarKineticCard` para devolver foco à ação da face visível; a face oculta permanece fora de foco, toque e semântica.
 - **Primary:** teal sólido, texto de alto contraste, ícone opcional de 16px ou 20px e padding horizontal associado ao tamanho.
 - **Secondary / Ghost:** canvas com borda forte ou fundo transparente; ambos recebem superfície alternativa no hover.
@@ -404,7 +406,7 @@ A navegação acompanha a largura sem mudar o mapa mental.
 - **Header:** contexto de destino em corpo secundário de 14px, tema e privacidade globais. Na lista compacta de Transações, a barra mantém o título de página em 18px e cresce com a escala de texto, pois essa lista não tem outro título no corpo.
 - **More:** “Entenda seus dados” reúne Relatórios e Patrimônio; “Seu aplicativo” reúne Sincronização, Dados e backup e Preferências. Linhas com divisores substituem cartões equivalentes; texto quebra naturalmente e o foco recebe contorno informativo de 2px.
 - **Branch arrival:** `PollarBranchStack` desloca horizontalmente somente o destino atual por até 24dp (`PollarMotion.branchTravel`), em 240ms com `easeOutCubic`. A ordem dos destinos determina o lado de entrada, invertido em RTL. O conteúdo mantém opacidade integral e recorte no shell; não há cópia da tela anterior. O `IndexedStack` e os navegadores permanecem montados; branches inativas ficam fora de pintura, foco, semântica e tickers. Movimento reduzido ou navegação acessível encerram a entrada imediatamente, inclusive durante o efeito.
-- **Native navigation:** o indicador da barra inferior usa a animação nativa de 240ms, ou duração zero com movimento reduzido; o rail conserva seu comportamento nativo. Subrotas usam `pollarMotionPage`, incluindo Dados e backup, Sincronização e Preferências em Mais. iOS/macOS conservam `MaterialPage` para o retorno nativo; as demais plataformas usam a transição existente. Mapa de rotas e autenticação permanecem iguais.
+- **Native navigation:** o indicador da barra inferior usa a animação nativa de 240ms, ou duração zero com movimento reduzido; o rail conserva seu comportamento nativo. Subrotas usam `pollarMotionPage`, incluindo Dados e backup, Sincronização e Preferências em Mais. Cada destino pinta uma superfície opaca de fundo em toda a área disponível, inclusive gutters. Na transição customizada, esse fundo fica estático, fora do fade e do deslocamento do conteúdo, impedindo a sobreposição de títulos e ações da rota anterior durante push/pop. iOS/macOS conservam `MaterialPage` com a mesma superfície para o retorno nativo; as demais plataformas mantêm 240ms de entrada, 140ms de retorno e deslocamento de 0,025 da largura. Movimento reduzido conserva o destino opaco sem o efeito. Mapa de rotas e autenticação permanecem iguais.
 - **More arrival:** as cinco linhas usam `PollarReveal` por identidade, com índices de 0 a 4; reconstruções de tema ou privacidade não repetem a entrada.
 
 ### Transaction Ledger Motion
@@ -560,12 +562,25 @@ O slice 4C implementa as **faixas de planejamento** dentro desse contrato:
 
 **The Recoverable Pause Rule.** Pausar é reversível e preserva a configuração; estado e consequência devem ser declarados antes da mudança.
 
+### Marca
+
+O monograma P aprovado tem um único contorno, com recorte diagonal e proporções preservadas em todas as variantes. `apps/pollar_app/tool/brand_geometry.json` é a fonte da geometria; os geradores produzem os SVGs, o caminho Dart usado por `PollarBrandMark` e os vetores de launcher. `PollarBrand` identifica a entrada e o rail expandido; o rail recolhido usa o símbolo isolado.
+
+**The Same Mark Rule.** Reutilize a geometria canônica, sem redesenhar o P por contexto. Símbolos e assinaturas usam preenchimento sólido teal ou menta, fundo transparente e nenhum efeito; o ícone de aplicativo usa menta sobre fundo escuro sólido. SVGs contêm caminhos vetoriais reais, inclusive nas letras, e os PNGs derivados preservam a transparência aplicável. Preserve espaço negativo e margem livre de pelo menos um quarto da altura do símbolo isolado. Consulte [`assets/brand/README.md`](apps/pollar_app/assets/brand/README.md) para variantes e reprodução.
+
 ### Identidade e sincronização
 
 A entrada funciona como um limiar de privacidade, não como campanha de
 aquisição: propósito e garantias locais precedem o formulário. Em largura ampla,
 contexto e formulário dividem duas colunas; no compacto, contexto, garantias e
 formulário formam uma única sequência rolável.
+
+O conjunto da entrada fica centralizado horizontal e verticalmente na área
+segura disponível, com largura máxima de 980px. O scroll conserva altura mínima
+igual à viewport: centraliza quando há espaço e permite percorrer todo o
+conteúdo quando a janela, o teclado ou o texto ampliado reduzem essa área.
+No amplo, o formulário mede 430px; no compacto, acompanha a coluna. As ações de
+entrada optam por altura adaptável para preservar seus rótulos completos.
 
 O formulário de entrada usa código de e-mail, sem campo de senha. O segundo
 passo mostra o código TOTP como ação principal e, somente em dispositivo já

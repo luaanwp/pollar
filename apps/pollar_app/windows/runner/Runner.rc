@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.pollar" "\0"
-            VALUE "FileDescription", "pollar_app" "\0"
+            VALUE "FileDescription", "Pollar" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "pollar_app" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.pollar. All rights reserved." "\0"
             VALUE "OriginalFilename", "pollar_app.exe" "\0"
-            VALUE "ProductName", "pollar_app" "\0"
+            VALUE "ProductName", "Pollar" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

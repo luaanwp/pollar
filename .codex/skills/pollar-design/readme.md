@@ -8,6 +8,13 @@ of `UI_UX_REDESIGN_POLLAR.md`. The HTML kits and `uploads/` below are historical
 visual references, not a replacement for current Dart tokens or live behavior.
 Inter and Lucide are bundled by the Flutter app; do not add their web CDNs.
 
+Current Flutter brand: reuse the approved P and diagonal counter from
+`apps/pollar_app/tool/brand_geometry.json` through `PollarBrand`/`PollarBrandMark`
+and generated `assets/brand/` files. Use solid teal/mint, Inter SemiBold (600)
+for the name, and transparent true-vector SVGs/derived PNGs; the launcher uses
+mint on solid dark. Preserve geometry and clear space; no texture or effects.
+The historical HTML kit's empty-assets notes below do not describe these files.
+
 Redesign phase 1 adds explicit `PollarCard` roles: legacy `outlined` (default),
 borderless `flat`, and one focal `financial` surface using the existing
 `primarySoft` color. Interactive cards retain a boundary and a 2px info-colored

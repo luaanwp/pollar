@@ -1,11 +1,11 @@
 {
-    "name": "pollar_app",
-    "short_name": "pollar_app",
+    "name": "Pollar",
+    "short_name": "Pollar",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0C1211",
+    "theme_color": "#087F6B",
+    "description": "Finanças pessoais com clareza e privacidade.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

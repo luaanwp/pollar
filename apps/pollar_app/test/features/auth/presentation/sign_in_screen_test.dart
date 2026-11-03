@@ -108,6 +108,63 @@ void main() {
     });
   }
 
+  for (final size in [const Size(1920, 1080), const Size(1280, 720)]) {
+    testWidgets('login group is centered in a $size desktop window', (
+      tester,
+    ) async {
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            theme: PollarTheme.light(),
+            home: const SignInScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final content = tester.getRect(find.byKey(const Key('auth-content')));
+      expect(content.center.dx, closeTo(size.width / 2, 1));
+      expect(content.center.dy, closeTo(size.height / 2, 1));
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets(
+    'compact login remains scrollable with a keyboard and enlarged text',
+    (tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetViewInsets);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            theme: PollarTheme.light(),
+            home: const SignInScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const Key('auth-email')));
+      await tester.enterText(
+        find.byKey(const Key('auth-email')),
+        'pollar@example.test',
+      );
+      await tester.ensureVisible(find.text('Receber código por e-mail'));
+      await tester.pumpAndSettle();
+      final action = tester.getRect(find.text('Receber código por e-mail'));
+      expect(action.bottom, lessThanOrEqualTo(544));
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('rejects an incomplete email code without contacting Auth', (
     tester,
   ) async {

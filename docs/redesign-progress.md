@@ -565,6 +565,57 @@ SHA-256: `2BC4DB51DDBF55D2CD3BA3687A27A053555A7F89C9C9375BA9CE160D1496C133`.
 O novo APK não foi instalado ou exercitado fisicamente nesta etapa. Binários
 locais permanecem fora do Git.
 
+## Aceite posterior — transições, marca e login
+
+O teste no Android revelou cabeçalhos da lista aparecendo atrás do cadastro de
+conta. As telas internas compartilham o Scaffold do shell e não pintavam um fundo
+completo; animar a opacidade da rota também expunha a página anterior. A fábrica
+de páginas agora fornece uma superfície opaca que ocupa toda a área da rota e
+mantém um fundo estático fora da animação de conteúdo. A correção cobre todas as
+rotas que usam essa fábrica, preservando as páginas nativas Apple, a redução de
+movimento e os tempos existentes.
+
+Dois testes de pixels reproduziram a falta de fundo antes da correção e passaram
+depois, cobrindo cadastro real e quadros de entrada/saída em ambos os temas.
+Goldens adicionais mostram as transições reais em celular e desktop. As capturas
+esperam o redirecionamento montar o formulário antes de marcar o tempo da
+animação; não confundem uma captura da página anterior com o quadro de entrada.
+
+O usuário também pediu centralização do login no desktop. O conjunto de
+apresentação e formulário agora se centraliza nos dois eixos quando há espaço;
+em janelas baixas ou com teclado, permanece rolável. Os botões crescem com texto
+ampliado. Testes verificam centralização em 1280×720 e 1920×1080, além de celular
+com teclado simulado e texto 2×.
+
+As duas referências de marca enviadas pelo usuário foram reconstruídas em vetor:
+cores sólidas, um único contorno do P e nome em Inter SemiBold 600. Os SVGs têm
+letras em contornos e fundo transparente; os PNGs são exportados desses vetores.
+`tool/brand_geometry.json` gera o símbolo Dart e os ícones adaptativos Android.
+O símbolo aparece no login, na navegação e nos ícones Android, Windows e web.
+O título nativo Windows passa a ser Pollar. Arquivos ficam em
+`apps/pollar_app/assets/brand`, com pacote local em `dist/pollar-brand.zip`.
+
+Revisão independente com perfil alternativo: **ship**, sem achados materiais.
+Duas rodadas de inspeção visual e uma execução do detector sem achados encerraram
+o acabamento. Os 24 goldens existentes alterados correspondem à marca na navegação
+ou ao login solicitado; cálculos, dados e protocolo de autenticação não mudaram.
+Aceite físico do novo APK, leitores de tela e desempenho continuam separados.
+
+Validação final desta correção: **532 testes aprovados** e análise estática sem
+problemas. SVGs/PNGs foram verificados quanto a transparência, ausência de texto
+dependente de fonte e uso do mesmo caminho canônico do símbolo.
+
+APK release gerado e inspecionado com aapt: pacote `com.pollar.pollar_app`, nome
+Pollar, versão `1.0.0`, código `6`, em `dist/pollar-redesign-v1.0.0-6.apk`.
+SHA-256: `AE6B4F83DFEB2DD0C39B9F0834608D1C775E12BD30318F26D7FC1D8160103E40`.
+O pacote da marca contém SVGs, PNGs e a licença da Inter em
+`dist/pollar-brand.zip`. Os binários e pacotes locais permanecem fora do Git.
+
+Build release Windows concluído em `build/windows/x64/runner/Release`.
+Executável reaberto de forma independente do terminal, com janela responsiva,
+título Pollar e metadados de versão `1.0.0+6`. Isso confirma a abertura do pacote,
+sem substituir o aceite visual e de interação em hardware.
+
 ## Sequência restante
 
 As fases visuais 1–5, o refinamento mobile da fase 7 e o polimento/acessibilidade

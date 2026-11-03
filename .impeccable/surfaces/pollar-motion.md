@@ -37,3 +37,19 @@ retargeting, currency changes, native route preservation, successful and failed
 goal persistence, actual financial reload and branch search retention are covered.
 Physical-device performance, screen-reader and iOS gesture acceptance remain
 separate; no new product APK is implied by this source-level extension.
+
+## Opaque route refinement
+
+The reported Android overlap came from detail content exposing the previous
+route through unpainted gutters and the whole-page fade. `pollarMotionPage`
+now wraps both native Apple and custom pages in a full-size opaque background.
+The custom transition also holds a static background outside the content's
+fade/slide. Timings, travel, reduced-motion behavior and route/auth contracts
+remain unchanged; transparent route content is not a reusable design rule.
+
+`test/app/routing/route_surface_test.dart` exercises account-form push/pop
+pixels in both themes. `test/goldens/brand_route_golden_test.dart` records real
+account-route transition frames, including `route_account_push_390_light.png`
+and `route_account_pop_1200_dark.png`. Final suite/build results belong to
+`docs/redesign-progress.md`; these automated frames do not establish physical
+Android gesture, assistive-technology or performance acceptance.

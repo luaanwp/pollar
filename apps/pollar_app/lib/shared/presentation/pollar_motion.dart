@@ -244,14 +244,17 @@ Page<T> pollarMotionPage<T>({
   required LocalKey key,
   required Widget child,
 }) {
+  // Detail screens share the shell Scaffold and may paint only their content.
+  // Give every route an opaque, full-viewport surface, including empty gutters.
+  final surface = _PollarRouteSurface(child: child);
   // Keep the native interactive edge-back gesture on Apple platforms.
   if (Theme.of(context).platform == TargetPlatform.iOS ||
       Theme.of(context).platform == TargetPlatform.macOS) {
-    return MaterialPage<T>(key: key, child: child);
+    return MaterialPage<T>(key: key, child: surface);
   }
   return CustomTransitionPage<T>(
     key: key,
-    child: child,
+    child: surface,
     transitionDuration: PollarMotion.reduced(context)
         ? Duration.zero
         : PollarMotion.change,
@@ -264,17 +267,33 @@ Page<T> pollarMotionPage<T>({
         parent: animation,
         curve: PollarMotion.curve,
       );
-      return FadeTransition(
-        opacity: curved,
-        child: SlideTransition(
-          position: Tween(
-            begin: const Offset(0.025, 0),
-            end: Offset.zero,
-          ).animate(curved),
-          child: child,
+      // Keep the surface opaque while the content moves/fades. Fading the
+      // complete page exposes the previous page's headings and actions.
+      return ColoredBox(
+        color: context.pollar.background,
+        child: FadeTransition(
+          opacity: curved,
+          child: SlideTransition(
+            position: Tween(
+              begin: const Offset(0.025, 0),
+              end: Offset.zero,
+            ).animate(curved),
+            child: child,
+          ),
         ),
       );
     },
+  );
+}
+
+class _PollarRouteSurface extends StatelessWidget {
+  const _PollarRouteSurface({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => ColoredBox(
+    color: context.pollar.background,
+    child: SizedBox.expand(child: child),
   );
 }
 
