@@ -34,19 +34,51 @@ class PollarSelect<T> extends StatelessWidget {
   final double? itemHeight;
 
   @override
-  Widget build(BuildContext context) => DropdownButtonFormField<T>(
-    initialValue: initialValue,
-    itemHeight: itemHeight,
-    isExpanded: true,
-    icon: const Icon(LucideIcons.chevronDown, size: 20),
-    decoration: InputDecoration(labelText: label, helperText: hint),
-    items: [
-      for (final option in options)
-        DropdownMenuItem<T>(value: option.value, child: Text(option.label)),
-    ],
-    onChanged: enabled ? onChanged : null,
-    validator: validator,
-  );
+  Widget build(BuildContext context) {
+    final externalLabel = MediaQuery.textScalerOf(context).scale(1) > 1.3;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (externalLabel) ...[
+          ExcludeSemantics(
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: context.pollar.textSecondary),
+            ),
+          ),
+          const SizedBox(height: PollarSpacing.x2),
+        ],
+        Semantics(
+          key: const ValueKey('pollar-select-entry'),
+          label: externalLabel ? label : null,
+          child: DropdownButtonFormField<T>(
+            initialValue: initialValue,
+            // Native menu items must grow when the selected label uses large text.
+            itemHeight: MediaQuery.textScalerOf(context).scale(1) > 1.3
+                ? null
+                : itemHeight,
+            isExpanded: true,
+            icon: const Icon(LucideIcons.chevronDown, size: 20),
+            decoration: InputDecoration(
+              labelText: externalLabel ? null : label,
+              helperText: hint,
+            ),
+            items: [
+              for (final option in options)
+                DropdownMenuItem<T>(
+                  value: option.value,
+                  child: Text(option.label),
+                ),
+            ],
+            onChanged: enabled ? onChanged : null,
+            validator: validator,
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 /// Labeled selection control, including an indeterminate state.

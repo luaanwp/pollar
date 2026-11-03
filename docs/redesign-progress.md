@@ -467,14 +467,60 @@ independente final: **ship**, sem defeitos materiais, executada em agente fresco
 com perfil alternativo. As capturas e os testes de widgets não estabelecem
 validação física Android/iOS, leitor de tela ou medição de FPS.
 
+## Fase 7 — Refinamento mobile
+
+O refinamento preserva a composição das telas e se concentra no espaço útil
+dos fluxos. A folha modal agora desconta o teclado fora da área de rolagem,
+consome o inset para os descendentes e protege a região de gestos com SafeArea.
+Conteúdo e ações continuam na mesma rolagem, sem trocar o formulário quando o
+teclado abre. Além da largura compacta, janelas com altura descontada de teclado
+e topo inferior a 480px usam folha rolável, atendendo paisagem e multiwindow.
+Diálogos amplos permanecem nativos. Movimento reduzido abre ambos sem animação.
+
+O corpo do shell protege recortes laterais; com rail também reserva a área
+inferior do sistema. A navegação inferior mantém os cinco destinos e sua própria
+área segura nativa. Rotação, troca de destino e ajuste de insets conservam o
+rascunho e os navegadores existentes.
+
+Acima de 1,3×, rótulos de `PollarTextField` e `PollarSelect` aparecem completos
+acima do campo, com associação semântica e sem duplicar a leitura do rótulo.
+As identidades dos campos ficam estáveis na mudança de escala, preservando
+edição, seleção e foco. Itens do seletor nativo crescem pelo conteúdo em texto
+ampliado. Botões dos formulários de planejamento e patrimônio usam altura
+adaptável; os últimos campos numéricos de planejamento encerram a edição sem
+acionar uma gravação implícita.
+
+Dezoito testes novos verificam limites acima do IME, área de gestos, os cinco
+formulários em 320px/2×, persistência com falha e nova tentativa, envio duplicado,
+rotação, insets laterais, foco/seleção na mudança de fonte, opções completas,
+retorno nativo e movimento reduzido. Nove capturas novas cobrem 320/390/844px,
+claro/escuro, paisagem, menus, áreas seguras e teclado simulado explicitamente
+rotulado. Esses testes e capturas não comprovam uso físico, gesto preditivo,
+leitor de tela, desempenho ou teclado de um fabricante específico.
+
+A suíte completa passou com **491 testes** e análise estática limpa. Três
+goldens existentes a 2× (Relatórios e Transações compacto/amplo) foram atualizados
+para os rótulos externos completos; as demais capturas existentes permaneceram.
+Duas inspeções visuais e um detector final sem achados. Revisão independente em
+agente fresco com perfil alternativo: **ship**, nenhum achado material. Sistema
+de design e contrato de superfície foram registrados pontualmente, sem novos
+tokens ou identidade.
+
+Builds Windows Release remoto e APK Android Release concluídos. O Windows foi
+reaberto separado do terminal e a janela permaneceu respondendo. O APK é
+`com.pollar.pollar_app`, versão `1.0.0`, código `4`, disponível em
+`dist/pollar-mobile-v1.0.0-4.apk`, com arquivo `.sha256` ao lado. SHA-256:
+`95867F94F0BAC59FBF80E6BE1B4F071136B38381A783FE83F7B63AC37B2E2B50`.
+O pacote foi inspecionado com aapt; não foi instalado ou exercitado fisicamente
+no Android nesta etapa. Binários locais permanecem fora do Git.
+
 ## Sequência restante
 
-As passagens visuais das fases 1–5 estão implementadas, incluindo Planejamento
-e Análises/patrimônio. A próxima etapa visual é o refinamento mobile (fase 7).
+As passagens visuais das fases 1–5 e o refinamento mobile da fase 7 estão
+implementados. A próxima etapa visual é o polimento/acessibilidade (fase 8).
 
 6. Inteligência: fase condicional de produto, **não incluída** no redesign
    visual sem definição de dados e regras.
-7. Refinamento mobile, complementando a validação feita em cada fase.
 8. Polimento e acessibilidade transversal.
 
 Esta fase não declara o redesign completo nem transforma as pendências de

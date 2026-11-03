@@ -331,6 +331,15 @@ preservada; não se cria série de avaliação patrimonial nem se altera a base
 do CSV ou qualquer cálculo financeiro. A próxima etapa visual é o refinamento
 mobile (fase 7); Inteligência continua condicional e fora deste escopo.
 
+A fase 7 refina os fluxos mobile: folha modal acima do teclado, área de gestos
+reservada, folha rolável também em janelas baixas e corpo do shell protegido
+contra recortes laterais. Rótulos e opções de campos crescem com texto ampliado,
+preservando foco, seleção e rascunho; ações dos formulários mantêm seus nomes
+completos e encerramento de edição não salva dados implicitamente. A composição
+das telas, os cinco destinos e as regras financeiras continuam os existentes.
+As evidências usam insets/IME simulados; aceite físico permanece separado. O
+próximo passo visual é polimento e acessibilidade transversal (fase 8).
+
 ## Limitações da auditoria
 
 O acesso ao repositório funcionou sem autenticação neste ambiente. A análise é estática e usou goldens existentes, não execução interativa no Windows/Android/iOS. Não há evidência de métricas de uso para reordenar destinos, nem dados/engine de IA para publicar insights. O código não contém CSS ou biblioteca de charts: tema Flutter e `CustomPainter` fazem esse papel. Sincronização opcional já consta do código, embora `PRODUCT.md` a descreva como etapa posterior; a documentação de produto deve esclarecer a diferença entre capacidade implementada e estágio de lançamento. O skill local `pollar-design` aponta a `README.md`, enquanto o checkout contém `readme.md` em minúsculas; isso pode falhar em sistemas sensíveis a maiúsculas. O próprio `readme.md` tem dois tons semânticos divergentes dos tokens atuais. Alinhar o guia quando a fase visual for implementada. Validar qualquer alteração visual no aplicativo e nas capturas golden antes de declarar o redesign concluído.

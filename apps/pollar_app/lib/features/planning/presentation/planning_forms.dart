@@ -37,6 +37,7 @@ Future<bool?> showBudgetForm({
         valueListenable: saving,
         builder: (context, isSaving, child) => PollarButton(
           label: 'Cancelar',
+          adaptiveHeight: true,
           variant: PollarButtonVariant.ghost,
           onPressed: isSaving ? null : () => Navigator.of(modalContext).pop(),
         ),
@@ -45,6 +46,7 @@ Future<bool?> showBudgetForm({
         valueListenable: saving,
         builder: (context, isSaving, child) => PollarButton(
           label: 'Salvar orçamento',
+          adaptiveHeight: true,
           loading: isSaving,
           onPressed: isSaving
               ? null
@@ -103,6 +105,7 @@ Future<bool?> showRecurringRuleForm({
         valueListenable: saving,
         builder: (context, isSaving, child) => PollarButton(
           label: 'Cancelar',
+          adaptiveHeight: true,
           variant: PollarButtonVariant.ghost,
           onPressed: isSaving ? null : () => Navigator.of(modalContext).pop(),
         ),
@@ -111,6 +114,7 @@ Future<bool?> showRecurringRuleForm({
         valueListenable: saving,
         builder: (context, isSaving, child) => PollarButton(
           label: 'Salvar compromisso',
+          adaptiveHeight: true,
           loading: isSaving,
           onPressed: isSaving
               ? null
@@ -209,6 +213,7 @@ class _BudgetFormState extends State<_BudgetForm> {
         const SizedBox(height: PollarSpacing.x4),
         PollarTextField(
           label: 'Alertar ao atingir (%)',
+          textInputAction: TextInputAction.done,
           controller: _threshold,
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -392,6 +397,7 @@ class _RecurringRuleFormState extends State<_RecurringRuleForm> {
           const SizedBox(height: PollarSpacing.x4),
           PollarTextField(
             label: 'Lembrar com antecedência (dias)',
+            textInputAction: TextInputAction.done,
             controller: _reminder,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],

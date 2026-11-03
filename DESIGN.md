@@ -364,6 +364,15 @@ Campos compartilham geometria e validação nativa, com rótulo sempre visível.
 - **Currency:** texto alinhado à direita, peso de valor e algarismos tabulares; em pt-BR, explicita vírgula decimal e código da moeda.
 - **Select:** usa a mesma caixa dos inputs e chevron Lucide de 20px.
 
+### Mobile Forms — phase 7
+
+- **Adaptive modal:** escolha sheet ao abrir com largura <600px ou altura útil (`size.height − viewInsets.bottom − padding.top`) <480px; no amplo, conserve o diálogo nativo.
+- **Keyboard and gestures:** padding do IME fica fora do scroll; `removeViewInsets(bottom)` consome esse inset e `SafeArea(top: false)` dentro do Material protege gestos. Conteúdo e ações rolam juntos.
+- **Enlarged labels:** acima de 1,3×, `PollarTextField` e `PollarSelect` mostram rótulo externo completo; o visual usa `ExcludeSemantics` e o campo recebe o nome em `Semantics` com chave estável, preservando edição, seleção e foco. Itens do Select crescem sem altura fixa.
+- **Explicit completion:** as seis ações de formulário de Planejamento/Patrimônio usam altura adaptável. Nos últimos campos numéricos de Planejamento, Done encerra a edição; salvar continua explícito.
+- **Safe shell:** corpo compacto usa `SafeArea(top: false, bottom: false)` com proteção lateral e barra nativa de cinco destinos; no amplo, `SafeArea(top: false)` inclui a proteção inferior.
+- **Native behavior:** nomes, ações, callbacks e dismissibilidade permanecem; movimento reduzido remove a animação nativa de sheet/dialog por `AnimationStyle.noAnimation`.
+
 ### Badges and Feedback
 
 Badges são cápsulas compactas; banners, toasts e modais mantêm a mesma semântica de cores.

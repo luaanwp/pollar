@@ -126,6 +126,7 @@ Future<bool?> _showProtectedForm<T>({
         valueListenable: saving,
         builder: (context, isSaving, child) => PollarButton(
           label: 'Cancelar',
+          adaptiveHeight: true,
           variant: PollarButtonVariant.ghost,
           onPressed: isSaving ? null : () => Navigator.of(modalContext).pop(),
         ),
@@ -134,6 +135,7 @@ Future<bool?> _showProtectedForm<T>({
         valueListenable: saving,
         builder: (context, isSaving, child) => PollarButton(
           label: saveLabel,
+          adaptiveHeight: true,
           loading: isSaving,
           onPressed: isSaving
               ? null

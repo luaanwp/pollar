@@ -108,7 +108,7 @@ class AppShell extends ConsumerWidget {
         onToggle: togglePrivacy,
         child: Scaffold(
           appBar: appBar,
-          body: navigationShell,
+          body: SafeArea(top: false, bottom: false, child: navigationShell),
           bottomNavigationBar: _BottomNav(
             selectedIndex: index,
             onSelected: _goBranch,
@@ -121,20 +121,23 @@ class AppShell extends ConsumerWidget {
       onToggle: togglePrivacy,
       child: Scaffold(
         appBar: appBar,
-        body: Row(
-          children: [
-            _Rail(
-              selectedIndex: index,
-              onSelected: _goBranch,
-              extended: extended,
-            ),
-            VerticalDivider(
-              width: 1,
-              thickness: 1,
-              color: context.pollar.border,
-            ),
-            Expanded(child: navigationShell),
-          ],
+        body: SafeArea(
+          top: false,
+          child: Row(
+            children: [
+              _Rail(
+                selectedIndex: index,
+                onSelected: _goBranch,
+                extended: extended,
+              ),
+              VerticalDivider(
+                width: 1,
+                thickness: 1,
+                color: context.pollar.border,
+              ),
+              Expanded(child: navigationShell),
+            ],
+          ),
         ),
       ),
     );

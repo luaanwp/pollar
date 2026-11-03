@@ -72,6 +72,15 @@ ampliado. Resultados finais de suíte, análise, build e runtime ficam em
 `docs/redesign-progress.md`. O fechamento visual da fase 5 encaminha o redesign
 para Mobile (fase 7); Inteligência (fase 6) segue condicional e fora deste slice.
 
+## Mobile — fase 7
+
+- Sheet/dialog preservam rotas nativas, nomes, callbacks, ações e dismissibilidade. `PollarMotion.reduced` aplica `AnimationStyle.noAnimation` aos dois.
+- A escolha ocorre ao abrir: sheet com largura <600px OU `size.height − viewInsets.bottom − padding.top <480px`; diálogo nativo no amplo.
+- O IME desloca o sheet por padding externo ao scroll, com bottom viewInsets consumido; `SafeArea(top: false)` dentro do Material protege gestos. Não há nova animação própria de teclado.
+- Rótulos completos externos acima de 1,3× e chaves semânticas estáveis preservam edição, seleção e foco; itens do Select e ações de Planejamento/Patrimônio crescem com o texto.
+- Cobertura funcional verifica teclado, scroll, áreas seguras, edição e movimento reduzido. Os nove goldens `mobile_*` usam IME explicitamente simulado; três capturas 2× de Relatórios/Transações refletem os rótulos externos.
+- Essa evidência automatizada não mede FPS nem valida leitor de tela ou gestos em hardware. Resultados finais de suíte, análise, build e runtime ficam em `docs/redesign-progress.md`; segue a fase 8, com fase 6 condicional fora deste slice.
+
 ## Navegação e listas
 
 `PollarBranchStack` preserva o `IndexedStack`, os navegadores de cada branch,

@@ -242,6 +242,15 @@ The utility bar retains global theme/privacy controls and uses quiet 14px route 
 
 Use dialogs for focused desktop decisions and bottom sheets/full-screen flows on mobile. Destructive confirmation must name the object and explain impact. Prefer undo for reversible operations.
 
+### Mobile form adaptation — phase 7
+
+- At opening, use a sheet below 600px width OR when `size.height − viewInsets.bottom − padding.top < 480px`; retain the native wide dialog.
+- Keep IME padding outside the scroll, consume its bottom inset with `MediaQuery.removeViewInsets`, and protect gestures with `SafeArea(top: false)` inside Material. Content and actions scroll together.
+- Above 1.3× text, text/select labels are complete external text excluded from semantics; a stable keyed `Semantics` names the native field and preserves editing, selection and focus. Select items use flexible height.
+- Planning/Wealth form actions opt into adaptive height. Planning's final numeric fields use Done to end editing; saving remains explicit.
+- Shell body uses lateral safe areas in compact (`top: false, bottom: false`) and includes bottom protection in wide (`top: false`); keep five native bottom destinations.
+- Preserve modal names, actions, callbacks and dismissibility. Apply `AnimationStyle.noAnimation` to native sheet/dialog routes when `PollarMotion.reduced` is true.
+
 ### Toasts and banners
 
 Toasts confirm low-risk success. Inline banners communicate offline state, sync errors, conflicts, or information that remains relevant. Never place critical recovery instructions only in a disappearing toast.

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../app/theme/pollar_theme.dart';
+
 /// Text entry using the app theme and native Form validation/focus behavior.
 class PollarTextField extends StatelessWidget {
   const PollarTextField({
@@ -35,22 +37,49 @@ class PollarTextField extends StatelessWidget {
   final int maxLines;
 
   @override
-  Widget build(BuildContext context) => TextFormField(
-    controller: controller,
-    enabled: enabled,
-    readOnly: readOnly,
-    validator: validator,
-    onChanged: onChanged,
-    keyboardType: keyboardType,
-    inputFormatters: inputFormatters,
-    textInputAction: textInputAction,
-    maxLines: maxLines,
-    autovalidateMode: AutovalidateMode.onUserInteraction,
-    decoration: InputDecoration(
-      labelText: label,
-      hintText: hint,
-      prefixIcon: leadingIcon == null ? null : Icon(leadingIcon, size: 20),
-      suffixIcon: trailingIcon == null ? null : Icon(trailingIcon, size: 20),
-    ),
-  );
+  Widget build(BuildContext context) {
+    final externalLabel = MediaQuery.textScalerOf(context).scale(1) > 1.3;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (externalLabel) ...[
+          ExcludeSemantics(
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: context.pollar.textSecondary),
+            ),
+          ),
+          const SizedBox(height: PollarSpacing.x2),
+        ],
+        Semantics(
+          key: const ValueKey('pollar-text-entry'),
+          label: externalLabel ? label : null,
+          child: TextFormField(
+            controller: controller,
+            enabled: enabled,
+            readOnly: readOnly,
+            validator: validator,
+            onChanged: onChanged,
+            keyboardType: keyboardType,
+            inputFormatters: inputFormatters,
+            textInputAction: textInputAction,
+            maxLines: maxLines,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration: InputDecoration(
+              labelText: externalLabel ? null : label,
+              hintText: hint,
+              prefixIcon: leadingIcon == null
+                  ? null
+                  : Icon(leadingIcon, size: 20),
+              suffixIcon: trailingIcon == null
+                  ? null
+                  : Icon(trailingIcon, size: 20),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

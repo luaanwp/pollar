@@ -210,6 +210,15 @@ Implementation-ready design language for a **personal-finance product** (Flutter
 
 Pollar is the official product name. Brand personality: private, composed, dependable, intelligent, precise, contemporary. Product principles: calm clarity, financial precision, trust through restraint, progressive disclosure, accessible by default, cross-platform familiarity. Default locale **pt-BR** (BRL), and all product copy in this system is written in Portuguese.
 
+### Mobile production behavior — phase 7
+
+- Choose a sheet at opening for width <600px OR usable height (`size.height − viewInsets.bottom − padding.top`) <480px; keep the native wide dialog.
+- IME padding belongs outside the scroll; consume bottom viewInsets and retain `SafeArea(top: false)` inside Material for gestures. Content and actions remain scrollable.
+- Above 1.3×, text/select fields expose complete external labels, with excluded visual semantics and a stable keyed semantic field name; preserve editing, selection and focus. Select items grow naturally.
+- Planning/Wealth form actions have adaptive height; Done in Planning's last numeric fields ends editing without implicit saving.
+- Compact shell body protects lateral areas, leaving bottom protection to the five-destination native bar; wide body includes the bottom safe area. Both omit top protection already handled by the app bar.
+- Preserve names, callbacks, actions and dismissibility; reduced motion disables native sheet/dialog animation. The next redesign step is phase 8; conditional phase 6 is outside this slice.
+
 ## Sources
 
 Everything here derives from two files the user supplied — there was **no codebase, no Figma file, no screenshots and no decks**:
