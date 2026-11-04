@@ -46,6 +46,8 @@ Os dois pacotes recebem a mesma versão do pubspec e número `1000 + run_number`
 superior aos APKs locais anteriores. A release é criada como rascunho e só fica
 disponível depois de Windows e Android compilarem e os hashes enviados serem
 conferidos com o GitHub. Reruns não substituem uma release já publicada.
+Essa conferência consulta a release pelo ID: enquanto é rascunho, o endpoint
+REST por tag ainda pode retornar 404 e os links usam um identificador temporário.
 
 Ativos estáveis: `pollar-android.apk`, `pollar-windows.zip`, `SHA256SUMS.txt`.
 A publicação é concluída em GitHub Releases; um push ainda em compilação ou

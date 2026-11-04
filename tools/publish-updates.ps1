@@ -41,8 +41,12 @@ if ($LASTEXITCODE -eq 0) {
 }
 gh release upload $pollarTag $pollarZip $pollarApk $pollarHashes --repo luaanwp/pollar --clobber
 if ($LASTEXITCODE -ne 0) { throw 'Could not upload update packages; release remains draft.' }
-$pollarRemote = gh api "repos/luaanwp/pollar/releases/tags/$pollarTag" | ConvertFrom-Json
+$pollarReleaseApi = gh release view $pollarTag --repo luaanwp/pollar --json apiUrl --jq .apiUrl
+if ($LASTEXITCODE -ne 0 -or $pollarReleaseApi -notmatch '^https://api\.github\.com/repos/luaanwp/pollar/releases/\d+$') { throw 'Could not locate the draft release ID.' }
+# Drafts do not yet expose the final tag endpoint. Read by immutable release ID.
+$pollarRemote = gh api $pollarReleaseApi | ConvertFrom-Json
 if ($LASTEXITCODE -ne 0) { throw 'Could not verify uploaded packages.' }
+if ($pollarRemote.tag_name -cne $pollarTag -or $pollarRemote.target_commitish -cne $Commit -or -not $pollarRemote.draft) { throw 'Unexpected draft release identity.' }
 foreach ($pollarLocal in @($pollarZip, $pollarApk)) {
   $pollarAsset = @($pollarRemote.assets | Where-Object name -CEQ (Split-Path -Leaf $pollarLocal))
   $pollarDigest = 'sha256:' + (Get-FileHash -LiteralPath $pollarLocal -Algorithm SHA256).Hash.ToLowerInvariant()
