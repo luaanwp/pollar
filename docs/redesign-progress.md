@@ -653,6 +653,20 @@ O usuário confirmou o aceite do aplicativo Android após os testes do pacote
 Mais → Preferências: celular no Android/iOS e monitor nas plataformas desktop.
 A escolha do tema e seu comportamento permanecem os mesmos.
 
+## Atualizações pelo aplicativo — 2026-11-04
+
+Windows e Android receberam consulta de releases e a ação Nova versão
+disponível → Atualizar, também acessível em Mais → Preferências. Pushes de
+código para main geram os dois pacotes, executam as verificações e publicam
+uma release estável somente após conferir os hashes enviados.
+
+A primeira execução completa aprovada publicou `1.0.0+1009`, com 571 testes
+Flutter aprovados e builds Windows/Android concluídos. Os pacotes publicados
+foram baixados e conferidos; assinatura Android e manifesto Windows passaram.
+A instalação pela janela Windows aguarda disponibilidade da janela em
+primeiro plano; a confirmação física Android também permanece pendente.
+Evidências no [registro de atualizações](in-app-updates.md).
+
 ## Sequência restante
 
 As fases visuais 1–5, o refinamento mobile da fase 7 e o polimento/acessibilidade

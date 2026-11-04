@@ -141,6 +141,36 @@ sobrevivência do auxiliar após `exit(0)` do processo Dart pai. Os três passar
 O bootstrap local seguinte é `1.0.0+11`; o novo teste completo de instalação
 será registrado após sua execução.
 
+### Primeira publicação automática concluída
+
+A [execução 41929390417](https://github.com/luaanwp/pollar/actions/runs/41929390417)
+terminou com **success** em 2026-11-04: análise sem problemas, **571 testes
+Flutter aprovados**, verificações nativas de empacotamento/atualização,
+compilações Windows e Android e publicação pelo próprio workflow. Não foi
+necessária publicação manual dessa execução.
+
+A [release estável 1.0.0+1009](https://github.com/luaanwp/pollar/releases/tag/v1.0.0%2B1009)
+aponta para `03211e4bba74f186ddb196c81b543b5950826649`. A API pública
+`releases/latest` confirmou `draft=false` e `prerelease=false`. Os arquivos
+foram baixados novamente e seus SHA-256 conferidos contra a API e SHA256SUMS:
+
+| Arquivo | SHA-256 |
+| --- | --- |
+| pollar-windows.zip | `c3155f5a63a06e2669ddd61f6778dbeba92ae9a8c0ee6e57a5f3b00ec9ad5aaf` |
+| pollar-android.apk | `ba85a76d45beb8cbd61a237e61d53a70123405f301fc80bcf74ec0d8d8f4abbc` |
+
+O APK publicado contém `com.pollar.pollar_app`, versão `1.0.0`, código `1009`.
+O apksigner confirmou a assinatura original
+`ed8cd75d2110080957c0e1cffb40191ab20fa2b9891b159538de76164fe492e4`.
+O pacote Windows publicado passou no próprio auxiliar com `-ValidateOnly`,
+incluindo manifesto, hashes dos arquivos e identidade do executável.
+
+Na janela local `1.0.0+11`, após o desbloqueio pelo usuário, as quatro
+posições e a despesa cancelada continuaram visíveis. Mais → Preferências
+mostrou a versão instalada e Verificar atualizações. A instalação dessa
+release pelo botão e a confirmação física no Android são verificações
+separadas da publicação e da validação dos pacotes.
+
 Referências: [GitHub Releases API](https://docs.github.com/en/rest/releases/releases),
 [FileProvider Android](https://developer.android.com/reference/androidx/core/content/FileProvider),
 [assinatura Android](https://developer.android.com/studio/publish/app-signing).
