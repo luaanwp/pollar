@@ -646,11 +646,19 @@ conferidos contra o manifesto; o APK teve pacote, nome e versão inspecionados.
 Os caminhos e SHA-256 estão no relatório. Os pacotes ficam fora do Git; o novo
 APK ainda exige aceite físico no aparelho.
 
+## Aceite Android — 2026-11-04
+
+O usuário confirmou o aceite do aplicativo Android após os testes do pacote
+`1.0.0+8`. O único ajuste solicitado foi o ícone de Seguir o sistema em
+Mais → Preferências: celular no Android/iOS e monitor nas plataformas desktop.
+A escolha do tema e seu comportamento permanecem os mesmos.
+
 ## Sequência restante
 
 As fases visuais 1–5, o refinamento mobile da fase 7 e o polimento/acessibilidade
-da fase 8 estão implementados. O próximo passo é o aceite visual e de interação
-do pacote atualizado no aparelho, incluindo tecnologia assistiva e desempenho.
+da fase 8 estão implementados, com aceite funcional no Android confirmado pelo
+usuário. Leitores de tela e medições de desempenho permanecem sem evidência
+específica; o aceite funcional não os transforma em testes executados.
 
 6. Inteligência: fase condicional de produto, **não incluída** no redesign
    visual sem definição de dados e regras.

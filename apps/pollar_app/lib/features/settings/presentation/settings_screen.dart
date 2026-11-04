@@ -64,7 +64,11 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                   Divider(height: 1, color: pollar.border),
                   _ThemeOption(
-                    icon: LucideIcons.monitor,
+                    icon: switch (Theme.of(context).platform) {
+                      TargetPlatform.android ||
+                      TargetPlatform.iOS => LucideIcons.smartphone,
+                      _ => LucideIcons.monitor,
+                    },
                     label: 'Seguir o sistema',
                     selected: mode == ThemeMode.system,
                     onTap: () => ref
