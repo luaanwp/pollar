@@ -58,3 +58,9 @@ motion, interrupted arrival and state retention. Navigation goldens capture
 `navigation_390_dark_reduced.png` and `navigation_320_dark_2x_frame40.png` in
 `apps/pollar_app/test/goldens/`. Execution/build results belong in
 `docs/redesign-progress.md`; this slice preserves existing page composition.
+
+## More child return
+
+Only `/more/*` routes expose the accessible “Voltar para Mais” toolbar action.
+Pop the existing route stack when possible; otherwise navigate to `/more`.
+Keep the rail toggle, theme/privacy controls and existing route/branch motion.

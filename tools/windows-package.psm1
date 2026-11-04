@@ -1,5 +1,14 @@
 Set-StrictMode -Version Latest
 
+function Assert-PollarWindowsStorageIdentity {
+  [CmdletBinding()]
+  param([Parameter(Mandatory)][object]$VersionInfo)
+  # path_provider derives the existing database directory from these values.
+  if ($VersionInfo.CompanyName -cne 'com.pollar' -or $VersionInfo.ProductName -cne 'pollar_app') {
+    throw 'Windows storage identity changed. Preserve com.pollar/pollar_app before packaging.'
+  }
+}
+
 function New-PollarWindowsPackage {
   [CmdletBinding()]
   param(
@@ -83,4 +92,4 @@ function New-PollarWindowsPackage {
   }
 }
 
-Export-ModuleMember -Function New-PollarWindowsPackage
+Export-ModuleMember -Function New-PollarWindowsPackage, Assert-PollarWindowsStorageIdentity

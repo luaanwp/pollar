@@ -95,7 +95,9 @@ BEGIN
             VALUE "InternalName", "pollar_app" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.pollar. All rights reserved." "\0"
             VALUE "OriginalFilename", "pollar_app.exe" "\0"
-            VALUE "ProductName", "Pollar" "\0"
+            // Storage identity: path_provider derives the support directory from
+            // CompanyName/ProductName. Keep this stable across brand changes.
+            VALUE "ProductName", "pollar_app" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

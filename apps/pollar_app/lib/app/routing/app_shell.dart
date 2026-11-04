@@ -77,6 +77,8 @@ class AppShell extends ConsumerWidget {
     final isPageHeading =
         isCompact && GoRouterState.of(context).uri.path == '/transactions';
     final title = appDestinations[index].label;
+    final moreDetail =
+        index == 4 && GoRouterState.of(context).uri.path.startsWith('/more/');
     var toolbarHeight = kToolbarHeight;
     if (isPageHeading) {
       final painter = TextPainter(
@@ -98,6 +100,15 @@ class AppShell extends ConsumerWidget {
       isPageHeading: isPageHeading,
       height: toolbarHeight,
       extended: extended,
+      onBack: moreDetail
+          ? () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/more');
+              }
+            }
+          : null,
       onToggleRail: canCollapse
           ? ref.read(railExpandedProvider.notifier).toggle
           : null,
@@ -169,6 +180,7 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
     required this.isPageHeading,
     required this.height,
     required this.extended,
+    this.onBack,
     this.onToggleRail,
   });
 
@@ -176,6 +188,7 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final bool isPageHeading;
   final double height;
   final bool extended;
+  final VoidCallback? onBack;
   final VoidCallback? onToggleRail;
 
   @override
@@ -206,18 +219,32 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
               ),
             ),
       titleSpacing: PollarSpacing.x4,
-      title: Tooltip(
-        message: title,
-        child: Text(
-          title,
-          textScaler: MediaQuery.textScalerOf(context),
-          maxLines: isPageHeading ? null : 1,
-          overflow: isPageHeading ? null : TextOverflow.ellipsis,
-          style: isPageHeading
-              ? Theme.of(context).textTheme.headlineSmall
-              : Theme.of(context).textTheme.bodyMedium
-                    ?.copyWith(color: pollar.textSecondary),
-        ),
+      title: Row(
+        children: [
+          if (onBack != null) ...[
+            PollarIconButton(
+              label: 'Voltar para Mais',
+              icon: LucideIcons.arrowLeft,
+              onPressed: onBack,
+            ),
+            const SizedBox(width: PollarSpacing.x2),
+          ],
+          Expanded(
+            child: Tooltip(
+              message: title,
+              child: Text(
+                title,
+                textScaler: MediaQuery.textScalerOf(context),
+                maxLines: isPageHeading ? null : 1,
+                overflow: isPageHeading ? null : TextOverflow.ellipsis,
+                style: isPageHeading
+                    ? Theme.of(context).textTheme.headlineSmall
+                    : Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(color: pollar.textSecondary),
+              ),
+            ),
+          ),
+        ],
       ),
       actions: [
         PollarIconButton(

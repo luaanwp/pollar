@@ -43,6 +43,14 @@ continuam proibidas no cliente.
 
 ## Abrir e atualizar
 
+`CompanyName=com.pollar` e `ProductName=pollar_app` são a identidade estável de
+armazenamento no Windows. `path_provider` usa esses metadados para localizar a
+pasta do banco; mudanças de marca devem ficar no título, descrição e ícones.
+O script verifica a identidade no executável compilado antes de empacotar,
+inclusive com `-SkipChecks`. A troca para `ProductName=Pollar` na versão 6
+abriu outra pasta vazia e foi revertida na correção seguinte. Veja o registro
+em [conferência Windows](windows-flow-verification.md).
+
 1. Extraia o ZIP inteiro, preservando todos os arquivos e a pasta `data`.
 2. Feche a versão anterior do Pollar normalmente.
 3. Abra `pollar_app.exe` com dois cliques. Não precisa manter terminal aberto.

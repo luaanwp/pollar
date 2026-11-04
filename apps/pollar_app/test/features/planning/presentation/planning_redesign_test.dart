@@ -192,7 +192,7 @@ void main() {
   );
 
   testWidgets(
-    'empty planning keeps budget creation and disables commitments without accounts',
+    'empty planning explains account prerequisite and keeps budget creation',
     (tester) async {
       viewport(tester, const Size(390, 844));
       await tester.pumpWidget(planningRedesignApp(empty: true));
@@ -201,6 +201,9 @@ void main() {
       await tester.tap(find.text('Novo compromisso'));
       await tester.pumpAndSettle();
       expect(find.text('Salvar compromisso'), findsNothing);
+      expect(find.text('Uma conta primeiro'), findsOneWidget);
+      await tester.tap(find.text('Voltar ao planejamento'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Novo orçamento'));
       await tester.pumpAndSettle();
       expect(find.text('Salvar orçamento'), findsOneWidget);

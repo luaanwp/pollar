@@ -57,6 +57,9 @@ $pollarVersionMatch = [regex]::Match(
 )
 if (-not $pollarVersionMatch.Success) { throw 'App version missing from pubspec.yaml.' }
 Import-Module (Join-Path $PSScriptRoot 'tools/windows-package.psm1') -Force
+Assert-PollarWindowsStorageIdentity -VersionInfo (
+  Get-Item -LiteralPath (Join-Path $pollarAppDirectory 'build/windows/x64/runner/Release/pollar_app.exe')
+).VersionInfo
 $pollarMode = if ($Remote) { 'remote' } else { 'local' }
 $pollarPackage = New-PollarWindowsPackage `
   -ReleaseDirectory (Join-Path $pollarAppDirectory 'build/windows/x64/runner/Release') `

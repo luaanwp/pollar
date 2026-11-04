@@ -616,6 +616,36 @@ Executável reaberto de forma independente do terminal, com janela responsiva,
 título Pollar e metadados de versão `1.0.0+6`. Isso confirma a abertura do pacote,
 sem substituir o aceite visual e de interação em hardware.
 
+## Conferência dos fluxos Windows — 2026-11-03
+
+Os destinos de Mais receberam uma seta visível de retorno. Novo compromisso
+responde também sem conta ativa: explica o requisito e permite abrir Contas;
+com conta elegível, abre diretamente o formulário. Os fluxos de cancelamento
+foram conferidos sem gravar registros financeiros.
+
+O teste nativo identificou uma regressão na marca Windows: `ProductName`
+alterava a pasta calculada por `path_provider`. A identidade interna voltou a
+`com.pollar/pollar_app`, mantendo Pollar no título e ícone. As 4 contas e o
+lançamento cancelado originais reapareceram antes de sincronizar. O empacotador
+agora recusa mudanças nessa identidade; nenhum banco foi movido ou removido.
+
+Na sincronização, a limpeza assíncrona do observador de identidade podia reter
+o retorno de uma operação já concluída. O cancelamento continua imediato, mas
+sua limpeza deixa de bloquear a conclusão. Três testes adicionais cobrem a
+limpeza pendente, retomada e falha sem substituir o resultado salvo.
+
+Validação: **552 testes aprovados**, análise sem problemas, testes do
+empacotador aprovados e revisão independente com perfil alternativo **ship**.
+Na janela Windows foram conferidos navegação, cadastro/cancelamento, formulário
+de compromisso, fatura, relatórios, patrimônio, inventário de backup, tema e
+privacidade. O reteste final da sincronização está registrado separadamente
+no [relatório de conferência](windows-flow-verification.md).
+
+Builds Windows e Android `1.0.0+8` concluídos. O ZIP teve os 34 arquivos
+conferidos contra o manifesto; o APK teve pacote, nome e versão inspecionados.
+Os caminhos e SHA-256 estão no relatório. Os pacotes ficam fora do Git; o novo
+APK ainda exige aceite físico no aparelho.
+
 ## Sequência restante
 
 As fases visuais 1–5, o refinamento mobile da fase 7 e o polimento/acessibilidade

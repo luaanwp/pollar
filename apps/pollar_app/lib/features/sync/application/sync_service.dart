@@ -129,7 +129,9 @@ class SyncService {
       }
       rethrow;
     } finally {
-      await subscription.cancel();
+      // cancel() stops delivery immediately. An upstream observer's async
+      // cleanup must not pin an already completed/failed synchronization.
+      subscription.cancel().ignore();
     }
   }
 }

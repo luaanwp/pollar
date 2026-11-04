@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -86,9 +87,7 @@ class _PlanningContent extends ConsumerWidget {
             const SizedBox(height: PollarSpacing.x4),
             _PlanningActions(
               onNewBudget: () => _newBudget(context, ref),
-              onNewRule: state.accounts.isEmpty
-                  ? null
-                  : () => _newRule(context, ref),
+              onNewRule: () => _newRule(context, ref),
             ),
             const SizedBox(height: PollarSpacing.x6),
             LayoutBuilder(
@@ -102,9 +101,7 @@ class _PlanningContent extends ConsumerWidget {
                 final agenda = _AgendaBand(
                   occurrences: snapshot.occurrences,
                   privacyHidden: privacyHidden,
-                  onCreate: state.accounts.isEmpty
-                      ? null
-                      : () => _newRule(context, ref),
+                  onCreate: () => _newRule(context, ref),
                 );
                 if (!sideBySide) {
                   return Column(
@@ -168,6 +165,29 @@ class _PlanningContent extends ConsumerWidget {
   }
 
   Future<void> _newRule(BuildContext context, WidgetRef ref) async {
+    if (state.accounts.isEmpty) {
+      final viewAccounts = await showPollarAdaptiveModal<bool>(
+        context: context,
+        title: 'Uma conta primeiro',
+        description: 'O compromisso precisa de uma conta ativa. Cadastre uma conta ou reative uma existente em Contas.',
+        icon: LucideIcons.walletCards,
+        actions: (modalContext) => [
+          PollarButton(
+            label: 'Voltar ao planejamento',
+            adaptiveHeight: true,
+            variant: PollarButtonVariant.secondary,
+            onPressed: () => Navigator.of(modalContext).pop(false),
+          ),
+          PollarButton(
+            label: 'Ver contas',
+            adaptiveHeight: true,
+            onPressed: () => Navigator.of(modalContext).pop(true),
+          ),
+        ],
+      );
+      if (viewAccounts == true && context.mounted) context.go('/accounts');
+      return;
+    }
     final saved = await showRecurringRuleForm(
       context: context,
       accounts: state.accounts,

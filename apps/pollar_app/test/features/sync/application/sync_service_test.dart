@@ -19,6 +19,81 @@ void main() {
   tearDown(() => database.close());
 
   test(
+    'completed sync returns and can run again while observer cleanup waits',
+    () async {
+      final session = _DeferredCleanupSession();
+      addTearDown(session.finishCleanup);
+      final remote = _BlockingRemote()..release.complete();
+      final service = SyncService(session, store, remote);
+      final now = DateTime.utc(2026, 11, 3);
+      final run = service.synchronize(now: now);
+      await session.cancelling.future;
+      expect(
+        (await store.overview(remoteConfigured: true)).lastSyncedAt,
+        now.toLocal(),
+      );
+      await expectLater(
+        run.timeout(const Duration(milliseconds: 250)),
+        completes,
+      );
+      await expectLater(
+        service
+            .synchronize(now: now)
+            .timeout(const Duration(milliseconds: 250)),
+        completes,
+      );
+      expect(remote.pullCalls, 2);
+    },
+  );
+
+  test(
+    'remote failure is reported even while observer cleanup waits',
+    () async {
+      final session = _DeferredCleanupSession();
+      addTearDown(session.finishCleanup);
+      final remote = _PagedRemote(failSecondPageOnce: true);
+      final run = SyncService(
+        session,
+        store,
+        remote,
+      ).synchronize(now: DateTime.utc(2026, 11, 3));
+      final outcome = run.then<Object>(
+        (result) => result,
+        onError: (Object error) => error,
+      );
+      await session.cancelling.future;
+      expect(
+        await outcome.timeout(const Duration(milliseconds: 250)),
+        isA<StateError>(),
+      );
+      expect(
+        (await store.overview(remoteConfigured: true)).lastSyncedAt,
+        isNull,
+      );
+      expect(await store.cursor(), 500);
+    },
+  );
+
+  test(
+    'observer cleanup failure cannot replace an already saved result',
+    () async {
+      final session = _DeferredCleanupSession();
+      addTearDown(session.finishCleanup);
+      final remote = _BlockingRemote()..release.complete();
+      final now = DateTime.utc(2026, 11, 3);
+      final run = SyncService(session, store, remote).synchronize(now: now);
+      await session.cancelling.future;
+      session.cleanup.completeError(StateError('observer cleanup failed'));
+      final result = await run;
+      expect(result.completedAt, now);
+      expect(
+        (await store.overview(remoteConfigured: true)).lastSyncedAt,
+        now.toLocal(),
+      );
+    },
+  );
+
+  test(
     'identity change during pull discards response and completion',
     () async {
       final session = _MutableSession();
@@ -177,6 +252,23 @@ class _Session implements SyncSessionAccess {
   Stream<String?> identityChanges() => Stream.value(userId);
   @override
   Future<void> signOut() async {}
+}
+
+class _DeferredCleanupSession extends _Session {
+  final cleanup = Completer<void>();
+  final cancelling = Completer<void>();
+
+  @override
+  Stream<String?> identityChanges() => StreamController<String?>(
+    onCancel: () {
+      if (!cancelling.isCompleted) cancelling.complete();
+      return cleanup.future;
+    },
+  ).stream;
+
+  void finishCleanup() {
+    if (!cleanup.isCompleted) cleanup.complete();
+  }
 }
 
 class _MutableSession implements SyncSessionAccess {

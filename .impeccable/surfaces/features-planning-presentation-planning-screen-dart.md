@@ -62,3 +62,11 @@ the existing planning tests. `apps/pollar_app/test/goldens/planning_*` includes
 enlarged text. The fresh finish review verdict is **ship**, with no material
 defects. Final suite/build/runtime results are recorded separately by the
 coordinator in `docs/redesign-progress.md`; this brief makes no final pass count.
+
+## Account prerequisite
+
+“Novo compromisso” and Agenda creation always respond: open the recurring form
+with an active account; otherwise show the adaptive “Uma conta primeiro” modal
+with guidance to create or reactivate an account. “Voltar ao planejamento”
+preserves the plan; “Ver contas” opens `/accounts`. Do not silently disable these
+entry points, create accounts automatically or change financial rules.

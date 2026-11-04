@@ -18,6 +18,20 @@ $pollarTempParent = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\'
 $pollarTemp = Join-Path $pollarTempParent ('pollar-packaging-test-' + [Guid]::NewGuid().ToString('N'))
 $null = New-Item -ItemType Directory -Path $pollarTemp
 try {
+  Assert-PollarWindowsStorageIdentity -VersionInfo ([pscustomobject]@{
+    CompanyName = 'com.pollar'; ProductName = 'pollar_app'
+  })
+  Assert-PollarFailure {
+    Assert-PollarWindowsStorageIdentity -VersionInfo ([pscustomobject]@{
+      CompanyName = 'com.pollar'; ProductName = 'Pollar'
+    })
+  } 'storage identity changed'
+  Assert-PollarFailure {
+    Assert-PollarWindowsStorageIdentity -VersionInfo ([pscustomobject]@{
+      CompanyName = 'New brand'; ProductName = 'pollar_app'
+    })
+  } 'storage identity changed'
+  Write-Host 'PASS: stable storage identity; product/company renames rejected'
   foreach ($pollarScript in @('../build-windows.ps1', '../tools/windows-package.psm1', 'windows-package.tests.ps1')) {
     $pollarTokens = $null
     $pollarParseErrors = $null
