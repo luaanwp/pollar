@@ -45,6 +45,9 @@ jobs:
           flutter-version: '3.47.2'
           channel: stable
           cache: true
+          # Kotlin needs plugin sources and the project on the same drive.
+          pub-cache-path: ${{ github.workspace }}/.pub-cache
+          pub-cache-key: pollar-pub-workspace-v1-:os:-:channel:-:version:-:arch:-:hash:
       - name: Configure backend and existing Android signing identity
         env:
           POLLAR_SUPABASE_URL: ${{ vars.POLLAR_SUPABASE_URL }}
@@ -56,6 +59,7 @@ jobs:
           # filename/checksum. Match the approved Brazilian reference machine.
           tzutil.exe /s "E. South America Standard Time"
           if ($LASTEXITCODE -ne 0) { throw 'Could not set golden-test timezone.' }
+          if ([IO.Path]::GetPathRoot($env:PUB_CACHE) -ine [IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE)) { throw 'Pub cache must be on the workspace drive for Kotlin compilation.' }
           if (-not $env:POLLAR_SUPABASE_URL -or -not $env:POLLAR_SUPABASE_PUBLISHABLE_KEY -or -not $env:POLLAR_ANDROID_KEYSTORE_BASE64) { throw 'Update publishing configuration is missing.' }
           @{ SUPABASE_URL = $env:POLLAR_SUPABASE_URL; SUPABASE_PUBLISHABLE_KEY = $env:POLLAR_SUPABASE_PUBLISHABLE_KEY } | ConvertTo-Json | Set-Content apps/pollar_app/config/supabase.remote.json -Encoding utf8
           $keystore = Join-Path $env:RUNNER_TEMP 'pollar-updates.keystore'
@@ -78,15 +82,18 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & "$env:SystemRoot/System32/WindowsPowerShell/v1.0/powershell.exe" -NoProfile -File ../../tests/windows-update.tests.ps1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Build both update packages
+      - name: Build Windows update
+        working-directory: apps/pollar_app
+        run: |
+          flutter build windows --release --no-pub --build-name=$env:POLLAR_RELEASE_VERSION --build-number=$env:POLLAR_RELEASE_BUILD --dart-define-from-file=config/supabase.remote.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Build Android update
         working-directory: apps/pollar_app
         env:
           POLLAR_ANDROID_STORE_PASSWORD: ${{ secrets.POLLAR_ANDROID_STORE_PASSWORD }}
           POLLAR_ANDROID_KEY_ALIAS: ${{ secrets.POLLAR_ANDROID_KEY_ALIAS }}
           POLLAR_ANDROID_KEY_PASSWORD: ${{ secrets.POLLAR_ANDROID_KEY_PASSWORD }}
         run: |
-          flutter build windows --release --no-pub --build-name=$env:POLLAR_RELEASE_VERSION --build-number=$env:POLLAR_RELEASE_BUILD --dart-define-from-file=config/supabase.remote.json
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           flutter build apk --release --no-pub --build-name=$env:POLLAR_RELEASE_VERSION --build-number=$env:POLLAR_RELEASE_BUILD --dart-define-from-file=config/supabase.remote.json
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Package and publish after all checks pass

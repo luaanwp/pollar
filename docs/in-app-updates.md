@@ -31,6 +31,10 @@ Usa `windows-2022` com Visual Studio 2022: o STL mais recente do Visual Studio
 2026 rejeitou a integração de corrotinas do plugin Windows Hello em
 `windows-latest`. A fixação preserva o plugin e não desativa erros do compilador.
 Checkout 7.0.1 e setup-java 6.1.0 usam Node 24 e permanecem fixados por SHA.
+O cache Pub fica em `.pub-cache` no próprio workspace, no mesmo disco do
+projeto. O compilador incremental Kotlin não consegue relativizar fontes de
+plugins entre C: e D:; o workflow verifica essa condição antes dos testes.
+Os builds Windows e Android aparecem em etapas separadas no GitHub.
 O runner usa o fuso `E. South America Standard Time`, igual às capturas de
 referência aprovadas. A prévia de backup exibe a data local, enquanto nome e
 checksum preservam UTC; fixar somente a hora da simulação alteraria esses
@@ -98,6 +102,10 @@ independente encerrou com **ship**, após corrigir o limite pela altura do body.
 Na execução remota 41905502264, os **568 testes** passaram, assim como os testes
 do empacotador e a instalação nativa isolada. Essa execução não publicou uma
 release: a compilação Windows parou na incompatibilidade do STL descrita acima.
+A execução 41920105156 também passou nas verificações e compilou o Windows.
+O Android apontou fontes de plugins no cache C: e projeto no D:, corrigido pela
+localização do cache no workspace. Não foram desativados testes nem compilação
+incremental para contornar essas falhas de ambiente.
 
 Windows e Android locais `1.0.0+10` compilaram. O APK foi inspecionado: pacote
 `com.pollar.pollar_app`, código 10 e assinatura igual ao APK 8 instalado. Artefato
