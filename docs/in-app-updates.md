@@ -78,6 +78,25 @@ O teste isolado não comprova instalação física no Android nem simula todas a
 falhas possíveis de disco/antivírus/permissões. O resultado da primeira execução
 remota do workflow e os artefatos publicados são registrados após sua conclusão.
 
+## Verificação inicial — 2026-11-04
+
+A suíte local completa passou com 565 testes antes das três verificações finais
+adicionais. Após os ajustes de teclado/altura e recuperação da instalação,
+31 testes direcionados passaram e a análise não encontrou problemas. O teste
+nativo do atualizador e os testes do empacotador também passaram. A revisão
+independente encerrou com **ship**, após corrigir o limite pela altura do body.
+
+Windows e Android locais `1.0.0+10` compilaram. O APK foi inspecionado: pacote
+`com.pollar.pollar_app`, código 10 e assinatura igual ao APK 8 instalado. Artefato
+local: `dist/pollar-redesign-v1.0.0-10.apk`, SHA-256
+`CE9A957E90D8808832E1C6A1A7C496B46FE445675F9C8A5656423DC6F63E3426`.
+
+Na janela nativa do Windows, os dados originais continuaram visíveis e
+Preferências mostrou **Versão instalada: 1.0.0+10**, **Pollar atualizado** e a
+ação Verificar atualizações, antes de existir a primeira release pública.
+O reinício foi ajustado para abrir a janela do Pollar normalmente, mantendo
+somente o processo auxiliar oculto.
+
 Referências: [GitHub Releases API](https://docs.github.com/en/rest/releases/releases),
 [FileProvider Android](https://developer.android.com/reference/androidx/core/content/FileProvider),
 [assinatura Android](https://developer.android.com/studio/publish/app-signing).
