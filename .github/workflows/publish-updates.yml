@@ -47,7 +47,7 @@ jobs:
           cache: true
           # Kotlin needs plugin sources and the project on the same drive.
           pub-cache-path: ${{ github.workspace }}/.pub-cache
-          pub-cache-key: pollar-pub-workspace-v1-:os:-:channel:-:version:-:arch:-:hash:
+          pub-cache-key: 'pollar-pub-workspace-v1-:os:-:channel:-:version:-:arch:-:hash:'
       - name: Configure backend and existing Android signing identity
         env:
           POLLAR_SUPABASE_URL: ${{ vars.POLLAR_SUPABASE_URL }}
