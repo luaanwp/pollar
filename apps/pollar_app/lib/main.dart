@@ -37,6 +37,9 @@ import 'features/transactions/data/drift_transaction_repository.dart';
 import 'features/transactions/presentation/transactions_controller.dart';
 import 'features/wealth/data/drift_wealth_repository.dart';
 import 'features/wealth/presentation/wealth_controller.dart';
+import 'features/updates/data/github_update_gateway.dart';
+import 'features/updates/presentation/app_update_controller.dart';
+import 'features/updates/presentation/app_update_widgets.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +57,11 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [
+        appUpdateGatewayProvider.overrideWith(
+          (ref) => GitHubUpdateGateway(
+            beforeRestart: () => ref.read(localDatabaseProvider).close(),
+          ),
+        ),
         if (supabase case final client?) ...[
           authGatewayProvider.overrideWithValue(SupabaseAuthGateway(client)),
           syncRemoteGatewayProvider.overrideWithValue(
@@ -148,6 +156,7 @@ class PollarApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       title: 'Pollar',
+      builder: (context, child) => AppUpdateWatcher(child: child!),
       debugShowCheckedModeBanner: false,
       theme: PollarTheme.light(),
       darkTheme: PollarTheme.dark(),

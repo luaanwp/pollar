@@ -8,6 +8,7 @@ import '../../../app/theme/pollar_theme.dart';
 import '../../../app/theme/theme_mode_provider.dart';
 import '../../../shared/presentation/pollar_button.dart';
 import '../../../shared/presentation/pollar_card.dart';
+import '../../updates/presentation/app_update_widgets.dart';
 
 /// Preferences ("Preferências") — the settings surface. For now it exposes the
 /// theme choice; persisted preferences and account settings land later.
@@ -84,6 +85,8 @@ class SettingsScreen extends ConsumerWidget {
               'persistida chega com o restante das configurações.',
               style: text.bodySmall?.copyWith(color: pollar.textMuted),
             ),
+            const SizedBox(height: PollarSpacing.x6),
+            const AppUpdatePanel(),
           ],
         ),
       ),

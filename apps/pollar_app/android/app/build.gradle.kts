@@ -29,11 +29,23 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        val keystorePath = System.getenv("POLLAR_ANDROID_KEYSTORE_PATH")
+        if (!keystorePath.isNullOrBlank()) {
+            create("pollarUpdates") {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("POLLAR_ANDROID_STORE_PASSWORD")
+                keyAlias = System.getenv("POLLAR_ANDROID_KEY_ALIAS")
+                keyPassword = System.getenv("POLLAR_ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // CI must use the same certificate as the APK already installed.
+            // Local builds retain their existing key; never commit a keystore.
+            signingConfig = signingConfigs.findByName("pollarUpdates") ?: signingConfigs.getByName("debug")
         }
     }
 }

@@ -11,6 +11,8 @@ import '../../shared/presentation/pollar_button.dart';
 import '../../shared/presentation/pollar_motion.dart';
 import '../../shared/presentation/pollar_brand.dart';
 import 'navigation_preferences.dart';
+import '../../features/updates/presentation/app_update_widgets.dart';
+import '../../features/updates/presentation/app_update_controller.dart';
 
 /// A top-level navigation destination in the app shell.
 class AppDestination {
@@ -120,7 +122,11 @@ class AppShell extends ConsumerWidget {
         onToggle: togglePrivacy,
         child: Scaffold(
           appBar: appBar,
-          body: SafeArea(top: false, bottom: false, child: navigationShell),
+          body: SafeArea(
+            top: false,
+            bottom: false,
+            child: _UpdateContent(child: navigationShell),
+          ),
           bottomNavigationBar: _BottomNav(
             selectedIndex: index,
             onSelected: _goBranch,
@@ -147,10 +153,36 @@ class AppShell extends ConsumerWidget {
                 thickness: 1,
                 color: context.pollar.border,
               ),
-              Expanded(child: navigationShell),
+              Expanded(child: _UpdateContent(child: navigationShell)),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _UpdateContent extends ConsumerWidget {
+  const _UpdateContent({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(appUpdateProvider.select((state) => state.release)) == null ||
+        View.of(context).viewInsets.bottom > 0) {
+      return child;
+    }
+    return LayoutBuilder(
+      builder: (context, constraints) => Column(
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: constraints.maxHeight * .4),
+            child: const SingleChildScrollView(
+              child: AppUpdatePanel(noticeOnly: true),
+            ),
+          ),
+          Expanded(child: child),
+        ],
       ),
     );
   }

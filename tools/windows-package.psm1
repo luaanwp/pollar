@@ -18,7 +18,8 @@ function New-PollarWindowsPackage {
     [Parameter(Mandatory)][ValidateSet('local', 'remote')][string]$BackendMode,
     [Parameter(Mandatory)][bool]$ChecksPassed,
     [Parameter(Mandatory)][string]$NoticesPath,
-    [Parameter(Mandatory)][string]$ReadmePath
+    [Parameter(Mandatory)][string]$ReadmePath,
+    [switch]$ForUpdates
   )
   $ErrorActionPreference = 'Stop'
   if ($Version -notmatch '^\d+\.\d+\.\d+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?(?:\+[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?$') {
@@ -70,12 +71,12 @@ function New-PollarWindowsPackage {
   })
   $pollarManifestPath = Join-Path $pollarBundle 'package-manifest.json'
   [ordered]@{
-    format = 'pollar.windows.internal'
+    format = if ($ForUpdates) { 'pollar.windows.update' } else { 'pollar.windows.internal' }
     formatVersion = 1
     version = $Version
     platform = 'windows-x64'
     backendMode = $BackendMode
-    internalOnly = $true
+    internalOnly = -not $ForUpdates
     checksPassed = $ChecksPassed
     createdAtUtc = [DateTime]::UtcNow.ToString('o')
     files = $pollarFiles
