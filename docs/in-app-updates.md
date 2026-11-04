@@ -27,6 +27,10 @@ silenciosa. A distribuição é por APK direto, fora da Google Play.
 `main`, ou manualmente. Alterações somente de documentação não geram pacote.
 O workflow fixa Flutter 3.47.2 e versões dos actions por SHA, executa análise,
 testes Flutter e verificações de empacotamento/atualização antes dos builds.
+Usa `windows-2022` com Visual Studio 2022: o STL mais recente do Visual Studio
+2026 rejeitou a integração de corrotinas do plugin Windows Hello em
+`windows-latest`. A fixação preserva o plugin e não desativa erros do compilador.
+Checkout 7.0.1 e setup-java 6.1.0 usam Node 24 e permanecem fixados por SHA.
 O runner usa o fuso `E. South America Standard Time`, igual às capturas de
 referência aprovadas. A prévia de backup exibe a data local, enquanto nome e
 checksum preservam UTC; fixar somente a hora da simulação alteraria esses
@@ -91,6 +95,9 @@ adicionais. Após os ajustes de teclado/altura e recuperação da instalação,
 31 testes direcionados passaram e a análise não encontrou problemas. O teste
 nativo do atualizador e os testes do empacotador também passaram. A revisão
 independente encerrou com **ship**, após corrigir o limite pela altura do body.
+Na execução remota 41905502264, os **568 testes** passaram, assim como os testes
+do empacotador e a instalação nativa isolada. Essa execução não publicou uma
+release: a compilação Windows parou na incompatibilidade do STL descrita acima.
 
 Windows e Android locais `1.0.0+10` compilaram. O APK foi inspecionado: pacote
 `com.pollar.pollar_app`, código 10 e assinatura igual ao APK 8 instalado. Artefato
