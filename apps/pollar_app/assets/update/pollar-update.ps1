@@ -107,7 +107,7 @@ try {
     $null = New-Item -ItemType Directory -Path (Split-Path -Parent $pollarOutput) -Force
     Copy-Item -LiteralPath (Resolve-PollarChild $pollarSource $pollarFile.path) -Destination $pollarOutput -Force
   }
-  $pollarLaunched = Start-Process -FilePath $pollarExe -WorkingDirectory $pollarTarget -WindowStyle Hidden -PassThru
+  $pollarLaunched = Start-Process -FilePath $pollarExe -WorkingDirectory $pollarTarget -WindowStyle Normal -PassThru
   Start-Sleep -Seconds 2
   if ($pollarLaunched.HasExited -and $pollarLaunched.ExitCode -ne 0) { throw 'Updated application failed to start' }
   Write-PollarStatus 'installed'
@@ -121,7 +121,7 @@ try {
         $_ | Out-String | Add-Content -LiteralPath (Join-Path $pollarWork 'rollback-error.log') -Encoding UTF8
       }
     }
-    Start-Process -FilePath $pollarExe -WorkingDirectory $pollarTarget -WindowStyle Hidden
+    Start-Process -FilePath $pollarExe -WorkingDirectory $pollarTarget -WindowStyle Normal
   }
   Write-PollarStatus 'error'
   $_ | Out-String | Set-Content -LiteralPath (Join-Path $pollarWork 'update-error.log') -Encoding UTF8

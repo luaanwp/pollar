@@ -94,3 +94,4 @@ public class Fixture$pollarBuild {
   if ([IO.Path]::GetDirectoryName($pollarResolved) -ne $pollarTempRoot -or [IO.Path]::GetFileName($pollarResolved) -notmatch '^pollar-update-test-[a-f0-9]{32}$') { throw 'Unsafe test cleanup target' }
   Remove-Item -LiteralPath $pollarResolved -Recurse -Force
 }
+exit 0
