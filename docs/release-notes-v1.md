@@ -65,4 +65,7 @@ mudança de versão, tag Git ou publicação de release.
 - Desbloqueio nativo Android, validação de iOS em aparelho e instalação Windows
   em ambiente limpo ainda não declarados validados.
 - Assinatura de distribuição, instalador/lojas e revisão da entrega de e-mail
-  em produção são etapas separadas. Não há atualização automática.
+  em produção são etapas separadas. Desde `1.0.0+10`, há verificação, download
+  e instalação confirmada pelo aplicativo via GitHub Releases; veja
+  [atualizações pelo Pollar](in-app-updates.md). Isso não declara distribuição
+  em lojas nem instalação silenciosa.

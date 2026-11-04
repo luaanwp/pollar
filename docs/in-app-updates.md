@@ -27,6 +27,12 @@ silenciosa. A distribuição é por APK direto, fora da Google Play.
 `main`, ou manualmente. Alterações somente de documentação não geram pacote.
 O workflow fixa Flutter 3.47.2 e versões dos actions por SHA, executa análise,
 testes Flutter e verificações de empacotamento/atualização antes dos builds.
+O runner usa o fuso `E. South America Standard Time`, igual às capturas de
+referência aprovadas. A prévia de backup exibe a data local, enquanto nome e
+checksum preservam UTC; fixar somente a hora da simulação alteraria esses
+outros campos. O fuso é configurado apenas na máquina efêmera do GitHub, sem
+alterar o computador do usuário, a conversão real ou a comparação exata das
+imagens.
 
 Os dois pacotes recebem a mesma versão do pubspec e número `1000 + run_number`,
 superior aos APKs locais anteriores. A release é criada como rascunho e só fica

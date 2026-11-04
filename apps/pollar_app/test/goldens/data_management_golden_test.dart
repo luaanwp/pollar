@@ -69,9 +69,9 @@ void main() {
     await DataBackupService(
       source,
       files,
-    // The preview displays local time. Keep the same wall clock in every CI
-    // timezone while exercising the real UTC export/local restore round trip.
-    ).create(now: DateTime(2026, 9, 24, 12, 30));
+    // The golden covers both the UTC filename/checksum and the local preview.
+    // CI pins the same Sao Paulo timezone used by these approved captures.
+    ).create(now: DateTime.utc(2026, 9, 24, 15, 30));
     files.picked = PickedBackupFile(
       name: files.saved!.fileName,
       contents: files.saved!.contents,

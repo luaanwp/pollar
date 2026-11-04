@@ -50,6 +50,10 @@ jobs:
           POLLAR_ANDROID_KEYSTORE_BASE64: ${{ secrets.POLLAR_ANDROID_KEYSTORE_BASE64 }}
         run: |
           $ErrorActionPreference = 'Stop'
+          # Restore-preview goldens display local time while retaining a UTC
+          # filename/checksum. Match the approved Brazilian reference machine.
+          tzutil.exe /s "E. South America Standard Time"
+          if ($LASTEXITCODE -ne 0) { throw 'Could not set golden-test timezone.' }
           if (-not $env:POLLAR_SUPABASE_URL -or -not $env:POLLAR_SUPABASE_PUBLISHABLE_KEY -or -not $env:POLLAR_ANDROID_KEYSTORE_BASE64) { throw 'Update publishing configuration is missing.' }
           @{ SUPABASE_URL = $env:POLLAR_SUPABASE_URL; SUPABASE_PUBLISHABLE_KEY = $env:POLLAR_SUPABASE_PUBLISHABLE_KEY } | ConvertTo-Json | Set-Content apps/pollar_app/config/supabase.remote.json -Encoding utf8
           $keystore = Join-Path $env:RUNNER_TEMP 'pollar-updates.keystore'

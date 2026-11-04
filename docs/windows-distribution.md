@@ -57,9 +57,13 @@ em [conferência Windows](windows-flow-verification.md).
 4. Entre com a identidade original desse perfil Windows. Não limpe dados nem
    restaure backup para atualizar o executável.
 
-Este slice não muda o identificador do app nem o caminho do banco. O pacote
-não fornece atualização automática ou desinstalador. Em outro computador,
-ainda é necessário validar dependências nativas e o fluxo de primeiro acesso.
+O identificador do app e o caminho do banco permanecem estáveis. Desde
+`1.0.0+10`, o Pollar também oferece download e instalação confirmada pelo próprio
+aplicativo, com pacotes publicados por push no GitHub. Veja
+[atualizações pelo aplicativo](in-app-updates.md). Versões anteriores exigem
+uma instalação manual inicial. O pacote continua portátil, sem desinstalador.
+Em outro computador, ainda é necessário validar dependências nativas e o fluxo
+de primeiro acesso.
 
 ## Verificar somente o empacotador
 
