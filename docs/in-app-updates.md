@@ -120,6 +120,27 @@ ação Verificar atualizações, antes de existir a primeira release pública.
 O reinício foi ajustado para abrir a janela do Pollar normalmente, mantendo
 somente o processo auxiliar oculto.
 
+### Teste do canal real e lançamento do auxiliar
+
+Os pacotes da execução 41922962873 compilaram e foram enviados ao rascunho
+1007. A conferência por tag retornou 404; a consulta por ID foi corrigida e
+testada nesse mesmo rascunho. Depois de baixar novamente e conferir hashes,
+manifesto Windows, versão Android e assinatura, a publicação foi concluída para
+o teste do aplicativo.
+
+No Windows, o Pollar encontrou a versão 1007 pelo canal real e baixou o ZIP
+com sucesso. O reinício não ocorreu: os modos detached do Dart encerraram o
+PowerShell antes do script. O processo normal executou a mesma verificação.
+A versão 1007 foi marcada como prévia e a execução 1008 foi cancelada antes
+de publicar o mesmo cliente. O programa aberto permaneceu na versão 10.
+
+`WindowsUpdateLauncher` agora mantém o auxiliar oculto em modo normal, drena
+saída, registra erro de lançamento e detecta término prematuro. Três testes
+Windows reais verificam handshake a partir do Flutter, diagnóstico de falha e
+sobrevivência do auxiliar após `exit(0)` do processo Dart pai. Os três passaram.
+O bootstrap local seguinte é `1.0.0+11`; o novo teste completo de instalação
+será registrado após sua execução.
+
 Referências: [GitHub Releases API](https://docs.github.com/en/rest/releases/releases),
 [FileProvider Android](https://developer.android.com/reference/androidx/core/content/FileProvider),
 [assinatura Android](https://developer.android.com/studio/publish/app-signing).

@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../application/app_update_gateway.dart';
 import '../domain/app_release.dart';
+import 'windows_update_launcher.dart';
 
 class GitHubUpdateGateway implements AppUpdateGateway {
   GitHubUpdateGateway({this.beforeRestart, this.downloadDirectory});
@@ -152,45 +153,21 @@ class GitHubUpdateGateway implements AppUpdateGateway {
     );
     final status = File('${work.path}/status.json');
     final executable = File(Platform.resolvedExecutable);
-    final systemRoot = Platform.environment['SystemRoot'];
-    if (systemRoot == null) throw StateError('Windows directory unavailable');
-    await Process.start(
-      '$systemRoot/System32/WindowsPowerShell/v1.0/powershell.exe',
-      [
-        '-NoProfile',
-        '-NonInteractive',
-        '-WindowStyle',
-        'Hidden',
-        '-ExecutionPolicy',
-        'Bypass',
-        '-File',
-        script.path,
-        '-Archive',
-        file.path,
-        '-ExpectedHash',
-        release.sha256,
-        '-ExpectedVersion',
-        release.version.toString(),
-        '-InstallDirectory',
-        executable.parent.path,
-        '-ParentProcessId',
-        '$pid',
-        '-StatusFile',
-        status.path,
-      ],
-      mode: ProcessStartMode.detached,
+    final helper = await const WindowsUpdateLauncher().prepare(
+      script: script,
+      archive: file,
+      expectedHash: release.sha256,
+      expectedVersion: release.version.toString(),
+      installDirectory: executable.parent.path,
+      parentProcessId: pid,
+      status: status,
     );
-    for (var i = 0; i < 120; i++) {
-      await Future<void>.delayed(const Duration(milliseconds: 500));
-      if (!await status.exists()) continue;
-      final result =
-          jsonDecode(await status.readAsString()) as Map<String, dynamic>;
-      if (result['phase'] != 'ready') {
-        throw StateError('Update preparation failed');
-      }
+    try {
       await beforeRestart?.call();
       exit(0);
+    } catch (_) {
+      helper.kill();
+      rethrow;
     }
-    throw TimeoutException('Update preparation timed out');
   }
 }
