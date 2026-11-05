@@ -175,3 +175,25 @@ permanece pendente, separada da validação do APK e de sua assinatura.
 Referências: [GitHub Releases API](https://docs.github.com/en/rest/releases/releases),
 [FileProvider Android](https://developer.android.com/reference/androidx/core/content/FileProvider),
 [assinatura Android](https://developer.android.com/studio/publish/app-signing).
+
+## Isolamento dos testes de processo no CI — 2026-11-05
+
+A execução 42058785984 não publicou a versão 1013: 585 testes passaram e os
+três testes que iniciam PowerShell/Dart falharam durante a suíte paralela.
+Os registros mostram preparação acima do limite de 10 segundos do fixture,
+diagnóstico vazio após timeout e limite de 25 segundos no processo pai, seguido
+de arquivo ainda em uso na limpeza. Os testes visuais do menu passaram.
+
+O workflow agora executa a suíte geral com a tag `windows-process` excluída,
+seguida de uma etapa obrigatória e sequencial com esses mesmos três testes,
+mais os testes nativos do empacotador/instalador. A publicação depende de ambas.
+O fixture usa o prazo real de preparação de 60 segundos do aplicativo, verifica
+o motivo exato de término antecipado e espera a conclusão do log. O processo
+pai é controlado com `Process.start`, para que possa ser encerrado também em
+caso de timeout; a limpeza aguarda liberação dos arquivos temporários dentro
+de um prazo limitado. Nenhum teste foi removido e o atualizador do aplicativo
+mantém seu comportamento e prazos.
+
+Validação local dessa organização: 585 testes da suíte geral e os três testes
+de processo aprovados em etapas sequenciais; análise sem problemas. O resultado
+remoto da nova publicação será registrado após a conclusão do workflow.

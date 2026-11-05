@@ -76,7 +76,13 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           flutter analyze --no-pub
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          flutter test --no-pub
+          flutter test --no-pub --exclude-tags=windows-process
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify native Windows update processes
+        working-directory: apps/pollar_app
+        run: |
+          # Native process startup must not compete with the parallel UI suites.
+          flutter test --no-pub --concurrency=1 test/features/updates/windows_update_launcher_test.dart
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & "$env:SystemRoot/System32/WindowsPowerShell/v1.0/powershell.exe" -NoProfile -File ../../tests/windows-package.tests.ps1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
