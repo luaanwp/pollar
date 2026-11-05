@@ -72,13 +72,8 @@ void main() {
     await tester.pumpWidget(app(repository));
     await tester.pumpAndSettle();
     await tester.tap(
-      find.byType(NavigationRail).evaluate().isNotEmpty
-          ? find
-                .descendant(
-                  of: find.byType(NavigationRail),
-                  matching: find.byTooltip('Transações'),
-                )
-                .first
+      find.byType(NavigationBar).evaluate().isEmpty
+          ? find.byTooltip('Transações')
           : find.descendant(
               of: find.byType(NavigationBar),
               matching: find.text('Transações'),

@@ -25,15 +25,21 @@ not muted metadata. Only the expanded Overview opening uses the derived tonal
 field and 48/40px position roles described below; other financial cards retain
 their existing treatment.
 
-Redesign phase 2 implements manual 256/72px rail collapse at widths ≥1024px,
-with a session preference, stable branch navigators and scrolling in short
-windows. Tablet uses 72px; compact keeps five labelled bottom destinations and
-the native safe area. The utility bar has quiet route context and global
-theme/privacy actions; compact Transactions retains its sole page heading.
+The local shell refinement replaces phase 2's rail at widths ≥600px with
+`PollarTopNavigation`: Pollar brand left, five labelled destinations and global
+theme/privacy controls right. Actual font metrics at weight 600 and the current
+text scaler choose one row or a brand/utility row followed by the menu. Overflow
+scrolls horizontally; selection and resize reveal the selected item. The menu
+keeps 20px Lucide icons, complete labels, selected semantics and a 2px teal
+underline (240ms easeOutCubic, zero with reduced motion). There is no collapse
+preference. Compact keeps five labelled bottom destinations, the native safe
+area and its existing toolbar; Transactions retains its sole page heading.
 More uses grouped rows: “Entenda seus dados” and “Seu aplicativo”. The Flutter
 page gutters remain 16/24px; later web-kit measurements below are references.
-The toolbar is normally 56px and grows for the compact enlarged page heading;
-there is no additional mobile quick-add control in the implemented shell.
+The compact toolbar is normally 56px and grows for its enlarged page heading;
+wide brand/menu rows have 72/56px minima and grow with text. More child routes
+retain “Voltar para Mais”, now with visible text below the wide navigation.
+This is a layout refinement within the existing identity, routes and motion.
 
 Navigation motion uses `PollarBranchStack`: the current destination arrives
 horizontally from its destination-order side, reversed in RTL, up to 24dp
@@ -43,7 +49,8 @@ branch navigators. Inactive branches are offstage, excluded from focus and
 semantics, and have tickers disabled. Do not retain an outgoing screen or
 snapshot. Reduced motion/accessibility navigation ends arrival immediately,
 including mid-transition, without remounting. The bottom indicator uses native
-240ms/zero-duration animation; rail behavior stays native. More rows use
+240ms/zero-duration animation; the top menu reveals its selection in 240ms or
+zero with reduced motion. More rows use
 `PollarReveal` at indices 0–4 without theme/privacy replay. Data, Sync and
 Preferences use the existing `pollarMotionPage`: MaterialPage on iOS/macOS for
 native back behavior, custom transition elsewhere. Route/auth behavior stays.
@@ -127,7 +134,7 @@ Phase 4B migrates Transactions: search and type combine, result count and clear
 action explain the current scope. Type chips require 960px of local width and
 text up to 1.3×; otherwise use a labeled native selector with content-driven
 item height. Complete rows reflow, preserving exact money, status and motion.
-The 360px detail panel requires 1020px after rail/gutters; narrower layouts use
+The 360px detail panel requires 1020px after gutters; narrower layouts use
 the root modal, with a bounded scrolling viewport on desktop. Large text,
 short windows and narrow containers scroll controls with the list without
 losing search focus. Privacy remains reactive in an open modal and reserves
@@ -223,7 +230,7 @@ Pollar is the official product name. Brand personality: private, composed, depen
 - IME padding belongs outside the scroll; consume bottom viewInsets and retain `SafeArea(top: false)` inside Material for gestures. Content and actions remain scrollable.
 - Above 1.3×, text/select fields expose complete external labels, with excluded visual semantics and a stable keyed semantic field name; preserve editing, selection and focus. Select items grow naturally.
 - Planning/Wealth form actions have adaptive height; Done in Planning's last numeric fields ends editing without implicit saving.
-- Compact shell body protects lateral areas, leaving bottom protection to the five-destination native bar; wide body includes the bottom safe area. Both omit top protection already handled by the app bar.
+- Compact shell body protects lateral areas, leaving bottom protection to the five-destination native bar and top protection to its app bar; wide `SafeArea` wraps both top navigation and content, including top and bottom protection.
 - Preserve names, callbacks, actions and dismissibility; reduced motion disables native sheet/dialog animation. The next redesign step is phase 8; conditional phase 6 is outside this slice.
 
 ### Control accessibility — phase 8

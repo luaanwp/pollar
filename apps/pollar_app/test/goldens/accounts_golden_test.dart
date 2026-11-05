@@ -47,13 +47,8 @@ void main() {
     );
     await tester.pumpAndSettle();
     await tester.tap(
-      find.byType(NavigationRail).evaluate().isNotEmpty
-          ? find
-                .descendant(
-                  of: find.byType(NavigationRail),
-                  matching: find.byTooltip('Contas'),
-                )
-                .first
+      find.byType(NavigationBar).evaluate().isEmpty
+          ? find.byTooltip('Contas')
           : find.descendant(
               of: find.byType(NavigationBar),
               matching: find.text('Contas'),

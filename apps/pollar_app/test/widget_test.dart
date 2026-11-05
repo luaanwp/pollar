@@ -34,7 +34,10 @@ void main() {
     await tester.pumpWidget(app());
     await tester.pumpAndSettle();
 
-    expect(find.text('Visão geral'), findsWidgets); // shell title + rail label
+    expect(
+      find.text('Visão geral'),
+      findsWidgets,
+    ); // labelled primary destination
     expect(find.text('Saldo confirmado'), findsOneWidget);
 
     final context = tester.element(find.text('Saldo confirmado'));
@@ -105,7 +108,7 @@ void main() {
       await tester.tap(find.byTooltip('Transações'));
       await tester.pumpAndSettle();
       expect(find.text('rascunho de busca'), findsOneWidget);
-      await tester.tap(find.byTooltip('Recolher navegação'));
+      tester.view.physicalSize = const Size(800, 900);
       await tester.pumpAndSettle();
       tester.view.physicalSize = const Size(390, 844);
       await tester.pumpAndSettle();

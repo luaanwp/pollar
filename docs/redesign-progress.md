@@ -663,9 +663,28 @@ uma release estável somente após conferir os hashes enviados.
 A primeira execução completa aprovada publicou `1.0.0+1009`, com 571 testes
 Flutter aprovados e builds Windows/Android concluídos. Os pacotes publicados
 foram baixados e conferidos; assinatura Android e manifesto Windows passaram.
-A instalação pela janela Windows aguarda disponibilidade da janela em
-primeiro plano; a confirmação física Android também permanece pendente.
+O usuário confirmou que a instalação pelo botão Windows funcionou.
+A confirmação física da instalação pelo botão Android permanece pendente.
 Evidências no [registro de atualizações](in-app-updates.md).
+
+## Navegação horizontal — 2026-11-04
+
+A pedido do usuário, a navegação lateral foi substituída por cinco destinos
+no topo, mantendo marca, privacidade, tema e transições existentes. O menu
+usa uma linha quando os rótulos cabem e uma segunda linha com rolagem
+horizontal quando necessário. A seleção tem sublinhado animado; o conteúdo
+recupera a largura antes ocupada pela lateral. No celular, os cinco destinos
+continuam na navegação inferior.
+
+Os navegadores de cada seção permanecem montados, com buscas, rascunhos e
+detalhes preservados. A navegação mantém teclado, texto ampliado, alvos de
+48dp, direção RTL, áreas seguras e movimento reduzido. Referências e decisões
+estão no [registro do layout](navigation-layout.md).
+
+Validação local: **574 testes aprovados**, incluindo a comparação das capturas,
+e análise sem problemas. A revisão independente encerrou com **ship**, sem
+achados materiais. O teste físico da nova navegação no Windows/Android segue
+separado dessas verificações automatizadas.
 
 ## Sequência restante
 

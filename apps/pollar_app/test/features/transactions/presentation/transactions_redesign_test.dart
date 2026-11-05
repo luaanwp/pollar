@@ -94,13 +94,8 @@ void main() {
     );
     await tester.pumpAndSettle();
     await tester.tap(
-      find.byType(NavigationRail).evaluate().isNotEmpty
-          ? find
-                .descendant(
-                  of: find.byType(NavigationRail),
-                  matching: find.byTooltip('Transações'),
-                )
-                .first
+      find.byType(NavigationBar).evaluate().isEmpty
+          ? find.byTooltip('Transações')
           : find.descendant(
               of: find.byType(NavigationBar),
               matching: find.text('Transações'),
@@ -252,13 +247,13 @@ void main() {
   testWidgets(
     'available width selects modal or panel and excludes filtered details',
     (tester) async {
-      await mount(tester, size: const Size(1200, 900));
+      await mount(tester, size: const Size(950, 900));
       await tester.tap(find.text('Despesa comum'));
       await tester.pumpAndSettle();
       expect(find.text('Detalhes da transação'), findsNothing);
       await tester.tap(find.text('Fechar detalhes'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('Recolher navegação'));
+      tester.view.physicalSize = const Size(1200, 900);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Despesa comum'));
       await tester.pumpAndSettle();
@@ -276,7 +271,7 @@ void main() {
     },
   );
 
-  for (final width in [390.0, 1200.0]) {
+  for (final width in [390.0, 950.0]) {
     testWidgets(
       'open modal reacts immediately to privacy at $width and keeps its footprint',
       (tester) async {

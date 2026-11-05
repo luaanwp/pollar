@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-05T00:09:04Z",
+  "title": "Design System: Pollar",
+  "extensions": {
+    "motion": [
+      {
+        "name": "top-navigation-selection",
+        "value": "240ms easeOutCubic",
+        "purpose": "The 2dp teal underline follows the selected destination; reduced motion uses zero duration."
+      },
+      {
+        "name": "top-navigation-reveal",
+        "value": "240ms",
+        "purpose": "Scrollable.ensureVisible reveals the selected menu item after selection or width changes; reduced motion uses zero duration."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide-shell-navigation",
+        "value": "600px"
+      }
+    ]
+  }
+}

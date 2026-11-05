@@ -39,9 +39,12 @@ void main() {
       expect(field.left, greaterThanOrEqualTo(44));
       expect(field.right, lessThanOrEqualTo(width - 34));
       if (width >= 600) {
-        expect(tester.getRect(find.byType(NavigationRail)).left, 44);
         expect(
-          tester.getRect(find.byType(NavigationRail)).bottom,
+          tester.getRect(find.byTooltip('Visão geral')).left,
+          greaterThanOrEqualTo(44),
+        );
+        expect(
+          tester.getRect(find.byTooltip('Visão geral')).bottom,
           lessThanOrEqualTo(369),
         );
       } else {

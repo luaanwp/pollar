@@ -9,23 +9,10 @@ import '../theme/pollar_theme.dart';
 import '../theme/theme_mode_provider.dart';
 import '../../shared/presentation/pollar_button.dart';
 import '../../shared/presentation/pollar_motion.dart';
-import '../../shared/presentation/pollar_brand.dart';
-import 'navigation_preferences.dart';
+import 'pollar_top_navigation.dart';
+import 'app_destination.dart';
 import '../../features/updates/presentation/app_update_widgets.dart';
 import '../../features/updates/presentation/app_update_controller.dart';
-
-/// A top-level navigation destination in the app shell.
-class AppDestination {
-  const AppDestination({
-    required this.label,
-    required this.icon,
-    required this.path,
-  });
-
-  final String label;
-  final IconData icon;
-  final String path;
-}
 
 /// Destinations are added only when their route leads somewhere real.
 const List<AppDestination> appDestinations = [
@@ -52,10 +39,8 @@ const List<AppDestination> appDestinations = [
   AppDestination(label: 'Mais', icon: LucideIcons.ellipsis, path: '/more'),
 ];
 
-/// Adaptive shell wrapping the [StatefulNavigationShell]: a bottom navigation
-/// bar on compact widths, a navigation rail on medium widths, and an extended
-/// (labelled) rail on expanded widths — the cross-platform familiarity the
-/// design system calls for. Each branch keeps its own navigation state.
+/// Five stable branches: bottom navigation on phones, horizontal navigation
+/// above the workspace on wider windows. Branches retain their own state.
 class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.navigationShell});
 
@@ -73,8 +58,6 @@ class AppShell extends ConsumerWidget {
     final isCompact = width < PollarBreakpoints.mediumMin;
     final index = navigationShell.currentIndex;
 
-    final canCollapse = width >= PollarBreakpoints.expandedMin;
-    final extended = canCollapse && ref.watch(railExpandedProvider);
     // The compact transaction list has no separate body heading.
     final isPageHeading =
         isCompact && GoRouterState.of(context).uri.path == '/transactions';
@@ -101,7 +84,6 @@ class AppShell extends ConsumerWidget {
       title: title,
       isPageHeading: isPageHeading,
       height: toolbarHeight,
-      extended: extended,
       onBack: moreDetail
           ? () {
               if (context.canPop()) {
@@ -110,9 +92,6 @@ class AppShell extends ConsumerWidget {
                 context.go('/more');
               }
             }
-          : null,
-      onToggleRail: canCollapse
-          ? ref.read(railExpandedProvider.notifier).toggle
           : null,
     );
     final togglePrivacy = ref.read(privacyModeProvider.notifier).toggle;
@@ -138,21 +117,33 @@ class AppShell extends ConsumerWidget {
     return _PrivacyShortcuts(
       onToggle: togglePrivacy,
       child: Scaffold(
-        appBar: appBar,
         body: SafeArea(
-          top: false,
-          child: Row(
+          child: Column(
             children: [
-              _Rail(
+              PollarTopNavigation(
                 selectedIndex: index,
                 onSelected: _goBranch,
-                extended: extended,
+                destinations: appDestinations,
+                utilities: const _ShellUtilities(),
               ),
-              VerticalDivider(
-                width: 1,
-                thickness: 1,
-                color: context.pollar.border,
-              ),
+              if (moreDetail)
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 16),
+                    child: Tooltip(
+                      message: 'Voltar para Mais',
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                          minimumSize: const Size(48, 48),
+                        ),
+                        onPressed: appBar.onBack,
+                        icon: const Icon(LucideIcons.arrowLeft, size: 20),
+                        label: const Text('Voltar para Mais'),
+                      ),
+                    ),
+                  ),
+                ),
               Expanded(child: _UpdateContent(child: navigationShell)),
             ],
           ),
@@ -211,17 +202,13 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
     required this.title,
     required this.isPageHeading,
     required this.height,
-    required this.extended,
     this.onBack,
-    this.onToggleRail,
   });
 
   final String title;
   final bool isPageHeading;
   final double height;
-  final bool extended;
   final VoidCallback? onBack;
-  final VoidCallback? onToggleRail;
 
   @override
   Size get preferredSize => Size.fromHeight(height);
@@ -229,8 +216,6 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pollar = context.pollar;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final privacyHidden = ref.watch(privacyModeProvider);
 
     return AppBar(
       backgroundColor: pollar.canvas,
@@ -238,18 +223,6 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
       elevation: 0,
       shape: Border(bottom: BorderSide(color: pollar.border)),
       toolbarHeight: height,
-      leadingWidth: PollarSizes.sidebarCollapsed,
-      leading: onToggleRail == null
-          ? null
-          : Center(
-              child: PollarIconButton(
-                label: extended ? 'Recolher navegação' : 'Expandir navegação',
-                icon: extended
-                    ? LucideIcons.panelLeftClose
-                    : LucideIcons.panelLeftOpen,
-                onPressed: onToggleRail,
-              ),
-            ),
       titleSpacing: PollarSpacing.x4,
       title: Row(
         children: [
@@ -278,7 +251,21 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
           ),
         ],
       ),
-      actions: [
+      actions: const [_ShellUtilities()],
+    );
+  }
+}
+
+class _ShellUtilities extends ConsumerWidget {
+  const _ShellUtilities();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final privacyHidden = ref.watch(privacyModeProvider);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
         PollarIconButton(
           label: privacyHidden ? 'Mostrar valores' : 'Ocultar valores',
           icon: privacyHidden ? LucideIcons.eyeOff : LucideIcons.eye,
@@ -292,80 +279,6 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ),
         const SizedBox(width: PollarSpacing.x2),
       ],
-    );
-  }
-}
-
-class _Rail extends StatelessWidget {
-  const _Rail({
-    required this.selectedIndex,
-    required this.onSelected,
-    required this.extended,
-  });
-
-  final int selectedIndex;
-  final ValueChanged<int> onSelected;
-  final bool extended;
-
-  @override
-  Widget build(BuildContext context) {
-    final pollar = context.pollar;
-    return SizedBox(
-      width: extended
-          ? PollarSizes.sidebarExpanded
-          : PollarSizes.sidebarCollapsed,
-      child: NavigationRail(
-        // Only the presentation is replaced; the branch navigators stay mounted.
-        key: ValueKey(extended),
-        extended: extended,
-        minWidth: PollarSizes.sidebarCollapsed,
-        minExtendedWidth: PollarSizes.sidebarExpanded,
-        scrollable: true,
-        leadingAtTop: false,
-        backgroundColor: pollar.canvas,
-        indicatorColor: pollar.primarySoft,
-        selectedIconTheme: IconThemeData(color: pollar.primary, size: 20),
-        unselectedIconTheme: IconThemeData(
-          color: pollar.textSecondary,
-          size: 20,
-        ),
-        selectedLabelTextStyle: Theme.of(context).textTheme.bodyMedium
-            ?.copyWith(color: pollar.primary),
-        unselectedLabelTextStyle: Theme.of(context).textTheme.bodyMedium
-            ?.copyWith(color: pollar.textSecondary),
-        selectedIndex: selectedIndex,
-        onDestinationSelected: onSelected,
-        groupAlignment: -1,
-        labelType: NavigationRailLabelType.none,
-        leading: _RailHeader(extended: extended),
-        destinations: [
-          for (final d in appDestinations)
-            NavigationRailDestination(
-              padding: const EdgeInsets.symmetric(vertical: PollarSpacing.x1),
-              icon: Tooltip(message: d.label, child: Icon(d.icon, size: 20)),
-              label: Text(d.label),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RailHeader extends StatelessWidget {
-  const _RailHeader({required this.extended});
-
-  final bool extended;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: PollarSpacing.x5,
-        vertical: PollarSpacing.x5,
-      ),
-      child: extended
-          ? const PollarBrand()
-          : Semantics(label: 'Pollar', child: const PollarBrandMark()),
     );
   }
 }

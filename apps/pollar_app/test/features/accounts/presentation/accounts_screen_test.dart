@@ -31,13 +31,8 @@ void main() {
     await tester.pumpWidget(app());
     await tester.pumpAndSettle();
     await tester.tap(
-      find.byType(NavigationRail).evaluate().isNotEmpty
-          ? find
-                .descendant(
-                  of: find.byType(NavigationRail),
-                  matching: find.byTooltip('Contas'),
-                )
-                .first
+      find.byType(NavigationBar).evaluate().isEmpty
+          ? find.byTooltip('Contas')
           : find.descendant(
               of: find.byType(NavigationBar),
               matching: find.text('Contas'),
@@ -70,6 +65,8 @@ void main() {
 
     await tester.enterText(field('account-name'), 'Reserva da casa');
     await tester.enterText(field('opening-balance'), '150,50');
+    await tester.ensureVisible(find.text('Salvar conta'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Salvar conta'));
     await tester.pumpAndSettle();
 
@@ -85,6 +82,8 @@ void main() {
 
     await tester.enterText(field('account-name'), 'Teste sync V1');
     expect(find.widgetWithText(TextFormField, r'R$ 0,00'), findsOneWidget);
+    await tester.ensureVisible(find.text('Salvar conta'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Salvar conta'));
     await tester.pumpAndSettle();
 
@@ -100,6 +99,8 @@ void main() {
 
     await tester.enterText(field('account-name'), 'Conta vazia');
     await tester.enterText(field('opening-balance'), '');
+    await tester.ensureVisible(find.text('Salvar conta'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Salvar conta'));
     await tester.pumpAndSettle();
 
@@ -116,6 +117,8 @@ void main() {
 
     await tester.enterText(field('account-name'), 'Conta inválida');
     await tester.enterText(field('opening-balance'), 'abc');
+    await tester.ensureVisible(find.text('Salvar conta'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Salvar conta'));
     await tester.pumpAndSettle();
 
@@ -221,13 +224,8 @@ void main() {
     await tester.pumpWidget(app(repository: _FailingMutationRepository()));
     await tester.pumpAndSettle();
     await tester.tap(
-      find.byType(NavigationRail).evaluate().isNotEmpty
-          ? find
-                .descendant(
-                  of: find.byType(NavigationRail),
-                  matching: find.byTooltip('Contas'),
-                )
-                .first
+      find.byType(NavigationBar).evaluate().isEmpty
+          ? find.byTooltip('Contas')
           : find.descendant(
               of: find.byType(NavigationBar),
               matching: find.text('Contas'),

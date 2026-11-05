@@ -112,9 +112,9 @@ void main() {
   );
 
   testWidgets(
-    'sections use available width and keep state when rail is collapsed',
+    'sections use available width and keep state when the window expands',
     (tester) async {
-      final container = await mount(tester, size: const Size(1200, 1000));
+      final container = await mount(tester, size: const Size(950, 1000));
       double accountsY() => tester
           .getTopLeft(
             find.descendant(
@@ -125,7 +125,7 @@ void main() {
           .dy;
       double cardsY() => tester.getTopLeft(find.text('Cartões de crédito')).dy;
       expect(cardsY(), greaterThan(accountsY() + 50));
-      await tester.tap(find.byTooltip('Recolher navegação'));
+      tester.view.physicalSize = const Size(1200, 1000);
       await tester.pumpAndSettle();
       expect(cardsY(), closeTo(accountsY(), 1));
       expect(container.read(routerProvider).state.uri.path, '/accounts');

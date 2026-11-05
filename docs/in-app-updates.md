@@ -168,8 +168,9 @@ incluindo manifesto, hashes dos arquivos e identidade do executável.
 Na janela local `1.0.0+11`, após o desbloqueio pelo usuário, as quatro
 posições e a despesa cancelada continuaram visíveis. Mais → Preferências
 mostrou a versão instalada e Verificar atualizações. A instalação dessa
-release pelo botão e a confirmação física no Android são verificações
-separadas da publicação e da validação dos pacotes.
+release pelo botão foi confirmada pelo usuário em 2026-11-04: a atualização
+Windows funcionou. A confirmação física de instalação pelo botão no Android
+permanece pendente, separada da validação do APK e de sua assinatura.
 
 Referências: [GitHub Releases API](https://docs.github.com/en/rest/releases/releases),
 [FileProvider Android](https://developer.android.com/reference/androidx/core/content/FileProvider),

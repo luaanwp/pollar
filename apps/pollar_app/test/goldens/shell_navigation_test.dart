@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pollar_app/app/privacy/privacy_mode_provider.dart';
 import 'package:pollar_app/app/routing/app_shell.dart';
-import 'package:pollar_app/app/routing/navigation_preferences.dart';
 import 'package:pollar_app/app/theme/pollar_theme.dart';
 import 'package:pollar_app/features/settings/presentation/more_screen.dart';
 
@@ -26,6 +25,7 @@ void main() {
     String location = '/overview',
     bool dark = false,
     double scale = 1,
+    TextDirection direction = TextDirection.ltr,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
@@ -84,6 +84,8 @@ void main() {
           debugShowCheckedModeBanner: false,
           theme: dark ? PollarTheme.dark() : PollarTheme.light(),
           routerConfig: router,
+          builder: (context, child) =>
+              Directionality(textDirection: direction, child: child!),
         ),
       ),
     );
@@ -91,121 +93,122 @@ void main() {
     return (router, container);
   }
 
-  testWidgets(
-    'collapse and responsive changes preserve branch drafts and stacks',
-    (tester) async {
-      final (router, container) = await mount(tester);
-      await tester.enterText(find.byType(TextField), 'rascunho preservado');
-      expect(tester.getSize(find.byType(NavigationRail)).width, 256);
-      await tester.tap(find.byTooltip('Recolher navegação'));
-      await tester.pumpAndSettle();
-      expect(tester.getSize(find.byType(NavigationRail)).width, 72);
-      expect(find.text('rascunho preservado'), findsOneWidget);
-      router.push('/overview/detail');
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find
-            .descendant(
-              of: find.byType(NavigationRail),
-              matching: find.byTooltip('Contas'),
-            )
-            .first,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find
-            .descendant(
-              of: find.byType(NavigationRail),
-              matching: find.byTooltip('Visão geral'),
-            )
-            .first,
-      );
-      await tester.pumpAndSettle();
-      expect(router.state.uri.path, '/overview/detail');
-      for (final width in [390.0, 800.0, 1200.0]) {
-        tester.view.physicalSize = Size(width, 900);
-        await tester.pumpAndSettle();
-        expect(find.text('Detalhe preservado'), findsOneWidget);
-        expect(container.read(railExpandedProvider), isFalse);
-        if (width < 600) {
-          expect(find.byType(NavigationDestination), findsNWidgets(5));
-        } else {
-          expect(tester.getSize(find.byType(NavigationRail)).width, 72);
-        }
-      }
-      router.pop();
-      await tester.pumpAndSettle();
-      expect(find.text('rascunho preservado'), findsOneWidget);
-      await tester.tap(find.byTooltip('Expandir navegação'));
-      await tester.pumpAndSettle();
-      expect(tester.getSize(find.byType(NavigationRail)).width, 256);
-    },
-  );
-
-  testWidgets('short rails scroll without shrinking targets at double text', (
+  testWidgets('top navigation and resizing preserve branch drafts and stacks', (
     tester,
   ) async {
-    final (router, _) = await mount(
-      tester,
-      size: const Size(1200, 320),
-      scale: 2,
-    );
-    final rail = find.byType(NavigationRail);
-    expect(tester.widget<NavigationRail>(rail).scrollable, isTrue);
-    final last = find.descendant(of: rail, matching: find.text('Mais'));
-    await tester.ensureVisible(last);
+    final (router, _) = await mount(tester);
+    await tester.enterText(find.byType(TextField), 'rascunho preservado');
+    expect(find.byType(NavigationRail), findsNothing);
+    expect(tester.getRect(find.byType(TextField)).left, 16);
+    router.push('/overview/detail');
     await tester.pumpAndSettle();
-    final target = find
-        .ancestor(
-          of: last,
-          matching: find.byWidgetPredicate((widget) => widget is InkResponse),
-        )
-        .first;
-    expect(tester.getSize(target).height, greaterThanOrEqualTo(48));
-    await tester.tap(last);
+    await tester.tap(find.byTooltip('Contas'));
     await tester.pumpAndSettle();
-    expect(router.state.uri.path, '/more');
-    expect(tester.takeException(), isNull);
+    await tester.tap(find.byTooltip('Visão geral'));
+    await tester.pumpAndSettle();
+    expect(router.state.uri.path, '/overview/detail');
+    for (final width in [390.0, 800.0, 1200.0]) {
+      tester.view.physicalSize = Size(width, 900);
+      await tester.pumpAndSettle();
+      expect(find.text('Detalhe preservado'), findsOneWidget);
+      expect(find.byType(NavigationRail), findsNothing);
+      expect(
+        find.byType(NavigationDestination),
+        width < 600 ? findsNWidgets(5) : findsNothing,
+      );
+    }
+    router.pop();
+    await tester.pumpAndSettle();
+    expect(find.text('rascunho preservado'), findsOneWidget);
   });
 
   testWidgets(
-    'keyboard operates collapse, privacy shortcut and More destinations',
+    'short top navigation scrolls at double text without shrinking targets',
     (tester) async {
-      final (router, container) = await mount(tester, location: '/more');
+      final (router, _) = await mount(
+        tester,
+        size: const Size(800, 320),
+        scale: 2,
+      );
+      final last = find.byTooltip('Mais');
+      await tester.ensureVisible(last);
+      await tester.pumpAndSettle();
+      expect(tester.getSize(last).height, greaterThanOrEqualTo(48));
+      await tester.tap(last);
+      await tester.pumpAndSettle();
+      expect(router.state.uri.path, '/more');
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'keyboard operates top destinations, privacy shortcut and More rows',
+    (tester) async {
+      final (router, container) = await mount(tester);
       for (var i = 0; i < 24; i++) {
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);
         await tester.pump();
         if (FocusManager.instance.primaryFocus?.context
-                ?.findAncestorWidgetOfExactType<IconButton>()
-                ?.tooltip ==
-            'Recolher navegação') {
+                ?.findAncestorWidgetOfExactType<Tooltip>()
+                ?.message ==
+            'Contas') {
           break;
         }
       }
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
-      expect(container.read(railExpandedProvider), isFalse);
+      expect(router.state.uri.path, '/accounts');
       await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
       await tester.sendKeyEvent(LogicalKeyboardKey.keyP);
       await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
       await tester.pump();
       expect(container.read(privacyModeProvider), isTrue);
-      for (var i = 0; i < 20; i++) {
+      router.go('/more');
+      await tester.pumpAndSettle();
+      for (var i = 0; i < 24; i++) {
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);
         await tester.pump();
-        final focused = FocusManager.instance.primaryFocus?.context;
-        if (focused != null &&
-            focused.findAncestorWidgetOfExactType<ListTile>()?.title is Text &&
-            ((focused.findAncestorWidgetOfExactType<ListTile>()!.title) as Text)
-                    .data ==
-                'Relatórios') {
+        final tile = FocusManager.instance.primaryFocus?.context
+            ?.findAncestorWidgetOfExactType<ListTile>();
+        if (tile?.title is Text && (tile!.title as Text).data == 'Relatórios') {
           break;
         }
       }
-      await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
       expect(router.state.uri.path, '/more/reports');
+    },
+  );
+
+  testWidgets(
+    'selected destination stays visible after enlarged text and resizing',
+    (tester) async {
+      final (router, _) = await mount(tester, location: '/more');
+      tester.view.physicalSize = const Size(600, 500);
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      await tester.pumpAndSettle();
+      final selected = tester.getRect(find.byTooltip('Mais'));
+      expect(selected.left, greaterThanOrEqualTo(24));
+      expect(selected.right, lessThanOrEqualTo(576));
+      await tester.tap(find.byTooltip('Mais'));
+      await tester.pumpAndSettle();
+      expect(router.state.uri.path, '/more');
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'RTL navigation follows reading direction and switches branches',
+    (tester) async {
+      final (router, _) = await mount(tester, direction: TextDirection.rtl);
+      expect(
+        tester.getCenter(find.byTooltip('Visão geral')).dx,
+        greaterThan(tester.getCenter(find.byTooltip('Mais')).dx),
+      );
+      await tester.tap(find.byTooltip('Contas'));
+      await tester.pumpAndSettle();
+      expect(router.state.uri.path, '/accounts');
+      expect(tester.takeException(), isNull);
     },
   );
 
@@ -231,6 +234,7 @@ void main() {
     (width: 1440.0, height: 900.0, dark: false, scale: 1.0, collapsed: false),
     (width: 1440.0, height: 900.0, dark: true, scale: 1.0, collapsed: true),
     (width: 800.0, height: 900.0, dark: false, scale: 1.0, collapsed: false),
+    (width: 800.0, height: 320.0, dark: true, scale: 2.0, collapsed: false),
     (width: 390.0, height: 844.0, dark: false, scale: 1.0, collapsed: false),
     (width: 320.0, height: 844.0, dark: true, scale: 2.0, collapsed: false),
   ]) {
@@ -244,11 +248,11 @@ void main() {
         dark: scenario.dark,
         scale: scenario.scale,
       );
-      if (scenario.collapsed) {
-        await tester.tap(find.byTooltip('Recolher navegação'));
-        await tester.pumpAndSettle();
+      if (scenario.height >= 500) {
+        expect(find.text('Entenda seus dados'), findsOneWidget);
+      } else {
+        expect(find.byTooltip('Mais'), findsOneWidget);
       }
-      expect(find.text('Entenda seus dados'), findsOneWidget);
       await expectLater(
         find.byType(MaterialApp),
         matchesGoldenFile('$name.png'),
