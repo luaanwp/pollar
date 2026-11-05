@@ -22,12 +22,14 @@ class PollarTopNavigation extends StatefulWidget {
     required this.selectedIndex,
     required this.onSelected,
     required this.utilities,
+    this.moreAnchor,
   });
 
   final List<AppDestination> destinations;
   final int selectedIndex;
   final ValueChanged<int> onSelected;
   final Widget utilities;
+  final GlobalKey? moreAnchor;
 
   @override
   State<PollarTopNavigation> createState() => _PollarTopNavigationState();
@@ -150,12 +152,14 @@ class _PollarTopNavigationState extends State<PollarTopNavigation> {
                           children: [
                             for (var i = 0; i < widget.destinations.length; i++)
                               SizedBox(
+                                key: i == 4 ? widget.moreAnchor : null,
                                 width: widths[i],
                                 height: menuHeight,
                                 child: Semantics(
                                   selected: i == widget.selectedIndex,
                                   child: Tooltip(
                                     message: widget.destinations[i].label,
+                                    waitDuration: const Duration(seconds: 2),
                                     child: TextButton(
                                       key: _targets[i],
                                       onPressed: () => widget.onSelected(i),

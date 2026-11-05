@@ -5,6 +5,11 @@
   "extensions": {
     "motion": [
       {
+        "name": "more-popup",
+        "value": "240ms",
+        "purpose": "A vertical popup over the unchanged current branch: native fade and short vertical arrival, zero with reduced motion. Only its requested backdrop uses blur and dimming."
+      },
+      {
         "name": "top-navigation-selection",
         "value": "240ms easeOutCubic",
         "purpose": "The 2dp teal underline follows the selected destination; reduced motion uses zero duration."

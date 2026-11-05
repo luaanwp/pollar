@@ -27,6 +27,7 @@ void main() {
     bool dark = false,
     double scale = 1,
     TextDirection direction = TextDirection.ltr,
+    bool reduced = false,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
@@ -85,8 +86,10 @@ void main() {
           debugShowCheckedModeBanner: false,
           theme: dark ? PollarTheme.dark() : PollarTheme.light(),
           routerConfig: router,
-          builder: (context, child) =>
-              Directionality(textDirection: direction, child: child!),
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(disableAnimations: reduced),
+            child: Directionality(textDirection: direction, child: child!),
+          ),
         ),
       ),
     );
@@ -137,8 +140,11 @@ void main() {
       expect(tester.getSize(last).height, greaterThanOrEqualTo(48));
       await tester.tap(last);
       await tester.pumpAndSettle();
-      expect(router.state.uri.path, '/more');
+      expect(router.state.uri.path, '/overview');
+      expect(find.byKey(const Key('more-menu-panel')), findsOneWidget);
       expect(tester.takeException(), isNull);
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
     },
   );
 
@@ -194,6 +200,8 @@ void main() {
       await tester.tap(find.byTooltip('Mais'));
       await tester.pumpAndSettle();
       expect(router.state.uri.path, '/more');
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     },
   );
@@ -256,6 +264,175 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  for (final size in [const Size(1200, 900), const Size(390, 844)]) {
+    testWidgets('More overlays the current draft and toggles closed at $size', (
+      tester,
+    ) async {
+      final (router, _) = await mount(tester, size: size);
+      await tester.enterText(find.byType(TextField), 'rascunho sem sair');
+      final target = size.width < 600
+          ? find.widgetWithText(NavigationDestination, 'Mais')
+          : find.byTooltip('Mais');
+      final anchor = tester.getCenter(target);
+      await tester.tap(target);
+      await tester.pumpAndSettle();
+      expect(router.state.uri.path, '/overview');
+      expect(find.byKey(const Key('more-menu-panel')), findsOneWidget);
+      expect(find.byType(BackdropFilter), findsOneWidget);
+      expect(find.text('Preferências'), findsOneWidget);
+      await tester.tapAt(anchor);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('more-menu-panel')), findsNothing);
+      expect(find.text('rascunho sem sair'), findsOneWidget);
+      expect(router.state.uri.path, '/overview');
+    });
+  }
+
+  testWidgets(
+    'More dismisses by Escape and outside click without changing branch',
+    (tester) async {
+      final (router, _) = await mount(tester, location: '/accounts');
+      for (final keyboard in [true, false]) {
+        await tester.tap(find.byTooltip('Mais'));
+        await tester.pumpAndSettle();
+        if (keyboard) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+        } else {
+          await tester.tapAt(const Offset(24, 400));
+        }
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('more-menu-panel')), findsNothing);
+        expect(router.state.uri.path, '/accounts');
+      }
+    },
+  );
+
+  testWidgets(
+    'More selection opens the destination and Back restores the original detail',
+    (tester) async {
+      final (router, _) = await mount(tester);
+      router.push('/overview/detail');
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Mais'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('more-menu-/more/reports')));
+      await tester.pumpAndSettle();
+      expect(router.state.uri.path, '/more/reports');
+      expect(find.byKey(const Key('more-menu-panel')), findsNothing);
+      router.pop();
+      await tester.pumpAndSettle();
+      expect(router.state.uri.path, '/overview/detail');
+      expect(find.text('Detalhe preservado'), findsOneWidget);
+    },
+  );
+
+  testWidgets('More keyboard arrows select a destination', (tester) async {
+    final (router, _) = await mount(tester);
+    await tester.tap(find.byTooltip('Mais'));
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(router.state.uri.path, '/more/wealth');
+  });
+
+  testWidgets('short enlarged menu scrolls to the last destination', (
+    tester,
+  ) async {
+    final (router, _) = await mount(
+      tester,
+      size: const Size(800, 320),
+      scale: 2,
+    );
+    final anchor = find.byTooltip('Mais');
+    await tester.ensureVisible(anchor);
+    await tester.pumpAndSettle();
+    await tester.tap(anchor);
+    await tester.pumpAndSettle();
+    final last = find.byKey(const Key('more-menu-/more/settings'));
+    await tester.scrollUntilVisible(
+      last,
+      100,
+      scrollable: find.descendant(
+        of: find.byKey(const Key('more-menu-panel')),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.getSize(last).height, greaterThanOrEqualTo(48));
+    await tester.tap(last);
+    await tester.pumpAndSettle();
+    expect(router.state.uri.path, '/more/settings');
+  });
+
+  testWidgets('More respects reduced motion and system Back', (tester) async {
+    final (router, _) = await mount(tester, reduced: true);
+    await tester.tap(find.byTooltip('Mais'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('more-menu-panel')), findsOneWidget);
+    expect(
+      find.ancestor(
+        of: find.byKey(const Key('more-menu-panel')),
+        matching: find.byType(SlideTransition),
+      ),
+      findsNothing,
+    );
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('more-menu-panel')), findsNothing);
+    expect(router.state.uri.path, '/overview');
+  });
+
+  for (final sample in [
+    (
+      size: Size(1440, 900),
+      scale: 1.0,
+      dark: true,
+      name: 'more_menu_1440_dark.png',
+    ),
+    (
+      size: Size(390, 844),
+      scale: 1.0,
+      dark: false,
+      name: 'more_menu_390_light.png',
+    ),
+    (
+      size: Size(800, 320),
+      scale: 2.0,
+      dark: true,
+      name: 'more_menu_800_dark_2x.png',
+    ),
+  ]) {
+    testWidgets(sample.name, (tester) async {
+      await mount(
+        tester,
+        size: sample.size,
+        scale: sample.scale,
+        dark: sample.dark,
+      );
+      final target = sample.size.width < 600
+          ? find.widgetWithText(NavigationDestination, 'Mais')
+          : find.byTooltip('Mais');
+      await tester.ensureVisible(target);
+      await tester.pumpAndSettle();
+      await tester.tap(target);
+      await tester.pumpAndSettle();
+      final bounds = tester.getRect(find.byKey(const Key('more-menu-panel')));
+      expect(bounds.left, greaterThanOrEqualTo(16));
+      expect(bounds.right, lessThanOrEqualTo(sample.size.width - 16));
+      expect(bounds.top, greaterThanOrEqualTo(16));
+      expect(bounds.bottom, lessThanOrEqualTo(sample.size.height - 16));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile(sample.name),
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    });
+  }
 
   for (final path in ['reports', 'wealth', 'sync', 'data', 'settings']) {
     testWidgets('More opens unchanged $path route', (tester) async {

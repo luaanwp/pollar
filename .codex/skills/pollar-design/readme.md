@@ -40,7 +40,16 @@ The compact toolbar omits duplicate route names and broad title tooltips;
 Transactions keeps its only page heading. Hover hints wait two seconds and
 prefer a position below their own control. The toolbar is normally 56px and grows for its enlarged page heading;
 wide brand/menu rows have 72/56px minima and grow with text. More child routes
-retain “Voltar para Mais”, now with visible text below the wide navigation.
+retain “Voltar”, with visible text below the wide navigation.
+
+Mais opens a rectangular vertical popup without leaving the current route.
+Its five labelled destinations push their existing routes; Back restores the
+origin. The solid canvas panel sits below the wide anchor or above the compact
+bar, is viewport-constrained and scrolls when short. As explicitly requested,
+only this modal background uses 4px blur and 42% black. Same-anchor click,
+outside click, Escape and native Back dismiss it. Keyboard focus stays scoped;
+arrow keys/Tab traverse and reduced motion removes arrival. Keep existing
+tooltips: the theme and top navigation both enforce a two-second hover wait.
 This is a layout refinement within the existing identity, routes and motion.
 
 Navigation motion uses `PollarBranchStack`: the current destination arrives

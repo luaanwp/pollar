@@ -29,7 +29,7 @@ void main() {
         final router = container.read(routerProvider);
         router.go('/more');
         await tester.pumpAndSettle();
-        expect(find.byTooltip('Voltar para Mais'), findsNothing);
+        expect(find.byTooltip('Voltar'), findsNothing);
         await tester.scrollUntilVisible(
           find.text(destination),
           200,
@@ -43,12 +43,12 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.text(destination));
         await tester.pumpAndSettle();
-        expect(find.byTooltip('Voltar para Mais'), findsOneWidget);
-        await tester.tap(find.byTooltip('Voltar para Mais'));
+        expect(find.byTooltip('Voltar'), findsOneWidget);
+        await tester.tap(find.byTooltip('Voltar'));
         await tester.pumpAndSettle();
         expect(router.state.uri.path, '/more');
         expect(find.byType(MoreScreen), findsOneWidget);
-        expect(find.byTooltip('Voltar para Mais'), findsNothing);
+        expect(find.byTooltip('Voltar'), findsNothing);
         expect(tester.takeException(), isNull);
       });
     }

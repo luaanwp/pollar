@@ -701,6 +701,28 @@ ausência antes dos 2 segundos e a posição da dica depois da espera.
 Validação: **576 testes aprovados**, incluindo a comparação das capturas
 atualizadas e os dois testes de regressão do cabeçalho/hover; análise limpa.
 
+### Mais como menu sobre a tela atual
+
+Mais passa a abrir um painel vertical retangular com os cinco destinos, sem
+trocar a seção atual. O fundo recebe escurecimento e desfoque por solicitação
+do usuário. Mais novamente, clique fora, Esc e Voltar do sistema fecham o painel;
+selecionar um destino permite voltar à tela original, incluindo seus detalhes.
+O botão de retorno passa a se chamar Voltar. A rota antiga de Mais permanece
+como compatibilidade; a navegação normal abre o menu no desktop e no compacto.
+
+Os tooltips foram preservados conforme a correção expressa do usuário e
+aguardam 2 segundos. A versão `1.0.0+1011`, com o ajuste anterior de cabeçalho
+e tempo, já foi publicada automaticamente; este menu compõe a atualização seguinte.
+
+A revisão independente das capturas desktop, celular e janela curta com texto
+2× encerrou com **ship**, sem correções materiais. Os testes direcionados
+confirmaram abertura/fechamento sem mudar rota ou rascunho, retorno ao detalhe
+original, teclado, movimento reduzido, Back nativo e acesso ao último item por
+rolagem. A análise não encontrou problemas.
+
+A suíte completa passou com **586 testes**, comparando as capturas existentes
+e as três novas do menu. Isso não equivale a aceite físico da nova interação.
+
 ## Sequência restante
 
 As fases visuais 1–5, o refinamento mobile da fase 7 e o polimento/acessibilidade

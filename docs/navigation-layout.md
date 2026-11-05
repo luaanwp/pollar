@@ -29,12 +29,20 @@ preferência explícita do usuário e às cinco seções atuais do aplicativo.
 - Um sublinhado teal acompanha a seleção em 240ms; movimento reduzido remove
   essa animação. A ordem visual e o indicador respeitam RTL.
 - O retorno de destinos de Mais continua explícito. No desktop, apresenta
-  também o texto Voltar para Mais.
+  também o texto Voltar.
 - O cabeçalho não repete o nome da página. Transações conserva seu único
   título no celular. A área larga de dica do antigo nome foi removida; dicas
   úteis aguardam 2 segundos de hover e ficam junto ao controle correspondente.
 - O StatefulNavigationShell e seus navegadores permanecem os mesmos. A troca
   de composição não apaga formulários, buscas ou pilhas de detalhes.
+
+Mais abre um painel vertical sobre a seção atual, com Relatórios, Patrimônio,
+Sincronização, Dados e backup e Preferências. O painel permanece sólido;
+somente o fundo escurece e desfoca. Abertura e fechamento preservam a rota,
+o rascunho e o scroll. Selecionar um item navega e permite voltar à origem.
+Mais novamente, clique fora, Esc e Voltar do sistema fecham o menu. Há
+rolagem para texto ampliado em janela curta, teclado e movimento reduzido.
+Os tooltips permanecem, com espera explícita de 2 segundos na navegação.
 
 O custo em janelas estreitas é uma linha adicional de cabeçalho; a rolagem
 horizontal evita comprimir ou ocultar rótulos. Dados financeiros, sincronização,
@@ -52,3 +60,8 @@ leitor de tela ou medição de FPS.
 A suíte local completa passou com **574 testes**, com comparação das capturas
 habilitada, e a análise não encontrou problemas. A revisão independente das
 capturas desktop/celular e do código terminou com **ship**, sem achados materiais.
+
+O refinamento de Mais como popup passou com **586 testes** na suíte completa,
+análise limpa e revisão independente **ship**. As novas capturas são
+`more_menu_1440_dark.png`, `more_menu_390_light.png` e
+`more_menu_800_dark_2x.png`.

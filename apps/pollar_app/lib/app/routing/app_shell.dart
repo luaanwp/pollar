@@ -11,6 +11,7 @@ import '../../shared/presentation/pollar_button.dart';
 import '../../shared/presentation/pollar_motion.dart';
 import 'pollar_top_navigation.dart';
 import 'app_destination.dart';
+import 'pollar_more_menu.dart';
 import '../../features/updates/presentation/app_update_widgets.dart';
 import '../../features/updates/presentation/app_update_controller.dart';
 
@@ -41,19 +42,51 @@ const List<AppDestination> appDestinations = [
 
 /// Five stable branches: bottom navigation on phones, horizontal navigation
 /// above the workspace on wider windows. Branches retain their own state.
-class AppShell extends ConsumerWidget {
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
 
-  void _goBranch(int index) => navigationShell.goBranch(
-    index,
-    // Tapping the active destination returns it to its initial route.
-    initialLocation: index == navigationShell.currentIndex,
-  );
+  @override
+  ConsumerState<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends ConsumerState<AppShell> {
+  final _moreAnchor = GlobalKey();
+  bool _moreOpen = false;
+
+  StatefulNavigationShell get navigationShell => widget.navigationShell;
+
+  Future<void> _openMore() async {
+    if (_moreOpen) return;
+    final box = _moreAnchor.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return;
+    final overlay =
+        Overlay.of(context, rootOverlay: true).context.findRenderObject()
+            as RenderBox;
+    final anchor = box.localToGlobal(Offset.zero, ancestor: overlay) & box.size;
+    Tooltip.dismissAllToolTips();
+    setState(() => _moreOpen = true);
+    final path = await showPollarMoreMenu(context, anchor);
+    if (!mounted) return;
+    setState(() => _moreOpen = false);
+    if (path != null) context.push(path);
+  }
+
+  void _goBranch(int index) {
+    if (index == 4) {
+      _openMore();
+      return;
+    }
+    navigationShell.goBranch(
+      index,
+      // Tapping the active destination returns it to its initial route.
+      initialLocation: index == navigationShell.currentIndex,
+    );
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final isCompact = width < PollarBreakpoints.mediumMin;
     final index = navigationShell.currentIndex;
@@ -107,8 +140,9 @@ class AppShell extends ConsumerWidget {
             child: _UpdateContent(child: navigationShell),
           ),
           bottomNavigationBar: _BottomNav(
-            selectedIndex: index,
+            selectedIndex: _moreOpen ? 4 : index,
             onSelected: _goBranch,
+            moreAnchor: _moreAnchor,
           ),
         ),
       );
@@ -121,10 +155,11 @@ class AppShell extends ConsumerWidget {
           child: Column(
             children: [
               PollarTopNavigation(
-                selectedIndex: index,
+                selectedIndex: _moreOpen ? 4 : index,
                 onSelected: _goBranch,
                 destinations: appDestinations,
                 utilities: const _ShellUtilities(),
+                moreAnchor: _moreAnchor,
               ),
               if (moreDetail)
                 Align(
@@ -132,14 +167,14 @@ class AppShell extends ConsumerWidget {
                   child: Padding(
                     padding: const EdgeInsetsDirectional.only(start: 16),
                     child: Tooltip(
-                      message: 'Voltar para Mais',
+                      message: 'Voltar',
                       child: TextButton.icon(
                         style: TextButton.styleFrom(
                           minimumSize: const Size(48, 48),
                         ),
                         onPressed: appBar.onBack,
                         icon: const Icon(LucideIcons.arrowLeft, size: 20),
-                        label: const Text('Voltar para Mais'),
+                        label: const Text('Voltar'),
                       ),
                     ),
                   ),
@@ -228,7 +263,7 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
         children: [
           if (onBack != null) ...[
             PollarIconButton(
-              label: 'Voltar para Mais',
+              label: 'Voltar',
               icon: LucideIcons.arrowLeft,
               onPressed: onBack,
             ),
@@ -277,10 +312,15 @@ class _ShellUtilities extends ConsumerWidget {
 }
 
 class _BottomNav extends StatelessWidget {
-  const _BottomNav({required this.selectedIndex, required this.onSelected});
+  const _BottomNav({
+    required this.selectedIndex,
+    required this.onSelected,
+    required this.moreAnchor,
+  });
 
   final int selectedIndex;
   final ValueChanged<int> onSelected;
+  final GlobalKey moreAnchor;
 
   @override
   Widget build(BuildContext context) {
@@ -307,6 +347,9 @@ class _BottomNav extends StatelessWidget {
         destinations: [
           for (final d in appDestinations)
             NavigationDestination(
+              key: d.path == '/more'
+                  ? moreAnchor
+                  : ValueKey('navigation-${d.path}'),
               icon: Icon(d.icon, size: 24, color: pollar.textSecondary),
               selectedIcon: Icon(d.icon, size: 24, color: pollar.primary),
               label: d.label,
