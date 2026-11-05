@@ -739,6 +739,13 @@ e texto ampliado conferidas. O teste físico do atualizador Android segue o
 depende do usuário. O isolamento remoto anteriormente adiado continua registrado
 como pendência separada. Nenhuma dessas observações foi convertida em teste aprovado.
 
+A entrega final foi publicada como `1.0.0+1014`, com a execução 42079965541
+aprovada. Após corrigir a organização dos testes de processo, a suíte passou
+no GitHub em duas etapas obrigatórias: 585 testes gerais e três testes nativos
+de processo, seguidas das verificações do instalador e builds Windows/Android.
+O [registro de atualizações](in-app-updates.md) contém a causa observada da falha
+anterior e os hashes dos pacotes finais.
+
 As fases visuais 1–5, o refinamento mobile da fase 7 e o polimento/acessibilidade
 da fase 8 estão implementados, com aceite funcional no Android confirmado pelo
 usuário. Leitores de tela e medições de desempenho permanecem sem evidência

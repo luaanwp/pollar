@@ -195,5 +195,18 @@ de um prazo limitado. Nenhum teste foi removido e o atualizador do aplicativo
 mantém seu comportamento e prazos.
 
 Validação local dessa organização: 585 testes da suíte geral e os três testes
-de processo aprovados em etapas sequenciais; análise sem problemas. O resultado
-remoto da nova publicação será registrado após a conclusão do workflow.
+de processo aprovados em etapas sequenciais; análise sem problemas.
+
+A [execução 42079965541](https://github.com/luaanwp/pollar/actions/runs/42079965541)
+terminou com **success** em 2026-11-05: análise limpa, **585 testes gerais e
+3 testes de processo aprovados**, verificações nativas, builds Windows/Android
+e publicação automática. A [release estável 1.0.0+1014](https://github.com/luaanwp/pollar/releases/tag/v1.0.0%2B1014)
+aponta para `1d54e262fa4e8f7bfe3d020f490ab16992cd624c`, foi publicada às
+18:17:04 UTC e inclui a correção que mantém Mais nítido. A versão 1013 não
+foi publicada; o próximo pacote válido é 1014.
+
+A API `releases/latest` confirmou `draft=false`, `prerelease=false` e os três
+ativos enviados. SHA-256 dos pacotes publicados:
+
+- Windows: `8316bda4b3b7576b8d03bd097d868aa91c20adbc874ea5bcea68b3d44f26a229`.
+- Android: `4f92176ce7173df4ef17cfee525c6f92746ebdf9fe2da10532dcd9ffcf022f0e`.

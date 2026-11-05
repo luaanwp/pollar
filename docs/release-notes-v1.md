@@ -11,8 +11,12 @@ foi confirmado. O teste de isolamento remoto entre identidades em instalações
 independentes permanece adiado, conforme decisão anterior; o fechamento do
 escopo de implementação não o transforma em aprovado.
 
-Os builds atuais são publicados automaticamente em GitHub Releases. O último
-ajuste passa pelo mesmo fluxo; a publicação deve terminar antes de atualizar.
+Os builds atuais são publicados automaticamente em GitHub Releases. O ajuste
+final de Mais foi entregue na [release 1.0.0+1014](https://github.com/luaanwp/pollar/releases/tag/v1.0.0%2B1014),
+após a execução 42079965541 concluir análise, 585 testes gerais, três testes
+de processo, verificações nativas e builds Windows/Android com sucesso.
+A execução anterior falhou antes de publicar 1013; o teste Android deve usar
+1014 ou uma versão posterior. A atualização continua disponível pelo aplicativo.
 
 ## Consolidação histórica — 2026-10-23
 
