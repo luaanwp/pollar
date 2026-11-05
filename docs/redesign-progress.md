@@ -686,6 +686,21 @@ e análise sem problemas. A revisão independente encerrou com **ship**, sem
 achados materiais. O teste físico da nova navegação no Windows/Android segue
 separado dessas verificações automatizadas.
 
+A publicação automática da navegação horizontal terminou com sucesso na
+[execução 41939245122](https://github.com/luaanwp/pollar/actions/runs/41939245122),
+gerando a release estável `1.0.0+1010` para Windows e Android.
+
+### Cabeçalho e dicas de hover
+
+O nome redundante da rota foi removido da barra utilitária, junto com a área
+larga que fazia sua dica aparecer longe do ponteiro. Transações mantém seu
+único título no celular. As dicas úteis usam o próprio controle como alvo,
+aguardam 2 segundos e preferem aparecer abaixo dele. O teste com mouse verifica
+ausência antes dos 2 segundos e a posição da dica depois da espera.
+
+Validação: **576 testes aprovados**, incluindo a comparação das capturas
+atualizadas e os dois testes de regressão do cabeçalho/hover; análise limpa.
+
 ## Sequência restante
 
 As fases visuais 1–5, o refinamento mobile da fase 7 e o polimento/acessibilidade

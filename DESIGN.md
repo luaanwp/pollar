@@ -327,7 +327,7 @@ Contidos e verbais, os botões priorizam a tarefa sobre a marca.
 - **Secondary / Ghost:** canvas com borda forte ou fundo transparente; ambos recebem superfície alternativa no hover.
 - **Danger:** vermelho semântico, reservado a ações destrutivas.
 - **Hover / Focus / Disabled:** primário escurece no tema claro; foco usa traço informativo de 2px; desabilitado sem carregamento reduz a opacidade para 55%, multiplicando o alpha existente do fundo. Não há ripple.
-- **Icon button:** controle quadrado, tooltip e nome semântico obrigatórios; seleção combina fundo menta com ícone teal.
+- **Icon button:** controle quadrado, tooltip e nome semântico obrigatórios; seleção combina fundo menta com ícone teal. Dicas de hover aguardam 2 segundos e preferem aparecer abaixo do próprio controle. O cabeçalho não repete o nome da rota nem cria uma área larga de tooltip; Transações conserva seu único título no compacto.
 
 ### Control Accessibility — phase 8
 

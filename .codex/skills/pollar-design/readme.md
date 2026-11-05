@@ -36,7 +36,9 @@ preference. Compact keeps five labelled bottom destinations, the native safe
 area and its existing toolbar; Transactions retains its sole page heading.
 More uses grouped rows: “Entenda seus dados” and “Seu aplicativo”. The Flutter
 page gutters remain 16/24px; later web-kit measurements below are references.
-The compact toolbar is normally 56px and grows for its enlarged page heading;
+The compact toolbar omits duplicate route names and broad title tooltips;
+Transactions keeps its only page heading. Hover hints wait two seconds and
+prefer a position below their own control. The toolbar is normally 56px and grows for its enlarged page heading;
 wide brand/menu rows have 72/56px minima and grow with text. More child routes
 retain “Voltar para Mais”, now with visible text below the wide navigation.
 This is a layout refinement within the existing identity, routes and motion.

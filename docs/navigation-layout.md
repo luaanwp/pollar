@@ -30,6 +30,9 @@ preferência explícita do usuário e às cinco seções atuais do aplicativo.
   essa animação. A ordem visual e o indicador respeitam RTL.
 - O retorno de destinos de Mais continua explícito. No desktop, apresenta
   também o texto Voltar para Mais.
+- O cabeçalho não repete o nome da página. Transações conserva seu único
+  título no celular. A área larga de dica do antigo nome foi removida; dicas
+  úteis aguardam 2 segundos de hover e ficam junto ao controle correspondente.
 - O StatefulNavigationShell e seus navegadores permanecem os mesmos. A troca
   de composição não apaga formulários, buscas ou pilhas de detalhes.
 

@@ -234,21 +234,14 @@ class _ShellAppBar extends ConsumerWidget implements PreferredSizeWidget {
             ),
             const SizedBox(width: PollarSpacing.x2),
           ],
-          Expanded(
-            child: Tooltip(
-              message: title,
+          if (isPageHeading)
+            Expanded(
               child: Text(
                 title,
                 textScaler: MediaQuery.textScalerOf(context),
-                maxLines: isPageHeading ? null : 1,
-                overflow: isPageHeading ? null : TextOverflow.ellipsis,
-                style: isPageHeading
-                    ? Theme.of(context).textTheme.headlineSmall
-                    : Theme.of(context).textTheme.bodyMedium
-                          ?.copyWith(color: pollar.textSecondary),
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
-          ),
         ],
       ),
       actions: const [_ShellUtilities()],

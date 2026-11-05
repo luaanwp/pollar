@@ -54,6 +54,12 @@ abstract final class PollarTheme {
       fontFamily: PollarTypography.fontFamily,
       textTheme: textTheme,
       extensions: [c],
+      // Hints belong to their control and should not flash during navigation.
+      tooltipTheme: const TooltipThemeData(
+        waitDuration: Duration(seconds: 2),
+        preferBelow: true,
+        verticalOffset: 32,
+      ),
       // Cards: canvas fill, 1px border, 14px radius, no shadow at rest.
       cardTheme: CardThemeData(
         color: c.canvas,

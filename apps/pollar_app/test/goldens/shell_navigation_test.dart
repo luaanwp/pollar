@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -194,6 +195,50 @@ void main() {
       await tester.pumpAndSettle();
       expect(router.state.uri.path, '/more');
       expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('navigation hint waits two seconds and stays beside its target', (
+    tester,
+  ) async {
+    await mount(tester, location: '/more');
+    final target = tester.getRect(find.byTooltip('Mais'));
+    final hint = find.byWidgetPredicate(
+      (widget) => widget is Text && widget.textSpan?.toPlainText() == 'Mais',
+    );
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: const Offset(1, 300));
+    await mouse.moveTo(target.center);
+    await tester.pump(const Duration(milliseconds: 1900));
+    expect(hint, findsNothing);
+    await tester.pump(const Duration(milliseconds: 101));
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(hint, findsOneWidget);
+    final bounds = tester.getRect(hint);
+    expect((bounds.center.dx - target.center.dx).abs(), lessThan(24));
+    expect(bounds.top, greaterThanOrEqualTo(target.bottom));
+    expect(bounds.top - target.bottom, lessThan(32));
+    await mouse.removePointer();
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets(
+    'compact toolbar has no duplicate page label or wide hover target',
+    (tester) async {
+      await mount(tester, location: '/more', size: const Size(390, 844));
+      expect(
+        find.descendant(of: find.byType(AppBar), matching: find.text('Mais')),
+        findsNothing,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(AppBar),
+          matching: find.byTooltip('Mais'),
+        ),
+        findsNothing,
+      );
+      expect(find.text('Entenda seus dados'), findsOneWidget);
+      expect(find.byTooltip('Ocultar valores'), findsOneWidget);
     },
   );
 

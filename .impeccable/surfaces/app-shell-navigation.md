@@ -73,6 +73,11 @@ this layout refinement.
 
 ## More child return
 
+The compact utility bar omits duplicate route names and their broad tooltip
+targets. Transactions retains its only compact page heading. Navigation hints
+remain attached to the actual destination button; the shared tooltip theme
+waits two seconds on hover and prefers a position below the control.
+
 Only `/more/*` routes expose “Voltar para Mais”. The compact toolbar retains
 its accessible icon action; the wide shell shows a text-and-icon button below
 the top navigation. Pop the existing stack when possible; otherwise open
