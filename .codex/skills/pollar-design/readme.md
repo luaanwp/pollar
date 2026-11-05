@@ -46,7 +46,10 @@ Mais opens a rectangular vertical popup without leaving the current route.
 Its five labelled destinations push their existing routes; Back restores the
 origin. The solid canvas panel sits below the wide anchor or above the compact
 bar, is viewport-constrained and scrolls when short. As explicitly requested,
-only this modal background uses 4px blur and 42% black. Same-anchor click,
+only this modal background uses 4px blur and 42% black.
+The complete Mais anchor stays sharp and undimmed through a backdrop cutout;
+opening does not scroll it. Viewport/text-scale changes dismiss the popup.
+Same-anchor click,
 outside click, Escape and native Back dismiss it. Keyboard focus stays scoped;
 arrow keys/Tab traverse and reduced motion removes arrival. Keep existing
 tooltips: the theme and top navigation both enforce a two-second hover wait.

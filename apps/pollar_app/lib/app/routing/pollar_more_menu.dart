@@ -28,6 +28,9 @@ const moreMenuDestinations = [
 
 Future<String?> showPollarMoreMenu(BuildContext context, Rect anchor) {
   final reduced = PollarMotion.reduced(context);
+  final openingSize = MediaQuery.sizeOf(context);
+  final openingTextScale = MediaQuery.textScalerOf(context).scale(14);
+  var dismissalQueued = false;
   return showGeneralDialog<String>(
     context: context,
     barrierDismissible: true,
@@ -36,6 +39,17 @@ Future<String?> showPollarMoreMenu(BuildContext context, Rect anchor) {
     transitionDuration: reduced ? Duration.zero : PollarMotion.change,
     pageBuilder: (context, animation, secondaryAnimation) {
       final media = MediaQuery.of(context);
+      // A changed layout invalidates the anchor and its clear backdrop cutout.
+      if (!dismissalQueued &&
+          (media.size != openingSize ||
+              media.textScaler.scale(14) != openingTextScale)) {
+        dismissalQueued = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted && ModalRoute.of(context)?.isCurrent == true) {
+            Navigator.of(context).pop();
+          }
+        });
+      }
       final padding = media.viewPadding.copyWith(
         bottom: math.max(media.viewPadding.bottom, media.viewInsets.bottom),
       );
@@ -119,7 +133,9 @@ Future<String?> showPollarMoreMenu(BuildContext context, Rect anchor) {
             children: [
               Positioned.fill(
                 child: IgnorePointer(
-                  child: ClipRect(
+                  child: ClipPath(
+                    key: const Key('more-menu-backdrop-clip'),
+                    clipper: _MoreBackdropClipper(anchor: anchor),
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
                       child: ColoredBox(
@@ -159,6 +175,34 @@ Future<String?> showPollarMoreMenu(BuildContext context, Rect anchor) {
       );
     },
   );
+}
+
+/// Only the workspace is blurred/dimmed; Mais stays sharp and fully visible.
+class _MoreBackdropClipper extends CustomClipper<Path> {
+  const _MoreBackdropClipper({required this.anchor});
+  final Rect anchor;
+
+  @override
+  Path getClip(Size size) {
+    final bounds = Offset.zero & size;
+    final clearAnchor = anchor.inflate(4).intersect(bounds);
+    final path = Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(bounds);
+    if (!clearAnchor.isEmpty) {
+      path.addRRect(
+        RRect.fromRectAndRadius(
+          clearAnchor,
+          const Radius.circular(PollarRadii.medium),
+        ),
+      );
+    }
+    return path;
+  }
+
+  @override
+  bool shouldReclip(_MoreBackdropClipper oldClipper) =>
+      anchor != oldClipper.anchor;
 }
 
 class _MoreMenuLayout extends SingleChildLayoutDelegate {

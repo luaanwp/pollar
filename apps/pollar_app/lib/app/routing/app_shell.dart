@@ -160,6 +160,7 @@ class _AppShellState extends ConsumerState<AppShell> {
                 destinations: appDestinations,
                 utilities: const _ShellUtilities(),
                 moreAnchor: _moreAnchor,
+                moreMenuOpen: _moreOpen,
               ),
               if (moreDetail)
                 Align(

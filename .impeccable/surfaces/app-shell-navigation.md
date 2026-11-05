@@ -80,7 +80,11 @@ The popup is a pageless modal route anchored near Mais: below the wide header
 or above compact navigation. Its bounded 320dp canvas panel contains the five
 destinations, with scrolling when enlarged text or short height requires it.
 The explicitly requested background effect uses 4px blur and 42% black; this
-local exception does not change other surface materials. Native barrier,
+local exception does not change other surface materials.
+An even-odd backdrop clip excludes the complete Mais anchor, keeping its icon,
+label and indicator sharp and undimmed. Opening does not scroll the anchor;
+viewport/text-scale changes dismiss the popup rather than retaining stale geometry.
+Native barrier,
 same-anchor click, Escape and native Back dismiss it without a route change.
 Focus remains scoped with visible informational outlines, Tab and arrow
 traversal. Selection pushes its route; Back restores the exact origin detail.

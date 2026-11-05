@@ -1,4 +1,20 @@
-# Pollar V1 — versão candidata para uso interno
+# Pollar V1 — implementação concluída para uso pessoal
+
+Em **2026-11-05**, o usuário definiu o encerramento do desenvolvimento da V1
+após o ajuste final que mantém Mais nítido com o menu aberto. O escopo inclui
+o redesign e as atualizações pelo aplicativo. Open Finance e investimentos
+continuam como evolução futura, sem implementação nesta etapa.
+
+O teste físico de atualização Android está descrito no
+[passo a passo de aceite](android-v1-acceptance.md). Seu resultado ainda não
+foi confirmado. O teste de isolamento remoto entre identidades em instalações
+independentes permanece adiado, conforme decisão anterior; o fechamento do
+escopo de implementação não o transforma em aprovado.
+
+Os builds atuais são publicados automaticamente em GitHub Releases. O último
+ajuste passa pelo mesmo fluxo; a publicação deve terminar antes de atualizar.
+
+## Consolidação histórica — 2026-10-23
 
 Versão do aplicativo: **1.0.0+3**. Consolidação: **2026-10-23**.
 

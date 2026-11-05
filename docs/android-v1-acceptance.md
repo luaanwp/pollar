@@ -1,5 +1,33 @@
 # Aceite da V1 no Android
 
+## Teste final do atualizador — 2026-11-05
+
+Este é o procedimento atual para validar a atualização pelo próprio Pollar,
+preservando a instalação e os dados existentes:
+
+1. Em **Mais → Preferências**, procure **Verificar atualizações** e anote a
+   versão instalada. Se o botão já existe, siga para o passo 2. Se não existe,
+   instale o [APK de preparação 1.0.0+1012](https://github.com/luaanwp/pollar/releases/download/v1.0.0%2B1012/pollar-android.apk)
+   **por cima** da instalação atual, sem desinstalar nem limpar dados. Essa
+   versão assinada com a mesma chave já inclui o atualizador.
+2. Quando a nova correção estiver publicada, toque em **Verificar atualizações**
+   e depois **Atualizar** para baixar uma versão superior à instalada.
+3. Toque em **Instalar atualização**. Se o Android abrir a permissão, permita
+   que **Pollar** instale apps dessa fonte, volte ao aplicativo e toque em
+   **Instalar atualização** novamente. Confirme **Atualizar** no instalador.
+4. Reabra o Pollar, entre/desbloqueie se solicitado e confira em Preferências
+   que a versão aumentou. Confira também as contas e os lançamentos anteriores.
+5. Feche completamente o aplicativo pela tela Recentes e reabra. Os dados
+   devem continuar presentes. Em **Mais → Sincronização**, sincronize e confira
+   **Dados em dia**, **0 pendentes**, sem erro.
+
+Registre versão anterior, versão nova, preservação dos dados após reabrir e
+resultado da sincronização. Se houver falha, registre a etapa e a mensagem.
+Isso valida o instalador e a persistência observada; o teste de isolamento
+remoto entre duas identidades, adiado anteriormente, continua separado.
+
+## Histórico de pacotes e testes anteriores
+
 Use um APK compilado com `config/supabase.remote.json`. O projeto hospeda apenas
 a chave publicável no cliente; nunca inclua chave administrativa no APK.
 Execute os passos abaixo com dados de teste e internet disponível. Não limpe os

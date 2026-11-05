@@ -23,6 +23,7 @@ class PollarTopNavigation extends StatefulWidget {
     required this.onSelected,
     required this.utilities,
     this.moreAnchor,
+    this.moreMenuOpen = false,
   });
 
   final List<AppDestination> destinations;
@@ -30,6 +31,7 @@ class PollarTopNavigation extends StatefulWidget {
   final ValueChanged<int> onSelected;
   final Widget utilities;
   final GlobalKey? moreAnchor;
+  final bool moreMenuOpen;
 
   @override
   State<PollarTopNavigation> createState() => _PollarTopNavigationState();
@@ -62,7 +64,10 @@ class _PollarTopNavigationState extends State<PollarTopNavigation> {
   @override
   void didUpdateWidget(covariant PollarTopNavigation oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.selectedIndex != widget.selectedIndex) _revealSelected();
+    if (oldWidget.selectedIndex != widget.selectedIndex &&
+        !widget.moreMenuOpen) {
+      _revealSelected();
+    }
   }
 
   @override

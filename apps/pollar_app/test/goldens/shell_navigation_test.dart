@@ -280,6 +280,12 @@ void main() {
       expect(router.state.uri.path, '/overview');
       expect(find.byKey(const Key('more-menu-panel')), findsOneWidget);
       expect(find.byType(BackdropFilter), findsOneWidget);
+      final clipping = find.byKey(const Key('more-menu-backdrop-clip'));
+      final backdrop = tester.widget<ClipPath>(clipping);
+      final path = backdrop.clipper!.getClip(tester.getSize(clipping));
+      final origin = tester.getTopLeft(clipping);
+      expect(path.contains(anchor - origin), isFalse);
+      expect(path.contains(const Offset(24, 400) - origin), isTrue);
       expect(find.text('Preferências'), findsOneWidget);
       await tester.tapAt(anchor);
       await tester.pumpAndSettle();
@@ -385,6 +391,26 @@ void main() {
     expect(router.state.uri.path, '/overview');
   });
 
+  for (final enlargeText in [false, true]) {
+    testWidgets(
+      'More closes when its anchor layout changes text=$enlargeText',
+      (tester) async {
+        final (router, _) = await mount(tester);
+        await tester.tap(find.byTooltip('Mais'));
+        await tester.pumpAndSettle();
+        if (enlargeText) {
+          tester.platformDispatcher.textScaleFactorTestValue = 2;
+        } else {
+          tester.view.physicalSize = const Size(800, 600);
+        }
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('more-menu-panel')), findsNothing);
+        expect(router.state.uri.path, '/overview');
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   for (final sample in [
     (
       size: Size(1440, 900),
@@ -417,8 +443,10 @@ void main() {
           : find.byTooltip('Mais');
       await tester.ensureVisible(target);
       await tester.pumpAndSettle();
+      final originalAnchor = tester.getRect(target);
       await tester.tap(target);
       await tester.pumpAndSettle();
+      expect(tester.getRect(target), originalAnchor);
       final bounds = tester.getRect(find.byKey(const Key('more-menu-panel')));
       expect(bounds.left, greaterThanOrEqualTo(16));
       expect(bounds.right, lessThanOrEqualTo(sample.size.width - 16));

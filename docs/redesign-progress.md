@@ -725,6 +725,20 @@ e as três novas do menu. Isso não equivale a aceite físico da nova interaçã
 
 ## Sequência restante
 
+### Fechamento de implementação — 2026-11-05
+
+O usuário definiu este ajuste como último desenvolvimento da V1 para uso pessoal.
+O botão Mais fica fora do desfoque e escurecimento do menu, mantendo ícone,
+rótulo e indicador nítidos. A abertura não desloca a âncora; alterações de
+tamanho da janela ou escala tipográfica fecham o painel para evitar um recorte
+desatualizado. Os tooltips continuam com espera de 2 segundos.
+
+Validação: **588 testes aprovados**, análise limpa e capturas desktop, celular
+e texto ampliado conferidas. O teste físico do atualizador Android segue o
+[procedimento atual de aceite](android-v1-acceptance.md); seu resultado ainda
+depende do usuário. O isolamento remoto anteriormente adiado continua registrado
+como pendência separada. Nenhuma dessas observações foi convertida em teste aprovado.
+
 As fases visuais 1–5, o refinamento mobile da fase 7 e o polimento/acessibilidade
 da fase 8 estão implementados, com aceite funcional no Android confirmado pelo
 usuário. Leitores de tela e medições de desempenho permanecem sem evidência
