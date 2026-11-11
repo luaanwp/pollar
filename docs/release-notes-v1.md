@@ -1,4 +1,20 @@
-# Pollar V1 — implementação concluída para uso pessoal
+# Pollar V1 — lançada
+
+Em **2026-11-11**, o usuário declarou a **V1 oficialmente lançada**. A entrega
+de lançamento é [Pollar 1.0.0+1016](https://github.com/luaanwp/pollar/releases/tag/v1.0.0%2B1016),
+do commit `89968ac087ebcc9aadc91839f248f7ce7f64b20a`, com APK Android,
+ZIP Windows e `SHA256SUMS.txt` publicados em 2026-11-11 às 19:02:25 UTC.
+O [workflow 16](https://github.com/luaanwp/pollar/actions/runs/43080622327)
+concluiu com sucesso. A versão inclui as boas-vindas também antes do
+desbloqueio de uma sessão salva e os botões Entrar e Cadastrar.
+
+O lançamento encerra o desenvolvimento previsto para a V1. Correções de bugs
+podem ser entregues pelo atualizador existente; a evolução de produto passa
+ao [roteiro inicial da V1.1](v1.1-roadmap.md). A declaração de lançamento não
+transforma os testes sem evidência ou adiados abaixo em testes executados,
+nem representa publicação na Google Play ou em outra loja.
+
+## Histórico do fechamento
 
 Em **2026-11-05**, o usuário definiu o encerramento do desenvolvimento da V1
 após o ajuste final que mantém Mais nítido com o menu aberto. O escopo inclui
@@ -32,9 +48,9 @@ proteção de identidade. Cadastrar abre o e-mail em branco; abrir o formulário
 ou usar Voltar preserva a sessão anterior. Só confirmar o novo e-mail pode
 trocar a identidade, exigindo o autenticador.
 
-Este complemento será distribuído pelo mesmo fluxo de atualização após a
-publicação do build correspondente. Não altera dados financeiros nem inclui
-conexão bancária ou investimentos.
+Este complemento foi publicado no build de lançamento `1.0.0+1016` pelo mesmo
+fluxo de atualização. Não altera dados financeiros nem inclui conexão bancária
+ou investimentos.
 
 Validação local da primeira entrega do complemento: análise estática sem problemas, 600 testes
 gerais e três testes nativos de atualização Windows aprovados. A revisão visual
@@ -42,7 +58,7 @@ independente retornou **ship**, sem achados materiais. Os renders Flutter
 cobrem telefone e desktop nos dois temas, além de um quadro intermediário da
 animação. Isso não substitui a conferência em Android físico.
 O executável Windows release `1.0.0+1015` também foi compilado localmente com
-a configuração remota; a publicação dos pacotes depende da conclusão do CI.
+a configuração remota, e essa primeira entrega foi publicada antes da revisão.
 
 Na revisão de abertura para sessões salvas e de cadastro separado, passaram
 605 testes gerais e a análise estática. A revisão visual independente retornou
@@ -50,7 +66,7 @@ Na revisão de abertura para sessões salvas e de cadastro separado, passaram
 cadastro no celular e no computador. Não houve teste físico de biometria nesta
 revisão.
 O executável Windows `1.0.0+1016` foi compilado com a configuração remota;
-os pacotes de atualização desta revisão dependem da publicação pelo CI.
+os pacotes de atualização desta revisão foram publicados pelo workflow 16.
 
 ## Consolidação histórica — 2026-10-23
 

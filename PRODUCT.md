@@ -34,6 +34,15 @@ confiável e privacidade visível, sem gamificação nem simplificação dos nú
 - O produto é local-first, com sincronização Supabase opcional quando configurada.
 - Open Finance e conexão bancária permanecem fora da V1, previstos para a V1.1.
 
+## Release Status
+
+A V1 foi declarada lançada pelo usuário em 2026-11-11, na release `1.0.0+1016`
+para Windows e Android, publicada pelo GitHub Releases e pelo atualizador do
+aplicativo. As evidências e os limites de aceite estão em
+`docs/release-notes-v1.md`. A V1.1 tem um roteiro inicial em
+`docs/v1.1-roadmap.md`: Open Finance é a direção confirmada, com provedor e
+escopo técnico detalhado ainda em aberto. Não há implementação dessa integração.
+
 ## Capabilities and Constraints
 
 - Flutter adaptativo para Windows, Android e iOS; navegador não é alvo da V1.

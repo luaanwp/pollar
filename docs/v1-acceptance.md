@@ -1,5 +1,13 @@
 # Aceite da V1
 
+## Lançamento declarado — 2026-11-11
+
+O usuário declarou a V1 lançada. A release `1.0.0+1016`, do commit `89968ac`,
+está publicada com os pacotes Android e Windows; o workflow 16 concluiu com
+sucesso. O estado oficial e os links estão em [release-notes-v1.md](release-notes-v1.md).
+Este aceite de lançamento preserva a distinção entre os testes executados,
+os relatos do usuário e os itens adiados registrados neste documento.
+
 Este registro separa verificações automáticas de validações no projeto Supabase
 hospedado. Não use dados bancários reais nem apague o SQLite local para testar
 sincronização; faça um backup antes de qualquer teste de restauração.
