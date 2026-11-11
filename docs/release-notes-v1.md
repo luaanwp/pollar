@@ -20,27 +20,37 @@ A execução anterior falhou antes de publicar 1013; o teste Android deve usar
 
 ## Complemento — tela de boas-vindas
 
-Quem abre o Pollar sem sessão salva encontra uma apresentação animada antes
-do login. A composição escolhida pelo usuário foi a B: três faixas convergem
+A abertura do Pollar com autenticação configurada sempre mostra as boas-vindas,
+inclusive para quem já tem sessão salva aguardando biometria. A composição escolhida pelo usuário foi a B: três faixas convergem
 para o monograma P, com texto e botão de entrada disponíveis desde o início.
 A animação termina em 800ms e respeita movimento reduzido.
 
 A tela se adapta ao celular e ao computador, nos temas claro e escuro, com
-rolagem quando há pouco espaço ou texto ampliado. Sessões salvas continuam
-indo diretamente ao desbloqueio; renovação do código de e-mail, autenticador,
-Windows Hello e proteção de identidade preservam suas verificações.
+rolagem quando há pouco espaço ou texto ampliado. Os botões são **Entrar** e **Cadastrar**. Entrar leva ao login ou ao desbloqueio
+da sessão salva, mantendo renovação por e-mail, autenticador, Windows Hello e
+proteção de identidade. Cadastrar abre o e-mail em branco; abrir o formulário
+ou usar Voltar preserva a sessão anterior. Só confirmar o novo e-mail pode
+trocar a identidade, exigindo o autenticador.
 
 Este complemento será distribuído pelo mesmo fluxo de atualização após a
 publicação do build correspondente. Não altera dados financeiros nem inclui
 conexão bancária ou investimentos.
 
-Validação local do complemento: análise estática sem problemas, 600 testes
+Validação local da primeira entrega do complemento: análise estática sem problemas, 600 testes
 gerais e três testes nativos de atualização Windows aprovados. A revisão visual
 independente retornou **ship**, sem achados materiais. Os renders Flutter
 cobrem telefone e desktop nos dois temas, além de um quadro intermediário da
 animação. Isso não substitui a conferência em Android físico.
 O executável Windows release `1.0.0+1015` também foi compilado localmente com
 a configuração remota; a publicação dos pacotes depende da conclusão do CI.
+
+Na revisão de abertura para sessões salvas e de cadastro separado, passaram
+605 testes gerais e a análise estática. A revisão visual independente retornou
+**SHIP**, sem achados materiais, incluindo os dois botões e o formulário de
+cadastro no celular e no computador. Não houve teste físico de biometria nesta
+revisão.
+O executável Windows `1.0.0+1016` foi compilado com a configuração remota;
+os pacotes de atualização desta revisão dependem da publicação pelo CI.
 
 ## Consolidação histórica — 2026-10-23
 

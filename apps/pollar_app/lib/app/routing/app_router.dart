@@ -36,7 +36,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   final refresh = _AuthRouterRefresh(auth.sessionChanges());
   ref.listen(authenticatorUnlockedProvider, (_, _) => refresh.refresh());
   final router = GoRouter(
-    initialLocation: '/overview',
+    initialLocation: auth.isConfigured ? '/welcome' : '/overview',
     refreshListenable: refresh,
     redirect: (context, state) async {
       if (!auth.isConfigured) return null;
@@ -44,8 +44,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       final unlocked = ref.read(authenticatorUnlockedProvider);
       final onSignIn = state.matchedLocation == '/sign-in';
       final onWelcome = state.matchedLocation == '/welcome';
+      final onSignUp = state.matchedLocation == '/sign-up';
       final onAuthenticator = state.matchedLocation == '/authenticator';
       final onMismatch = state.matchedLocation == '/account-mismatch';
+      // Public entry screens never expose the ledger or consume a saved unlock.
+      // A saved session is checked only after the user chooses Entrar.
+      if (onWelcome || onSignUp) return null;
       if (session == null && !onSignIn && !onWelcome) return '/welcome';
       if (session != null) {
         if (!auth.hasRecentEmailCode) {
@@ -68,8 +72,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return '/authenticator';
         }
         if (!matches && !onMismatch) return '/account-mismatch';
-        if (matches &&
-            (onWelcome || onSignIn || onAuthenticator || onMismatch)) {
+        if (matches && (onSignIn || onAuthenticator || onMismatch)) {
           return '/overview';
         }
       }
@@ -83,6 +86,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/sign-in',
         builder: (context, state) => const SignInScreen(),
+      ),
+      GoRoute(
+        path: '/sign-up',
+        builder: (context, state) => const SignInScreen(createAccount: true),
       ),
       GoRoute(
         path: '/authenticator',

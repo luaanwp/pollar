@@ -6,15 +6,15 @@
     "typographyMeta": {
       "welcome-display": {
         "displayName": "Welcome phone headline",
-        "purpose": "Disconnected welcome only; stacked layout with viewport width at least 360 logical pixels."
+        "purpose": "Public welcome, including saved sessions; stacked layout with viewport width at least 360 logical pixels."
       },
       "welcome-display-narrow": {
         "displayName": "Welcome narrow headline",
-        "purpose": "Disconnected welcome only; stacked layout below 360 logical pixels of viewport width."
+        "purpose": "Public welcome, including saved sessions; stacked layout below 360 logical pixels of viewport width."
       },
       "welcome-display-expanded": {
         "displayName": "Welcome expanded headline",
-        "purpose": "Disconnected welcome only; two-column layout when the welcome-expanded criterion is met."
+        "purpose": "Public welcome, including saved sessions; two-column layout when the welcome-expanded criterion is met."
       }
     },
     "motion": [
@@ -36,7 +36,7 @@
       {
         "name": "welcome-ledger-entrance",
         "value": "800ms easeOutCubic; path progress clamp((t - index * 0.12) / 0.76, 0, 1)",
-        "purpose": "One paint-only entrance for three native paths into the canonical P, without a loop or delaying the action. Reduced motion immediately settles at progress 1; the P is present from frame zero. Scoped to the disconnected welcome."
+        "purpose": "One paint-only entrance for three native paths into the canonical P, without a loop or delaying the action. Reduced motion immediately settles at progress 1; the P is present from frame zero. Scoped to app startup before sign-in or unlock."
       }
     ],
     "breakpoints": [

@@ -17,7 +17,9 @@ import '../application/auth_gateway.dart';
 import 'auth_controller.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({super.key, this.createAccount = false});
+
+  final bool createAccount;
 
   @override
   ConsumerState<SignInScreen> createState() => _SignInScreenState();
@@ -37,7 +39,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   @override
   void initState() {
     super.initState();
-    _loadKnownEmail();
+    if (!widget.createAccount) _loadKnownEmail();
   }
 
   Future<void> _loadKnownEmail() async {
@@ -147,6 +149,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const PollarBrand(),
+        if (GoRouter.maybeOf(context)?.canPop() ?? false) ...[
+          const SizedBox(height: PollarSpacing.x3),
+          PollarButton(
+            label: 'Voltar',
+            leadingIcon: LucideIcons.arrowLeft,
+            variant: PollarButtonVariant.ghost,
+            adaptiveHeight: true,
+            onPressed: _loading ? null : () => context.pop(),
+          ),
+        ],
         const SizedBox(height: PollarSpacing.x8),
         Text(
           'Seu livro-caixa começa com você',
@@ -175,13 +187,19 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            _codeSent ? 'Confira seu e-mail' : 'Entrar na conta',
+            _codeSent
+                ? 'Confira seu e-mail'
+                : widget.createAccount
+                ? 'Criar sua conta'
+                : 'Entrar na conta',
             style: Theme.of(context).textTheme.headlineLarge,
           ),
           const SizedBox(height: PollarSpacing.x2),
           Text(
             _codeSent
                 ? 'Digite o código enviado para ${_email.text.trim()}.'
+                : widget.createAccount
+                ? 'Confirme seu e-mail para continuar. Depois, configure ou confirme seu autenticador.'
                 : 'Sem senha. O e-mail confirma o acesso neste dispositivo.',
             style: Theme.of(context).textTheme.bodyMedium
                 ?.copyWith(color: context.pollar.textSecondary),

@@ -206,6 +206,8 @@ Future<_FakeAuthGateway> _showCodeField(
     find.byKey(const Key('auth-email')),
     'pollar@example.test',
   );
+  await tester.ensureVisible(find.text('Receber código por e-mail'));
+  await tester.pumpAndSettle();
   await tester.tap(find.text('Receber código por e-mail'));
   await tester.pumpAndSettle();
   return auth;

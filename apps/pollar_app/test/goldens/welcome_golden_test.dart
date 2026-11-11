@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pollar_app/app/theme/pollar_theme.dart';
 import 'package:pollar_app/features/auth/presentation/welcome_screen.dart';
+import 'package:pollar_app/features/auth/presentation/sign_in_screen.dart';
 
 void main() {
   setUpAll(() async {
@@ -94,6 +97,41 @@ void main() {
     expect(tester.binding.transientCallbackCount, 0);
     expect(tester.takeException(), isNull);
   });
+
+  for (final size in [const Size(390, 844), const Size(1440, 900)]) {
+    testWidgets('registration with visible Back at $size', (tester) async {
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final router = GoRouter(
+        routes: [
+          GoRoute(path: '/', builder: (_, _) => const WelcomeScreen()),
+          GoRoute(
+            path: '/sign-up',
+            builder: (_, _) => const SignInScreen(createAccount: true),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            theme: PollarTheme.dark(),
+            routerConfig: router,
+          ),
+        ),
+      );
+      router.push('/sign-up');
+      await tester.pumpAndSettle();
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('registration_${size.width.toInt()}_dark.png'),
+      );
+      expect(tester.takeException(), isNull);
+    });
+  }
 }
 
 Future<void> _mount(
@@ -107,14 +145,16 @@ Future<void> _mount(
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
   await tester.pumpWidget(
-    MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: dark ? PollarTheme.dark() : PollarTheme.light(),
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: reduced),
-        child: child!,
+    ProviderScope(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: dark ? PollarTheme.dark() : PollarTheme.light(),
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: reduced),
+          child: child!,
+        ),
+        home: const WelcomeScreen(),
       ),
-      home: const WelcomeScreen(),
     ),
   );
 }

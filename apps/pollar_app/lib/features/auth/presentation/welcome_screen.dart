@@ -1,6 +1,6 @@
 // THESIS: converging ledger strokes introduce Pollar before the login form.
 // OWN-WORLD: canonical P, solid theme teal/mint, Inter, native 10px controls.
-// STORY: understand accounts, movements and planning; choose Entrar no Pollar.
+// STORY: choose Entrar to sign in/unlock, or Cadastrar to confirm a new email.
 // FIRST VIEWPORT: brand above an open ledger stage, large copy and wide action;
 // on desktop the ledger moves beside the copy, retaining its visual weight.
 // FORM: kinetic ledger, structure 4, seed 8cc36f0b; approved welcome-b-ledger.png.
@@ -9,16 +9,19 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../app/theme/pollar_theme.dart';
 import '../../../shared/presentation/pollar_brand.dart';
 import '../../../shared/presentation/pollar_brand_geometry.dart';
+import '../../../shared/presentation/pollar_button.dart';
 import '../../../shared/presentation/pollar_focus_outline.dart';
 import '../../../shared/presentation/pollar_motion.dart';
+import 'auth_controller.dart';
 
-/// Shown only without a saved session. Login and device unlocking stay separate.
+/// Public start screen, including when a saved session still needs unlocking.
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
@@ -125,6 +128,17 @@ class _WelcomeCopy extends StatelessWidget {
         ),
         const SizedBox(height: PollarSpacing.x10),
         const _WelcomeAction(),
+        const SizedBox(height: PollarSpacing.x3),
+        PollarButton(
+          key: const Key('welcome-register'),
+          label: 'Cadastrar',
+          onPressed: () => context.push('/sign-up'),
+          variant: PollarButtonVariant.secondary,
+          fullWidth: true,
+          adaptiveHeight: true,
+          size: PollarControlSize.prominent,
+          leadingIcon: LucideIcons.userPlus,
+        ),
         const SizedBox(height: PollarSpacing.x8),
         Text(
           'Contas e cartões · Movimentações · Planejamento',
@@ -135,15 +149,19 @@ class _WelcomeCopy extends StatelessWidget {
   }
 }
 
-class _WelcomeAction extends StatelessWidget {
+class _WelcomeAction extends ConsumerWidget {
   const _WelcomeAction();
 
   @override
-  Widget build(BuildContext context) => PollarFocusOutline(
+  Widget build(BuildContext context, WidgetRef ref) => PollarFocusOutline(
     child: PollarPressMotion(
       child: TextButton(
         key: const Key('welcome-enter'),
-        onPressed: () => context.push('/sign-in'),
+        onPressed: () => context.push(
+          ref.read(authGatewayProvider).currentSession == null
+              ? '/sign-in'
+              : '/overview',
+        ),
         style: ButtonStyle(
           minimumSize: const WidgetStatePropertyAll(Size(double.infinity, 56)),
           padding: const WidgetStatePropertyAll(EdgeInsets.all(16)),
@@ -167,7 +185,7 @@ class _WelcomeAction extends StatelessWidget {
         ),
         child: const Row(
           children: [
-            Expanded(child: Text('Entrar no Pollar')),
+            Expanded(child: Text('Entrar')),
             SizedBox(width: 16),
             ExcludeSemantics(child: Icon(LucideIcons.arrowRight, size: 24)),
           ],
