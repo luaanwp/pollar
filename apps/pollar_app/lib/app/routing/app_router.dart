@@ -10,6 +10,7 @@ import '../../features/auth/domain/auth_session.dart';
 import '../../features/auth/presentation/auth_controller.dart';
 import '../../features/auth/presentation/authenticator_screen.dart';
 import '../../features/auth/presentation/sign_in_screen.dart';
+import '../../features/auth/presentation/welcome_screen.dart';
 import '../../features/design_system/presentation/forms_catalog_screen.dart';
 import '../../features/data_management/presentation/data_management_screen.dart';
 import '../../features/overview/presentation/overview_screen.dart';
@@ -42,9 +43,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       final session = auth.currentSession;
       final unlocked = ref.read(authenticatorUnlockedProvider);
       final onSignIn = state.matchedLocation == '/sign-in';
+      final onWelcome = state.matchedLocation == '/welcome';
       final onAuthenticator = state.matchedLocation == '/authenticator';
       final onMismatch = state.matchedLocation == '/account-mismatch';
-      if (session == null && !onSignIn) return '/sign-in';
+      if (session == null && !onSignIn && !onWelcome) return '/welcome';
       if (session != null) {
         if (!auth.hasRecentEmailCode) {
           return onSignIn ? null : '/sign-in';
@@ -58,7 +60,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         // An auth event can replace the session while SQLite is opening.
         // Never complete that older redirect using the new user's session.
         if (auth.currentSession?.userId != session.userId) {
-          return auth.currentSession == null ? '/sign-in' : '/authenticator';
+          return auth.currentSession == null ? '/welcome' : '/authenticator';
         }
         if (!auth.hasRecentEmailCode) return '/sign-in';
         if (!auth.isSecondFactorVerified ||
@@ -66,13 +68,18 @@ final routerProvider = Provider<GoRouter>((ref) {
           return '/authenticator';
         }
         if (!matches && !onMismatch) return '/account-mismatch';
-        if (matches && (onSignIn || onAuthenticator || onMismatch)) {
+        if (matches &&
+            (onWelcome || onSignIn || onAuthenticator || onMismatch)) {
           return '/overview';
         }
       }
       return null;
     },
     routes: [
+      GoRoute(
+        path: '/welcome',
+        builder: (context, state) => const WelcomeScreen(),
+      ),
       GoRoute(
         path: '/sign-in',
         builder: (context, state) => const SignInScreen(),

@@ -18,6 +18,30 @@ de processo, verificações nativas e builds Windows/Android com sucesso.
 A execução anterior falhou antes de publicar 1013; o teste Android deve usar
 1014 ou uma versão posterior. A atualização continua disponível pelo aplicativo.
 
+## Complemento — tela de boas-vindas
+
+Quem abre o Pollar sem sessão salva encontra uma apresentação animada antes
+do login. A composição escolhida pelo usuário foi a B: três faixas convergem
+para o monograma P, com texto e botão de entrada disponíveis desde o início.
+A animação termina em 800ms e respeita movimento reduzido.
+
+A tela se adapta ao celular e ao computador, nos temas claro e escuro, com
+rolagem quando há pouco espaço ou texto ampliado. Sessões salvas continuam
+indo diretamente ao desbloqueio; renovação do código de e-mail, autenticador,
+Windows Hello e proteção de identidade preservam suas verificações.
+
+Este complemento será distribuído pelo mesmo fluxo de atualização após a
+publicação do build correspondente. Não altera dados financeiros nem inclui
+conexão bancária ou investimentos.
+
+Validação local do complemento: análise estática sem problemas, 600 testes
+gerais e três testes nativos de atualização Windows aprovados. A revisão visual
+independente retornou **ship**, sem achados materiais. Os renders Flutter
+cobrem telefone e desktop nos dois temas, além de um quadro intermediário da
+animação. Isso não substitui a conferência em Android físico.
+O executável Windows release `1.0.0+1015` também foi compilado localmente com
+a configuração remota; a publicação dos pacotes depende da conclusão do CI.
+
 ## Consolidação histórica — 2026-10-23
 
 Versão do aplicativo: **1.0.0+3**. Consolidação: **2026-10-23**.

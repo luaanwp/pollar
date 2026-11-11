@@ -1,8 +1,22 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-05T00:09:04Z",
+  "generatedAt": "2026-11-11T00:00:00Z",
   "title": "Design System: Pollar",
   "extensions": {
+    "typographyMeta": {
+      "welcome-display": {
+        "displayName": "Welcome phone headline",
+        "purpose": "Disconnected welcome only; stacked layout with viewport width at least 360 logical pixels."
+      },
+      "welcome-display-narrow": {
+        "displayName": "Welcome narrow headline",
+        "purpose": "Disconnected welcome only; stacked layout below 360 logical pixels of viewport width."
+      },
+      "welcome-display-expanded": {
+        "displayName": "Welcome expanded headline",
+        "purpose": "Disconnected welcome only; two-column layout when the welcome-expanded criterion is met."
+      }
+    },
     "motion": [
       {
         "name": "more-popup",
@@ -18,12 +32,25 @@
         "name": "top-navigation-reveal",
         "value": "240ms",
         "purpose": "Scrollable.ensureVisible reveals the selected menu item after selection or width changes; reduced motion uses zero duration."
+      },
+      {
+        "name": "welcome-ledger-entrance",
+        "value": "800ms easeOutCubic; path progress clamp((t - index * 0.12) / 0.76, 0, 1)",
+        "purpose": "One paint-only entrance for three native paths into the canonical P, without a loop or delaying the action. Reduced motion immediately settles at progress 1; the P is present from frame zero. Scoped to the disconnected welcome."
       }
     ],
     "breakpoints": [
       {
         "name": "wide-shell-navigation",
         "value": "600px"
+      },
+      {
+        "name": "welcome-expanded",
+        "value": "1024px local width and textScaler.scale(16) <= 24"
+      },
+      {
+        "name": "welcome-narrow-headline",
+        "value": "viewport width < 360px in the stacked welcome"
       }
     ]
   }

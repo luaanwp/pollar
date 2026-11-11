@@ -104,6 +104,24 @@ typography:
     fontWeight: 600
     lineHeight: 1.3
     letterSpacing: "0.06em"
+  welcome-display:
+    fontFamily: "Inter"
+    fontSize: "36px"
+    fontWeight: 700
+    lineHeight: 1.16
+    letterSpacing: "-0.7px"
+  welcome-display-narrow:
+    fontFamily: "Inter"
+    fontSize: "32px"
+    fontWeight: 700
+    lineHeight: 1.16
+    letterSpacing: "-0.7px"
+  welcome-display-expanded:
+    fontFamily: "Inter"
+    fontSize: "54px"
+    fontWeight: 700
+    lineHeight: 1.16
+    letterSpacing: "-0.7px"
 rounded:
   chip: "6px"
   control: "10px"
@@ -265,6 +283,7 @@ A assinatura Pollar usa Inter SemiBold (600), mais leve que os títulos de pági
 - **Credit amount:** limite cadastrado na frente do cartão e saldo devido da fatura usam explicitamente `balanceHeroCompact` de 34px/600, com quebra e reserva de privacidade; não adotam o papel 48/40px da Visão geral.
 - **Position display:** somente o saldo confirmado na abertura da Visão geral usa `positionDisplayForWidth`: 48px/600 com pelo menos 600px reais no bloco de saldo, ou 40px/600 abaixo disso. Os papéis de saldo mantêm entrelinha 1,15 e algarismos tabulares; não substitua automaticamente os consumidores legados.
 - **Eyebrow:** reservado a cabeçalhos de tabela e divisores de navegação, em caixa alta.
+- **Welcome display:** os três papéis `welcome-display*` pertencem somente à abertura desconectada. O título é um cabeçalho semântico; corpo e ação usam a variação de corpo grande, com peso 600 na ação. O rodapé conserva corpo de 14px e quebra natural.
 
 **The Exact Figure Rule.** Todo valor monetário, percentual, data tabular e contagem parcelada usa algarismos tabulares e conserva a exatidão. O adendo de movimento autorizado pelo usuário permite rolagem visual entre estados reais do saldo; não interpola quantias fictícias nem altera o valor semântico atual. Privacidade ou movimento reduzido interrompem o efeito imediatamente.
 
@@ -279,6 +298,8 @@ O saldo faz reflow sem reduzir sua fonte. Em `PrivacyAmount` com `reserveLayout:
 O ritmo nasce de uma unidade de 4px e privilegia incrementos de 8px. O conteúdo geral limita-se a 1600px e colunas de leitura de dashboard a 1280px. Telas de formulário podem estreitar a coluna conforme a tarefa; o cadastro de conta/cartão usa uma coluna de até 760px.
 
 O shell é adaptativo. Abaixo de 600px, conserva navegação inferior, gutter compacto de 16px e ações principais de largura total quando necessário. A partir de 600px, `PollarTopNavigation` ocupa o topo com gutters de 24px, marca à esquerda, os cinco destinos rotulados e controles de privacidade/tema à direita. A medição da fonte real em peso 600 e da escala tipográfica escolhe uma linha ou uma linha de marca/utilidades seguida pelo menu; quando necessário, apenas o menu rola horizontalmente, sem reduzir os rótulos a ícones. O shell amplo não reserva largura lateral nem mantém preferência de recolhimento. Seções relacionadas podem ocupar colunas paralelas conforme a largura disponível. No Android, todo alvo interativo mede pelo menos 48dp em qualquer largura.
+
+A welcome desconectada tem composição própria, limitada a 1280px dentro da área segura e com scroll de altura mínima igual à viewport. Com pelo menos 1024px locais e texto de 16px escalado até 24px, usa cópia à esquerda e ledger à direita, com intervalo de 48px e gutter de 48px na cópia; fora desse critério, marca, ledger e cópia empilham com gutter de 24px. O palco compacto ocupa 38% da altura disponível, limitado a 220–400px; o amplo ocupa 65%, limitado a 420–600px. Abaixo de 360px de viewport, o título seleciona o papel estreito; texto ampliado faz reflow e janelas curtas rolam. Esta composição não altera os gutters do shell.
 
 Na listagem de contas, o primeiro viewport apresenta título, explicação, ação de cadastro e as seções de contas/cartões. As seções ficam lado a lado com pelo menos 980px locais, texto até 1,3× e conteúdo em ambas; fora disso, empilham. Cartões ativos formam duas colunas somente com pelo menos 1000px na seção e texto até 1,3×; uma coluna limita cada cartão a 640px. No rodapé de cada face, ciclo precede “Ver fatura” e “Virar cartão” / “Voltar à frente”; ações textuais empilham abaixo de 300px locais ou acima de 1,3×. Campos de fechamento e vencimento do formulário continuam passando de coluna para linha em 600px.
 
@@ -573,6 +594,16 @@ O monograma P aprovado tem um único contorno, com recorte diagonal e proporçõ
 **The Same Mark Rule.** Reutilize a geometria canônica, sem redesenhar o P por contexto. Símbolos e assinaturas usam preenchimento sólido teal ou menta, fundo transparente e nenhum efeito; o ícone de aplicativo usa menta sobre fundo escuro sólido. SVGs contêm caminhos vetoriais reais, inclusive nas letras, e os PNGs derivados preservam a transparência aplicável. Preserve espaço negativo e margem livre de pelo menos um quarto da altura do símbolo isolado. Consulte [`assets/brand/README.md`](apps/pollar_app/assets/brand/README.md) para variantes e reprodução.
 
 ### Identidade e sincronização
+
+#### Welcome desconectada
+
+A welcome usa a composição B aprovada, com marca no topo e três traços planos que chegam à borda esquerda do P canônico. O palco é aberto, sem cartão, gradiente, sombra ou blur; usa `primary`, o mesmo tom a 65% e `primarySoft` do tema. O P mantém seu contorno desde o primeiro quadro. Texto e ação são widgets semânticos nativos; somente a arte decorativa fica fora da árvore acessível.
+
+“Entrar no Pollar” ocupa a largura da coluna, com altura mínima de 56px, padding de 16px e raio de controle; rótulo à esquerda e seta Lucide de 24px à direita. Cresce com o texto, usa `primaryHover` no hover, `PollarFocusOutline` no teclado e `PollarPressMotion` na ativação. Abre `/sign-in` sem aguardar o ledger. Os três traços têm uma única entrada de 800ms com `easeOutCubic`, escalonada em 12% entre traços e janela de 76% por traço; movimento reduzido mostra imediatamente o estado final. Não há loop nem animação de quantias.
+
+Com autenticação configurada, `/welcome` recebe apenas ausência de sessão; sessão salva mantém renovação por e-mail, segundo fator/desbloqueio e vínculo de identidade existentes. O registro da superfície, aprovação, geometria e limites de verificação ficam em [welcome](.impeccable/surfaces/welcome.md).
+
+#### Entrada e sincronização existentes
 
 A entrada funciona como um limiar de privacidade, não como campanha de
 aquisição: propósito e garantias locais precedem o formulário. Em largura ampla,

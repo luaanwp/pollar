@@ -198,6 +198,10 @@ Future<_FakeAuthGateway> _showCodeField(
     ),
   );
   await tester.pumpAndSettle();
+  if (withRouter) {
+    await tester.tap(find.byKey(const Key('welcome-enter')));
+    await tester.pumpAndSettle();
+  }
   await tester.enterText(
     find.byKey(const Key('auth-email')),
     'pollar@example.test',
